@@ -21,3 +21,10 @@ module "state_in_s3" {
   bucket_name = var.bucket_name
   dynamodb_table_name = var.dynamodb_table_name
 }
+
+module "frontend" {
+  source = "../../../../frontend/terraform/envs/prod"
+
+  route53_id = var.route53_id
+  route53_name = var.route53_name
+}
