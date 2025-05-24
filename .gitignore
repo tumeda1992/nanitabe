@@ -69,3 +69,9 @@ yarn-debug.log*
 .idea/
 *.iml
 .vscode/
+
+.terraform/
+
+**/.terraform.lock.hcl
+**/*.tfstate
+**/*.tfstate.*
