@@ -13,6 +13,7 @@ import {
   dishSourceRelationDetailOf,
 } from '../../../../features/dish/schema';
 import { DishSourceRelation } from '../../../../lib/graphql/generated/graphql';
+import { AddOrUpdateDishInput } from './types';
 
 type DishSourceFormRelationContentProps = {
   dishSourceType: DishSourceType | null;
@@ -21,19 +22,26 @@ type DishSourceFormRelationContentProps = {
 export const DishSourceFormRelationContent = (
   props: DishSourceFormRelationContentProps,
 ) => {
-  const { dishSourceType } = props;
+  const { dishSourceType, dishSourceRelation: dishSourceRelationFromProps } =
+    props;
 
   const {
     register,
     formState: { errors },
-  } = useFormContext();
+  } = useFormContext<AddOrUpdateDishInput>();
 
-  const [dishSourceRelation, setDishSourceRelation] = useState({});
-  const existingDishSourceRelation = props.dishSourceRelation || {
+  const defaultDishSourceRelation = {
     recipeBookPage: null,
     recipeWebsiteUrl: '',
     recipeSourceMemo: '',
   };
+  const [dishSourceRelation, setDishSourceRelation] =
+    useState<DishSourceRelation>(
+      defaultDishSourceRelation as DishSourceRelation,
+    );
+  // Q: これの存在理由は何？大元でタイプが変わったときに空の値で書き換えるため？ 不要なら削除したい
+  const existingDishSourceRelation =
+    dishSourceRelationFromProps || defaultDishSourceRelation;
   useEffect(() => {
     setDishSourceRelation((prevState) => ({
       ...prevState,

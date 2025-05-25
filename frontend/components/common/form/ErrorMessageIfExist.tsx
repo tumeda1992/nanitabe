@@ -1,7 +1,8 @@
 import React from 'react';
+import { FieldError } from 'react-hook-form';
 
 type Props = {
-  errorMessage?: string;
+  errorMessage?: string | FieldError;
 };
 
 export default (props: Props) => {
