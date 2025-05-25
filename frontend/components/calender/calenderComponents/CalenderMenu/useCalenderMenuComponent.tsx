@@ -8,10 +8,8 @@ export default () => {
     followRightEdge: true,
   });
 
-  const CalenderMenuWrapper: React.FunctionComponent = ({
+  const CalenderMenuWrapper: React.FC<{ children: ReactNode }> = ({
     children,
-  }: {
-    children: ReactNode;
   }) => {
     return (
       <>
