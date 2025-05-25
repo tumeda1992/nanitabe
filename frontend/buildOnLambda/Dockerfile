@@ -7,7 +7,8 @@ WORKDIR /var/task
 
 COPY . .
 RUN corepack enable yarn
-RUN yarn install
+# なぜかテストのコードもビルドしようとするので、一旦テスト用ライブラリをいれる
+RUN yarn install --production=false
 RUN yarn build
 
 CMD ["buildOnLambda/lambdaNextJsHandler.handle"]
