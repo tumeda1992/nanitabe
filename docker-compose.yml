@@ -24,13 +24,13 @@ services:
     environment:
       RAILS_ENV: ${ENV:-development}
 
-#  frontend_next_lambda:
-#    container_name: frontend_next_lambda
-#    #    command: "yarn docker-compose-command" # デバッグ
-#    build:
-#      context: ./frontend
-#      dockerfile: ./buildOnLambda/Dockerfile
-#    volumes:
-#      - ./frontend:/var/task
-#    ports:
-#      - "8080:8080"
+  frontend_next_lambda:
+    container_name: frontend_next_lambda
+    #    command: "yarn docker-compose-command" # デバッグ
+    build:
+      context: ./frontend
+      dockerfile: ./buildOnLambda/Dockerfile
+    volumes:
+      - ./frontend:/var/task
+    ports:
+      - "8080:8080"

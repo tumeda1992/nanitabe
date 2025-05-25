@@ -28,7 +28,12 @@ function convertChunkToBuffer(chunk, encoding) {
 
 function createNextJsRequest(event) {
   const req = new IncomingMessage();
-  req.method = event.httpMethod || (event.requestContext && event.requestContext.http && event.requestContext.http.method) || "GET";
+  req.method =
+    event.httpMethod ||
+    (event.requestContext &&
+      event.requestContext.http &&
+      event.requestContext.http.method) ||
+    'GET';
   req.headers = event.headers;
   req.url = event.rawPath;
   req.body = event.body ? Buffer.from(event.body) : Buffer.alloc(0);
@@ -36,13 +41,28 @@ function createNextJsRequest(event) {
 }
 
 class DummySocket extends Duplex {
-  _read(size) { }
-  _write(chunk, encoding, callback) { callback(); }
-  setTimeout(msecs, callback) { if (callback) callback(); }
-  setNoDelay(noDelay) { }
-  setKeepAlive(enable, initialDelay) { }
-  address() { return { address: '127.0.0.1', family: 'IPv4', port: 0 }; }
-  destroy(error) { this.push(null); this.emit('close', error); }
+  _read(size) {}
+
+  _write(chunk, encoding, callback) {
+    callback();
+  }
+
+  setTimeout(msecs, callback) {
+    if (callback) callback();
+  }
+
+  setNoDelay(noDelay) {}
+
+  setKeepAlive(enable, initialDelay) {}
+
+  address() {
+    return { address: '127.0.0.1', family: 'IPv4', port: 0 };
+  }
+
+  destroy(error) {
+    this.push(null);
+    this.emit('close', error);
+  }
 }
 
 function setupResponseCapture(nextJsRequest) {
@@ -121,14 +141,13 @@ exports.handle = async (event, _context) => {
   }
 };
 
-
 // デバッグ方法
 // curl -XPOST "http://localhost:8080/2015-03-31/functions/function/invocations" \
 //   -H "Content-Type: application/json" \
 //   -d '{
-// "rawPath": "/api/hello",
-//     "httpMethod": "GET",
-//     "headers": {
-//     "Content-Type": "application/json"
+// "rawPath": "/calender/week/thisweek",
+//   "httpMethod": "GET",
+//   "headers": {
+//   "Content-Type": "text/html"
 // }
 // }'
