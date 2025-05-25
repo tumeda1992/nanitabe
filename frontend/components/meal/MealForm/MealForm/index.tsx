@@ -15,6 +15,7 @@ import {
   UseChoosingDishTypeResult,
 } from './useChoosingDishType';
 import { ExistingDishesForRegisteringWithMeal } from './ExistingDishesForRegisteringWithMeal';
+import { AddOrUpdateMealInput } from './types';
 
 type Props = {
   formSchema: any;
@@ -48,7 +49,7 @@ export default (props: Props) => {
     onSchemaError,
   } = props;
 
-  const methods = useForm({
+  const methods = useForm<AddOrUpdateMealInput>({
     resolver: zodResolver(formSchema),
   });
 
@@ -60,8 +61,8 @@ export default (props: Props) => {
     setValue,
   } = methods;
 
-  const [selectedMealType, setSelectedMealType] = useState(
-    registeredMealType || MEAL_TYPE.DINNER,
+  const [selectedMealType, setSelectedMealType] = useState<MealType>(
+    (registeredMealType as MealType) || MEAL_TYPE.DINNER,
   );
   useEffect(() => {
     setValue('meal.mealType', selectedMealType);
@@ -89,7 +90,7 @@ export default (props: Props) => {
               {...register('meal.date', { valueAsDate: true })}
               data-testid="mealDate"
             />
-            <ErrorMessageIfExist errorMessage={errors.meal?.date?.message} />
+            <ErrorMessageIfExist fieldError={errors.meal?.date} />
           </FormFieldWrapperWithLabel>
 
           <FormFieldWrapperWithLabel label="時間帯" required>
@@ -99,9 +100,7 @@ export default (props: Props) => {
                 setSelectedMealType(mealType);
               }}
             />
-            <ErrorMessageIfExist
-              errorMessage={errors.meal?.mealType?.message}
-            />
+            <ErrorMessageIfExist fieldError={errors.meal?.mealType} />
           </FormFieldWrapperWithLabel>
 
           <div className={style['meal-form']}>

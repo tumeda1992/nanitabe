@@ -24,6 +24,9 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "../nativeApp",
+    "../nativeApp/**/*",
+    "/root/nanitabe_front/nativeApp"
   ]
 }
