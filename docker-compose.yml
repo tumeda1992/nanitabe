@@ -23,3 +23,14 @@ services:
       - ./backend:/root/nanitabe_back
     environment:
       RAILS_ENV: ${ENV:-development}
+
+#  frontend_next_lambda:
+#    container_name: frontend_next_lambda
+#    #    command: "yarn docker-compose-command" # デバッグ
+#    build:
+#      context: ./frontend
+#      dockerfile: ./buildOnLambda/Dockerfile
+#    volumes:
+#      - ./frontend:/var/task
+#    ports:
+#      - "8080:8080"

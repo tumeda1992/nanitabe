@@ -1,3 +1,3 @@
 output "appname" {
-  value = "nanitabe"
+  value = "nanitabe-front"
 }
