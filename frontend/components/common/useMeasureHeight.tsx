@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-export default (changeTrigger: any = null) => {
+export default (
+  changeTrigger: any = null,
+): [number, React.MutableRefObject<HTMLDivElement>] => {
   const [height, setHeight] = useState(0);
   const measureTargetElementRef = useRef<HTMLDivElement>();
   useEffect(() => {
