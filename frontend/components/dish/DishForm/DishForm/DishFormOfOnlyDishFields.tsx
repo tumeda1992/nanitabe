@@ -6,6 +6,7 @@ import FormFieldWrapperWithLabel from '../../../common/form/FormFieldWrapperWith
 import ErrorMessageIfExist from '../../../common/form/ErrorMessageIfExist';
 import { MEAL_POSITION, MealPosition } from '../../../../features/dish/const';
 import SelectMealPosition from './SelectMealPosition';
+import { AddOrUpdateDishInput } from './types';
 
 type DishFormOfOnlyDishFieldsProps = {
   preFilledDish?: Dish;
@@ -19,11 +20,12 @@ export const DishFormOfOnlyDishFields = (
     register,
     formState: { errors },
     setValue,
-  } = useFormContext();
+  } = useFormContext<AddOrUpdateDishInput>();
 
-  const [selectedMealPosition, setSelectedMealPosition] = useState(
-    preFilledDish?.mealPosition || MEAL_POSITION.MAIN_DISH,
-  );
+  const [selectedMealPosition, setSelectedMealPosition] =
+    useState<MealPosition>(
+      (preFilledDish?.mealPosition as MealPosition) || MEAL_POSITION.MAIN_DISH,
+    );
   useEffect(() => {
     setValue('dish.mealPosition', selectedMealPosition);
   }, [selectedMealPosition]);
