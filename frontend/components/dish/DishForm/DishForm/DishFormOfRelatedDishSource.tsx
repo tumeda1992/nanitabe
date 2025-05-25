@@ -16,7 +16,7 @@ import {
 } from '../../../../lib/graphql/generated/graphql';
 import useDishSource from '../../../../features/dish/source/useDishSource';
 
-const useSelectedExistingDishSource = (preFilledDish?: Dish, setValue) => {
+const useSelectedExistingDishSource = (setValue, preFilledDish?: Dish) => {
   // NOTE: 登録済みのレシピチェックボックス選択時のみ動かすとしてもhooksだけは動かしてから早期空レスポンスリターン
   const { dishSources } = useDishSource({
     fetchDishSourcesParams: {
@@ -77,7 +77,7 @@ export const DishFormOfRelatedDishSource = (
     setDishSourceId,
     selectedDishSource,
     dishSourceRelation,
-  } = useSelectedExistingDishSource(preFilledDish, setValue);
+  } = useSelectedExistingDishSource(setValue, preFilledDish);
 
   return (
     <>
