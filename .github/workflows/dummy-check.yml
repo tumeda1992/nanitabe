@@ -1,1 +1,11 @@
 # PRでチェックを空にしないためにダミーのチェックを作成
+name: dummy-check
+
+on: [pull_request]
+
+jobs:
+  dummy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dummy check
+        run: echo "This is a dummy check and it always passes."
