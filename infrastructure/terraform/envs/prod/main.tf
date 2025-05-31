@@ -3,6 +3,7 @@ variable "dynamodb_table_name" { type = string } # export TF_VAR_dynamodb_table_
 
 variable "route53_id" { type = string } # export TF_VAR_route53_id=${ROUTE53_HOSTZONE_ID}
 variable "route53_name" { type = string } # export TF_VAR_route53_name=${ROUTE53_HOSTZONE_NAME}
+variable "backend_host" { type = string } # export TF_VAR_backend_host=${BACKEND_PROD_HOST}
 
 provider "aws" {
   region = "ap-northeast-1"
@@ -20,4 +21,12 @@ module "state_in_s3" {
 
   bucket_name = var.bucket_name
   dynamodb_table_name = var.dynamodb_table_name
+}
+
+module "frontend" {
+  source = "../../../../frontend/terraform/envs/prod"
+
+  route53_id = var.route53_id
+  route53_name = var.route53_name
+  backend_host = var.backend_host
 }
