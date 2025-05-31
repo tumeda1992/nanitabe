@@ -9,6 +9,7 @@ const nextConfig = {
     }
     return config;
   },
+  compress: false, // API Gatewayで表示させるためにgzip圧縮を無効化
 };
 
 module.exports = nextConfig;

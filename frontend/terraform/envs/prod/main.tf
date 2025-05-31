@@ -18,3 +18,9 @@ module "lambda" {
   ecr_repository_url = module.ecr.repository_url
   backend_host = var.backend_host
 }
+
+module "api_gateway" {
+  source = "../../modules/apigateway"
+  stage = local.stage
+  lambda_function_arn = module.lambda.lambda_function_arn
+}

@@ -26,6 +26,7 @@ function convertChunkToBuffer(chunk, encoding) {
   return null;
 }
 
+// NOTE: next.config.jsでgzip圧縮を無効化している
 function createNextJsRequest(event) {
   const req = new IncomingMessage();
   req.method =
@@ -115,15 +116,13 @@ async function handleNextJsRequest(nextJsRequest) {
 
 async function convertNextJsResponseToLambdaResponse(nextJsResponse, chunks) {
   const headers = { ...nextJsResponse.headers };
-  delete headers['content-encoding'];
-  delete headers['Content-Encoding'];
   headers['Content-Type'] = 'text/html; charset=utf-8';
 
   return {
     statusCode: nextJsResponse.statusCode,
     headers,
-    body: Buffer.concat(chunks).toString('utf-8'),
-    isBase64Encoded: false,
+    body: Buffer.concat(chunks).toString('base64'),
+    isBase64Encoded: true,
   };
 }
 

@@ -7,8 +7,8 @@ cd $script_parent_dir
 
 export $(grep -v '^#' /etc/opt/app_setting_files/nanitabe/.env | xargs)
 
-#env="deploy-test"
-env="prod"
+env="deploy-test"
+# env="prod"
 image_name_with_tag=nanitabe-front/next-js-on-lambda/${env}:latest
 docker build -t ${image_name_with_tag} -f buildOnLambda/Dockerfile .
 
