@@ -22,6 +22,9 @@ docker build \
  -f buildOnLambda/Dockerfile \
  .
 
+# CloudFrontのキャッシュを削除
+aws cloudfront create-invalidation --distribution-id "E2DJA18AQYQO7M" --paths "/*"
+
 aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin ${IMAGE_REGISTRY}
 docker tag ${image_name_with_tag} ${IMAGE_REGISTRY}/${image_name_with_tag}
 docker push ${IMAGE_REGISTRY}/${image_name_with_tag}

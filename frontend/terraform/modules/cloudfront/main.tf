@@ -75,7 +75,9 @@ resource "aws_cloudfront_distribution" "cf" {
     viewer_protocol_policy = "redirect-to-https"
     allowed_methods        = ["GET","HEAD","OPTIONS","PUT","POST","PATCH","DELETE"]
     cached_methods         = ["GET","HEAD","OPTIONS"]
-    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"       # AWS Managed – CachingOptimized
+    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6"       # AWS Managed – CachingOptimized 24時間キャッシュ
+    # 無理やりキャッシュを無効化したいときに利用。次のコマンドでも同様 aws cloudfront create-invalidation --distribution-id E2DJA18AQYQO7M --paths "/*"
+    # cache_policy_id        = aws_cloudfront_cache_policy.no_cache.id
     origin_request_policy_id = "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf"   # AWS Managed – AllViewerExceptHostHeader
   }
 
@@ -93,6 +95,28 @@ resource "aws_cloudfront_distribution" "cf" {
     acm_certificate_arn      = module.cert.certificate_arn
     ssl_support_method       = "sni-only"
     minimum_protocol_version = "TLSv1.2_2019"
+  }
+}
+
+resource "aws_cloudfront_cache_policy" "no_cache" {
+  name = "NoCachePolicy"
+
+  default_ttl = 0
+  max_ttl     = 0
+  min_ttl     = 0
+
+  parameters_in_cache_key_and_forwarded_to_origin {
+    cookies_config {
+      cookie_behavior = "none"
+    }
+
+    headers_config {
+      header_behavior = "none"
+    }
+
+    query_strings_config {
+      query_string_behavior = "none"
+    }
   }
 }
 
