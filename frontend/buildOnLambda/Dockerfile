@@ -3,8 +3,10 @@ FROM node:20-bullseye AS builder
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
 ARG AWS_DEFAULT_REGION
+ARG NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN
 
 ENV NODE_ENV=production
+ENV NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN=${NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN}
 
 WORKDIR /app
 
@@ -15,9 +17,6 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv
     unzip awscliv2.zip && \
     ./aws/install && \
     rm -rf awscliv2.zip aws
-
-# バージョン確認（任意）
-RUN aws --version
 
 RUN corepack enable yarn
 
