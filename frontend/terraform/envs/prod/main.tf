@@ -2,7 +2,6 @@ variable "route53_zone_id" { type = string } # export TF_VAR_route53_zone_id=${R
 variable "route53_name" { type = string } # export TF_VAR_route53_name=${ROUTE53_HOSTZONE_NAME}
 variable "backend_host" { type = string } # export TF_VAR_backend_host=${BACKEND_PROD_HOST}
 
-
 locals {
   stage = "prod"
 }
@@ -27,6 +26,15 @@ module "api_gateway" {
 
 module "cloudfront" {
   source = "../../modules/cloudfront"
+
+  providers = {
+    aws = aws,
+    aws.us-east-1 = aws.us-east-1
+  }
+
   stage = local.stage
   api_endpoint = module.api_gateway.api_endpoint
+  custom_domain = "nanitabe-front.${var.route53_name}"
+  route53_zone_id = var.route53_zone_id
+  route53_name = var.route53_name
 }

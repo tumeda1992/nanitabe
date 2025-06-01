@@ -9,6 +9,11 @@ provider "aws" {
   region = "ap-northeast-1"
 }
 
+provider "aws" {
+  alias  = "us-east-1"
+  region = "us-east-1"
+}
+
 terraform {
   backend "s3" {
     # init実行時の引数で設定
@@ -25,6 +30,11 @@ module "state_in_s3" {
 
 module "frontend" {
   source = "../../../../frontend/terraform/envs/prod"
+
+  providers = {
+    aws = aws,
+    aws.us-east-1 = aws.us-east-1
+  }
 
   route53_zone_id = var.route53_zone_id
   route53_name = var.route53_name
