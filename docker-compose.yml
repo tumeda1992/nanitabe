@@ -10,8 +10,8 @@ services:
     volumes:
       - ./frontend:/root/nanitabe_front
     environment:
-#      NODE_ENV: ${ENV:-development}
-      NEXT_PUBLIC_ENVIRONMENT: ${ENV:-development} # 本番実行時は`ENV=production docker-compose up`
+      NODE_ENV: ${ENV:-development}
+      NEXT_PUBLIC_ENVIRONMENT: ${ENV:-development} # 本番実行時は`ENV=production docker compose up`
   backend:
     container_name: nanitabe_back
     build: ./backend
