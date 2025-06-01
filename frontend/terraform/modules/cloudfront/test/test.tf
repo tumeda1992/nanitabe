@@ -24,4 +24,6 @@ module "cloudfront" {
   custom_domain = "nanitabe-front-deploy-test.${var.route53_name}"
   route53_zone_id = var.route53_zone_id
   route53_name = var.route53_name
+  assets_s3_bucket_regional_domain_name = "nanitabe-front-deploy-test-static-files.s3.ap-northeast-1.amazonaws.com"
+  assets_s3_cloudfront_access_identity_path = "origin-access-identity/cloudfront/E3ONVKYK1RA21W"
 }

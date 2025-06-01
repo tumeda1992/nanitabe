@@ -38,3 +38,11 @@ resource "aws_s3_bucket_policy" "static_files_policy" {
 resource "aws_cloudfront_origin_access_identity" "oai" {
   comment = "OAI for Next.js static files bucket"
 }
+
+output "bucket_regional_domain_name" {
+  value = aws_s3_bucket.static_files_bucket.bucket_regional_domain_name
+}
+
+output "cloudfront_origin_access_identity" {
+  value = aws_cloudfront_origin_access_identity.oai.cloudfront_access_identity_path
+}

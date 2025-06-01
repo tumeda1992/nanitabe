@@ -3,6 +3,8 @@ variable "api_endpoint" { type = string }
 variable "custom_domain" { type = string }
 variable "route53_zone_id" { type = string }
 variable "route53_name" { type = string }
+variable "assets_s3_bucket_regional_domain_name" { type = string }
+variable "assets_s3_cloudfront_access_identity_path" { type = string }
 
 module "values" {
   source = "../../values"
@@ -40,6 +42,15 @@ resource "aws_cloudfront_distribution" "cf" {
     #       include_cookies = false
     #       prefix          = "cf-logs/${var.custom_domain}/"
     #     }
+  }
+
+  origin {
+    domain_name = var.assets_s3_bucket_regional_domain_name
+    origin_id   = "s3StaticFilesOrigin"
+
+    s3_origin_config {
+      origin_access_identity = var.assets_s3_cloudfront_access_identity_path
+    }
   }
 
   enabled             = true

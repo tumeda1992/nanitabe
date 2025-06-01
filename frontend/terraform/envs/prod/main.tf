@@ -24,6 +24,11 @@ module "api_gateway" {
   lambda_function_arn = module.lambda.lambda_function_arn
 }
 
+module "s3_for_assets" {
+  source = "../../modules/s3/for_assets"
+  stage = local.stage
+}
+
 module "cloudfront" {
   source = "../../modules/cloudfront"
 
@@ -33,8 +38,13 @@ module "cloudfront" {
   }
 
   stage = local.stage
-  api_endpoint = module.api_gateway.api_endpoint
+
   custom_domain = "nanitabe-front.${var.route53_name}"
   route53_zone_id = var.route53_zone_id
   route53_name = var.route53_name
+
+  api_endpoint = module.api_gateway.api_endpoint
+
+  assets_s3_bucket_regional_domain_name = module.s3_for_assets.bucket_regional_domain_name
+  assets_s3_cloudfront_access_identity_path = module.s3_for_assets.cloudfront_origin_access_identity
 }
