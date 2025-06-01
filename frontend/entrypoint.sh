@@ -11,5 +11,6 @@ if [ "$NODE_ENV" = "production" ]; then
    # tail -n 1 -f package.json > /dev/null # デバッグ
 else
   yarn install
+  yarn build # 開発では使わないけどこれが失敗するとLambdaに載せるイメージのビルドでコケるので、成否確認
   yarn dev -p ${port}
 fi

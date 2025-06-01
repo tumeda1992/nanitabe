@@ -57,6 +57,19 @@ resource "aws_cloudfront_distribution" "cf" {
   is_ipv6_enabled     = true
   comment             = "${module.values.appname}(${var.stage}) CDN for Next.js on API Gateway"
 
+  ordered_cache_behavior {
+    # なぜかこのパス配下の静的ファイルなのにAPIGateway経由の403エラーになる場合は、S3にファイルがないかも
+    path_pattern           = "/_next/static/*"
+    target_origin_id       = "s3StaticFilesOrigin"
+    viewer_protocol_policy = "redirect-to-https"
+
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+
+    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6" # CachingOptimized
+    origin_request_policy_id = "88a5eaf4-2fd4-4709-b370-b4c650ea3fcf" # AllViewerExceptHostHeader
+  }
+
   default_cache_behavior {
     target_origin_id       = "apiGatewayOrigin"
     viewer_protocol_policy = "redirect-to-https"
