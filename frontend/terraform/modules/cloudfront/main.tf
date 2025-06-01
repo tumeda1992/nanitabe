@@ -72,6 +72,7 @@ resource "aws_cloudfront_distribution" "cf" {
   }
 }
 
+# もしかしたら、route53/for_cloudfront_of_api_gatewayディレクトリにおいてもいいかもしれない
 module "dns" {
   source = "./dns"
 
