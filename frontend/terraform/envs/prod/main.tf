@@ -24,3 +24,9 @@ module "api_gateway" {
   stage = local.stage
   lambda_function_arn = module.lambda.lambda_function_arn
 }
+
+module "cloudfront" {
+  source = "../../modules/cloudfront"
+  stage = local.stage
+  api_endpoint = module.api_gateway.api_endpoint
+}
