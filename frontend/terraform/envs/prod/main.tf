@@ -1,4 +1,4 @@
-variable "route53_id" { type = string } # export TF_VAR_route53_id=${ROUTE53_HOSTZONE_ID}
+variable "route53_zone_id" { type = string } # export TF_VAR_route53_zone_id=${ROUTE53_HOSTZONE_ID}
 variable "route53_name" { type = string } # export TF_VAR_route53_name=${ROUTE53_HOSTZONE_NAME}
 variable "backend_host" { type = string } # export TF_VAR_backend_host=${BACKEND_PROD_HOST}
 
