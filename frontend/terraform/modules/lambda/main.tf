@@ -39,7 +39,8 @@ resource "aws_lambda_function" "this" {
 
   environment {
     variables = {
-      NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN = "https://${var.backend_host}"
+      # クライアント側の環境変数はyarn build時に埋め込まれるので、ここではサーバー側の環境変数のみを設定
+      SERVER_SIDE_ORIGIN = "https://${var.backend_host}"
     }
   }
 }

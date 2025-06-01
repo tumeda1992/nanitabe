@@ -10,6 +10,10 @@ const nextConfig = {
     return config;
   },
   compress: false, // API Gatewayで表示させるためにgzip圧縮を無効化
+  assetPrefix:
+    process.env.NODE_ENV === 'production'
+      ? 'https://d2ewo1yy2ahstj.cloudfront.net'
+      : undefined,
 };
 
 module.exports = nextConfig;
