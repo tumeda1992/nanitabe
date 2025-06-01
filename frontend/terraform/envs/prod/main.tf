@@ -39,7 +39,7 @@ module "cloudfront" {
 
   stage = local.stage
 
-  custom_domain = "nanitabe-front.${var.route53_name}"
+  custom_domain = "nanitabe.${var.route53_name}"
   route53_zone_id = var.route53_zone_id
   route53_name = var.route53_name
 

@@ -26,6 +26,7 @@ COPY . .
 RUN yarn install --production=false
 RUN yarn build
 
+RUN aws s3 sync ./public s3://nanitabe-front-prod-static-files
 RUN aws s3 sync .next/static s3://nanitabe-front-prod-static-files/_next/static --delete
 
 FROM public.ecr.aws/lambda/nodejs:20
