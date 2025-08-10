@@ -1,4 +1,4 @@
-module Business::Dish
+module Business::Food::Dish
   class Root < ::Business::Base::Entity
     attribute :id, :integer
 
