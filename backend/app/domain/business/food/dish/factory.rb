@@ -14,23 +14,7 @@ module Business::Food::Dish
       end
 
       def build_existing_from_id(dish_id)
-        dish_record = ::Dish.find_by(id: dish_id)
-        return if dish_record.blank?
-
-        build_existing_from_params(dish_record.attributes)
-      end
-
-      private
-
-      def build_existing_from_params(dish_params)
-        Business::Food::Dish::Root.new(
-          id: dish_params["id"],
-          user_id: dish_params["user_id"],
-          name: dish_params["name"],
-          normalized_name: dish_params["normalized_name"],
-          meal_position: dish_params["meal_position"],
-          comment: dish_params["comment"]
-        )
+        ::Dish.build_existing_root_from_id(dish_id)
       end
     end
   end
