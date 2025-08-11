@@ -30,7 +30,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
       it "creates dish successfully and returns Business::Food::Dish::Root" do
         result = described_class.call(
           user_id: user_record.id,
-          dish_param: valid_dish_params
+          dish_params: valid_dish_params
         )
 
         expect(result).to be_a(Business::Food::Dish::Root)
@@ -45,7 +45,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            dish_param: valid_dish_params
+            dish_params: valid_dish_params
           )
         }.to change { ::Dish.count }.by(1)
 
@@ -63,7 +63,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
     context "when user_id is missing" do
       it "raises validation error" do
         expect {
-          described_class.call(dish_param: valid_dish_params)
+          described_class.call(dish_params: valid_dish_params)
         }.to raise_error(/User can't be blank/)
       end
     end
@@ -72,7 +72,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
       it "raises validation error" do
         expect {
           described_class.call(user_id: user_record.id)
-        }.to raise_error(/Dish param can't be blank/)
+        }.to raise_error(/Dish params can't be blank/)
       end
     end
 
@@ -81,7 +81,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: nil,
-            dish_param: valid_dish_params
+            dish_params: valid_dish_params
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -92,9 +92,9 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            dish_param: nil
+            dish_params: nil
           )
-        }.to raise_error(/Dish param can't be blank/)
+        }.to raise_error(/Dish params can't be blank/)
       end
     end
   end

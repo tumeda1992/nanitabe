@@ -3,16 +3,16 @@ module Business::Food::Dish
     attribute :user_id, :integer
     validates :user_id, presence: true
 
-    attribute :dish_param, :command_params
-    validates :dish_param, presence: true
-    validate :validate_dish, if: -> { dish_param.present? }
+    attribute :dish_params, :command_params
+    validates :dish_params, presence: true
+    validate :validate_dish, if: -> { dish_params.present? }
 
     def call
       dish_root = Business::Food::Dish::Factory.build(
         user_id,
-        dish_param.name,
-        dish_param.meal_position,
-        comment: dish_param.comment
+        dish_params.name,
+        dish_params.meal_position,
+        comment: dish_params.comment
       )
       dish_record = ::Dish.build_from_food_dish_root(dish_root)
       dish_record.save!
@@ -24,10 +24,12 @@ module Business::Food::Dish
       dish_root
     end
 
-    def validate_dish
-      return if dish_param.valid?(on: :create)
+    private
 
-      errors.add(:dish_param, dish_param.errors.full_messages.join(', '))
+    def validate_dish
+      return if dish_params.valid_for_create?
+
+      errors.add(:dish_params, dish_params.errors.full_messages.join(', '))
     end
   end
 end

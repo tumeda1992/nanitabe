@@ -11,5 +11,9 @@ module Business::Food::Dish
     validates :meal_position, presence: true, on: :create
 
     attribute :comment, :string
+
+    def valid_for_create?
+      valid?(on: :create)
+    end
   end
 end
