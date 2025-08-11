@@ -34,11 +34,22 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
         )
 
         expect(result).to be_a(Business::Food::Dish::Root)
+        expect(result.id).to be_present
         expect(result.user_id).to eq(user_record.id)
         expect(result.name).to eq(dish_name)
         expect(result.normalized_name).to eq(normalized_dish_name)
         expect(result.meal_position).to eq(meal_position)
         expect(result.comment).to eq(comment)
+      end
+
+      it "sets id after persistence" do
+        result = described_class.call(
+          user_id: user_record.id,
+          dish_params: valid_dish_params
+        )
+
+        created_dish = ::Dish.last
+        expect(result.id).to eq(created_dish.id)
       end
 
       it "saves dish to database" do

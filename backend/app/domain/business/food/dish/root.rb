@@ -15,6 +15,12 @@ module Business::Food::Dish
 
     attribute :comment, :string
 
+    def set_id(new_id)
+      raise "新規作成時以外idを変更できません" if self.id.present?
+
+      self.id = new_id
+    end
+
     def rename(new_name)
       raise "料理名は空にできません。" if new_name.blank?
 
