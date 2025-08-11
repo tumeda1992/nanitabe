@@ -14,7 +14,7 @@ module Business::Food::Dish
       end
 
       def build_existing_from_id(dish_id)
-        dish_record = ::Dish.find(dish_id)
+        dish_record = ::Dish.find_by(id: dish_id)
         return if dish_record.blank?
 
         build_existing_from_params(dish_record.attributes)

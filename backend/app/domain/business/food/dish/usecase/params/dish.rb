@@ -15,5 +15,9 @@ module Business::Food::Dish
     def valid_for_create?
       valid?(on: :create)
     end
+
+    def valid_for_update?
+      valid?(on: :update)
+    end
   end
 end

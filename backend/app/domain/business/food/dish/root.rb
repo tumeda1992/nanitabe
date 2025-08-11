@@ -28,7 +28,7 @@ module Business::Food::Dish
       self.meal_position = new_meal_position
     end
 
-    def revice_comment(new_comment)
+    def revise_comment(new_comment)
       self.comment = new_comment
     end
   end

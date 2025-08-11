@@ -61,16 +61,16 @@ RSpec.describe Business::Food::Dish::Root, type: :model do
     let(:new_comment) { "new_comment" }
 
     it "updates comment" do
-      subject.revice_comment(new_comment)
+      subject.revise_comment(new_comment)
 
       expect(subject.comment).to eq(new_comment)
     end
 
     it "allows blank comment" do
-      subject.revice_comment("")
+      subject.revise_comment("")
       expect(subject.comment).to eq("")
 
-      subject.revice_comment(nil)
+      subject.revise_comment(nil)
       expect(subject.comment).to be_nil
     end
   end
