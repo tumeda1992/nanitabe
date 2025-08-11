@@ -15,6 +15,9 @@ module Business::Food::Dish
 
     attribute :comment, :string
 
+    attribute :source_id, :integer
+    validates :source_id, presence: false
+
     def set_id(new_id)
       raise "新規作成時以外idを変更できません" if self.id.present?
 
