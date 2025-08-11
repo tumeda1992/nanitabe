@@ -12,6 +12,25 @@ class Dish < ApplicationRecord
   has_many :dish_tags, dependent: :destroy
 
   class << self
+    def build_existing_root_from_id(id)
+      dish_record = find_by(id: id)
+      return if dish_record.blank?
+
+      # NOTE: (マージ前に消す。docs配下のアーキテクチャのところに明記)
+      # ActiveRecordがドメインモデルの集約を知っていて良いのか
+      # →いい。本来Repositoryとしてドメインモデル内に作ろうとした存在だから
+      ::Business::Food::Dish::Root.new(
+        id: dish_record.id,
+        user_id: dish_record.user_id,
+        name: dish_record.name,
+        normalized_name: dish_record.normalized_name,
+        meal_position: dish_record.meal_position,
+        comment: dish_record.comment,
+        source_id: dish_record.dish_source&.id,
+      )
+    end
+
+    # TODO: 廃止予定。右記参照 app/domain/business/food/dish/usecase/add_command.rb
     def build_from_food_dish_root(food_dish_root)
       new(
         id: food_dish_root.id,
