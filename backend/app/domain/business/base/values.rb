@@ -3,9 +3,16 @@ module Business::Base
     include ActiveModel::Model
     include ActiveModel::Attributes
 
-    def initialize(params)
+    def initialize(context_arg = nil, **params_arg)
+      context, params = interpret_args(context_arg, params_arg)
+
       super(params)
-      raise_error unless valid?
+
+      if context.present?
+        raise_error unless valid?(context.to_sym)
+      else
+        raise_error unless valid?
+      end
     end
 
     def [](attr)
@@ -20,6 +27,17 @@ module Business::Base
 
     def raise_error(errors_obj: errors)
       raise errors_obj.full_messages.join(", and ")
+    end
+
+    def interpret_args(context_arg, params_arg)
+      if context_arg.is_a?(Hash)
+        params = context_arg.merge(params_arg)
+        context = nil
+      else
+        params = params_arg
+        context = context_arg
+      end
+      [context, params]
     end
   end
 end
