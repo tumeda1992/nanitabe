@@ -16,6 +16,7 @@ module Business::Food::Dish::Source
       )
       source_record = ::DishSource.build_from_food_dish_source_root(source_root)
       source_record.save!
+      source_root.set_id(source_record.id)
 
       source_root
     end

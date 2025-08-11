@@ -25,10 +25,21 @@ RSpec.describe Business::Food::Dish::Source::Usecase::AddCommand do
         )
 
         expect(result).to be_a(Business::Food::Dish::Source::Root)
+        expect(result.id).to be_present
         expect(result.user_id).to eq(user_record.id)
         expect(result.name).to eq(source_name)
         expect(result.type.value).to eq(source_type)
         expect(result.comment).to eq(comment)
+      end
+
+      it "sets id after persistence" do
+        result = described_class.call(
+          user_id: user_record.id,
+          source_params: valid_source_params
+        )
+
+        created_source = ::DishSource.last
+        expect(result.id).to eq(created_source.id)
       end
 
       it "saves source to database" do
