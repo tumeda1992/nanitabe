@@ -1,0 +1,5 @@
+*.md
+!README.md
+
+archives/*
+!archives/README.md
