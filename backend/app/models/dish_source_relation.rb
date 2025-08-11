@@ -1,5 +1,5 @@
 class DishSourceRelation < ApplicationRecord
-  self.primary_keys = :dish_id, :dish_source_id
+  self.primary_key = [:dish_id, :dish_source_id]
   belongs_to :dish
   belongs_to :dish_source
 
