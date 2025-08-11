@@ -1,4 +1,4 @@
-module Business::Food::Dish
+module Business::Food::Dish::Source
   class Root < ::Business::Base::Entity
     attribute :id, :integer
 
@@ -8,10 +8,8 @@ module Business::Food::Dish
     attribute :name, :string
     validates :name, presence: true
 
-    attribute :normalized_name, :string
-
-    attribute :meal_position, :integer
-    validates :meal_position, presence: true
+    attribute :type, :dish_source_type
+    validates :type, presence: true
 
     attribute :comment, :string
 
@@ -22,16 +20,15 @@ module Business::Food::Dish
     end
 
     def rename(new_name)
-      raise "料理名は空にできません。" if new_name.blank?
+      raise "レシピ元名は空にできません。" if new_name.blank?
 
       self.name = new_name
-      self.normalized_name = ::Business::Dish::Word::Normalize::Command::NormalizeCommand.call(string_sequence: new_name)
     end
 
-    def reposition_in_meal(new_meal_position)
-      raise "料理の位置は空にできません。" if new_meal_position.blank?
+    def change_type(new_type)
+      raise "レシピ元の種別は空にできません。" if new_type.blank?
 
-      self.meal_position = new_meal_position
+      self.type = new_type.is_a?(Business::Food::Dish::Source::Type) ? new_type.value : new_type
     end
 
     def revise_comment(new_comment)

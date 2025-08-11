@@ -96,7 +96,9 @@ GEM
     connection_pool (2.5.3)
     crass (1.0.6)
     date (3.4.1)
-    debug (1.7.1)
+    debug (1.11.0)
+      irb (~> 1.10)
+      reline (>= 0.3.8)
     devise (4.9.4)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -351,7 +353,7 @@ DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap
   capybara
-  debug
+  debug (~> 1.9)
   devise (~> 4.9.4)
   devise-jwt
   factory_bot_rails

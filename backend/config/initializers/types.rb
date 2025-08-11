@@ -38,3 +38,8 @@ class CommandParamsArrayType < ActiveModel::Type::Value
 end
 
 ActiveModel::Type.register(:command_params_array, CommandParamsArrayType)
+
+# TODO: 動いた後にlintで怒られたら上に移す
+require_relative '../../app/domain/business/base/value_object.rb'
+require_relative '../../app/domain/business/food/dish/source/type'
+ActiveModel::Type.register(:dish_source_type, ::Business::Food::Dish::Source::Type::DishSourceTypeForActiveModel)

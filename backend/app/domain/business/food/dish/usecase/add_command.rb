@@ -16,6 +16,7 @@ module Business::Food::Dish
       )
       dish_record = ::Dish.build_from_food_dish_root(dish_root)
       dish_record.save!
+      dish_root.set_id(dish_record.id)
 
       # TODO: タグとの関連付け
 

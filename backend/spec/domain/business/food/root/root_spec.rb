@@ -14,6 +14,26 @@ RSpec.describe Business::Food::Dish::Root, type: :model do
     it { should validate_presence_of(:meal_position) }
   end
 
+  describe "#set_id" do
+    let(:new_id) { 123 }
+
+    context "when id is not present" do
+      it "sets id successfully" do
+        subject.set_id(new_id)
+
+        expect(subject.id).to eq(new_id)
+      end
+    end
+
+    context "when id is already present" do
+      before { subject.id = 456 }
+
+      it "raises error" do
+        expect { subject.set_id(new_id) }.to raise_error("新規作成時以外idを変更できません")
+      end
+    end
+  end
+
   describe "#rename" do
     let(:new_name) { "new_dish_name" }
     let(:normalized_new_name) { "new_dish_name_normalized" }
