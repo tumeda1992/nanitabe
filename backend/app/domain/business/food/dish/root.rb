@@ -40,5 +40,15 @@ module Business::Food::Dish
     def revise_comment(new_comment)
       self.comment = new_comment
     end
+
+    def attach_source(source_id)
+      raise "関連付けるレシピ元が指定されていません。" if source_id.blank?
+
+      self.source_id = source_id
+    end
+
+    def detach_source
+      self.source_id = nil
+    end
   end
 end

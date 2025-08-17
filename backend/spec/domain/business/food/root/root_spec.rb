@@ -94,4 +94,56 @@ RSpec.describe Business::Food::Dish::Root, type: :model do
       expect(subject.comment).to be_nil
     end
   end
+
+  describe "#attach_source" do
+    let(:source_id) { 123 }
+
+    it "attaches source_id" do
+      subject.attach_source(source_id)
+
+      expect(subject.source_id).to eq(source_id)
+    end
+
+    context "when source_id is blank" do
+      it "raises error for empty string" do
+        expect { subject.attach_source("") }.to raise_error("関連付けるレシピ元が指定されていません。")
+      end
+
+      it "raises error for nil" do
+        expect { subject.attach_source(nil) }.to raise_error("関連付けるレシピ元が指定されていません。")
+      end
+    end
+
+    context "when source is already attached" do
+      before { subject.source_id = 456 }
+
+      it "overwrites existing source_id" do
+        subject.attach_source(source_id)
+
+        expect(subject.source_id).to eq(source_id)
+      end
+    end
+  end
+
+  describe "#detach_source" do
+    context "when source is attached" do
+      before { subject.source_id = 123 }
+
+      it "removes source_id" do
+        subject.detach_source
+
+        expect(subject.source_id).to be_nil
+      end
+    end
+
+    context "when source is not attached" do
+      before { subject.source_id = nil }
+
+      it "keeps source_id as nil" do
+        subject.detach_source
+
+        expect(subject.source_id).to be_nil
+      end
+    end
+  end
 end
