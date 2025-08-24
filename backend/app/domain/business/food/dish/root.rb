@@ -22,6 +22,8 @@ module Business::Food::Dish
     attribute :source_locator
     validates :source_locator, presence: false
 
+    # TODO: 破壊的変更には`!`をつける（そして、自身をreturnする）
+
     def set_id(new_id)
       raise "新規作成時以外idを変更できません" if self.id.present?
 
@@ -55,6 +57,7 @@ module Business::Food::Dish
 
     def detach_source
       self.source_id = nil
+      self.source_locator = nil
     end
   end
 end

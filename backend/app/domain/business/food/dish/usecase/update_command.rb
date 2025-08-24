@@ -7,15 +7,16 @@ module Business::Food::Dish
     validates :dish_params, presence: true
     validate :validate_dish, if: -> { dish_params.present? }
 
+    attribute :dish_source_relation, :command_params
+    validates :dish_source_relation, presence: false
+
     def call
       dish_root = Business::Food::Dish::Factory.build_existing_from_id(dish_params.id)
       raise "指定した料理は存在しません。" if dish_root.blank?
 
-      updated_dish_root = update_dish_root(dish_root, dish_params)
+      updated_dish_root = update_dish_root(dish_root, dish_params, dish_source_relation)
 
-      # TODO: タグとの関連付け
-
-      # TODO: ソースとの関連付け
+      ::Dish.persist_from_food_dish_root(dish_root)
 
       updated_dish_root
     end
@@ -28,21 +29,36 @@ module Business::Food::Dish
       errors.add(:dish_params, dish_params.errors.full_messages.join(', '))
     end
 
-    def update_dish_root(dish_root, dish_params)
+    def update_dish_root(dish_root, dish_params, dish_source_relation)
       dish_root.rename(dish_params.name) if dish_params.name.present?
       dish_root.reposition_in_meal(dish_params.meal_position) if dish_params.meal_position.present?
       dish_root.revise_comment(dish_params.comment) unless dish_params.comment.nil?
 
+      # TODO: タグとの関連付け
+
+      # TODO: ソースとの関連付け
+      dish_root = update_dish_source_of_dish_root(dish_root, dish_source_relation)
+
       dish_root.validate!
+      dish_root
+    end
 
-      dish_record = ::Dish.find(dish_root.id)
-      update_attributes = {}
-      update_attributes[:name] = dish_root.name if dish_params.name.present?
-      update_attributes[:normalized_name] = dish_root.normalized_name if dish_params.name.present?
-      update_attributes[:meal_position] = dish_root.meal_position if dish_params.meal_position.present?
-      update_attributes[:comment] = dish_root.comment unless dish_params.comment.nil?
+    def update_dish_source_of_dish_root(dish_root, dish_source_relation)
+      # TODO: 「dishすでに登録済みのsourceの関連付けを外す」の対応の際にコメントアウト解除
+      # if dish_source_relation.blank?
+      #   return dish_root if dish_root.source_id.blank?
+      #
+      #   dish_root.detach_source
+      #   return dish_root
+      # end
 
-      dish_record.update!(update_attributes)
+      # dish_source = ::Business::Food::Dish::Source::Factory.build_existing_from_id(dish_source_relation.dish_source_id)
+      # raise "指定したレシピ元は存在しません。" if dish_source.blank? # NOTE: このコマンド実行時に、新規sourceを紐つけるとしてもすでにsourceは作成済みの前提
+      #
+      # relation_detail = dish_source_relation.relation_detail
+      # source_locator = ::Business::Food::Dish::Source::Locator::Factory.build(relation_detail.kind, relation_detail.detail_values)
+      #
+      # dish_root.attach_source(dish_source, source_locator)
 
       dish_root
     end

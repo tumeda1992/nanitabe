@@ -33,6 +33,33 @@ class Dish < ApplicationRecord
       )
     end
 
+    def persist_from_food_dish_root(food_dish_root)
+      dish_record = if food_dish_root.id.present?
+                      find_by(id: food_dish_root.id)
+                    else
+                      new(user_id: food_dish_root.user_id)
+                    end
+      dish_record.name = food_dish_root.name
+      dish_record.normalized_name = food_dish_root.normalized_name
+      dish_record.meal_position = food_dish_root.meal_position
+      dish_record.comment = food_dish_root.comment
+      dish_record.save!
+
+      dish_record
+    end
+
+    # TODO: 廃止予定。右記参照 app/domain/business/food/dish/usecase/add_command.rb
+    def build_from_food_dish_root(food_dish_root)
+      new(
+        id: food_dish_root.id,
+        user_id: food_dish_root.user_id,
+        name: food_dish_root.name,
+        normalized_name: food_dish_root.normalized_name,
+        meal_position: food_dish_root.meal_position,
+        comment: food_dish_root.comment
+      )
+    end
+
     private
 
     def build_source_locator_from_relation(dish_record)
@@ -51,18 +78,6 @@ class Dish < ApplicationRecord
       else
         ::Business::Food::Dish::Source::Locator::OtherRecipe.new(relation.recipe_source_memo)
       end
-    end
-
-    # TODO: 廃止予定。右記参照 app/domain/business/food/dish/usecase/add_command.rb
-    def build_from_food_dish_root(food_dish_root)
-      new(
-        id: food_dish_root.id,
-        user_id: food_dish_root.user_id,
-        name: food_dish_root.name,
-        normalized_name: food_dish_root.normalized_name,
-        meal_position: food_dish_root.meal_position,
-        comment: food_dish_root.comment
-      )
     end
   end
 end
