@@ -32,7 +32,7 @@ RSpec.describe Business::Food::Dish::Factory do
 
     context "with invalid parameters" do
       it "raises error when validation fails" do
-        expect { described_class.build(nil, "test", 1) }.to raise_error
+        expect { described_class.build(nil, "test", 1) }.to raise_error(RuntimeError)
       end
     end
   end
