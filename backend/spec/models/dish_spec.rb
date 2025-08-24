@@ -39,13 +39,79 @@ RSpec.describe Dish, type: :model do
 
           expect(result.source_id).to eq(dish_source.id)
         end
+
+        context "when dish_source_relation exists" do
+          context "with recipe book source" do
+            let(:recipe_book_dish) { FactoryBot.create(:dish, user: user_record) }
+            let(:recipe_book_source) { FactoryBot.create(:dish_source, type: Business::Food::Dish::Source::Type::RECIPE_BOOK, user: user_record) }
+            let(:page_number) { 123 }
+
+            before do
+              DishSourceRelation.create!(
+                dish: recipe_book_dish,
+                dish_source: recipe_book_source,
+                recipe_book_page: page_number
+              )
+            end
+
+            it "builds RecipeBook locator from relation" do
+              result = described_class.build_existing_root_from_id(recipe_book_dish.id)
+
+              expect(result.source_locator).to be_a(Business::Food::Dish::Source::Locator::RecipeBook)
+              expect(result.source_locator.page).to eq(page_number)
+            end
+          end
+
+          context "with website source" do
+            let(:website_dish) { FactoryBot.create(:dish, user: user_record) }
+            let(:website_source) { FactoryBot.create(:dish_source, type: Business::Food::Dish::Source::Type::WEBSITE, user: user_record) }
+            let(:website_url) { "https://example.com/recipe" }
+
+            before do
+              DishSourceRelation.create!(
+                dish: website_dish,
+                dish_source: website_source,
+                recipe_website_url: website_url
+              )
+            end
+
+            it "builds RecipeWebsite locator from relation" do
+              result = described_class.build_existing_root_from_id(website_dish.id)
+
+              expect(result.source_locator).to be_a(Business::Food::Dish::Source::Locator::RecipeWebsite)
+              expect(result.source_locator.url).to eq(website_url)
+            end
+          end
+
+          context "with other source" do
+            let(:other_dish) { FactoryBot.create(:dish, user: user_record) }
+            let(:other_source) { FactoryBot.create(:dish_source, type: Business::Food::Dish::Source::Type::OTHER, user: user_record) }
+            let(:source_memo) { "テレビのレシピ" }
+
+            before do
+              DishSourceRelation.create!(
+                dish: other_dish,
+                dish_source: other_source,
+                recipe_source_memo: source_memo
+              )
+            end
+
+            it "builds OtherRecipe locator from relation" do
+              result = described_class.build_existing_root_from_id(other_dish.id)
+
+              expect(result.source_locator).to be_a(Business::Food::Dish::Source::Locator::OtherRecipe)
+              expect(result.source_locator.memo).to eq(source_memo)
+            end
+          end
+        end
       end
 
       context "when dish has no associated dish_source" do
-        it "sets source_id to nil" do
+        it "sets source_id and source_locator to nil" do
           result = described_class.build_existing_root_from_id(existing_dish.id)
 
           expect(result.source_id).to be_nil
+          expect(result.source_locator).to be_nil
         end
       end
     end

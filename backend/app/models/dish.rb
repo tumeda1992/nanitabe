@@ -16,6 +16,8 @@ class Dish < ApplicationRecord
       dish_record = find_by(id: id)
       return if dish_record.blank?
 
+      source_locator = build_source_locator_from_relation(dish_record)
+
       # NOTE: (マージ前に消す。docs配下のアーキテクチャのところに明記)
       # ActiveRecordがドメインモデルの集約を知っていて良いのか
       # →いい。本来Repositoryとしてドメインモデル内に作ろうとした存在だから
@@ -27,7 +29,28 @@ class Dish < ApplicationRecord
         meal_position: dish_record.meal_position,
         comment: dish_record.comment,
         source_id: dish_record.dish_source&.id,
+        source_locator: source_locator,
       )
+    end
+
+    private
+
+    def build_source_locator_from_relation(dish_record)
+      return nil unless dish_record.dish_source_relation
+
+      relation = dish_record.dish_source_relation
+      source_type = dish_record.dish_source&.type
+
+      case source_type
+      when ::Business::Food::Dish::Source::Type::RECIPE_BOOK
+        return nil if relation.recipe_book_page.blank?
+        ::Business::Food::Dish::Source::Locator::RecipeBook.new(relation.recipe_book_page)
+      when ::Business::Food::Dish::Source::Type::YOUTUBE, ::Business::Food::Dish::Source::Type::WEBSITE
+        return nil if relation.recipe_website_url.blank?
+        ::Business::Food::Dish::Source::Locator::RecipeWebsite.new(relation.recipe_website_url)
+      else
+        ::Business::Food::Dish::Source::Locator::OtherRecipe.new(relation.recipe_source_memo)
+      end
     end
 
     # TODO: 廃止予定。右記参照 app/domain/business/food/dish/usecase/add_command.rb
