@@ -96,31 +96,53 @@ RSpec.describe Business::Food::Dish::Root, type: :model do
   end
 
   describe "#attach_source" do
-    let(:source_id) { 123 }
+    let(:recipe_book_source_id) { 123 }
+    let(:youtube_source_id) { 456 }
+    let(:existing_source_id) { 789 }
+    let(:book_page) { 123 }
+    let(:website_url) { "https://example.com" }
+    
+    let(:recipe_book_source) { double("source", id: recipe_book_source_id, type: Business::Food::Dish::Source::Type::RECIPE_BOOK) }
+    let(:youtube_source) { double("source", id: youtube_source_id, type: Business::Food::Dish::Source::Type::YOUTUBE) }
+    let(:book_locator) { Business::Food::Dish::Source::Locator::RecipeBook.new(book_page) }
+    let(:website_locator) { Business::Food::Dish::Source::Locator::RecipeWebsite.new(website_url) }
 
-    it "attaches source_id" do
-      subject.attach_source(source_id)
+    context "with valid source and compatible locator" do
+      it "attaches source_id and source_locator" do
+        subject.attach_source(recipe_book_source, book_locator)
 
-      expect(subject.source_id).to eq(source_id)
+        expect(subject.source_id).to eq(recipe_book_source_id)
+        expect(subject.source_locator).to eq(book_locator)
+      end
     end
 
-    context "when source_id is blank" do
+    context "when source is blank" do
       it "raises error for empty string" do
-        expect { subject.attach_source("") }.to raise_error("関連付けるレシピ元が指定されていません。")
+        expect { subject.attach_source("", book_locator) }.to raise_error("関連付けるレシピ元が指定されていません。")
       end
 
       it "raises error for nil" do
-        expect { subject.attach_source(nil) }.to raise_error("関連付けるレシピ元が指定されていません。")
+        expect { subject.attach_source(nil, book_locator) }.to raise_error("関連付けるレシピ元が指定されていません。")
+      end
+    end
+
+    context "when policy validation fails" do
+      it "raises error for incompatible source and locator" do
+        expect { subject.attach_source(youtube_source, book_locator) }.to raise_error("関連付けるレシピ元に不整合があります。")
       end
     end
 
     context "when source is already attached" do
-      before { subject.source_id = 456 }
+      before do
+        subject.source_id = existing_source_id
+        subject.source_locator = website_locator
+      end
 
-      it "overwrites existing source_id" do
-        subject.attach_source(source_id)
+      it "overwrites existing source_id and source_locator" do
+        subject.attach_source(recipe_book_source, book_locator)
 
-        expect(subject.source_id).to eq(source_id)
+        expect(subject.source_id).to eq(recipe_book_source_id)
+        expect(subject.source_locator).to eq(book_locator)
       end
     end
   end
