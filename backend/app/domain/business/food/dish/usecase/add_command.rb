@@ -14,6 +14,10 @@ module Business::Food::Dish
         dish_params.meal_position,
         comment: dish_params.comment
       )
+      # TODO: このメソッド廃止予定。
+      # 集約ルートはテーブルのためのものではないのに、集約ルートとテーブルを1:1対応させている
+      # tagとか含めて全部集約を作りきってから、それをまとめてsaveしにいく
+      # 更新を作れば自ずと形が見えてくるから、それに合わせて作成も
       dish_record = ::Dish.build_from_food_dish_root(dish_root)
       dish_record.save!
       dish_root.set_id(dish_record.id)

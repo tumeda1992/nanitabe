@@ -38,23 +38,74 @@ RSpec.describe Business::Food::Dish::Factory do
   end
 
   describe ".build_existing_from_id" do
-    context "when building existing dish from database" do
-      let(:user_record) { find_or_create_user }
-      let(:dish_record) { find_or_create_dish }
+    let(:user_record) { find_or_create_user }
+    let(:dish_source) { FactoryBot.create(:dish_source, user: user_record) }
+    let(:existing_dish) do
+      FactoryBot.create(
+        :dish,
+        user: user_record,
+        name: "test_dish",
+        normalized_name: "test_dish_normalized",
+        meal_position: 1,
+        comment: "test_comment"
+      )
+    end
 
+    context "when dish exists" do
       it "builds Business::Food::Dish::Root from existing data" do
-        # Ensure dish belongs to user
-        dish_record.update!(user_id: user_record.id)
+        result = described_class.build_existing_from_id(existing_dish.id)
 
-        dish = described_class.build_existing_from_id(dish_record.id)
+        expect(result).to be_a(Business::Food::Dish::Root)
+        expect(result.id).to eq(existing_dish.id)
+        expect(result.user_id).to eq(existing_dish.user_id)
+        expect(result.name).to eq(existing_dish.name)
+        expect(result.normalized_name).to eq(existing_dish.normalized_name)
+        expect(result.meal_position).to eq(existing_dish.meal_position)
+        expect(result.comment).to eq(existing_dish.comment)
+      end
 
-        expect(dish).to be_a(Business::Food::Dish::Root)
-        expect(dish.id).to eq(dish_record.id)
-        expect(dish.user_id).to eq(dish_record.user_id)
-        expect(dish.name).to eq(dish_record.name)
-        expect(dish.normalized_name).to eq(dish_record.normalized_name)
-        expect(dish.meal_position).to eq(dish_record.meal_position)
-        expect(dish.comment).to eq(dish_record.comment)
+      context "when dish has associated dish_source" do
+        before do
+          existing_dish.update!(dish_source: dish_source)
+        end
+
+        it "includes source_id in the root" do
+          result = described_class.build_existing_from_id(existing_dish.id)
+
+          expect(result.source_id).to eq(dish_source.id)
+        end
+      end
+
+      context "when dish has no associated dish_source" do
+        it "sets source_id to nil" do
+          result = described_class.build_existing_from_id(existing_dish.id)
+
+          expect(result.source_id).to be_nil
+        end
+      end
+    end
+
+    context "when dish does not exist" do
+      it "returns nil" do
+        result = described_class.build_existing_from_id(99999)
+
+        expect(result).to be_nil
+      end
+    end
+
+    context "when id is nil" do
+      it "returns nil" do
+        result = described_class.build_existing_from_id(nil)
+
+        expect(result).to be_nil
+      end
+    end
+
+    context "delegates to Dish.build_existing_root_from_id" do
+      it "calls Dish.build_existing_root_from_id with correct parameter" do
+        expect(::Dish).to receive(:build_existing_root_from_id).with(existing_dish.id).and_call_original
+
+        described_class.build_existing_from_id(existing_dish.id)
       end
     end
   end
