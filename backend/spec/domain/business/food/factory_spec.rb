@@ -32,7 +32,7 @@ RSpec.describe Business::Food::Dish::Factory do
 
     context "with invalid parameters" do
       it "raises error when validation fails" do
-        expect { described_class.build(nil, "test", 1) }.to raise_error
+        expect { described_class.build(nil, "test", 1) }.to raise_error(RuntimeError)
       end
     end
   end
@@ -45,7 +45,7 @@ RSpec.describe Business::Food::Dish::Factory do
       it "builds Business::Food::Dish::Root from existing data" do
         # Ensure dish belongs to user
         dish_record.update!(user_id: user_record.id)
-        
+
         dish = described_class.build_existing_from_id(dish_record.id)
 
         expect(dish).to be_a(Business::Food::Dish::Root)
