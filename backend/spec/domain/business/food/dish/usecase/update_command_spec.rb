@@ -1,6 +1,7 @@
 require "rails_helper"
 require_relative "../../../../../support/factories/user_repository"
 require_relative "../../../../../support/factories/dish_repository"
+require_relative "../../../../../support/factories/dish_sources_repository"
 
 RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
   let(:user_record) { find_or_create_user }
@@ -165,7 +166,54 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
     end
 
     describe "レシピ元との関連付け" do
+      context "関連なし→関連なし" do
+        it "レシピ元の関連なしのまま料理を更新できること" do
+          described_class.call(
+            user_id: user_record.id,
+            dish_params: valid_dish_params
+          )
 
+          dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
+          expect(dish_source_relation).to be nil
+        end
+      end
+
+      context "関連なし→関連あり（レシピ本）" do
+        # let!(:dish_source_relation_record) { find_or_create_dish_source_relation }
+        let!(:dish_source_record) { find_or_create_dish_source }
+        let(:recipe_book_page) { 150 }
+        let(:dish_source_relation_params) do
+          Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
+            dish_source_record.type,
+            existing_dish_record.id,
+            dish_source_record.id,
+            recipe_book_page
+          )
+        end
+
+        it "レシピ元が関連付けられること" do
+          described_class.call(
+            user_id: user_record.id,
+            dish_params: valid_dish_params,
+            dish_source_relation: dish_source_relation_params
+          )
+
+          dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
+          expect(dish_source_relation.dish_source_id).to eq dish_source_record.id
+          expect(dish_source_relation.recipe_book_page).to eq recipe_book_page
+          expect(dish_source_relation.recipe_website_url).to eq nil
+          expect(dish_source_relation.recipe_source_memo).to eq nil
+        end
+      end
+
+      # TODO: レシピ本だけでなく、別のパターンも追加する
+
+      context "関連あり→関連あり（別のレシピ元）" do
+      end
+
+      context "関連あり→関連なし", skip: true do
+
+      end
     end
   end
 

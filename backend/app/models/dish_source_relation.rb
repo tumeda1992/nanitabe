@@ -21,6 +21,7 @@ class DishSourceRelation < ApplicationRecord
     validates :recipe_website_url, absence: true
     validates :recipe_source_memo, absence: true
 
+    # TODO: 全てがset_valueに移行されたら削除する
     def set_detail(detail)
       self[:recipe_book_page] = detail[:recipe_book_page]
       self[:recipe_website_url] = nil
@@ -39,6 +40,7 @@ class DishSourceRelation < ApplicationRecord
     # validates :recipe_website_url, allow_nil: true
     validates :recipe_source_memo, absence: true
 
+    # TODO: 全てがset_valueに移行されたら削除する
     def set_detail(detail)
       self[:recipe_book_page] = nil
       self[:recipe_website_url] = detail[:recipe_website_url]
@@ -57,6 +59,7 @@ class DishSourceRelation < ApplicationRecord
     validates :recipe_website_url, absence: true
     # validates :recipe_source_memo, allow_nil: true
 
+    # TODO: 全てがset_valueに移行されたら削除する
     def set_detail(detail)
       self[:recipe_book_page] = nil
       self[:recipe_website_url] = nil

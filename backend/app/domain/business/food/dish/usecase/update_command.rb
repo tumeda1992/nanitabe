@@ -52,13 +52,14 @@ module Business::Food::Dish
       #   return dish_root
       # end
 
-      # dish_source = ::Business::Food::Dish::Source::Factory.build_existing_from_id(dish_source_relation.dish_source_id)
-      # raise "指定したレシピ元は存在しません。" if dish_source.blank? # NOTE: このコマンド実行時に、新規sourceを紐つけるとしてもすでにsourceは作成済みの前提
-      #
-      # relation_detail = dish_source_relation.relation_detail
-      # source_locator = ::Business::Food::Dish::Source::Locator::Factory.build(relation_detail.kind, relation_detail.detail_values)
-      #
-      # dish_root.attach_source(dish_source, source_locator)
+      if dish_source_relation.present?
+        dish_source = ::Business::Food::Dish::Source::Factory.build_existing_from_id(dish_source_relation.dish_source_id)
+        raise "指定したレシピ元は存在しません。" if dish_source.blank? # NOTE: このコマンド実行時に、新規sourceを紐つけるとしてもすでにsourceは作成済みの前提
+
+        source_locator = ::Business::Food::Dish::Source::Locator::Factory.build(dish_source_relation.relation_kind, **dish_source_relation.relation_detail)
+
+        dish_root.attach_source(dish_source, source_locator)
+      end
 
       dish_root
     end

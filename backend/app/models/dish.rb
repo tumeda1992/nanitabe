@@ -39,11 +39,7 @@ class Dish < ApplicationRecord
                     else
                       new(user_id: food_dish_root.user_id)
                     end
-      dish_record.name = food_dish_root.name
-      dish_record.normalized_name = food_dish_root.normalized_name
-      dish_record.meal_position = food_dish_root.meal_position
-      dish_record.comment = food_dish_root.comment
-      dish_record.save!
+      dish_record.persist_from_food_dish_root(food_dish_root)
 
       dish_record
     end
@@ -79,5 +75,31 @@ class Dish < ApplicationRecord
         ::Business::Food::Dish::Source::Locator::OtherRecipe.new(relation.recipe_source_memo)
       end
     end
+  end
+
+  def persist_from_food_dish_root(food_dish_root)
+    self.name = food_dish_root.name
+    self.normalized_name = food_dish_root.normalized_name
+    self.meal_position = food_dish_root.meal_position
+    self.comment = food_dish_root.comment
+    save!
+
+    # TODO: 個別のモデルに移す
+    if food_dish_root.source_id.present?
+      dish_source = ::DishSource.find(food_dish_root.source_id)
+      dish_source_relation_class = ::DishSourceRelation.class_of(dish_source.type)
+
+      existing_dish_source_relation = dish_source_relation_class.find_by(dish_id: food_dish_root.id)
+      dish_source_relation_for_update = if existing_dish_source_relation.present?
+                                          existing_dish_source_relation
+                                        else
+                                          dish_source_relation_class.new(dish_id: food_dish_root.id, dish_source_id: dish_source.id)
+                                        end
+      dish_source_relation_for_update.set_value(food_dish_root.source_locator&.detail_value)
+      dish_source_relation_for_update.save!
+    else
+      # TODO: 既存の関連付けが存在するなら削除
+    end
+
   end
 end
