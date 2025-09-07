@@ -80,6 +80,7 @@ class DishSourceRelation < ApplicationRecord
 
       existing_dish_source_relation = dish_source_relation_class.find_by(dish_id:)
       dish_source_relation = if existing_dish_source_relation.present?
+                               existing_dish_source_relation.dish_source_id = dish_source_id
                                existing_dish_source_relation
                              else
                                dish_source_relation_class.new(dish_id:, dish_source_id:)
