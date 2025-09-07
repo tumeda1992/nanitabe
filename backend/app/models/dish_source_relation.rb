@@ -26,6 +26,12 @@ class DishSourceRelation < ApplicationRecord
       self[:recipe_website_url] = nil
       self[:recipe_source_memo] = nil
     end
+
+    def set_value(recipe_book_page)
+      self[:recipe_book_page] = recipe_book_page
+      self[:recipe_website_url] = nil
+      self[:recipe_source_memo] = nil
+    end
   end
 
   class SourceRelationOfWebsite < self
@@ -36,6 +42,12 @@ class DishSourceRelation < ApplicationRecord
     def set_detail(detail)
       self[:recipe_book_page] = nil
       self[:recipe_website_url] = detail[:recipe_website_url]
+      self[:recipe_source_memo] = nil
+    end
+
+    def set_value(recipe_website_url)
+      self[:recipe_book_page] = nil
+      self[:recipe_website_url] = recipe_website_url
       self[:recipe_source_memo] = nil
     end
   end
@@ -49,6 +61,12 @@ class DishSourceRelation < ApplicationRecord
       self[:recipe_book_page] = nil
       self[:recipe_website_url] = nil
       self[:recipe_source_memo] = detail[:recipe_source_memo]
+    end
+
+    def set_value(recipe_source_memo)
+      self[:recipe_book_page] = nil
+      self[:recipe_website_url] = nil
+      self[:recipe_source_memo] = recipe_source_memo
     end
   end
 end
