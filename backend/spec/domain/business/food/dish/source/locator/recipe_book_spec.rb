@@ -39,11 +39,11 @@ RSpec.describe Business::Food::Dish::Source::Locator::RecipeBook do
     end
   end
 
-  describe "#to_h" do
+  describe "#detail_value" do
     it "returns hash with page" do
       locator = described_class.new(123)
 
-      expect(locator.to_h).to eq({ page: 123 })
+      expect(locator.detail_value).to eq 123
     end
   end
 

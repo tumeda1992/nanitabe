@@ -30,18 +30,18 @@ RSpec.describe Business::Food::Dish::Source::Locator::OtherRecipe do
     end
   end
 
-  describe "#to_h" do
-    it "returns hash with memo" do
+  describe "#detail_value" do
+    it "returns memo" do
       memo = "手作りレシピ"
       locator = described_class.new(memo)
 
-      expect(locator.to_h).to eq({ memo: memo })
+      expect(locator.detail_value).to eq memo
     end
 
-    it "returns hash with nil memo" do
+    it "returns nil" do
       locator = described_class.new(nil)
 
-      expect(locator.to_h).to eq({ memo: nil })
+      expect(locator.detail_value).to eq nil
     end
   end
 

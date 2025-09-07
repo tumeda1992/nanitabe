@@ -8,6 +8,7 @@ module Business::Food::Dish::Source
     end
 
     def kind = :book
-    def to_h = { page: }
+
+    def detail_value = page
   end
 end
