@@ -49,7 +49,7 @@ module Business::Food::Dish
 
     def attach_source(source, source_locator)
       raise "関連付けるレシピ元が指定されていません。" if source.blank?
-      raise '関連付けるレシピ元に不整合があります。' unless Policy::AttachSourcePolicy.ok?(source, source_locator)
+      Policy::AttachSourcePolicy.ensure!(source, source_locator)
 
       self.source_id = source.id
       self.source_locator = source_locator

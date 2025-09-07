@@ -6,6 +6,7 @@ RSpec.describe Business::Food::Dish::Root, type: :model do
   let(:meal_position) { 1 }
   let(:comment) { "test_comment" }
 
+  # TODO: subject.set_idとかのテストがされているから、めっちゃきもい
   subject { Business::Food::Dish::Root.new(user_id: user_id, name: dish_name, meal_position: meal_position, comment: comment) }
 
   describe "validations" do
@@ -101,9 +102,9 @@ RSpec.describe Business::Food::Dish::Root, type: :model do
     let(:existing_source_id) { 789 }
     let(:book_page) { 123 }
     let(:website_url) { "https://example.com" }
-    
-    let(:recipe_book_source) { double("source", id: recipe_book_source_id, type: Business::Food::Dish::Source::Type::RECIPE_BOOK) }
-    let(:youtube_source) { double("source", id: youtube_source_id, type: Business::Food::Dish::Source::Type::YOUTUBE) }
+
+    let(:recipe_book_source) { double("source", id: recipe_book_source_id, type: Business::Food::Dish::Source::Type.recipe_book) }
+    let(:youtube_source) { double("source", id: youtube_source_id, type: Business::Food::Dish::Source::Type.youtube) }
     let(:book_locator) { Business::Food::Dish::Source::Locator::RecipeBook.new(book_page) }
     let(:website_locator) { Business::Food::Dish::Source::Locator::RecipeWebsite.new(website_url) }
 
@@ -128,7 +129,7 @@ RSpec.describe Business::Food::Dish::Root, type: :model do
 
     context "when policy validation fails" do
       it "raises error for incompatible source and locator" do
-        expect { subject.attach_source(youtube_source, book_locator) }.to raise_error("関連付けるレシピ元に不整合があります。")
+        expect { subject.attach_source(youtube_source, book_locator) }.to raise_error("料理へのレシピ元関連付けにおいて、レシピ元に対して、Locatorの指定が誤っています (locator_kind: book, source_type: 2)")
       end
     end
 
