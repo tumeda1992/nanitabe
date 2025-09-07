@@ -77,6 +77,7 @@ class Dish < ApplicationRecord
     end
   end
 
+  # TODO: テスト作成。commandという使われ方に依存してはいけない
   def persist_from_food_dish_root(food_dish_root)
     self.name = food_dish_root.name
     self.normalized_name = food_dish_root.normalized_name
@@ -84,19 +85,8 @@ class Dish < ApplicationRecord
     self.comment = food_dish_root.comment
     save!
 
-    # TODO: 個別のモデルに移す
     if food_dish_root.source_id.present?
-      dish_source = ::DishSource.find(food_dish_root.source_id)
-      dish_source_relation_class = ::DishSourceRelation.class_of(dish_source.type)
-
-      existing_dish_source_relation = dish_source_relation_class.find_by(dish_id: food_dish_root.id)
-      dish_source_relation_for_update = if existing_dish_source_relation.present?
-                                          existing_dish_source_relation
-                                        else
-                                          dish_source_relation_class.new(dish_id: food_dish_root.id, dish_source_id: dish_source.id)
-                                        end
-      dish_source_relation_for_update.set_value(food_dish_root.source_locator&.detail_value)
-      dish_source_relation_for_update.save!
+      ::DishSourceRelation.put_dish_source_relation(food_dish_root.id, food_dish_root.source_id, food_dish_root.source_locator)
     else
       # TODO: 既存の関連付けが存在するなら削除
     end
