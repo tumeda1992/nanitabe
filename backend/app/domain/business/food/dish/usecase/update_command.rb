@@ -44,13 +44,12 @@ module Business::Food::Dish
     end
 
     def update_dish_source_of_dish_root(dish_root, dish_source_relation)
-      # TODO: 「dishすでに登録済みのsourceの関連付けを外す」の対応の際にコメントアウト解除
-      # if dish_source_relation.blank?
-      #   return dish_root if dish_root.source_id.blank?
-      #
-      #   dish_root.detach_source
-      #   return dish_root
-      # end
+      if dish_source_relation.blank?
+        return dish_root if dish_root.source_id.blank?
+
+        dish_root.detach_source
+        return dish_root
+      end
 
       if dish_source_relation.present?
         dish_source = ::Business::Food::Dish::Source::Factory.build_existing_from_id(dish_source_relation.dish_source_id)

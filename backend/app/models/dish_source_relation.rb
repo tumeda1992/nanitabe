@@ -88,5 +88,10 @@ class DishSourceRelation < ApplicationRecord
       dish_source_relation.set_value(dish_source_locator.detail_value)
       dish_source_relation.save!
     end
+
+    def remove_dish_source_relation(dish_id)
+      existing_dish_relation_record = ::DishSourceRelation.find_by(dish_id:)
+      existing_dish_relation_record&.destroy!
+    end
   end
 end

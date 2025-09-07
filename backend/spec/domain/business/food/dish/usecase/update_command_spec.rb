@@ -298,8 +298,26 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
         end
       end
 
-      context "関連あり→関連なし", skip: true do
+      context "関連あり→関連なし" do
+        let!(:dish_source_record) { find_or_create_dish_source }
+        let!(:dish_source_relation_record) do
+          FactoryBot.create(
+            :dish_source_relation,
+            dish: existing_dish_record,
+            dish_source: dish_source_record,
+            recipe_book_page: 32
+          )
+        end
 
+        it "レシピ元が関連付けられること" do
+          described_class.call(
+            user_id: user_record.id,
+            dish_params: valid_dish_params,
+          )
+
+          dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
+          expect(dish_source_relation).to eq nil
+        end
       end
     end
   end

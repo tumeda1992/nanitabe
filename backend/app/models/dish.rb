@@ -88,7 +88,7 @@ class Dish < ApplicationRecord
     if food_dish_root.source_id.present?
       ::DishSourceRelation.put_dish_source_relation(food_dish_root.id, food_dish_root.source_id, food_dish_root.source_locator)
     else
-      # TODO: 既存の関連付けが存在するなら削除
+      ::DishSourceRelation.remove_dish_source_relation(food_dish_root.id)
     end
 
   end
