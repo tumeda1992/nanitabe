@@ -108,6 +108,13 @@ RSpec.describe Business::Food::Dish::Root, type: :model do
     let(:book_locator) { Business::Food::Dish::Source::Locator::RecipeBook.new(book_page) }
     let(:website_locator) { Business::Food::Dish::Source::Locator::RecipeWebsite.new(website_url) }
 
+    before do
+      # DishSourceの存在チェックのモックを設定
+      allow(::DishSource).to receive(:where).with(id: recipe_book_source_id).and_return(double(exists?: true))
+      allow(::DishSource).to receive(:where).with(id: youtube_source_id).and_return(double(exists?: true))
+      allow(::DishSource).to receive(:where).with(id: existing_source_id).and_return(double(exists?: true))
+    end
+
     context "with valid source and compatible locator" do
       it "attaches source_id and source_locator" do
         subject.attach_source(recipe_book_source, book_locator)
