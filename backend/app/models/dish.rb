@@ -24,8 +24,10 @@ class Dish < ApplicationRecord
       ::Business::Food::Dish::Root.new(
         id: dish_record.id,
         user_id: dish_record.user_id,
-        name: dish_record.name,
-        normalized_name: dish_record.normalized_name,
+        name: ::Business::Food::Dish::Name.new(
+          value: dish_record.name,
+          normalized: dish_record.normalized_name
+        ),
         meal_position: dish_record.meal_position,
         comment: dish_record.comment,
         source_id: dish_record.dish_source&.id,
@@ -49,8 +51,8 @@ class Dish < ApplicationRecord
       new(
         id: food_dish_root.id,
         user_id: food_dish_root.user_id,
-        name: food_dish_root.name,
-        normalized_name: food_dish_root.normalized_name,
+        name: food_dish_root.name.value,
+        normalized_name: food_dish_root.name.normalized,
         meal_position: food_dish_root.meal_position,
         comment: food_dish_root.comment
       )
@@ -79,8 +81,8 @@ class Dish < ApplicationRecord
 
   # TODO: テスト作成。commandという使われ方に依存してはいけない
   def persist_from_food_dish_root(food_dish_root)
-    self.name = food_dish_root.name
-    self.normalized_name = food_dish_root.normalized_name
+    self.name = food_dish_root.name.value
+    self.normalized_name = food_dish_root.name.normalized
     self.meal_position = food_dish_root.meal_position
     self.comment = food_dish_root.comment
     save!

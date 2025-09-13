@@ -1,11 +1,10 @@
 module Business::Food::Dish
   class Factory
     class << self
-      def build(user_id, name, meal_position, comment: nil)
+      def build(user_id, unnormalized_name, meal_position, comment: nil)
         dish = Business::Food::Dish::Root.new(
           user_id:,
-          name:,
-          normalized_name: Business::Dish::Word::Normalize::Command::NormalizeCommand.call(string_sequence: name),
+          name: Name.initialize_and_normalize(unnormalized_name),
           meal_position:,
           comment:
         )

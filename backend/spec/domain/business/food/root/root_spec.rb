@@ -2,7 +2,12 @@ require "rails_helper"
 
 RSpec.describe Business::Food::Dish::Root, type: :model do
   let(:user_id) { 1 }
-  let(:dish_name) { "test_dish" }
+  let(:dish_name) do
+    ::Business::Food::Dish::Name.new(
+      value: "test_dish",
+      normalized: "test_normalized",
+    )
+  end
   let(:meal_position) { 1 }
   let(:comment) { "test_comment" }
 
@@ -49,8 +54,8 @@ RSpec.describe Business::Food::Dish::Root, type: :model do
     it "updates name and normalized_name" do
       subject.rename(new_name)
 
-      expect(subject.name).to eq(new_name)
-      expect(subject.normalized_name).to eq(normalized_new_name)
+      expect(subject.name.value).to eq(new_name)
+      expect(subject.name.normalized).to eq(normalized_new_name)
     end
 
     context "when new_name is blank" do

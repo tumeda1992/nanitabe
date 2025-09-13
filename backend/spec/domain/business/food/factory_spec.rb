@@ -22,8 +22,8 @@ RSpec.describe Business::Food::Dish::Factory do
 
         expect(dish).to be_a(Business::Food::Dish::Root)
         expect(dish.user_id).to eq(user_id)
-        expect(dish.name).to eq(name)
-        expect(dish.normalized_name).to eq("カツ丼")
+        expect(dish.name.value).to eq(name)
+        expect(dish.name.normalized).to eq("カツ丼")
         expect(dish.meal_position).to eq(meal_position)
         expect(dish.comment).to eq(comment)
       end
@@ -58,8 +58,8 @@ RSpec.describe Business::Food::Dish::Factory do
         expect(result).to be_a(Business::Food::Dish::Root)
         expect(result.id).to eq(existing_dish.id)
         expect(result.user_id).to eq(existing_dish.user_id)
-        expect(result.name).to eq(existing_dish.name)
-        expect(result.normalized_name).to eq(existing_dish.normalized_name)
+        expect(result.name.value).to eq(existing_dish.name)
+        expect(result.name.normalized).to eq(existing_dish.normalized_name)
         expect(result.meal_position).to eq(existing_dish.meal_position)
         expect(result.comment).to eq(existing_dish.comment)
       end

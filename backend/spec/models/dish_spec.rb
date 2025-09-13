@@ -23,8 +23,8 @@ RSpec.describe Dish, type: :model do
         expect(result).to be_a(Business::Food::Dish::Root)
         expect(result.id).to eq(existing_dish.id)
         expect(result.user_id).to eq(existing_dish.user_id)
-        expect(result.name).to eq(existing_dish.name)
-        expect(result.normalized_name).to eq(existing_dish.normalized_name)
+        expect(result.name.value).to eq(existing_dish.name)
+        expect(result.name.normalized).to eq(existing_dish.normalized_name)
         expect(result.meal_position).to eq(existing_dish.meal_position)
         expect(result.comment).to eq(existing_dish.comment)
       end
@@ -42,7 +42,7 @@ RSpec.describe Dish, type: :model do
 
         context "when dish_source_relation exists" do
           context "with recipe book source" do
-            let(:recipe_book_dish) { FactoryBot.create(:dish, user: user_record) }
+            let(:recipe_book_dish) { FactoryBot.create(:dish, user: user_record, normalized_name: "test_dish_normalized") }
             let(:recipe_book_source) { FactoryBot.create(:dish_source, type: Business::Food::Dish::Source::Type::RECIPE_BOOK, user: user_record) }
             let(:page_number) { 123 }
 
@@ -63,7 +63,7 @@ RSpec.describe Dish, type: :model do
           end
 
           context "with website source" do
-            let(:website_dish) { FactoryBot.create(:dish, user: user_record) }
+            let(:website_dish) { FactoryBot.create(:dish, user: user_record, normalized_name: "test_dish_normalized") }
             let(:website_source) { FactoryBot.create(:dish_source, type: Business::Food::Dish::Source::Type::WEBSITE, user: user_record) }
             let(:website_url) { "https://example.com/recipe" }
 
@@ -84,7 +84,7 @@ RSpec.describe Dish, type: :model do
           end
 
           context "with other source" do
-            let(:other_dish) { FactoryBot.create(:dish, user: user_record) }
+            let(:other_dish) { FactoryBot.create(:dish, user: user_record, normalized_name: "test_dish_normalized") }
             let(:other_source) { FactoryBot.create(:dish_source, type: Business::Food::Dish::Source::Type::OTHER, user: user_record) }
             let(:source_memo) { "テレビのレシピ" }
 

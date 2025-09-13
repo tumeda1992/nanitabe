@@ -36,8 +36,8 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
         expect(result).to be_a(Business::Food::Dish::Root)
         expect(result.id).to be_present
         expect(result.user_id).to eq(user_record.id)
-        expect(result.name).to eq(dish_name)
-        expect(result.normalized_name).to eq(normalized_dish_name)
+        expect(result.name.value).to eq(dish_name)
+        expect(result.name.normalized).to eq(normalized_dish_name)
         expect(result.meal_position).to eq(meal_position)
         expect(result.comment).to eq(comment)
       end

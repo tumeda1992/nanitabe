@@ -40,8 +40,8 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
           expect(result).to be_a(Business::Food::Dish::Root)
           expect(result.id).to eq(existing_dish_record.id)
           expect(result.user_id).to eq(user_record.id)
-          expect(result.name).to eq(dish_name)
-          expect(result.normalized_name).to eq(normalized_dish_name)
+          expect(result.name.value).to eq(dish_name)
+          expect(result.name.normalized).to eq(normalized_dish_name)
           expect(result.meal_position).to eq(meal_position)
           expect(result.comment).to eq(comment)
         end
@@ -74,8 +74,8 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
               dish_params: name_only_params
             )
 
-            expect(result.name).to eq(dish_name)
-            expect(result.normalized_name).to eq(normalized_dish_name)
+            expect(result.name.value).to eq(dish_name)
+            expect(result.name.normalized).to eq(normalized_dish_name)
             expect(result.meal_position).to eq(existing_dish_record.meal_position)
             expect(result.comment).to eq(existing_dish_record.comment)
           end
@@ -96,7 +96,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
               dish_params: position_only_params
             )
 
-            expect(result.name).to eq(existing_dish_record.name)
+            expect(result.name.value).to eq(existing_dish_record.name)
             expect(result.meal_position).to eq(meal_position)
             expect(result.comment).to eq(existing_dish_record.comment)
           end
@@ -117,7 +117,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
               dish_params: comment_only_params
             )
 
-            expect(result.name).to eq(existing_dish_record.name)
+            expect(result.name.value).to eq(existing_dish_record.name)
             expect(result.meal_position).to eq(existing_dish_record.meal_position)
             expect(result.comment).to eq(comment)
           end
@@ -138,7 +138,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
               dish_params: clear_comment_params
             )
 
-            expect(result.name).to eq(existing_dish_record.name)
+            expect(result.name.value).to eq(existing_dish_record.name)
             expect(result.meal_position).to eq(existing_dish_record.meal_position)
             expect(result.comment).to eq("")
           end
