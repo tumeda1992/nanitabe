@@ -7,12 +7,25 @@ module Business::Food::Dish
     validates :dish_params, presence: true
     validate :validate_dish, if: -> { dish_params.present? }
 
+    attribute :dish_source_relation, :command_params
+    validates :dish_source_relation, presence: false
+
     def call
+      source, source_locator = if dish_source_relation.present?
+                                  [
+                                    dish_source_relation.build_dish_source,
+                                    dish_source_relation.build_source_locator
+                                  ]
+                                else
+                                  [nil, nil]
+                               end
       dish_root = Business::Food::Dish::Factory.build(
         user_id,
         dish_params.name,
         dish_params.meal_position,
-        comment: dish_params.comment
+        comment: dish_params.comment,
+        source:,
+        source_locator:
       )
       # TODO: このメソッド廃止予定。
       # 集約ルートはテーブルのためのものではないのに、集約ルートとテーブルを1:1対応させている

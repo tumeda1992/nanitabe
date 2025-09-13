@@ -34,6 +34,16 @@ module Business::Food::Dish
           )
         end
       end
+
+      def build_dish_source
+        dish_source = ::Business::Food::Dish::Source::Factory.build_existing_from_id(dish_source_id)
+        raise "指定したレシピ元は存在しません。" if dish_source.blank? # NOTE: このコマンド実行時に、新規sourceを紐つけるとしてもすでにsourceは作成済みの前提
+        dish_source
+      end
+
+      def build_source_locator
+        ::Business::Food::Dish::Source::Locator::Factory.build(relation_kind, **relation_detail)
+      end
     end
   end
 end
