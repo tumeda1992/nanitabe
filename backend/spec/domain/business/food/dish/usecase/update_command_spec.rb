@@ -180,7 +180,6 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
 
       context "関連なし→関連あり（レシピ本）" do
         context "レシピ本" do
-          # let!(:dish_source_relation_record) { find_or_create_dish_source_relation }
           let!(:dish_source_record) { find_or_create_dish_source }
           let(:recipe_book_page) { 150 }
           let(:dish_source_relation_params) do
