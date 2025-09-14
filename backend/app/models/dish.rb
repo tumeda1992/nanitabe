@@ -46,18 +46,6 @@ class Dish < ApplicationRecord
       dish_record
     end
 
-    # TODO: 廃止予定。右記参照 app/domain/business/food/dish/usecase/add_command.rb
-    def build_from_food_dish_root(food_dish_root)
-      new(
-        id: food_dish_root.id,
-        user_id: food_dish_root.user_id,
-        name: food_dish_root.name.value,
-        normalized_name: food_dish_root.name.normalized,
-        meal_position: food_dish_root.meal_position,
-        comment: food_dish_root.comment
-      )
-    end
-
     private
 
     def build_source_locator_from_relation(dish_record)
@@ -88,10 +76,11 @@ class Dish < ApplicationRecord
     save!
 
     if food_dish_root.source_id.present?
-      ::DishSourceRelation.put_dish_source_relation(food_dish_root.id, food_dish_root.source_id, food_dish_root.source_locator)
+      ::DishSourceRelation.put_dish_source_relation(self.id, food_dish_root.source_id, food_dish_root.source_locator)
     else
-      ::DishSourceRelation.remove_dish_source_relation(food_dish_root.id)
+      ::DishSourceRelation.remove_dish_source_relation(self.id)
     end
 
+    self
   end
 end
