@@ -56,36 +56,49 @@ RSpec.describe Business::Food::Dish::Usecase::AddWithNewSourceCommand do
           dish_source_relation: dish_source_relation_params
         )
 
+        # 戻り値が配列になっていること
+        expect(result).to be_a(Array)
+        expect(result.length).to eq(2)
+
+        created_dish, created_source_result = result
+
         # 料理が正しく作成されていること
-        expect(result).to be_a(Business::Food::Dish::Root)
-        expect(result.id).to be_present
-        expect(result.user_id).to eq(user_record.id)
-        expect(result.name.value).to eq(dish_name)
-        expect(result.name.normalized).to eq(normalized_dish_name)
-        expect(result.meal_position).to eq(meal_position)
-        expect(result.comment).to eq(dish_comment)
-
-        # ソースが関連付けられていること
-        expect(result.source_id).to be_present
-        expect(result.source_locator).to be_a(Business::Food::Dish::Source::Locator::RecipeBook)
-        expect(result.source_locator.page).to eq(recipe_book_page)
-
-        # データベースに正しく保存されていること
-        created_dish = ::Dish.find(result.id)
-        expect(created_dish.name).to eq(dish_name)
-        expect(created_dish.normalized_name).to eq(normalized_dish_name)
+        expect(created_dish).to be_a(Business::Food::Dish::Root)
+        expect(created_dish.id).to be_present
+        expect(created_dish.user_id).to eq(user_record.id)
+        expect(created_dish.name.value).to eq(dish_name)
+        expect(created_dish.name.normalized).to eq(normalized_dish_name)
         expect(created_dish.meal_position).to eq(meal_position)
         expect(created_dish.comment).to eq(dish_comment)
 
+        # ソースが関連付けられていること
+        expect(created_dish.source_id).to be_present
+        expect(created_dish.source_locator).to be_a(Business::Food::Dish::Source::Locator::RecipeBook)
+        expect(created_dish.source_locator.page).to eq(recipe_book_page)
+
+        # ソースの戻り値が正しいこと
+        expect(created_source_result).to be_a(Business::Food::Dish::Source::Root)
+        expect(created_source_result.id).to eq(created_dish.source_id)
+        expect(created_source_result.name).to eq(source_name)
+        expect(created_source_result.type.value).to eq(source_type)
+        expect(created_source_result.comment).to eq(source_comment)
+
+        # データベースに正しく保存されていること
+        dish_record = ::Dish.find(created_dish.id)
+        expect(dish_record.name).to eq(dish_name)
+        expect(dish_record.normalized_name).to eq(normalized_dish_name)
+        expect(dish_record.meal_position).to eq(meal_position)
+        expect(dish_record.comment).to eq(dish_comment)
+
         # ソースが作成されていること
-        created_source = ::DishSource.find(result.source_id)
-        expect(created_source.name).to eq(source_name)
-        expect(created_source.type).to eq(source_type)
-        expect(created_source.comment).to eq(source_comment)
+        source_record = ::DishSource.find(created_dish.source_id)
+        expect(source_record.name).to eq(source_name)
+        expect(source_record.type).to eq(source_type)
+        expect(source_record.comment).to eq(source_comment)
 
         # 関連付けが作成されていること
-        dish_source_relation = created_dish.dish_source_relation
-        expect(dish_source_relation.dish_source_id).to eq(result.source_id)
+        dish_source_relation = dish_record.dish_source_relation
+        expect(dish_source_relation.dish_source_id).to eq(created_dish.source_id)
         expect(dish_source_relation.recipe_book_page).to eq(recipe_book_page)
         expect(dish_source_relation.recipe_website_url).to eq nil
         expect(dish_source_relation.recipe_source_memo).to eq nil
