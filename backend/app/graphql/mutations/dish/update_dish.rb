@@ -8,7 +8,6 @@ module Mutations::Dish
 
     def resolve(dish:, dish_source_relation:, dish_tags: nil)
       ActiveRecord::Base.transaction do
-
         ::Business::Food::Dish::Usecase::UpdateCommand.call(
           user_id: context[:current_user_id],
           dish_params: dish.convert_to_command_param(use_food_module: true),

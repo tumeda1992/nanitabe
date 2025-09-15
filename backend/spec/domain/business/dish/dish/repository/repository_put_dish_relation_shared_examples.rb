@@ -119,7 +119,7 @@ end
 comparer.define_expectation do |expected_values, prepared_records|
   updated_dish_source_relation_record = ::DishSourceRelation.find_by(
     dish_id: prepared_records[:dish_source_relation_record].dish_id,
-    dish_source_id: prepared_records[:dish_source_relation_record].dish_source_id,
+    dish_source_id: expected_values[:dish_source_id].presence || prepared_records[:dish_source_relation_record].dish_source_id,
   )
   expect(updated_dish_source_relation_record.recipe_book_page).to eq expected_values[:recipe_book_page]
   expect(updated_dish_source_relation_record.recipe_website_url).to eq nil
