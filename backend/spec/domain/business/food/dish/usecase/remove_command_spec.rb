@@ -1,6 +1,7 @@
 require "rails_helper"
 require_relative "../../../../../support/factories/user_repository"
 require_relative "../../../../../support/factories/dish_repository"
+require_relative "../../../../../support/factories/dish_sources_repository"
 
 RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
   let(:user_record) { find_or_create_user }
@@ -11,9 +12,9 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
       it "removes dish successfully" do
         dish_id = existing_dish_record.id
         user_id = existing_dish_record.user_id
-        
+
         expect(::Dish.find_by(id: dish_id, user_id: user_id)).not_to be_nil
-        
+
         expect {
           described_class.call(
             user_id: user_id,
@@ -22,6 +23,36 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
         }.to change { ::Dish.count }.by(-1)
 
         expect(::Dish.find_by(id: dish_id)).to be_nil
+      end
+    end
+
+    context "with dish relation" do
+      let(:dish) { existing_dish_record }
+      let(:dish_source) { find_or_create_dish_source }
+      let(:user_id) { existing_dish_record.user_id }
+
+      let!(:dish_source_relation_record) do
+        FactoryBot.create(
+          :dish_source_relation,
+          dish_id: dish.id,
+          dish_source: dish_source,
+          recipe_book_page: 32
+        )
+      end
+
+      it "removes dish successfully" do
+        expect(::Dish.find_by(id: dish.id, user_id: user_id)).not_to be_nil
+        expect(::DishSourceRelation.find_by(dish_id: dish.id, dish_source_id: dish_source.id)).not_to be_nil
+
+        expect {
+          described_class.call(
+            user_id: user_id,
+            dish_id: dish.id
+          )
+        }.to change { ::Dish.count }.by(-1)
+
+        expect(::Dish.find_by(id: dish.id)).to be_nil
+        expect(::DishSourceRelation.find_by(dish_id: dish.id, dish_source_id: dish_source.id)).to be_nil
       end
     end
 

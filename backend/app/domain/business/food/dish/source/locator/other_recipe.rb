@@ -7,6 +7,7 @@ module Business::Food::Dish::Source
     end
 
     def kind = :other
-    def to_h = { memo: }
+
+    def detail_value = memo
   end
 end

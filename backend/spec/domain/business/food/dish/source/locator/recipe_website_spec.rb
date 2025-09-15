@@ -43,12 +43,12 @@ RSpec.describe Business::Food::Dish::Source::Locator::RecipeWebsite do
     end
   end
 
-  describe "#to_h" do
-    it "returns hash with url" do
+  describe "#detail_value" do
+    it "returns url" do
       url = "https://example.com/recipe"
       locator = described_class.new(url)
 
-      expect(locator.to_h).to eq({ url: url })
+      expect(locator.detail_value).to eq url
     end
   end
 

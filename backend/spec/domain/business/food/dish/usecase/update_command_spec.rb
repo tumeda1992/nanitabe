@@ -1,6 +1,7 @@
 require "rails_helper"
 require_relative "../../../../../support/factories/user_repository"
 require_relative "../../../../../support/factories/dish_repository"
+require_relative "../../../../../support/factories/dish_sources_repository"
 
 RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
   let(:user_record) { find_or_create_user }
@@ -39,8 +40,8 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
           expect(result).to be_a(Business::Food::Dish::Root)
           expect(result.id).to eq(existing_dish_record.id)
           expect(result.user_id).to eq(user_record.id)
-          expect(result.name).to eq(dish_name)
-          expect(result.normalized_name).to eq(normalized_dish_name)
+          expect(result.name.value).to eq(dish_name)
+          expect(result.name.normalized).to eq(normalized_dish_name)
           expect(result.meal_position).to eq(meal_position)
           expect(result.comment).to eq(comment)
         end
@@ -73,8 +74,8 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
               dish_params: name_only_params
             )
 
-            expect(result.name).to eq(dish_name)
-            expect(result.normalized_name).to eq(normalized_dish_name)
+            expect(result.name.value).to eq(dish_name)
+            expect(result.name.normalized).to eq(normalized_dish_name)
             expect(result.meal_position).to eq(existing_dish_record.meal_position)
             expect(result.comment).to eq(existing_dish_record.comment)
           end
@@ -95,7 +96,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
               dish_params: position_only_params
             )
 
-            expect(result.name).to eq(existing_dish_record.name)
+            expect(result.name.value).to eq(existing_dish_record.name)
             expect(result.meal_position).to eq(meal_position)
             expect(result.comment).to eq(existing_dish_record.comment)
           end
@@ -116,7 +117,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
               dish_params: comment_only_params
             )
 
-            expect(result.name).to eq(existing_dish_record.name)
+            expect(result.name.value).to eq(existing_dish_record.name)
             expect(result.meal_position).to eq(existing_dish_record.meal_position)
             expect(result.comment).to eq(comment)
           end
@@ -137,7 +138,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
               dish_params: clear_comment_params
             )
 
-            expect(result.name).to eq(existing_dish_record.name)
+            expect(result.name.value).to eq(existing_dish_record.name)
             expect(result.meal_position).to eq(existing_dish_record.meal_position)
             expect(result.comment).to eq("")
           end
@@ -165,7 +166,154 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
     end
 
     describe "レシピ元との関連付け" do
+      context "関連なし→関連なし" do
+        it "レシピ元の関連なしのまま料理を更新できること" do
+          described_class.call(
+            user_id: user_record.id,
+            dish_params: valid_dish_params
+          )
 
+          dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
+          expect(dish_source_relation).to be nil
+        end
+      end
+
+      context "関連なし→関連あり（レシピ本）" do
+        context "レシピ本" do
+          let!(:dish_source_record) { find_or_create_dish_source }
+          let(:recipe_book_page) { 150 }
+          let(:dish_source_relation_params) do
+            Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
+              dish_source_record.type,
+              dish_source_record.id,
+              recipe_book_page
+            )
+          end
+
+          it "レシピ元が関連付けられること" do
+            described_class.call(
+              user_id: user_record.id,
+              dish_params: valid_dish_params,
+              dish_source_relation: dish_source_relation_params
+            )
+
+            dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
+            expect(dish_source_relation.dish_source_id).to eq dish_source_record.id
+            expect(dish_source_relation.recipe_book_page).to eq recipe_book_page
+            expect(dish_source_relation.recipe_website_url).to eq nil
+            expect(dish_source_relation.recipe_source_memo).to eq nil
+          end
+        end
+
+        context "Youtube" do
+          let!(:dish_source_record) { find_or_create_dish_source_of_youtube }
+          let(:recipe_website_url) { "https://youtube.com/ryuji/gyoza" }
+          let(:dish_source_relation_params) do
+            Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
+              dish_source_record.type,
+              dish_source_record.id,
+              recipe_website_url
+            )
+          end
+
+          it "レシピ元が関連付けられること" do
+            described_class.call(
+              user_id: user_record.id,
+              dish_params: valid_dish_params,
+              dish_source_relation: dish_source_relation_params
+            )
+
+            dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
+            expect(dish_source_relation.dish_source_id).to eq dish_source_record.id
+            expect(dish_source_relation.recipe_book_page).to eq nil
+            expect(dish_source_relation.recipe_website_url).to eq recipe_website_url
+            expect(dish_source_relation.recipe_source_memo).to eq nil
+          end
+        end
+
+        context "その他" do
+          let!(:dish_source_record) { find_or_create_dish_source_of_other }
+          let(:recipe_source_memo) { "駅最寄りの駐輪場を曲がったところ" }
+          let(:dish_source_relation_params) do
+            Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
+              dish_source_record.type,
+              dish_source_record.id,
+              recipe_source_memo
+            )
+          end
+
+          it "レシピ元が関連付けられること" do
+            described_class.call(
+              user_id: user_record.id,
+              dish_params: valid_dish_params,
+              dish_source_relation: dish_source_relation_params
+            )
+
+            dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
+            expect(dish_source_relation.dish_source_id).to eq dish_source_record.id
+            expect(dish_source_relation.recipe_book_page).to eq nil
+            expect(dish_source_relation.recipe_website_url).to eq nil
+            expect(dish_source_relation.recipe_source_memo).to eq recipe_source_memo
+          end
+        end
+      end
+
+      context "関連あり→関連あり（別のレシピ元）" do
+        let!(:dish_source_record_before) { find_or_create_dish_source }
+        let!(:dish_source_relation_record) do
+          FactoryBot.create(
+            :dish_source_relation,
+            dish: existing_dish_record,
+            dish_source: dish_source_record_before,
+            recipe_book_page: 32
+          )
+        end
+        let!(:dish_source_record_after) { find_or_create_dish_source_of_youtube }
+        let(:recipe_website_url) { "https://youtube.com/ryuji/gyoza" }
+        let(:dish_source_relation_params) do
+          Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
+            dish_source_record_after.type,
+            dish_source_record_after.id,
+            recipe_website_url
+          )
+        end
+
+        it "レシピ元が関連付けられること" do
+          described_class.call(
+            user_id: user_record.id,
+            dish_params: valid_dish_params,
+            dish_source_relation: dish_source_relation_params
+          )
+
+          dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
+          expect(dish_source_relation.dish_source_id).to eq dish_source_record_after.id
+          expect(dish_source_relation.recipe_book_page).to eq nil
+          expect(dish_source_relation.recipe_website_url).to eq recipe_website_url
+          expect(dish_source_relation.recipe_source_memo).to eq nil
+        end
+      end
+
+      context "関連あり→関連なし" do
+        let!(:dish_source_record) { find_or_create_dish_source }
+        let!(:dish_source_relation_record) do
+          FactoryBot.create(
+            :dish_source_relation,
+            dish: existing_dish_record,
+            dish_source: dish_source_record,
+            recipe_book_page: 32
+          )
+        end
+
+        it "レシピ元が関連付けられること" do
+          described_class.call(
+            user_id: user_record.id,
+            dish_params: valid_dish_params,
+          )
+
+          dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
+          expect(dish_source_relation).to eq nil
+        end
+      end
     end
   end
 

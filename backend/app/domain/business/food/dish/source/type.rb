@@ -1,3 +1,5 @@
+require_relative '../../../../business/base/value_object'
+
 # config/initializers/types.rb のActiveModelのタイプ定義ファイルで読めるようにネスト形式に
 module Business
   module Food
@@ -45,14 +47,14 @@ module Business
             end
           end
 
+          # DishSourceTypeForActiveModel初期化時にこのファイル読み込まれて、
+          # その時にまだ:dish_source_type が登録されていないので暫定的にany
+          attribute :value, :any
+
           def initialize(type)
             raise ArgumentError, "Invalid type" unless TYPES.include?(type)
 
-            @value = type
-          end
-
-          def value
-            @value
+            super(value: type)
           end
         end
       end

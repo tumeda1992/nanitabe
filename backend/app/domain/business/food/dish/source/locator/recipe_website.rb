@@ -7,7 +7,11 @@ module Business::Food::Dish::Source
     end
 
     def kind = :website
-    def to_h = { url: }
+    # def to_h = { url: }
+    def to_h = { recipe_website_url: url}
+    # def detail_for_dish_source_relation_class = { recipe_website_url: url }
+
+    def detail_value = url
 
     private
 

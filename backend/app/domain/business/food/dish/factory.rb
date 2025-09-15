@@ -1,16 +1,26 @@
 module Business::Food::Dish
   class Factory
     class << self
-      def build(user_id, name, meal_position, comment: nil)
-        dish = Business::Food::Dish::Root.new(
+      def build(
+        user_id,
+        unnormalized_name,
+        meal_position,
+        comment: nil,
+        source: nil,
+        source_locator: nil
+      )
+        source_id = if source.present?
+                      Policy::AttachSourcePolicy.ensure!(source, source_locator)
+                      source.id
+                    end
+        Business::Food::Dish::Root.new(
           user_id:,
-          name:,
-          normalized_name: Business::Dish::Word::Normalize::Command::NormalizeCommand.call(string_sequence: name),
+          name: Name.initialize_and_normalize(unnormalized_name),
           meal_position:,
-          comment:
+          comment:,
+          source_id:,
+          source_locator:
         )
-        dish.validate!
-        dish
       end
 
       def build_existing_from_id(dish_id)

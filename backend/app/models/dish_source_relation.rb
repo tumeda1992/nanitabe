@@ -3,26 +3,21 @@ class DishSourceRelation < ApplicationRecord
   belongs_to :dish
   belongs_to :dish_source
 
-  def self.class_of(dish_source_type)
-    source_type_prefix = ::Business::Dish::Dish::Source::Type
-    case dish_source_type
-    when source_type_prefix::YOUTUBE, source_type_prefix::WEBSITE
-      SourceRelationOfWebsite
-    when source_type_prefix::RECIPE_BOOK
-      SourceRelationOfRecipeBook
-    else
-      SourceRelationOfOther
-    end
-  end
-
   class SourceRelationOfRecipeBook < self
     # これ以外は空確定で、この値だけ入ってきて未定義のこともあるよっていうバリデーション入れたいだけなのにうまく行かないからコメントアウト
     # validates :recipe_book_page, allow_nil: true
     validates :recipe_website_url, absence: true
     validates :recipe_source_memo, absence: true
 
+    # TODO: 全てがset_valueに移行されたら削除する
     def set_detail(detail)
       self[:recipe_book_page] = detail[:recipe_book_page]
+      self[:recipe_website_url] = nil
+      self[:recipe_source_memo] = nil
+    end
+
+    def set_value(recipe_book_page)
+      self[:recipe_book_page] = recipe_book_page
       self[:recipe_website_url] = nil
       self[:recipe_source_memo] = nil
     end
@@ -33,9 +28,16 @@ class DishSourceRelation < ApplicationRecord
     # validates :recipe_website_url, allow_nil: true
     validates :recipe_source_memo, absence: true
 
+    # TODO: 全てがset_valueに移行されたら削除する
     def set_detail(detail)
       self[:recipe_book_page] = nil
       self[:recipe_website_url] = detail[:recipe_website_url]
+      self[:recipe_source_memo] = nil
+    end
+
+    def set_value(recipe_website_url)
+      self[:recipe_book_page] = nil
+      self[:recipe_website_url] = recipe_website_url
       self[:recipe_source_memo] = nil
     end
   end
@@ -45,10 +47,51 @@ class DishSourceRelation < ApplicationRecord
     validates :recipe_website_url, absence: true
     # validates :recipe_source_memo, allow_nil: true
 
+    # TODO: 全てがset_valueに移行されたら削除する
     def set_detail(detail)
       self[:recipe_book_page] = nil
       self[:recipe_website_url] = nil
       self[:recipe_source_memo] = detail[:recipe_source_memo]
+    end
+
+    def set_value(recipe_source_memo)
+      self[:recipe_book_page] = nil
+      self[:recipe_website_url] = nil
+      self[:recipe_source_memo] = recipe_source_memo
+    end
+  end
+
+  class << self
+    def class_of(dish_source_type)
+      source_type_prefix = ::Business::Dish::Dish::Source::Type
+      case dish_source_type
+      when source_type_prefix::YOUTUBE, source_type_prefix::WEBSITE
+        SourceRelationOfWebsite
+      when source_type_prefix::RECIPE_BOOK
+        SourceRelationOfRecipeBook
+      else
+        SourceRelationOfOther
+      end
+    end
+
+    def put_dish_source_relation(dish_id, dish_source_id, dish_source_locator)
+      dish_source = ::DishSource.find(dish_source_id)
+      dish_source_relation_class = class_of(dish_source.type)
+
+      existing_dish_source_relation = dish_source_relation_class.find_by(dish_id:)
+      dish_source_relation = if existing_dish_source_relation.present?
+                               existing_dish_source_relation.dish_source_id = dish_source_id
+                               existing_dish_source_relation
+                             else
+                               dish_source_relation_class.new(dish_id:, dish_source_id:)
+                             end
+      dish_source_relation.set_value(dish_source_locator.detail_value)
+      dish_source_relation.save!
+    end
+
+    def remove_dish_source_relation(dish_id)
+      existing_dish_relation_record = ::DishSourceRelation.find_by(dish_id:)
+      existing_dish_relation_record&.destroy!
     end
   end
 end

@@ -5,10 +5,8 @@ module Business::Food::Dish
     attribute :user_id, :integer
     validates :user_id, presence: true
 
-    attribute :name, :string
+    attribute :name, :dish_name
     validates :name, presence: true
-
-    attribute :normalized_name, :string
 
     attribute :meal_position, :integer
     validates :meal_position, presence: true
@@ -22,6 +20,8 @@ module Business::Food::Dish
     attribute :source_locator
     validates :source_locator, presence: false
 
+    # TODO: 破壊的変更には`!`をつける（そして、自身をreturnする）
+
     def set_id(new_id)
       raise "新規作成時以外idを変更できません" if self.id.present?
 
@@ -31,8 +31,7 @@ module Business::Food::Dish
     def rename(new_name)
       raise "料理名は空にできません。" if new_name.blank?
 
-      self.name = new_name
-      self.normalized_name = ::Business::Dish::Word::Normalize::Command::NormalizeCommand.call(string_sequence: new_name)
+      self.name = Name.initialize_and_normalize(new_name)
     end
 
     def reposition_in_meal(new_meal_position)
@@ -47,7 +46,7 @@ module Business::Food::Dish
 
     def attach_source(source, source_locator)
       raise "関連付けるレシピ元が指定されていません。" if source.blank?
-      raise '関連付けるレシピ元に不整合があります。' unless Policy::AttachSourcePolicy.ok?(source, source_locator)
+      Policy::AttachSourcePolicy.ensure!(source, source_locator)
 
       self.source_id = source.id
       self.source_locator = source_locator
@@ -55,6 +54,7 @@ module Business::Food::Dish
 
     def detach_source
       self.source_id = nil
+      self.source_locator = nil
     end
   end
 end
