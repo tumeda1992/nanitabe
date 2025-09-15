@@ -91,7 +91,6 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
         let(:dish_source_relation_params) do
           Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
             dish_source_record.type,
-            0, # dish_id is dummy for create
             dish_source_record.id,
             recipe_book_page
           )
@@ -122,7 +121,6 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
         let(:dish_source_relation_params) do
           Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
             dish_source_record.type,
-            0, # dish_id is dummy for create
             dish_source_record.id,
             recipe_website_url
           )
@@ -153,7 +151,6 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
         let(:dish_source_relation_params) do
           Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
             dish_source_record.type,
-            0, # dish_id is dummy for create
             dish_source_record.id,
             recipe_source_memo
           )

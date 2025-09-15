@@ -1,10 +1,8 @@
 module Business::Food::Dish
   module Usecase::Params
     class DishSourceRelation < ::Business::Base::CommandParams
-      attribute :dish_id, :integer
-      validates :dish_id, presence: true
       attribute :dish_source_id, :integer
-      validates :dish_source_id, presence: true
+      validates :dish_source_id, presence: false # 新規作成時には入っていないため
 
       attribute :relation_kind, :any # シンボルの入れ方がわからないため
       validates :relation_kind, presence: true
@@ -12,7 +10,7 @@ module Business::Food::Dish
       validates :relation_detail, presence: true
 
       class << self
-        def build_relation(dish_source_type, dish_id, dish_source_id, detail_value)
+        def build_relation(dish_source_type, dish_source_id, detail_value)
           source_type_prefix = ::Business::Dish::Dish::Source::Type
           case dish_source_type
           when source_type_prefix::YOUTUBE, source_type_prefix::WEBSITE
@@ -27,7 +25,6 @@ module Business::Food::Dish
           end
 
           new(
-            dish_id:,
             dish_source_id:,
             relation_kind: kind,
             relation_detail: detail,
@@ -43,6 +40,14 @@ module Business::Food::Dish
 
       def build_source_locator
         ::Business::Food::Dish::Source::Locator::Factory.build(relation_kind, **relation_detail)
+      end
+
+      def with_source_id(new_dish_source_id)
+        self.class.new(
+          dish_source_id: new_dish_source_id,
+          relation_kind:,
+          relation_detail:,
+        )
       end
     end
   end
