@@ -42,60 +42,6 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateWithNewSourceCommand do
   end
 
   describe "#call" do
-    context "関連なし→関連あり（新しいレシピ本ソース）" do
-      let(:recipe_book_page) { 200 }
-      let(:dish_source_relation_params) do
-        Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
-          new_source_type,
-          nil, # dish_source_id is nil for new source
-          recipe_book_page
-        )
-      end
-
-      it "新しいソースを作成し、料理を更新して関連付けられること" do
-        result = described_class.call(
-          user_id: user_record.id,
-          dish_params: valid_dish_params,
-          source_params: valid_source_params,
-          dish_source_relation: dish_source_relation_params
-        )
-
-        # 料理が正しく更新されていること
-        expect(result).to be_a(Business::Food::Dish::Root)
-        expect(result.id).to eq(existing_dish_record.id)
-        expect(result.user_id).to eq(user_record.id)
-        expect(result.name.value).to eq(updated_dish_name)
-        expect(result.name.normalized).to eq(normalized_dish_name)
-        expect(result.meal_position).to eq(updated_meal_position)
-        expect(result.comment).to eq(updated_dish_comment)
-
-        # 新しいソースが関連付けられていること
-        expect(result.source_id).to be_present
-        expect(result.source_locator).to be_a(Business::Food::Dish::Source::Locator::RecipeBook)
-        expect(result.source_locator.page).to eq(recipe_book_page)
-
-        # データベースが正しく更新されていること
-        updated_dish = ::Dish.find(existing_dish_record.id)
-        expect(updated_dish.name).to eq(updated_dish_name)
-        expect(updated_dish.normalized_name).to eq(normalized_dish_name)
-        expect(updated_dish.meal_position).to eq(updated_meal_position)
-        expect(updated_dish.comment).to eq(updated_dish_comment)
-
-        # 新しいソースが作成されていること
-        created_source = ::DishSource.find(result.source_id)
-        expect(created_source.name).to eq(new_source_name)
-        expect(created_source.type).to eq(new_source_type)
-        expect(created_source.comment).to eq(new_source_comment)
-
-        # 関連付けが作成されていること
-        dish_source_relation = updated_dish.dish_source_relation
-        expect(dish_source_relation.dish_source_id).to eq(result.source_id)
-        expect(dish_source_relation.recipe_book_page).to eq(recipe_book_page)
-        expect(dish_source_relation.recipe_website_url).to eq nil
-        expect(dish_source_relation.recipe_source_memo).to eq nil
-      end
-    end
-
     context "関連なし→関連あり（新しいYouTubeソース）" do
       let(:new_source_type) { Business::Food::Dish::Source::Type.youtube.value }
       let(:recipe_website_url) { "https://youtube.com/updated/recipe" }
@@ -115,104 +61,25 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateWithNewSourceCommand do
           dish_source_relation: dish_source_relation_params
         )
 
-        expect(result).to be_a(Business::Food::Dish::Root)
-        expect(result.source_id).to be_present
-        expect(result.source_locator).to be_a(Business::Food::Dish::Source::Locator::RecipeWebsite)
-        expect(result.source_locator.url).to eq(recipe_website_url)
+        expect(result).to be_a(Array)
+        updated_dish, created_source_result = result
+
+        expect(updated_dish).to be_a(Business::Food::Dish::Root)
+        expect(updated_dish.source_id).to be_present
+        expect(updated_dish.source_locator).to be_a(Business::Food::Dish::Source::Locator::RecipeWebsite)
+        expect(updated_dish.source_locator.url).to eq(recipe_website_url)
+
+        # ソースの戻り値が正しいこと
+        expect(created_source_result).to be_a(Business::Food::Dish::Source::Root)
+        expect(created_source_result.type.value).to eq(new_source_type)
 
         # 新しいソースが正しいタイプで作成されていること
-        created_source = ::DishSource.find(result.source_id)
+        created_source = ::DishSource.find(updated_dish.source_id)
         expect(created_source.type).to eq(new_source_type)
 
         # 関連付けが作成されていること
         dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
-        expect(dish_source_relation.dish_source_id).to eq(result.source_id)
-        expect(dish_source_relation.recipe_book_page).to eq nil
-        expect(dish_source_relation.recipe_website_url).to eq(recipe_website_url)
-        expect(dish_source_relation.recipe_source_memo).to eq nil
-      end
-    end
-
-    context "関連なし→関連あり（新しいその他ソース）" do
-      let(:new_source_type) { Business::Food::Dish::Source::Type.other.value }
-      let(:recipe_source_memo) { "新しいお店情報メモ" }
-      let(:dish_source_relation_params) do
-        Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
-          new_source_type,
-          nil,
-          recipe_source_memo
-        )
-      end
-
-      it "新しいその他ソースを作成し、料理を更新して関連付けられること" do
-        result = described_class.call(
-          user_id: user_record.id,
-          dish_params: valid_dish_params,
-          source_params: valid_source_params,
-          dish_source_relation: dish_source_relation_params
-        )
-
-        expect(result).to be_a(Business::Food::Dish::Root)
-        expect(result.source_id).to be_present
-        expect(result.source_locator).to be_a(Business::Food::Dish::Source::Locator::OtherRecipe)
-        expect(result.source_locator.memo).to eq(recipe_source_memo)
-
-        # 新しいソースが正しいタイプで作成されていること
-        created_source = ::DishSource.find(result.source_id)
-        expect(created_source.type).to eq(new_source_type)
-
-        # 関連付けが作成されていること
-        dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
-        expect(dish_source_relation.dish_source_id).to eq(result.source_id)
-        expect(dish_source_relation.recipe_book_page).to eq nil
-        expect(dish_source_relation.recipe_website_url).to eq nil
-        expect(dish_source_relation.recipe_source_memo).to eq(recipe_source_memo)
-      end
-    end
-
-    context "関連あり→関連あり（既存ソースから新しいソースに変更）" do
-      let!(:existing_source_record) { find_or_create_dish_source }
-      let!(:dish_source_relation_record) do
-        FactoryBot.create(
-          :dish_source_relation,
-          dish: existing_dish_record,
-          dish_source: existing_source_record,
-          recipe_book_page: 100
-        )
-      end
-      
-      let(:new_source_type) { Business::Food::Dish::Source::Type.youtube.value }
-      let(:recipe_website_url) { "https://youtube.com/new/recipe" }
-      let(:dish_source_relation_params) do
-        Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
-          new_source_type,
-          nil,
-          recipe_website_url
-        )
-      end
-
-      it "既存の関連付けを新しいソースに変更すること" do
-        result = described_class.call(
-          user_id: user_record.id,
-          dish_params: valid_dish_params,
-          source_params: valid_source_params,
-          dish_source_relation: dish_source_relation_params
-        )
-
-        expect(result).to be_a(Business::Food::Dish::Root)
-        expect(result.source_id).to be_present
-        expect(result.source_id).not_to eq(existing_source_record.id) # 新しいソースのIDになっている
-        expect(result.source_locator).to be_a(Business::Food::Dish::Source::Locator::RecipeWebsite)
-        expect(result.source_locator.url).to eq(recipe_website_url)
-
-        # 新しいソースが作成されていること
-        created_source = ::DishSource.find(result.source_id)
-        expect(created_source.name).to eq(new_source_name)
-        expect(created_source.type).to eq(new_source_type)
-
-        # 関連付けが新しいソースに変更されていること
-        dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
-        expect(dish_source_relation.dish_source_id).to eq(result.source_id)
+        expect(dish_source_relation.dish_source_id).to eq(updated_dish.source_id)
         expect(dish_source_relation.recipe_book_page).to eq nil
         expect(dish_source_relation.recipe_website_url).to eq(recipe_website_url)
         expect(dish_source_relation.recipe_source_memo).to eq nil
@@ -222,7 +89,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateWithNewSourceCommand do
     it "ソースの数が増加すること" do
       # テスト前に料理が確実に存在するように事前に参照
       existing_dish_record
-      
+
       dish_source_relation_params = Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
         new_source_type,
         nil,

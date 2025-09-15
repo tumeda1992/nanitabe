@@ -13,15 +13,16 @@ module Business::Food::Dish
     validates :dish_source_relation, presence: true
 
     def call
-      source = Business::Food::Dish::Source::Usecase::AddCommand.call(
+      created_source = Business::Food::Dish::Source::Usecase::AddCommand.call(
         user_id:,
         source_params:
       )
-      Usecase::UpdateCommand.call(
+      updated_dish = Usecase::UpdateCommand.call(
         user_id:,
         dish_params:,
-        dish_source_relation: dish_source_relation.with_source_id(source.id)
+        dish_source_relation: dish_source_relation.with_source_id(created_source.id)
       )
+      [updated_dish, created_source]
     end
   end
 end
