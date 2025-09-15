@@ -1,6 +1,17 @@
 def fetch_mutation(mutation_string, variables, headers: {})
   post("/graphql", params: { query: mutation_string, variables: }, as: :json, headers:)
-  response_body = JSON.parse(response.body)
+
+  begin
+    response_body = JSON.parse(response.body)
+  rescue JSON::ParserError => e
+    # HTMLレスポンスなどJSONでないレスポンスの場合の処理
+    if response.body.to_s.strip.start_with?('<!DOCTYPE', '<html')
+      file_path = save_html_response_to_file(response.body)
+      raise "JSONパースエラー: HTMLレスポンスが返されました。詳細は次のファイルを確認してください: #{file_path}\n#{e.message}"
+    else
+      raise "JSONパースエラー: #{e.message}"
+    end
+  end
 
   if response_body["errors"]
     error_messages = response_body["errors"].map do |error|
@@ -10,6 +21,17 @@ def fetch_mutation(mutation_string, variables, headers: {})
   end
 
   response_body["data"]
+end
+
+def save_html_response_to_file(html_content)
+  file_name = "html_response_#{Time.now.strftime("%Y%m%d%H%M%S")}.html"
+  save_dir = Rails.root.join("tmp", "rspec_error_snapshot")
+  file_path = save_dir.join(file_name)
+
+  FileUtils.mkdir_p(save_dir)
+  File.write(file_path, html_content)
+
+  file_path.to_s
 end
 
 def build_error_detail_message(graphql_error)
