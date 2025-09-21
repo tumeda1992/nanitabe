@@ -63,7 +63,7 @@ module Mutations::Dish
 
         dish_comparer.compare_to_expectation(self)
         dish_source_relation_comparer.compare_to_expectation(self)
-        # dish_tag_comparer.compare_to_expectation(self, dish_id: dish_comparer.prepared_records[:dish_record].id)
+        dish_tag_comparer.compare_to_expectation(self, dish_id: dish_comparer.prepared_records[:dish_record].id)
       end
     end
   end

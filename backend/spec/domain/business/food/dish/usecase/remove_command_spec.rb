@@ -56,6 +56,46 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
       end
     end
 
+    context "with dish tags" do
+      let(:dish) { existing_dish_record }
+      let(:user_id) { existing_dish_record.user_id }
+
+      let!(:dish_tag1) do
+        FactoryBot.create(
+          :dish_tag,
+          dish: dish,
+          user: user_record,
+          content: "タグ1",
+          normalized_content: "タグ1"
+        )
+      end
+      let!(:dish_tag2) do
+        FactoryBot.create(
+          :dish_tag,
+          dish: dish,
+          user: user_record,
+          content: "タグ2",
+          normalized_content: "タグ2"
+        )
+      end
+
+      it "removes dish and related tags successfully" do
+        expect(::Dish.find_by(id: dish.id, user_id: user_id)).not_to be_nil
+        expect(::DishTag.where(dish_id: dish.id).count).to eq(2)
+
+        expect {
+          described_class.call(
+            user_id: user_id,
+            dish_id: dish.id
+          )
+        }.to change { ::Dish.count }.by(-1)
+         .and change { ::DishTag.count }.by(-2)
+
+        expect(::Dish.find_by(id: dish.id)).to be_nil
+        expect(::DishTag.where(dish_id: dish.id).count).to eq(0)
+      end
+    end
+
     context "when dish does not exist" do
       it "raises error" do
         expect {

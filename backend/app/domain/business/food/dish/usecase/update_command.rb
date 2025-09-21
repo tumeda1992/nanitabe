@@ -10,11 +10,15 @@ module Business::Food::Dish
     attribute :dish_source_relation, :command_params
     validates :dish_source_relation, presence: false
 
+    # 型は Business::Food::Dish::Tag::Usecase::Params::Tag の配列
+    attribute :dish_tags, :command_params_array, default: []
+    validates :dish_tags, disallow_nil: true
+
     def call
       dish_root = Business::Food::Dish::Factory.build_existing_from_id(dish_params.id)
       raise "指定した料理は存在しません。" if dish_root.blank?
 
-      updated_dish_root = update_dish_root(dish_root, dish_params, dish_source_relation)
+      updated_dish_root = update_dish_root(dish_root, dish_params, dish_source_relation, dish_tags)
 
       ::Dish.persist_from_food_dish_root(dish_root)
 
@@ -29,14 +33,13 @@ module Business::Food::Dish
       errors.add(:dish_params, dish_params.errors.full_messages.join(', '))
     end
 
-    def update_dish_root(dish_root, dish_params, dish_source_relation)
+    def update_dish_root(dish_root, dish_params, dish_source_relation, dish_tags)
       dish_root.rename(dish_params.name) if dish_params.name.present?
       dish_root.reposition_in_meal(dish_params.meal_position) if dish_params.meal_position.present?
       dish_root.revise_comment(dish_params.comment) unless dish_params.comment.nil?
 
-      # TODO: タグとの関連付け
+      dish_root.replace_tags(dish_tags.map {|tag| tag.to_root(user_id)})
 
-      # TODO: ソースとの関連付け
       dish_root = update_dish_source_of_dish_root(dish_root, dish_source_relation)
 
       dish_root.validate!

@@ -73,7 +73,7 @@ module Mutations::Dish
           self,
           dish_source_id: response["updateDishWithNewSource"]["dishSourceId"],
         )
-        # dish_tag_comparer.compare_to_expectation(self, dish_id: dish_comparer.prepared_records[:dish_record].id)
+        dish_tag_comparer.compare_to_expectation(self, dish_id: dish_comparer.prepared_records[:dish_record].id)
       end
     end
   end

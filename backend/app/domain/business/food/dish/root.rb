@@ -17,8 +17,11 @@ module Business::Food::Dish
     attribute :source_id, :integer
     validates :source_id, presence: false
 
-    attribute :source_locator
+    attribute :source_locator, :any
     validates :source_locator, presence: false
+
+    attribute :tags, :any, default: []
+    validate :validate_tags, if: -> { tags.present? }
 
     # TODO: 破壊的変更には`!`をつける（そして、自身をreturnする）
 
@@ -55,6 +58,25 @@ module Business::Food::Dish
     def detach_source
       self.source_id = nil
       self.source_locator = nil
+    end
+
+    def replace_tags(tags_for_replace)
+      tags_for_replace.each_with_index do |tag, index|
+        raise "タグ(#{index + 1})の型が不正です。" unless tag.is_a?(Business::Food::Dish::Tag::Root)
+        tag.validate!
+      end
+
+      self.tags = tags_for_replace
+    end
+
+    private
+
+    def validate_tags
+      tags.each_with_index do |tag, index|
+        next if tag.is_a?(Business::Food::Dish::Tag::Root) && tag.valid?
+
+        errors.add(:tags, "タグ(#{index + 1})の内容が不正です。")
+      end
     end
   end
 end

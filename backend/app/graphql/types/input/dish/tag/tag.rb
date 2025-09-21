@@ -4,5 +4,13 @@ module Types::Input::Dish::Tag
 
     argument :id, Int, required: false
     argument :content, String, required: true
+
+    def convert_to_command_param(use_food_module: false)
+      if use_food_module
+        ::Business::Food::Dish::Tag::Usecase::Params::Tag.new(**to_hash)
+      else
+        super()
+      end
+    end
   end
 end
