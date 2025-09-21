@@ -65,8 +65,7 @@ module Mutations::Dish
           dish_id: created_dish_id,
         )
         dish_source_relation_comparer.compare_to_expectation(self, dish_id: created_dish_id)
-        # TODO: tagの実装後コメントアウト解除
-        # dish_tag_comparer.compare_to_expectation(self, dish_id: created_dish_id)
+        dish_tag_comparer.compare_to_expectation(self, dish_id: created_dish_id)
       end
     end
   end

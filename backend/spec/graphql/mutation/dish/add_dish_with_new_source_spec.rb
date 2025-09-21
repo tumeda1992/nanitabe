@@ -75,7 +75,7 @@ module Mutations::Dish
           dish_id: created_dish_id,
           dish_source_id: created_dish_source_id,
         )
-        # dish_tag_comparer.compare_to_expectation(self, dish_id: created_dish_id)
+        dish_tag_comparer.compare_to_expectation(self, dish_id: created_dish_id)
       end
     end
   end
