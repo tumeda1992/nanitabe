@@ -23,7 +23,7 @@ module Mutations::Dish
           dish_params: dish.convert_to_command_param(use_food_module: true),
           source_params: dish_source.convert_to_command_param(use_food_module: true),
           dish_source_relation:,
-          # dish_tags: (dish_tags || [])&.map {|dish_tag| dish_tag.convert_to_command_param},
+          dish_tags: (dish_tags || [])&.map {|dish_tag| dish_tag.convert_to_command_param(use_food_module: true) },
         )
 
         {
