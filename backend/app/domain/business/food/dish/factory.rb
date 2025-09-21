@@ -7,7 +7,8 @@ module Business::Food::Dish
         meal_position,
         comment: nil,
         source: nil,
-        source_locator: nil
+        source_locator: nil,
+        tags: []
       )
         source_id = if source.present?
                       Policy::AttachSourcePolicy.ensure!(source, source_locator)
@@ -19,7 +20,8 @@ module Business::Food::Dish
           meal_position:,
           comment:,
           source_id:,
-          source_locator:
+          source_locator:,
+          tags:
         )
       end
 

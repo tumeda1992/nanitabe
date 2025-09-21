@@ -187,5 +187,36 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateWithNewSourceCommand do
         }.to raise_error("指定した料理は存在しません。")
       end
     end
+
+    describe "タグ更新" do
+      context "タグを指定した場合" do
+        let(:dish_tags) do
+          [
+            Business::Food::Dish::Tag::Usecase::Params::Tag.new(
+              content: "新規タグ",
+              normalized_content: "新規タグ"
+            )
+          ]
+        end
+
+        it "タグが正しく更新される" do
+          result = described_class.call(
+            user_id: user_record.id,
+            dish_params: valid_dish_params,
+            source_params: valid_source_params,
+            dish_source_relation: dish_source_relation_params,
+            dish_tags: dish_tags
+          )
+
+          updated_dish = result[0]
+          expect(updated_dish.tags.count).to eq(1)
+          expect(updated_dish.tags.first.content.value).to eq("新規タグ")
+
+          dish_tag_records = DishTag.where(dish_id: existing_dish_record.id)
+          expect(dish_tag_records.count).to eq(1)
+          expect(dish_tag_records.first.content).to eq("新規タグ")
+        end
+      end
+    end
   end
 end

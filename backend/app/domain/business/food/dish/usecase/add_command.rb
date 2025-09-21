@@ -10,6 +10,10 @@ module Business::Food::Dish
     attribute :dish_source_relation, :command_params
     validates :dish_source_relation, presence: false
 
+    # 型は Business::Food::Dish::Tag::Usecase::Params::Tag の配列
+    attribute :dish_tags, :command_params_array, default: []
+    validates :dish_tags, disallow_nil: true
+
     def call
       source = dish_source_relation.present? ? dish_source_relation.build_dish_source : nil
       source_locator = dish_source_relation.present? ? dish_source_relation.build_source_locator : nil
@@ -20,13 +24,12 @@ module Business::Food::Dish
         dish_params.meal_position,
         comment: dish_params.comment,
         source:,
-        source_locator:
+        source_locator:,
+        tags: dish_tags.map {|tag| tag.to_root(user_id)}
       )
 
       dish_record = ::Dish.persist_from_food_dish_root(dish_root)
       dish_root.set_id(dish_record.id)
-
-      # TODO: タグとの関連付け
 
       dish_root
     end
