@@ -1,9 +1,12 @@
 require "rails_helper"
 require_relative "../support/factories/user_repository"
+require_relative "../support/factories/dish_repository"
+require_relative "../support/factories/dish_sources_repository"
 
 RSpec.describe Dish, type: :model do
+  let(:user_record) { find_or_create_user }
+
   describe ".build_existing_root_from_id" do
-    let(:user_record) { find_or_create_user }
     let(:dish_source) { FactoryBot.create(:dish_source, user: user_record) }
     let(:existing_dish) do
       FactoryBot.create(
@@ -129,6 +132,193 @@ RSpec.describe Dish, type: :model do
         result = described_class.build_existing_root_from_id(nil)
 
         expect(result).to be_nil
+      end
+    end
+  end
+
+  describe "#persist_from_food_dish_root" do
+    let(:dish_record) { find_or_create_dish }
+    let(:dish_name) { "new_dish_name" }
+    let(:normalized_dish_name) { "new_dish_normalized" }
+    let(:meal_position) { 3 }
+    let(:comment) { "new comment" }
+
+    let(:food_dish_root) do
+      ::Business::Food::Dish::Root.new(
+        id: dish_record.id,
+        user_id: user_record.id,
+        name: ::Business::Food::Dish::Name.new(
+          value: dish_name,
+          normalized: normalized_dish_name
+        ),
+        meal_position: meal_position,
+        comment: comment,
+        source_id: nil,
+        source_locator: nil,
+        tags: []
+      )
+    end
+
+    it "updates dish attributes" do
+      result = dish_record.persist_from_food_dish_root(food_dish_root)
+
+      expect(result.name).to eq(dish_name)
+      expect(result.normalized_name).to eq(normalized_dish_name)
+      expect(result.meal_position).to eq(meal_position)
+      expect(result.comment).to eq(comment)
+
+      dish_record.reload
+      expect(dish_record.name).to eq(dish_name)
+      expect(dish_record.normalized_name).to eq(normalized_dish_name)
+      expect(dish_record.meal_position).to eq(meal_position)
+      expect(dish_record.comment).to eq(comment)
+    end
+
+    context "with source_id" do
+      let!(:dish_source_record) { find_or_create_dish_source }
+      let(:recipe_book_page) { 150 }
+      let(:source_locator) do
+        ::Business::Food::Dish::Source::Locator::RecipeBook.new(recipe_book_page)
+      end
+      let(:food_dish_root_with_source) do
+        ::Business::Food::Dish::Root.new(
+          id: dish_record.id,
+          user_id: user_record.id,
+          name: ::Business::Food::Dish::Name.new(
+            value: dish_name,
+            normalized: normalized_dish_name
+          ),
+          meal_position: meal_position,
+          comment: comment,
+          source_id: dish_source_record.id,
+          source_locator: source_locator,
+          tags: []
+        )
+      end
+
+      it "calls DishSourceRelation.put_dish_source_relation" do
+        expect(::DishSourceRelation).to receive(:put_dish_source_relation)
+          .with(dish_record.id, dish_source_record.id, source_locator)
+
+        dish_record.persist_from_food_dish_root(food_dish_root_with_source)
+      end
+    end
+
+    context "without source_id" do
+      it "calls DishSourceRelation.remove_dish_source_relation" do
+        expect(::DishSourceRelation).to receive(:remove_dish_source_relation)
+          .with(dish_record.id)
+
+        dish_record.persist_from_food_dish_root(food_dish_root)
+      end
+    end
+
+    context "with tags" do
+      let(:tag1) do
+        ::Business::Food::Dish::Tag::Root.new(
+          content: ::Business::Food::Dish::Tag::Content.new(
+            value: "tag1",
+            normalized: "tag1_normalized"
+          ),
+          user_id: user_record.id
+        )
+      end
+      let(:tag2) do
+        ::Business::Food::Dish::Tag::Root.new(
+          content: ::Business::Food::Dish::Tag::Content.new(
+            value: "tag2",
+            normalized: "tag2_normalized"
+          ),
+          user_id: user_record.id
+        )
+      end
+      let(:food_dish_root_with_tags) do
+        ::Business::Food::Dish::Root.new(
+          id: dish_record.id,
+          user_id: user_record.id,
+          name: ::Business::Food::Dish::Name.new(
+            value: dish_name,
+            normalized: normalized_dish_name
+          ),
+          meal_position: meal_position,
+          comment: comment,
+          source_id: nil,
+          source_locator: nil,
+          tags: [tag1, tag2]
+        )
+      end
+
+      it "calls DishTag.replace_tags_of_dish" do
+        expect(::DishTag).to receive(:replace_tags_of_dish)
+          .with(dish_record.id, [tag1, tag2])
+
+        dish_record.persist_from_food_dish_root(food_dish_root_with_tags)
+      end
+    end
+  end
+
+  describe ".persist_from_food_dish_root" do
+    let(:dish_name) { "new_dish_name" }
+    let(:normalized_dish_name) { "new_dish_normalized" }
+    let(:meal_position) { 3 }
+    let(:comment) { "new comment" }
+
+    context "with existing dish (has id)" do
+      let(:dish_record) { find_or_create_dish }
+      let(:food_dish_root) do
+        ::Business::Food::Dish::Root.new(
+          id: dish_record.id,
+          user_id: user_record.id,
+          name: ::Business::Food::Dish::Name.new(
+            value: dish_name,
+            normalized: normalized_dish_name
+          ),
+          meal_position: meal_position,
+          comment: comment,
+          source_id: nil,
+          source_locator: nil,
+          tags: []
+        )
+      end
+
+      it "finds existing dish and calls persist_from_food_dish_root on it" do
+        result = described_class.persist_from_food_dish_root(food_dish_root)
+
+        expect(result.id).to eq(dish_record.id)
+        expect(result.name).to eq(dish_name)
+        expect(result.normalized_name).to eq(normalized_dish_name)
+        expect(result.meal_position).to eq(meal_position)
+        expect(result.comment).to eq(comment)
+      end
+    end
+
+    context "with new dish (no id)" do
+      let(:food_dish_root) do
+        ::Business::Food::Dish::Root.new(
+          id: nil,
+          user_id: user_record.id,
+          name: ::Business::Food::Dish::Name.new(
+            value: dish_name,
+            normalized: normalized_dish_name
+          ),
+          meal_position: meal_position,
+          comment: comment,
+          source_id: nil,
+          source_locator: nil,
+          tags: []
+        )
+      end
+
+      it "creates new dish and calls persist_from_food_dish_root on it" do
+        result = described_class.persist_from_food_dish_root(food_dish_root)
+
+        expect(result).to be_a(Dish)
+        expect(result.user_id).to eq(user_record.id)
+        expect(result.name).to eq(dish_name)
+        expect(result.normalized_name).to eq(normalized_dish_name)
+        expect(result.meal_position).to eq(meal_position)
+        expect(result.comment).to eq(comment)
+        expect(result).to be_persisted
       end
     end
   end

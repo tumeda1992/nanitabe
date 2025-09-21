@@ -68,7 +68,6 @@ class Dish < ApplicationRecord
     end
   end
 
-  # TODO: テスト作成。commandという使われ方に依存してはいけない
   def persist_from_food_dish_root(food_dish_root)
     self.name = food_dish_root.name.value
     self.normalized_name = food_dish_root.name.normalized
