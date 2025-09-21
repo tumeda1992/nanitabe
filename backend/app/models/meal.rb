@@ -16,5 +16,27 @@ class Meal < ApplicationRecord
         comment: meal_record.comment
       )
     end
+
+    def persist_from_food_meal_root(food_meal_root)
+      meal_record = if food_meal_root.id.present?
+                      find_by(id: food_meal_root.id)
+                    else
+                      new(user_id: food_meal_root.user_id)
+                    end
+      meal_record.persist_from_food_meal_root(food_meal_root)
+
+      meal_record
+    end
+  end
+
+  def persist_from_food_meal_root(food_meal_root)
+    self.dish_id = food_meal_root.dish_id
+    self.date = food_meal_root.date
+    self.meal_type = food_meal_root.meal_type
+    self.comment = food_meal_root.comment
+
+    save!
+
+    self
   end
 end

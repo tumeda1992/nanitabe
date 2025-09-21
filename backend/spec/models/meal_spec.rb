@@ -48,4 +48,112 @@ RSpec.describe Meal, type: :model do
       end
     end
   end
+
+  describe ".persist_from_food_meal_root" do
+    let(:meal_name) { "test meal" }
+    let(:meal_date) { Date.today }
+    let(:meal_type) { 2 }
+    let(:comment) { "test comment" }
+
+    context "with new meal (no id)" do
+      let(:food_meal_root) do
+        ::Business::Food::Meal::Root.new(
+          id: nil,
+          user_id: user_record.id,
+          dish_id: dish_record.id,
+          date: meal_date,
+          meal_type: meal_type,
+          comment: comment
+        )
+      end
+
+      it "creates new meal and calls persist_from_food_meal_root on it" do
+        result = described_class.persist_from_food_meal_root(food_meal_root)
+
+        expect(result).to be_a(Meal)
+        expect(result.user_id).to eq(user_record.id)
+        expect(result.dish_id).to eq(dish_record.id)
+        expect(result.date).to eq(meal_date)
+        expect(result.meal_type).to eq(meal_type)
+        expect(result.comment).to eq(comment)
+        expect(result).to be_persisted
+      end
+    end
+
+    context "with existing meal (has id)" do
+      let(:meal_record) do
+        FactoryBot.create(
+          :meal,
+          user: user_record,
+          dish: dish_record,
+          date: Date.yesterday,
+          meal_type: 1,
+          comment: "old comment"
+        )
+      end
+      let(:food_meal_root) do
+        ::Business::Food::Meal::Root.new(
+          id: meal_record.id,
+          user_id: user_record.id,
+          dish_id: dish_record.id,
+          date: meal_date,
+          meal_type: meal_type,
+          comment: comment
+        )
+      end
+
+      it "finds existing meal and calls persist_from_food_meal_root on it" do
+        result = described_class.persist_from_food_meal_root(food_meal_root)
+
+        expect(result.id).to eq(meal_record.id)
+        expect(result.dish_id).to eq(dish_record.id)
+        expect(result.date).to eq(meal_date)
+        expect(result.meal_type).to eq(meal_type)
+        expect(result.comment).to eq(comment)
+      end
+    end
+  end
+
+  describe "#persist_from_food_meal_root" do
+    let(:meal_record) do
+      FactoryBot.create(
+        :meal,
+        user: user_record,
+        dish: dish_record,
+        date: Date.yesterday,
+        meal_type: 1,
+        comment: "old comment"
+      )
+    end
+    let(:new_dish_record) { FactoryBot.create(:dish, user: user_record) }
+    let(:meal_date) { Date.today }
+    let(:meal_type) { 2 }
+    let(:comment) { "new comment" }
+
+    let(:food_meal_root) do
+      ::Business::Food::Meal::Root.new(
+        id: meal_record.id,
+        user_id: user_record.id,
+        dish_id: new_dish_record.id,
+        date: meal_date,
+        meal_type: meal_type,
+        comment: comment
+      )
+    end
+
+    it "updates meal attributes" do
+      result = meal_record.persist_from_food_meal_root(food_meal_root)
+
+      expect(result.dish_id).to eq(new_dish_record.id)
+      expect(result.date).to eq(meal_date)
+      expect(result.meal_type).to eq(meal_type)
+      expect(result.comment).to eq(comment)
+
+      meal_record.reload
+      expect(meal_record.dish_id).to eq(new_dish_record.id)
+      expect(meal_record.date).to eq(meal_date)
+      expect(meal_record.meal_type).to eq(meal_type)
+      expect(meal_record.comment).to eq(comment)
+    end
+  end
 end
