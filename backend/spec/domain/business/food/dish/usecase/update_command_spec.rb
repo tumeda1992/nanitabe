@@ -315,6 +315,83 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
         end
       end
     end
+
+    describe "タグ更新" do
+      context "2つの既存タグがあり、1つ維持・1つ削除・1つ追加" do
+        let!(:existing_tag1) { FactoryBot.create(:dish_tag, dish: existing_dish_record, user: user_record, content: "保持タグ", normalized_content: "保持タグ") }
+        let!(:existing_tag2) { FactoryBot.create(:dish_tag, dish: existing_dish_record, user: user_record, content: "削除タグ", normalized_content: "削除タグ") }
+
+        let(:tag_for_keep) do
+          Business::Food::Dish::Tag::Usecase::Params::Tag.new(
+            id: existing_tag1.id,
+            content: "保持タグ",
+            normalized_content: "保持タグ"
+          )
+        end
+
+        let(:tag_for_add) do
+          Business::Food::Dish::Tag::Usecase::Params::Tag.new(
+            content: "新規タグ",
+            normalized_content: "新規タグ"
+          )
+        end
+
+        let(:dish_tags) { [tag_for_keep, tag_for_add] }
+
+        it "例外が発生しない" do
+          expect {
+            described_class.call(
+              user_id: user_record.id,
+              dish_params: valid_dish_params,
+              dish_source_relation: nil,
+              dish_tags: dish_tags
+            )
+          }.not_to raise_error
+        end
+
+        it "既存タグ1つは維持、1つは削除、1つ新規追加される" do
+          result = described_class.call(
+            user_id: user_record.id,
+            dish_params: valid_dish_params,
+            dish_source_relation: nil,
+            dish_tags: dish_tags
+          )
+
+          expect(result.tags.count).to eq(2)
+          expect(result.tags[0].id).to eq(existing_tag1.id)
+          expect(result.tags[0].content.value).to eq("保持タグ")
+          expect(result.tags[1].content.value).to eq("新規タグ")
+          created_dish_tag_record = DishTag.find_by(dish_id: existing_dish_record.id, content: "新規タグ")
+          expect(result.tags[1].id).to eq(created_dish_tag_record.id)
+
+          dish_tag_records = DishTag.where(dish_id: existing_dish_record.id)
+
+          expect(dish_tag_records.count).to eq(2)
+          expect(dish_tag_records.find_by(id: existing_tag1.id)).to be_present
+          expect(dish_tag_records.find_by(id: existing_tag2.id)).to be_nil
+          expect(dish_tag_records.find_by(content: "新規タグ")).to be_present
+        end
+
+        it "料理の基本属性も正しく更新される" do
+          result = described_class.call(
+            user_id: user_record.id,
+            dish_params: valid_dish_params,
+            dish_source_relation: nil,
+            dish_tags: dish_tags
+          )
+
+          expect(result).to be_a(Business::Food::Dish::Root)
+          expect(result.name.value).to eq(dish_name)
+          expect(result.meal_position).to eq(meal_position)
+          expect(result.comment).to eq(comment)
+
+          updated_dish = Dish.find(existing_dish_record.id)
+          expect(updated_dish.name).to eq(dish_name)
+          expect(updated_dish.meal_position).to eq(meal_position)
+          expect(updated_dish.comment).to eq(comment)
+        end
+      end
+    end
   end
 
   describe "validations" do
@@ -353,83 +430,6 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
             dish_params: nil
           )
         }.to raise_error(/Dish params can't be blank/)
-      end
-    end
-  end
-
-  describe "タグ更新" do
-    context "2つの既存タグがあり、1つ維持・1つ削除・1つ追加" do
-      let!(:existing_tag1) { FactoryBot.create(:dish_tag, dish: existing_dish_record, user: user_record, content: "保持タグ", normalized_content: "保持タグ") }
-      let!(:existing_tag2) { FactoryBot.create(:dish_tag, dish: existing_dish_record, user: user_record, content: "削除タグ", normalized_content: "削除タグ") }
-
-      let(:tag_for_keep) do
-        Business::Food::Dish::Tag::Usecase::Params::Tag.new(
-          id: existing_tag1.id,
-          content: "保持タグ",
-          normalized_content: "保持タグ"
-        )
-      end
-
-      let(:tag_for_add) do
-        Business::Food::Dish::Tag::Usecase::Params::Tag.new(
-          content: "新規タグ",
-          normalized_content: "新規タグ"
-        )
-      end
-
-      let(:dish_tags) { [tag_for_keep, tag_for_add] }
-
-      it "例外が発生しない" do
-        expect {
-          described_class.call(
-            user_id: user_record.id,
-            dish_params: valid_dish_params,
-            dish_source_relation: nil,
-            dish_tags: dish_tags
-          )
-        }.not_to raise_error
-      end
-
-      it "既存タグ1つは維持、1つは削除、1つ新規追加される" do
-        result = described_class.call(
-          user_id: user_record.id,
-          dish_params: valid_dish_params,
-          dish_source_relation: nil,
-          dish_tags: dish_tags
-        )
-
-        expect(result.tags.count).to eq(2)
-        expect(result.tags[0].id).to eq(existing_tag1.id)
-        expect(result.tags[0].content.value).to eq("保持タグ")
-        expect(result.tags[1].content.value).to eq("新規タグ")
-        created_dish_tag_record = DishTag.find_by(dish_id: existing_dish_record.id, content: "新規タグ")
-        expect(result.tags[1].id).to eq(created_dish_tag_record.id)
-
-        dish_tag_records = DishTag.where(dish_id: existing_dish_record.id)
-
-        expect(dish_tag_records.count).to eq(2)
-        expect(dish_tag_records.find_by(id: existing_tag1.id)).to be_present
-        expect(dish_tag_records.find_by(id: existing_tag2.id)).to be_nil
-        expect(dish_tag_records.find_by(content: "新規タグ")).to be_present
-      end
-
-      it "料理の基本属性も正しく更新される" do
-        result = described_class.call(
-          user_id: user_record.id,
-          dish_params: valid_dish_params,
-          dish_source_relation: nil,
-          dish_tags: dish_tags
-        )
-
-        expect(result).to be_a(Business::Food::Dish::Root)
-        expect(result.name.value).to eq(dish_name)
-        expect(result.meal_position).to eq(meal_position)
-        expect(result.comment).to eq(comment)
-
-        updated_dish = Dish.find(existing_dish_record.id)
-        expect(updated_dish.name).to eq(dish_name)
-        expect(updated_dish.meal_position).to eq(meal_position)
-        expect(updated_dish.comment).to eq(comment)
       end
     end
   end
