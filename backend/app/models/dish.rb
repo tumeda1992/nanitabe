@@ -18,9 +18,6 @@ class Dish < ApplicationRecord
 
       source_locator = build_source_locator_from_relation(dish_record)
 
-      # NOTE: (マージ前に消す。docs配下のアーキテクチャのところに明記)
-      # ActiveRecordがドメインモデルの集約を知っていて良いのか
-      # →いい。本来Repositoryとしてドメインモデル内に作ろうとした存在だから
       ::Business::Food::Dish::Root.new(
         id: dish_record.id,
         user_id: dish_record.user_id,
