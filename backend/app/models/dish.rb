@@ -32,6 +32,7 @@ class Dish < ApplicationRecord
         comment: dish_record.comment,
         source_id: dish_record.dish_source&.id,
         source_locator: source_locator,
+        tags: ::DishTag.build_existing_roots_of_dish(dish_record.id),
       )
     end
 
@@ -80,6 +81,8 @@ class Dish < ApplicationRecord
     else
       ::DishSourceRelation.remove_dish_source_relation(self.id)
     end
+
+    ::DishTag.replace_tags_of_dish(self.id, food_dish_root.tags)
 
     self
   end
