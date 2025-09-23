@@ -4,6 +4,9 @@ module Business::Food::Meal
     validates :id, absence: true, on: :create
     validates :id, presence: true, on: :update
 
+    attribute :dish_id, :integer
+    validates :dish_id, presence: true
+
     attribute :date, :date
     validates :date, presence: true
 

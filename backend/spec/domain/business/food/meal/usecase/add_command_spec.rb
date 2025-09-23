@@ -9,6 +9,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
   let(:valid_meal_params) do
     Business::Food::Meal::Usecase::Params::Meal.new(
       :create,
+      dish_id: dish_record.id,
       date: Date.today,
       meal_type: 1,
       comment: "test meal"
@@ -20,7 +21,6 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
       it "creates a new meal and returns Business::Food::Meal::Root" do
         result = described_class.call(
           user_id: user_record.id,
-          dish_id: dish_record.id,
           meal_params: valid_meal_params
         )
 
@@ -37,7 +37,6 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            dish_id: dish_record.id,
             meal_params: valid_meal_params
           )
         }.to change { Meal.count }.by(1)
@@ -55,6 +54,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
       let(:meal_params_without_comment) do
         Business::Food::Meal::Usecase::Params::Meal.new(
           :create,
+          dish_id: dish_record.id,
           date: Date.today,
           meal_type: 1
         )
@@ -63,7 +63,6 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
       it "creates meal without comment" do
         result = described_class.call(
           user_id: user_record.id,
-          dish_id: dish_record.id,
           meal_params: meal_params_without_comment
         )
 
@@ -77,21 +76,9 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
       it "raises validation error" do
         expect {
           described_class.call(
-            dish_id: dish_record.id,
             meal_params: valid_meal_params
           )
         }.to raise_error(/User can't be blank/)
-      end
-    end
-
-    context "when dish_id is missing" do
-      it "raises validation error" do
-        expect {
-          described_class.call(
-            user_id: user_record.id,
-            meal_params: valid_meal_params
-          )
-        }.to raise_error(/Dish can't be blank/)
       end
     end
 
@@ -99,8 +86,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
       it "raises validation error" do
         expect {
           described_class.call(
-            user_id: user_record.id,
-            dish_id: dish_record.id
+            user_id: user_record.id
           )
         }.to raise_error(/Meal params can't be blank/)
       end
@@ -111,22 +97,9 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: nil,
-            dish_id: dish_record.id,
             meal_params: valid_meal_params
           )
         }.to raise_error(/User can't be blank/)
-      end
-    end
-
-    context "when dish_id is nil" do
-      it "raises validation error" do
-        expect {
-          described_class.call(
-            user_id: user_record.id,
-            dish_id: nil,
-            meal_params: valid_meal_params
-          )
-        }.to raise_error(/Dish can't be blank/)
       end
     end
 
@@ -135,20 +108,28 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            dish_id: dish_record.id,
             meal_params: nil
           )
         }.to raise_error(/Meal params can't be blank/)
       end
     end
 
-    context "with invalid dish_id" do
+    context "with invalid dish_id in meal_params" do
+      let(:invalid_meal_params) do
+        Business::Food::Meal::Usecase::Params::Meal.new(
+          :create,
+          dish_id: 999999,
+          date: Date.today,
+          meal_type: 1,
+          comment: "test meal"
+        )
+      end
+
       it "raises validation error" do
         expect {
           described_class.call(
             user_id: user_record.id,
-            dish_id: 999999,
-            meal_params: valid_meal_params
+            meal_params: invalid_meal_params
           )
         }.to raise_error("存在しない料理を紐付けることはできません。")
       end

@@ -3,9 +3,6 @@ module Business::Food::Meal
     attribute :user_id, :integer
     validates :user_id, presence: true
 
-    attribute :dish_id, :integer
-    validates :dish_id, presence: true
-
     attribute :meal_params, :command_params
     validates :meal_params, presence: true
     validate :validate_meal, if: -> { meal_params.present? }
@@ -13,7 +10,7 @@ module Business::Food::Meal
     def call
       meal_root = Business::Food::Meal::Factory.build(
         user_id,
-        dish_id,
+        meal_params.dish_id,
         meal_params.date,
         meal_params.meal_type,
         comment: meal_params.comment
