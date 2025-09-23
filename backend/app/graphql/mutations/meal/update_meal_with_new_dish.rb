@@ -11,13 +11,24 @@ module Mutations::Meal
 
     def resolve(meal:, dish:, dish_source:, dish_source_relation_detail: nil, dish_tags: nil)
       ActiveRecord::Base.transaction do
-        updated_meal, created_dish = ::Business::Dish::Command::Meal::UpdateMealWithNewDishCommand.call(
+        dish_source_relation = if dish_source_relation_detail.present? && dish_source.present?
+                                 ::Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
+                                   dish_source.type,
+                                   dish_source.id,
+                                   dish_source_relation_detail.detail_value_of(dish_source.type)
+                                 )
+                               end
+
+        created_dish = ::Business::Food::Dish::Usecase::AddCommand.call(
           user_id: context[:current_user_id],
-          dish_for_create: dish.convert_to_command_param,
-          dish_source_for_read: dish_source.convert_to_command_param,
-          dish_source_relation_detail: dish_source_relation_detail&.convert_to_command_param(dish_source&.type),
-          dish_tags: (dish_tags || [])&.map {|dish_tag| dish_tag.convert_to_command_param},
-          meal_for_update: meal.convert_to_command_param,
+          dish_params: dish.convert_to_command_param(use_food_module: true),
+          dish_source_relation:,
+          dish_tags: (dish_tags || [])&.map {|dish_tag| dish_tag.convert_to_command_param(use_food_module: true) },
+        )
+
+        updated_meal = ::Business::Food::Meal::Usecase::UpdateCommand.call(
+          user_id: context[:current_user_id],
+          meal_params: meal.convert_to_command_param(use_food_module: true, dish_id: created_dish.id)
         )
         {
           meal_id: updated_meal.id,
