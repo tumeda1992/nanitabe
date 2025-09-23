@@ -17,6 +17,8 @@ module Business::Food::Dish
     validates :dish_tags, disallow_nil: true
 
     def call
+      raise "Deprecated"
+
       created_source = Business::Food::Dish::Source::Usecase::AddCommand.call(
         user_id:,
         source_params:
