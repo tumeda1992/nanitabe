@@ -6,14 +6,10 @@ module Mutations::Dish::Source
 
     def resolve(dish_source:)
       ActiveRecord::Base.transaction do
-        created_dish_source = ::Business::Dish::Dish::Source::Command::AddCommand.call(
+        created_dish_source = ::Business::Food::Dish::Source::Usecase::AddCommand.call(
           user_id: context[:current_user_id],
-          dish_source_for_create: dish_source.convert_to_command_param,
+          source_params: dish_source.convert_to_command_param(use_food_module: true),
         )
-        # created_dish_source = ::Business::Food::Dish::Source::Usecase::AddCommand.call(
-        #   user_id: context[:current_user_id],
-        #   dish_params: dish_source.convert_to_command_param,
-        # )
 
         {
           dish_source_id: created_dish_source.id,

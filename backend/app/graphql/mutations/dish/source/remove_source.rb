@@ -6,10 +6,10 @@ module Mutations::Dish::Source
 
     def resolve(dish_source_id:)
       ActiveRecord::Base.transaction do
-        ::Business::Dish::Dish::Source::Command::RemoveCommand.call(
-          dish_source_id:,
+        ::Business::Food::Dish::Source::Usecase::RemoveCommand.call(
           user_id: context[:current_user_id],
-        )
+          source_id: dish_source_id,
+          )
         { dish_source_id: }
       end
     end

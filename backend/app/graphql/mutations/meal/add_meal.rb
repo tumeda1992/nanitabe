@@ -7,14 +7,9 @@ module Mutations::Meal
 
     def resolve(dish_id:, meal:)
       ActiveRecord::Base.transaction do
-        created_meal = ::Business::Dish::Meal::Command::AddCommand.call(
+        created_meal = ::Business::Food::Meal::Usecase::AddCommand.call(
           user_id: context[:current_user_id],
-          dish_id:,
-          meal_for_create: ::Business::Dish::Meal::Command::Params::MealForCreate.new(
-            date: meal.date,
-            meal_type: meal.meal_type,
-            comment: meal.comment,
-          ),
+          meal_params: meal.convert_to_command_param(use_food_module: true, dish_id:)
         )
         { meal_id: created_meal.id }
       end

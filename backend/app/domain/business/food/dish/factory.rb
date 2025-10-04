@@ -14,7 +14,7 @@ module Business::Food::Dish
                       Policy::AttachSourcePolicy.ensure!(source, source_locator)
                       source.id
                     end
-        Business::Food::Dish::Root.new(
+        Root.new(
           user_id:,
           name: Name.initialize_and_normalize(unnormalized_name),
           meal_position:,
