@@ -1,5 +1,5 @@
-module Business::Dish::Meal
-  class Command::SwapMealsBetweenDaysCommand < ::Business::Base::Command
+module Business::Food::Meal
+  class Usecase::SwapMealsBetweenDaysCommand < ::Business::Base::Command
     attribute :user_id, :integer
     validates :user_id, presence: true
 
@@ -10,20 +10,20 @@ module Business::Dish::Meal
     validates :date2, presence: true
 
     def call
-      date1_meals = Repository.fetch_by_date(date1)
-      date2_meals = Repository.fetch_by_date(date2)
+      date1_meal_roots = ::Meal.fetch_by_date(date1)
+      date2_meal_roots = ::Meal.fetch_by_date(date2)
 
-      date1_meals.each do |date1_meal|
-        date1_meal.date = date2
-        Repository.update(date1_meal, user_id)
+      date1_meal_roots.each do |date1_meal_root|
+        date1_meal_root.reschedule(date2)
+        ::Meal.persist_from_food_meal_root(date1_meal_root)
       end
 
-      date2_meals.each do |date2_meal|
-        date2_meal.date = date1
-        Repository.update(date2_meal, user_id)
+      date2_meal_roots.each do |date2_meal_root|
+        date2_meal_root.reschedule(date1)
+        ::Meal.persist_from_food_meal_root(date2_meal_root)
       end
 
-      date1_meals.concat(date2_meals)
+      date1_meal_roots.concat(date2_meal_roots)
     end
   end
 end

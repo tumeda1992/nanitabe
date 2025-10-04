@@ -7,7 +7,7 @@ module Mutations::Meal
 
     def resolve(date1:, date2:)
       ActiveRecord::Base.transaction do
-        updated_meals = ::Business::Dish::Meal::Command::SwapMealsBetweenDaysCommand.call(
+        updated_meals = ::Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand.call(
           user_id: context[:current_user_id],
           date1:,
           date2:,

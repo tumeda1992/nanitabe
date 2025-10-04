@@ -17,6 +17,13 @@ class Meal < ApplicationRecord
       )
     end
 
+    def fetch_by_date(date)
+      meal_records = where(date:)
+      return [] if meal_records.blank?
+
+      meal_records.map {|meal_record| build_existing_root_from_id(meal_record.id) }
+    end
+
     def persist_from_food_meal_root(food_meal_root)
       meal_record = if food_meal_root.id.present?
                       find_by(id: food_meal_root.id)
