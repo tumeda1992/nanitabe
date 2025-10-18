@@ -3,7 +3,7 @@ module Business::Food::Dish::Source
     attr_reader :url
 
     def initialize(url)
-      @url = coerce_url(url)
+      @url = url.present? ? coerce_url(url) : nil
     end
 
     def kind = :website
