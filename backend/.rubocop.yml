@@ -14,6 +14,13 @@ Metrics/BlockLength:
   Enabled: false
 Metrics/MethodLength:
   Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
 
 Lint/EmptyBlock:
   Enabled: false
@@ -58,6 +65,8 @@ Style/MutableConstant:
 Style/NumericLiteralPrefix:
   Enabled: false
 Style/IfUnlessModifier:
+  Enabled: false
+Style/MultilineBlockChain:
   Enabled: false
 
 Layout/LineLength:

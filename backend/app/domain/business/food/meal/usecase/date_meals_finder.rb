@@ -1,5 +1,5 @@
 module Business::Food::Meal
-  class DateMealsFinder < Business::Base::Finder
+  class Usecase::DateMealsFinder < Business::Base::Finder
     attribute :access_user_id, :integer
     validates :access_user_id, presence: true
     attribute :start_date, :date
@@ -34,7 +34,7 @@ module Business::Food::Meal
                         end
         result_meal[:dish][:dish_source_relation] = dish_relation
         result_meal[:dish][:evaluation_score] = meal.dish.dish_evaluation&.score
-        result_meal[:dish][:tags] = (meal.dish.dish_tags.presence || []).map {|tag| tag.attributes}
+        result_meal[:dish][:tags] = (meal.dish.dish_tags.presence || []).map(&:attributes)
 
         result_meal.with_indifferent_access
       end.group_by { |meal| meal[:date] }
