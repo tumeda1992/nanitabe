@@ -72,10 +72,10 @@ RSpec.describe Business::Food::Meal::Usecase::DateMealsFinder do
       end
     end
 
-    xcontext "ユーザーIDが異なる場合" do
+    context "ユーザーIDが異なる場合" do
       it "他のユーザーの食事は取得されない" do
-        other_user = FactoryBot.create(:user)
-        create(:meal, user_id: other_user.id, dish_id: dish_record.id, date: start_date + 1.day)
+        other_user = FactoryBot.create(:user, id_param: "other_user_param")
+        FactoryBot.create(:meal, user_id: other_user.id, dish_id: dish_record.id, date: start_date + 1.day)
 
         result = described_class.call(
           access_user_id: user_record.id,
@@ -89,35 +89,32 @@ RSpec.describe Business::Food::Meal::Usecase::DateMealsFinder do
       end
     end
 
-    xcontext "バリデーションエラーの場合" do
+    context "バリデーションエラーの場合" do
       it "access_user_idが空の場合はエラーになる" do
-        finder = described_class.new(
-          start_date: start_date,
-          last_date: last_date,
-        )
-
-        expect(finder.valid?).to be false
-        expect(finder.errors[:access_user_id]).to include("can't be blank")
+        expect {
+          described_class.call(
+            start_date: start_date,
+            last_date: last_date,
+          )
+        }.to raise_error(/条件の値が不正です。/)
       end
 
       it "start_dateが空の場合はエラーになる" do
-        finder = described_class.new(
-          access_user_id: user_record.id,
-          last_date: last_date,
-        )
-
-        expect(finder.valid?).to be false
-        expect(finder.errors[:start_date]).to include("can't be blank")
+        expect {
+          described_class.call(
+            access_user_id: user_record.id,
+            last_date: last_date,
+          )
+        }.to raise_error(/条件の値が不正です。/)
       end
 
       it "last_dateが空の場合はエラーになる" do
-        finder = described_class.new(
-          access_user_id: user_record.id,
-          start_date: start_date,
-        )
-
-        expect(finder.valid?).to be false
-        expect(finder.errors[:last_date]).to include("can't be blank")
+        expect {
+          described_class.call(
+            access_user_id: user_record.id,
+            start_date: start_date,
+          )
+        }.to raise_error(/条件の値が不正です。/)
       end
     end
   end
