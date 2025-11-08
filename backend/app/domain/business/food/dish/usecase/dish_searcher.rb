@@ -1,5 +1,5 @@
-module Application::Finder
-  class DishesForRegisteringWithMeal < Business::Base::Finder
+module Business::Food::Dish
+  class Usecase::DishSearcher < Business::Base::Finder
     attribute :access_user_id, :integer
     validates :access_user_id, presence: true
 
@@ -9,18 +9,8 @@ module Application::Finder
 
     attribute :dish_id_registered_with_meal, :integer
 
-    # DEPRECATED: Business::Food::Dish::Usecase::DishSearcher に置き換え
     def fetch
-      # 追加したい取得ロジック
-      # - order
-      #   - (済)(将来)自己評価（低いものを後ろの並び順に追いやる）
-      #   - (済)mealへの利用回数 降順
-      #   - (済)mealでの登録日時かdishでの登録日時の早い方 降順
-      # - 絞り込み(検索フォーム実装後)
-      #   - (済)dishの名前
-      #   - or (済)レシピ元の名前
-      #   - or (将来)カテゴリ名
-      # - (数が多くなってきたら)20個くらいしか出さずに、続きはGraphQLのページング機能で出す
+      # 数が多くなってきたら、20個くらいしか出さずに、続きはGraphQLのページング機能で出す
       registered_dish_with_meal = nil
       if dish_id_registered_with_meal.present?
         registered_dish_with_meal = ::Dish.where(id: dish_id_registered_with_meal)
@@ -54,11 +44,11 @@ module Application::Finder
     def add_filter_to_relation(dish_relation, ignore_dish_id: nil)
       if search_string.present?
         normalized_search_string = ::Business::Dish::Word::Normalize::Command::NormalizeCommand.call(string_sequence: search_string)
-        dish_relation = normalized_search_string.split(" ").reduce(dish_relation) do |relation, word|
+        dish_relation = normalized_search_string.split.reduce(dish_relation) do |relation, word|
           relation.merge(
             Dish.where("COALESCE(dishes.normalized_name, dishes.name) LIKE ?", "%#{word}%")
                 .or(::DishSource.where("dish_sources.name LIKE ?", "%#{word}%"))
-                .or(::DishTag.where("COALESCE(dish_tags.normalized_content, dish_tags.content) LIKE ?", "%#{word}%"))
+                .or(::DishTag.where("COALESCE(dish_tags.normalized_content, dish_tags.content) LIKE ?", "%#{word}%")),
           )
         end
       end
@@ -67,12 +57,12 @@ module Application::Finder
         dish_relation = dish_relation.where(meal_position: meal_position)
       end
 
-      if !registered_with_meal.nil?
-        if registered_with_meal
-          dish_relation = dish_relation.having("COUNT(meals.id) > 0")
-        else
-          dish_relation = dish_relation.having("COUNT(meals.id) = 0")
-        end
+      unless registered_with_meal.nil? # boolean値なので、blank?ではなくnil?で判定
+        dish_relation = if registered_with_meal
+                          dish_relation.having("COUNT(meals.id) > 0")
+                        else
+                          dish_relation.having("COUNT(meals.id) = 0")
+                        end
       end
 
       if ignore_dish_id.present?

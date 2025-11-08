@@ -3,6 +3,7 @@ module Application::Finder
     attribute :access_user_id, :integer
     validates :access_user_id, presence: true
 
+    # NOTE: この作りについて、直せれば直したけど、オプショナルなFinderだから、他を直したときについでに直すくらいで
     def fetch
       dishes = ::Dish.where(user_id: access_user_id)
                      .eager_load(:meals)
