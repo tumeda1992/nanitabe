@@ -11,6 +11,34 @@ class Dish < ApplicationRecord
   has_one :dish_evaluation, dependent: :destroy
   has_many :dish_tags, dependent: :destroy
 
+  scope :for_user, ->(user_id) { where(user_id: user_id) }
+
+  scope :with_search_relations, -> {
+    eager_load(:dish_source)
+      .left_outer_joins(:dish_evaluation, :dish_tags)
+      .left_outer_joins(:meals) # 食事への登録回数を見るためにjoin
+  }
+
+  scope :search_output, -> {
+    select_clauses = []
+    select_clauses.push("dishes.*")
+    select_clauses.push("dish_sources.name AS dish_source_name")
+    select_clauses.push("dish_evaluations.score AS evaluation_score")
+    select_clauses.push("COALESCE(dish_evaluations.score, 3.0 - 0.01) AS evaluation_score_for_sort")
+
+    order_clauses = []
+    order_clauses.push("evaluation_score_for_sort DESC")
+    order_clauses.push("COUNT(meals.id) DESC")
+    order_clauses.push("COUNT(meals.id) DESC")
+    order_clauses.push("MAX(dishes.created_at) DESC")
+
+    select(select_clauses.join(", ")).group("dishes.id").order(Arel.sql(order_clauses.join(", ")))
+  }
+
+  scope :matching_normalized_name, ->(word) {
+    where("COALESCE(dishes.normalized_name, dishes.name) LIKE ?", "%#{word}%")
+  }
+
   class << self
     def build_existing_root_from_id(id)
       dish_record = find_by(id: id)

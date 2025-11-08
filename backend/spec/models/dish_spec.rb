@@ -322,4 +322,164 @@ RSpec.describe Dish, type: :model do
       end
     end
   end
+
+  describe "scopes" do
+    describe ".for_user" do
+      let(:user1) { FactoryBot.create(:user, id_param: "user_for_scope_test_1") }
+      let(:user2) { FactoryBot.create(:user, id_param: "user_for_scope_test_2") }
+      let!(:dish1) { FactoryBot.create(:dish, user: user1, name: "User1's dish") }
+      let!(:dish2) { FactoryBot.create(:dish, user: user2, name: "User2's dish") }
+      let!(:dish3) { FactoryBot.create(:dish, user: user1, name: "Another user1's dish") }
+
+      it "returns only dishes for the specified user" do
+        result = described_class.for_user(user1.id)
+
+        expect(result).to include(dish1, dish3)
+        expect(result).not_to include(dish2)
+        expect(result.count).to eq(2)
+      end
+
+      it "returns empty when no dishes exist for the user" do
+        user3 = FactoryBot.create(:user, id_param: "user_for_scope_test_3")
+        result = described_class.for_user(user3.id)
+
+        expect(result).to be_empty
+      end
+    end
+
+    describe ".with_search_relations" do
+      let!(:dish) { FactoryBot.create(:dish, user: user_record) }
+      let!(:dish_source) { FactoryBot.create(:dish_source, user: user_record) }
+      let!(:dish_evaluation) { FactoryBot.create(:dish_evaluation, dish: dish, score: 4.5) }
+      let!(:dish_tag) { FactoryBot.create(:dish_tag, dish: dish) }
+      let!(:meal) { FactoryBot.create(:meal, user: user_record, dish: dish) }
+
+      before do
+        dish.update!(dish_source: dish_source)
+      end
+
+      it "eager loads dish_source" do
+        result = described_class.with_search_relations.find(dish.id)
+
+        expect { result.dish_source }.not_to raise_error
+        expect(result.dish_source).to eq(dish_source)
+      end
+
+      it "joins dish_evaluation without N+1 queries" do
+        dishes = described_class.with_search_relations
+
+        expect { dishes.map { |d| d.dish_evaluation } }.not_to raise_error
+      end
+
+      it "joins dish_tags without N+1 queries" do
+        dishes = described_class.with_search_relations
+
+        expect { dishes.map { |d| d.dish_tags.to_a } }.not_to raise_error
+      end
+
+      it "joins meals without N+1 queries" do
+        dishes = described_class.with_search_relations
+
+        expect { dishes.map { |d| d.meals.to_a } }.not_to raise_error
+      end
+    end
+
+    describe ".search_output" do
+      let!(:dish1) do
+        FactoryBot.create(:dish, user: user_record, name: "Dish1", created_at: 2.days.ago)
+      end
+      let!(:dish2) do
+        FactoryBot.create(:dish, user: user_record, name: "Dish2", created_at: 1.day.ago)
+      end
+      let!(:dish3) do
+        FactoryBot.create(:dish, user: user_record, name: "Dish3", created_at: 3.days.ago)
+      end
+      let!(:dish_source1) { FactoryBot.create(:dish_source, user: user_record, name: "Source1") }
+      let!(:dish_evaluation1) { FactoryBot.create(:dish_evaluation, dish: dish1, score: 5.0) }
+      let!(:dish_evaluation2) { FactoryBot.create(:dish_evaluation, dish: dish2, score: 4.0) }
+
+      before do
+        dish1.update!(dish_source: dish_source1)
+        FactoryBot.create(:meal, user: user_record, dish: dish1)
+        FactoryBot.create(:meal, user: user_record, dish: dish1)
+        FactoryBot.create(:meal, user: user_record, dish: dish2)
+      end
+
+      it "includes dish_source_name in select" do
+        result = described_class.with_search_relations.search_output.find_by(id: dish1.id)
+
+        expect(result.dish_source_name).to eq("Source1")
+      end
+
+      it "includes evaluation_score in select" do
+        result = described_class.with_search_relations.search_output.find_by(id: dish1.id)
+
+        expect(result.evaluation_score).to eq(5.0)
+      end
+
+      it "orders by evaluation_score DESC (higher score first)" do
+        results = described_class.with_search_relations.search_output.to_a
+
+        expect(results.first.id).to eq(dish1.id)
+      end
+
+      it "orders by meal count when evaluation scores are equal" do
+        FactoryBot.create(:dish_evaluation, dish: dish3, score: 5.0)
+        FactoryBot.create(:meal, user: user_record, dish: dish3)
+        FactoryBot.create(:meal, user: user_record, dish: dish3)
+        FactoryBot.create(:meal, user: user_record, dish: dish3)
+
+        results = described_class.with_search_relations.search_output.to_a
+
+        top_two_ids = results.take(2).map(&:id)
+        expect(top_two_ids).to contain_exactly(dish1.id, dish3.id)
+      end
+
+      it "groups by dishes.id" do
+        result = described_class.with_search_relations.search_output
+
+        expect(result.group_values).to include("dishes.id")
+      end
+    end
+
+    describe ".matching_normalized_name" do
+      let!(:dish1) do
+        FactoryBot.create(:dish, user: user_record, name: "カレーライス", normalized_name: "かれーらいす")
+      end
+      let!(:dish2) do
+        FactoryBot.create(:dish, user: user_record, name: "ハンバーグカレー", normalized_name: "はんばーぐかれー")
+      end
+      let!(:dish3) do
+        FactoryBot.create(:dish, user: user_record, name: "パスタ", normalized_name: "ぱすた")
+      end
+      let!(:dish4) do
+        FactoryBot.create(:dish, user: user_record, name: "ラーメン", normalized_name: nil)
+      end
+
+      it "returns dishes with matching normalized_name" do
+        result = described_class.matching_normalized_name("かれー")
+
+        expect(result).to include(dish1, dish2)
+        expect(result).not_to include(dish3, dish4)
+      end
+
+      it "returns dishes with matching name when normalized_name is nil" do
+        result = described_class.matching_normalized_name("ラーメン")
+
+        expect(result).to include(dish4)
+      end
+
+      it "returns empty when no dishes match" do
+        result = described_class.matching_normalized_name("存在しない料理名")
+
+        expect(result).to be_empty
+      end
+
+      it "performs partial match" do
+        result = described_class.matching_normalized_name("かれ")
+
+        expect(result).to include(dish1, dish2)
+      end
+    end
+  end
 end

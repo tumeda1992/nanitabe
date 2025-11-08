@@ -7,55 +7,39 @@ module Business::Food::Dish
     attribute :meal_position, :integer
     attribute :registered_with_meal, :boolean
 
+    # 食事登録時に、すでにその食事に登録されている料理を先頭に置くための値。
+    # 条件を厳しくしたときに、その検索条件にヒットしなくても先頭に置くために使う。
     attribute :dish_id_registered_with_meal, :integer
 
+    # 数が多くなってきたら、20個くらいしか出さずに、続きはGraphQLのページング機能で出す
     def fetch
-      # 数が多くなってきたら、20個くらいしか出さずに、続きはGraphQLのページング機能で出す
-      registered_dish_with_meal = nil
-      if dish_id_registered_with_meal.present?
-        registered_dish_with_meal = ::Dish.where(id: dish_id_registered_with_meal)
-        registered_dish_with_meal = add_join_to_relation(registered_dish_with_meal)
-        registered_dish_with_meal = add_output_fields_to_relation(registered_dish_with_meal)
-        registered_dish_with_meal = registered_dish_with_meal.first
+      registered_dish_with_meal = if dish_id_registered_with_meal.present?
+                                    ::Dish.where(id: dish_id_registered_with_meal)
+                                          .with_search_relations
+                                          .search_output
+                                          .first
+                                  end
+
+      dish_relation = ::Dish.for_user(access_user_id)
+                            .with_search_relations
+                            .search_output
+
+      if registered_dish_with_meal.present?
+        dish_relation = dish_relation.where.not(id: registered_dish_with_meal.id)
       end
 
-      dish_relation = add_auth_filter_to_relation(::Dish.all)
-
-      dish_relation = add_join_to_relation(dish_relation)
-
-      dish_relation = add_filter_to_relation(dish_relation, ignore_dish_id: registered_dish_with_meal&.id)
-      dish_relation = add_output_fields_to_relation(dish_relation)
-      dish_relation = add_order_to_relation(dish_relation)
-      [registered_dish_with_meal, dish_relation].flatten.compact
-    end
-
-    def add_join_to_relation(dish_relation)
-      dish_relation
-        .left_outer_joins(:meals)
-        .eager_load(:dish_source)
-        .left_outer_joins(:dish_evaluation)
-        .left_outer_joins(:dish_tags)
-    end
-
-    def add_auth_filter_to_relation(dish_relation)
-      dish_relation.where(user_id: access_user_id)
-    end
-
-    def add_filter_to_relation(dish_relation, ignore_dish_id: nil)
       if search_string.present?
         normalized_search_string = ::Business::Dish::Word::Normalize::Command::NormalizeCommand.call(string_sequence: search_string)
         dish_relation = normalized_search_string.split.reduce(dish_relation) do |relation, word|
           relation.merge(
-            Dish.where("COALESCE(dishes.normalized_name, dishes.name) LIKE ?", "%#{word}%")
-                .or(::DishSource.where("dish_sources.name LIKE ?", "%#{word}%"))
-                .or(::DishTag.where("COALESCE(dish_tags.normalized_content, dish_tags.content) LIKE ?", "%#{word}%")),
-          )
+            Dish.matching_normalized_name(word)
+                .or(::DishSource.matching_normalized_name(word))
+                .or(::DishTag.matching_normalized_content(word)),
+            )
         end
       end
 
-      if meal_position.present?
-        dish_relation = dish_relation.where(meal_position: meal_position)
-      end
+      dish_relation = dish_relation.where(meal_position: meal_position) if meal_position.present?
 
       unless registered_with_meal.nil? # boolean値なので、blank?ではなくnil?で判定
         dish_relation = if registered_with_meal
@@ -65,23 +49,7 @@ module Business::Food::Dish
                         end
       end
 
-      if ignore_dish_id.present?
-        dish_relation = dish_relation.where.not(id: ignore_dish_id)
-      end
-      dish_relation
-    end
-
-    def add_output_fields_to_relation(dish_relation)
-      dish_relation.select("
-        dishes.*
-        , dish_sources.name AS dish_source_name
-        , dish_evaluations.score AS evaluation_score
-        , COALESCE(dish_evaluations.score, 3.0 - 0.01) AS evaluation_score_for_sort
-      ")
-    end
-
-    def add_order_to_relation(dish_relation)
-      dish_relation.group("dishes.id").order("evaluation_score_for_sort DESC, COUNT(meals.id) DESC, MAX(dishes.created_at) DESC")
+      [registered_dish_with_meal, dish_relation].flatten.compact
     end
   end
 end
