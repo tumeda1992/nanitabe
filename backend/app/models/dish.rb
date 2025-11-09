@@ -11,6 +11,52 @@ class Dish < ApplicationRecord
   has_one :dish_evaluation, dependent: :destroy
   has_many :dish_tags, dependent: :destroy
 
+  scope :for_user, ->(user_id) { where(user_id: user_id) }
+
+  scope :with_search_relations, -> {
+    # サブクエリで食事登録回数を計算（GROUP BYを避けるため）
+    meals_count_subquery = Meal.select('dish_id, COUNT(*) as meals_count')
+                               .group('dish_id')
+    joins("LEFT JOIN (#{meals_count_subquery.to_sql}) AS meal_counts ON meal_counts.dish_id = dishes.id")
+      .eager_load(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags)
+  }
+
+  scope :search_output, -> {
+    select_clauses = []
+    select_clauses.push("dishes.*")
+    select_clauses.push("dish_sources.name AS dish_source_name")
+    select_clauses.push("dish_evaluations.score AS evaluation_score")
+    select_clauses.push("COALESCE(dish_evaluations.score, 3.0 - 0.01) AS evaluation_score_for_sort")
+    select_clauses.push("COALESCE(meal_counts.meals_count, 0) AS meals_count")
+
+    order_clauses = []
+    order_clauses.push("evaluation_score_for_sort DESC")
+    order_clauses.push("meals_count DESC")
+    order_clauses.push("dishes.created_at DESC")
+
+    select(select_clauses.join(", "))
+      .order(Arel.sql(order_clauses.join(", ")))
+  }
+
+  scope :matching_normalized_name, ->(word) {
+    where("COALESCE(dishes.normalized_name, dishes.name) LIKE ?", "%#{word}%")
+  }
+
+  # 食事登録の有無で絞り込み
+  # registered: true -> 食事に登録されている料理のみ
+  # registered: false -> 食事に登録されていない料理のみ
+  # registered: nil -> フィルタリングしない（全て）
+  # 注意: with_search_relations スコープと一緒に使う必要がある（meal_counts.meals_count を使用）
+  scope :by_meal_registration, ->(registered = nil) {
+    return all if registered.nil?
+
+    if registered
+      where("COALESCE(meal_counts.meals_count, 0) > 0")
+    else
+      where("COALESCE(meal_counts.meals_count, 0) = 0")
+    end
+  }
+
   class << self
     def build_existing_root_from_id(id)
       dish_record = find_by(id: id)
@@ -81,5 +127,26 @@ class Dish < ApplicationRecord
     ::DishTag.replace_tags_of_dish(self.id, food_dish_root.tags)
 
     self
+  end
+
+  def to_searched_values
+    result = attributes
+
+    dish_relation = if dish_source_relation.present? && dish_source.present?
+                      {
+                        dish_id: dish_source_relation.dish_id,
+                        type: dish_source.type,
+                        source_name: dish_source.name,
+                        dish_source_id: dish_source.id,
+                        recipe_book_page: dish_source_relation.recipe_book_page,
+                        recipe_website_url: dish_source_relation.recipe_website_url,
+                        recipe_source_memo: dish_source_relation.recipe_source_memo,
+                      }
+                    end
+    result[:dish_source_relation] = dish_relation
+    result[:evaluation_score] = dish_evaluation&.score
+    result[:tags] = (dish_tags.presence || []).map(&:attributes)
+
+    result.with_indifferent_access
   end
 end

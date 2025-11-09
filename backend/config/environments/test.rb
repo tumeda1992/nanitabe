@@ -61,4 +61,10 @@ Rails.application.configure do
   config.hosts << "www.example.com" # NOTE: rspec実行時ホスト
 
   config.factory_bot.definition_file_paths = ["spec/support/factories"]
+
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.bullet_logger = true
+    Bullet.raise = true # raise an error if n+1 query occurs
+  end
 end

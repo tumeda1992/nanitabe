@@ -2,6 +2,10 @@ class DishTag < ApplicationRecord
   belongs_to :dish
   belongs_to :user
 
+  scope :matching_normalized_content, ->(word) {
+    where("COALESCE(dish_tags.normalized_content, dish_tags.content) LIKE ?", "%#{word}%")
+  }
+
   class << self
     def build_existing_roots_of_dish(dish_id)
       where(dish_id:).map do |tag_record|

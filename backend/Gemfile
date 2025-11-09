@@ -52,6 +52,7 @@ group :development, :test do
   gem "rubocop"
   gem "spring-commands-rspec"
   gem "factory_bot_rails"
+  gem "bullet"
 end
 
 group :development do

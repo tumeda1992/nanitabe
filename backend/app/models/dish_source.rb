@@ -2,6 +2,10 @@ class DishSource < ApplicationRecord
   belongs_to :user
   self.inheritance_column = :_type_disabled
 
+  scope :matching_normalized_name, ->(word) {
+    where("dish_sources.name LIKE ?", "%#{word}%")
+  }
+
   class << self
     def build_from_food_dish_source_root(food_dish_source_root)
       new(

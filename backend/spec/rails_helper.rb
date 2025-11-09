@@ -24,6 +24,9 @@ require_relative "./support/expectation_comparer"
 #
 # Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
 
+# Query counter helper for detecting N+1 queries
+require Rails.root.join('spec', 'support', 'query_counter.rb')
+
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
 begin

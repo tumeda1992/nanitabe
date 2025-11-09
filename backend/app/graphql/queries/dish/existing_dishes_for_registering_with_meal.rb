@@ -14,7 +14,7 @@ module Queries::Dish
     type [ExistingDishForRegisteringWithMeal, { null: false }], null: false
 
     def resolve(search_string: nil, dish_id_registered_with_meal: nil, meal_position: nil, registered_with_meal: nil)
-      ::Application::Finder::DishesForRegisteringWithMeal.call(
+      ::Business::Food::Dish::Usecase::DishSearcher.call(
         access_user_id: context[:current_user_id],
         search_string:,
         dish_id_registered_with_meal:,
