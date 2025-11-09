@@ -37,6 +37,10 @@ module Business::Food::Dish
       self.name = Name.initialize_and_normalize(new_name)
     end
 
+    def renormalize_name
+      self.name = Name.initialize_and_normalize(self.name.value)
+    end
+
     def reposition_in_meal(new_meal_position)
       raise "料理の位置は空にできません。" if new_meal_position.blank?
 
