@@ -249,5 +249,67 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
         expect(hamburg_index).to be < low_rated_index # 3.5 > 2.0
       end
     end
+
+    context "response structure" do
+      it "includes all required dish fields" do
+        result = described_class.call(
+          access_user_id: user_record.id
+        )
+
+        dish_result = result.first
+        expect(dish_result).not_to be_nil
+
+        # 基本フィールドの存在確認
+        expect(dish_result).to respond_to(:id)
+        expect(dish_result).to respond_to(:name)
+        expect(dish_result).to respond_to(:normalized_name)
+        expect(dish_result).to respond_to(:meal_position)
+        expect(dish_result).to respond_to(:user_id)
+        expect(dish_result).to respond_to(:comment)
+        expect(dish_result).to respond_to(:dish_source_name)
+        expect(dish_result).to respond_to(:evaluation_score)
+
+        # 基本フィールドの値チェック
+        expect(dish_result.id).to be_a(Integer)
+        expect(dish_result.name).to be_a(String)
+        expect(dish_result.meal_position).to be_a(Integer)
+        expect(dish_result.user_id).to eq(user_record.id)
+      end
+
+      context "when dish has all optional relations" do
+        it "includes related data correctly" do
+          result = described_class.call(
+            access_user_id: user_record.id
+          )
+
+          dish_with_relations = result.find { |d| d.name == "チキンカレー" }
+          expect(dish_with_relations).not_to be_nil
+          expect(dish_with_relations.evaluation_score).to eq(4.5)
+          expect(dish_with_relations.evaluation_score).to be_a(Float).or(be_a(BigDecimal))
+        end
+      end
+
+      context "when dish has no optional relations" do
+        let!(:minimal_dish) do
+          FactoryBot.create(:dish,
+            user: user_record,
+            name: "シンプルな料理",
+            normalized_name: "シンプルな料理",
+            meal_position: 1
+          )
+        end
+
+        it "returns nil for missing optional fields" do
+          result = described_class.call(
+            access_user_id: user_record.id
+          )
+
+          simple_dish = result.find { |d| d.name == "シンプルな料理" }
+          expect(simple_dish).not_to be_nil
+          expect(simple_dish.dish_source_name).to be_nil
+          expect(simple_dish.evaluation_score).to be_nil
+        end
+      end
+    end
   end
 end
