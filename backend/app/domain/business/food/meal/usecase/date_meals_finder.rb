@@ -19,22 +19,7 @@ module Business::Food::Meal
 
       meals.map do |meal|
         result_meal = meal.attributes
-        result_meal[:dish] = meal.dish.attributes
-
-        dish_relation = if meal.dish&.dish_source_relation.present? && meal.dish&.dish_source.present?
-                          {
-                            dish_id: meal.dish.dish_source_relation.dish_id,
-                            type: meal.dish.dish_source.type,
-                            source_name: meal.dish.dish_source.name,
-                            dish_source_id: meal.dish.dish_source.id,
-                            recipe_book_page: meal.dish.dish_source_relation.recipe_book_page,
-                            recipe_website_url: meal.dish.dish_source_relation.recipe_website_url,
-                            recipe_source_memo: meal.dish.dish_source_relation.recipe_source_memo,
-                          }
-                        end
-        result_meal[:dish][:dish_source_relation] = dish_relation
-        result_meal[:dish][:evaluation_score] = meal.dish.dish_evaluation&.score
-        result_meal[:dish][:tags] = (meal.dish.dish_tags.presence || []).map(&:attributes)
+        result_meal[:dish] = meal.dish.to_searched_values
 
         result_meal.with_indifferent_access
       end.group_by { |meal| meal[:date] }

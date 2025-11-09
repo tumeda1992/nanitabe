@@ -323,6 +323,147 @@ RSpec.describe Dish, type: :model do
     end
   end
 
+  describe "#to_searched_values" do
+    let(:dish) { FactoryBot.create(:dish, user: user_record, name: "test_dish", meal_position: 1, comment: "test comment") }
+
+    context "with no associations" do
+      before do
+        dish.reload
+      end
+
+      it "returns hash with basic dish attributes" do
+        result = dish.to_searched_values
+
+        expect(result).to be_a(Hash)
+        expect(result[:id]).to eq(dish.id)
+        expect(result[:name]).to eq(dish.name)
+        expect(result[:meal_position]).to eq(dish.meal_position)
+        expect(result[:comment]).to eq(dish.comment)
+        expect(result[:dish_source_relation]).to be_nil
+        expect(result[:evaluation_score]).to be_nil
+        expect(result[:tags]).to eq([])
+      end
+    end
+
+    context "with dish_source_relation (recipe book)" do
+      let(:dish_source) { FactoryBot.create(:dish_source, user: user_record, type: Business::Food::Dish::Source::Type::RECIPE_BOOK, name: "Test Book") }
+      let(:page_number) { 123 }
+
+      before do
+        DishSourceRelation.create!(
+          dish: dish,
+          dish_source: dish_source,
+          recipe_book_page: page_number
+        )
+        dish.reload
+      end
+
+      it "returns hash with dish_source_relation" do
+        loaded_dish = Dish.eager_load(:dish_source, :dish_source_relation).find(dish.id)
+        result = loaded_dish.to_searched_values
+
+        expect(result[:dish_source_relation]).to be_a(Hash)
+        expect(result[:dish_source_relation][:dish_id]).to eq(dish.id)
+        expect(result[:dish_source_relation][:type]).to eq(Business::Food::Dish::Source::Type::RECIPE_BOOK)
+        expect(result[:dish_source_relation][:source_name]).to eq("Test Book")
+        expect(result[:dish_source_relation][:dish_source_id]).to eq(dish_source.id)
+        expect(result[:dish_source_relation][:recipe_book_page]).to eq(page_number)
+        expect(result[:dish_source_relation][:recipe_website_url]).to be_nil
+        expect(result[:dish_source_relation][:recipe_source_memo]).to be_nil
+      end
+    end
+
+    context "with dish_source_relation (website)" do
+      let(:dish_source) { FactoryBot.create(:dish_source, user: user_record, type: Business::Food::Dish::Source::Type::WEBSITE, name: "Recipe Site") }
+      let(:website_url) { "https://example.com/recipe" }
+
+      before do
+        DishSourceRelation.create!(
+          dish: dish,
+          dish_source: dish_source,
+          recipe_website_url: website_url
+        )
+        dish.reload
+      end
+
+      it "returns hash with dish_source_relation" do
+        loaded_dish = Dish.eager_load(:dish_source, :dish_source_relation).find(dish.id)
+        result = loaded_dish.to_searched_values
+
+        expect(result[:dish_source_relation]).to be_a(Hash)
+        expect(result[:dish_source_relation][:type]).to eq(Business::Food::Dish::Source::Type::WEBSITE)
+        expect(result[:dish_source_relation][:source_name]).to eq("Recipe Site")
+        expect(result[:dish_source_relation][:recipe_website_url]).to eq(website_url)
+        expect(result[:dish_source_relation][:recipe_book_page]).to be_nil
+      end
+    end
+
+    context "with dish_evaluation" do
+      let(:evaluation_score) { 4.5 }
+
+      before do
+        FactoryBot.create(:dish_evaluation, dish: dish, score: evaluation_score)
+        dish.reload
+      end
+
+      it "returns hash with evaluation_score" do
+        loaded_dish = Dish.eager_load(:dish_evaluation).find(dish.id)
+        result = loaded_dish.to_searched_values
+
+        expect(result[:evaluation_score]).to eq(evaluation_score)
+      end
+    end
+
+    context "with dish_tags" do
+      let!(:tag1) { FactoryBot.create(:dish_tag, dish: dish, content: "tag1", normalized_content: "tag1_normalized") }
+      let!(:tag2) { FactoryBot.create(:dish_tag, dish: dish, content: "tag2", normalized_content: "tag2_normalized") }
+
+      before do
+        dish.reload
+      end
+
+      it "returns hash with tags array" do
+        loaded_dish = Dish.eager_load(:dish_tags).find(dish.id)
+        result = loaded_dish.to_searched_values
+
+        expect(result[:tags]).to be_an(Array)
+        expect(result[:tags].size).to eq(2)
+        expect(result[:tags].first).to be_a(Hash)
+        expect(result[:tags].map { |t| t[:content] }).to contain_exactly("tag1", "tag2")
+      end
+    end
+
+    context "with all associations" do
+      let(:dish_source) { FactoryBot.create(:dish_source, user: user_record, type: Business::Food::Dish::Source::Type::RECIPE_BOOK, name: "Complete Book") }
+      let(:page_number) { 200 }
+      let(:evaluation_score) { 5.0 }
+      let!(:tag1) { FactoryBot.create(:dish_tag, dish: dish, content: "delicious") }
+
+      before do
+        DishSourceRelation.create!(
+          dish: dish,
+          dish_source: dish_source,
+          recipe_book_page: page_number
+        )
+        FactoryBot.create(:dish_evaluation, dish: dish, score: evaluation_score)
+        dish.reload
+      end
+
+      it "returns complete hash with all associations" do
+        loaded_dish = Dish.eager_load(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags).find(dish.id)
+        result = loaded_dish.to_searched_values
+
+        expect(result[:id]).to eq(dish.id)
+        expect(result[:name]).to eq(dish.name)
+        expect(result[:dish_source_relation]).to be_a(Hash)
+        expect(result[:dish_source_relation][:source_name]).to eq("Complete Book")
+        expect(result[:evaluation_score]).to eq(evaluation_score)
+        expect(result[:tags]).to be_an(Array)
+        expect(result[:tags].size).to eq(1)
+      end
+    end
+  end
+
   describe "scopes" do
     describe ".for_user" do
       let(:user1) { FactoryBot.create(:user, id_param: "user_for_scope_test_1") }

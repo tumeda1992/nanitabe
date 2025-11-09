@@ -69,9 +69,20 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           access_user_id: user_record.id
         )
 
-        dish_names = result.map(&:name)
+        dish_names = result.map { |dish| dish[:name] }
         expect(dish_names).to include("チキンカレー", "ハンバーグ", "野菜カレー", "親子丼")
         expect(dish_names).not_to include("他人の料理")
+      end
+
+      it "does not trigger N+1 queries" do
+        # 期待されるクエリ数:
+        # 1. メインクエリ (Dishの検索 with JOIN)
+        # 2. DishSourceRelation preload
+        # 3. DishEvaluation preload
+        # 4. DishTag preload
+        expect_query_count(4) do
+          described_class.call(access_user_id: user_record.id)
+        end
       end
 
       it "includes dish source information" do
@@ -79,8 +90,9 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           access_user_id: user_record.id
         )
 
-        dish_with_source_result = result.find { |dish| dish.name == "親子丼" }
-        expect(dish_with_source_result.dish_source_name).to eq("料理本A")
+        dish_with_source_result = result.find { |dish| dish[:name] == "親子丼" }
+        expect(dish_with_source_result[:dish_source_relation]).to be_a(Hash)
+        expect(dish_with_source_result[:dish_source_relation][:source_name]).to eq("料理本A")
       end
 
       it "includes evaluation score" do
@@ -88,8 +100,8 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           access_user_id: user_record.id
         )
 
-        chicken_curry = result.find { |dish| dish.name == "チキンカレー" }
-        expect(chicken_curry.evaluation_score).to eq(4.5)
+        chicken_curry = result.find { |dish| dish[:name] == "チキンカレー" }
+        expect(chicken_curry[:evaluation_score]).to eq(4.5)
       end
     end
 
@@ -100,7 +112,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           search_string: "カレー"
         )
 
-        dish_names = result.map(&:name)
+        dish_names = result.map { |dish| dish[:name] }
         expect(dish_names).to include("チキンカレー", "野菜カレー")
         expect(dish_names).not_to include("ハンバーグ", "親子丼")
       end
@@ -111,7 +123,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           search_string: "料理本"
         )
 
-        dish_names = result.map(&:name)
+        dish_names = result.map { |dish| dish[:name] }
         expect(dish_names).to include("親子丼")
         expect(dish_names).not_to include("チキンカレー", "ハンバーグ")
       end
@@ -122,7 +134,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           search_string: "スパイス"
         )
 
-        dish_names = result.map(&:name)
+        dish_names = result.map { |dish| dish[:name] }
         expect(dish_names).to include("チキンカレー")
         expect(dish_names).not_to include("ハンバーグ", "野菜カレー")
       end
@@ -144,7 +156,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           meal_position: 1
         )
 
-        dish_names = result.map(&:name)
+        dish_names = result.map { |dish| dish[:name] }
         expect(dish_names).to include("チキンカレー", "ハンバーグ", "親子丼")
         expect(dish_names).not_to include("野菜カレー") # meal_position: 2
       end
@@ -161,7 +173,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           registered_with_meal: true
         )
 
-        dish_names = result.map(&:name)
+        dish_names = result.map { |dish| dish[:name] }
         expect(dish_names).to include("チキンカレー")
         expect(dish_names).not_to include("ハンバーグ", "野菜カレー", "親子丼")
       end
@@ -172,7 +184,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           registered_with_meal: false
         )
 
-        dish_names = result.map(&:name)
+        dish_names = result.map { |dish| dish[:name] }
         expect(dish_names).to include("ハンバーグ", "野菜カレー", "親子丼")
         expect(dish_names).not_to include("チキンカレー")
       end
@@ -185,11 +197,11 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           dish_id_registered_with_meal: dish2.id
         )
 
-        expect(result.first.id).to eq(dish2.id)
-        expect(result.first.name).to eq("ハンバーグ")
+        expect(result.first[:id]).to eq(dish2.id)
+        expect(result.first[:name]).to eq("ハンバーグ")
 
         # 指定した料理は結果の残りの部分からは除外される
-        remaining_dish_ids = result[1..-1].map(&:id)
+        remaining_dish_ids = result[1..-1].map { |dish| dish[:id] }
         expect(remaining_dish_ids).not_to include(dish2.id)
       end
 
@@ -199,9 +211,9 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           dish_id_registered_with_meal: dish1.id
         )
 
-        expect(result.first.id).to eq(dish1.id)
+        expect(result.first[:id]).to eq(dish1.id)
 
-        other_dish_names = result[1..-1].map(&:name)
+        other_dish_names = result[1..-1].map { |dish| dish[:name] }
         expect(other_dish_names).to include("ハンバーグ", "野菜カレー", "親子丼")
         expect(other_dish_names).not_to include("チキンカレー")
       end
@@ -215,7 +227,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           meal_position: 1
         )
 
-        dish_names = result.map(&:name)
+        dish_names = result.map { |dish| dish[:name] }
         expect(dish_names).to include("チキンカレー")
         expect(dish_names).not_to include("野菜カレー") # meal_position: 2
         expect(dish_names).not_to include("ハンバーグ", "親子丼")
@@ -239,10 +251,10 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
         )
 
         # 評価スコアの高い順に並んでいることを確認
-        chicken_curry_index = result.find_index { |dish| dish.name == "チキンカレー" }
-        vegetable_curry_index = result.find_index { |dish| dish.name == "野菜カレー" }
-        hamburg_index = result.find_index { |dish| dish.name == "ハンバーグ" }
-        low_rated_index = result.find_index { |dish| dish.name == "低評価料理" }
+        chicken_curry_index = result.find_index { |dish| dish[:name] == "チキンカレー" }
+        vegetable_curry_index = result.find_index { |dish| dish[:name] == "野菜カレー" }
+        hamburg_index = result.find_index { |dish| dish[:name] == "ハンバーグ" }
+        low_rated_index = result.find_index { |dish| dish[:name] == "低評価料理" }
 
         expect(chicken_curry_index).to be < vegetable_curry_index # 4.5 > 4.0
         expect(vegetable_curry_index).to be < hamburg_index # 4.0 > 3.5
@@ -258,22 +270,24 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
 
         dish_result = result.first
         expect(dish_result).not_to be_nil
+        expect(dish_result).to be_a(Hash)
 
         # 基本フィールドの存在確認
-        expect(dish_result).to respond_to(:id)
-        expect(dish_result).to respond_to(:name)
-        expect(dish_result).to respond_to(:normalized_name)
-        expect(dish_result).to respond_to(:meal_position)
-        expect(dish_result).to respond_to(:user_id)
-        expect(dish_result).to respond_to(:comment)
-        expect(dish_result).to respond_to(:dish_source_name)
-        expect(dish_result).to respond_to(:evaluation_score)
+        expect(dish_result).to have_key(:id)
+        expect(dish_result).to have_key(:name)
+        expect(dish_result).to have_key(:normalized_name)
+        expect(dish_result).to have_key(:meal_position)
+        expect(dish_result).to have_key(:user_id)
+        expect(dish_result).to have_key(:comment)
+        expect(dish_result).to have_key(:dish_source_relation)
+        expect(dish_result).to have_key(:evaluation_score)
+        expect(dish_result).to have_key(:tags)
 
         # 基本フィールドの値チェック
-        expect(dish_result.id).to be_a(Integer)
-        expect(dish_result.name).to be_a(String)
-        expect(dish_result.meal_position).to be_a(Integer)
-        expect(dish_result.user_id).to eq(user_record.id)
+        expect(dish_result[:id]).to be_a(Integer)
+        expect(dish_result[:name]).to be_a(String)
+        expect(dish_result[:meal_position]).to be_a(Integer)
+        expect(dish_result[:user_id]).to eq(user_record.id)
       end
 
       context "when dish has all optional relations" do
@@ -282,10 +296,12 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
             access_user_id: user_record.id
           )
 
-          dish_with_relations = result.find { |d| d.name == "チキンカレー" }
+          dish_with_relations = result.find { |d| d[:name] == "チキンカレー" }
           expect(dish_with_relations).not_to be_nil
-          expect(dish_with_relations.evaluation_score).to eq(4.5)
-          expect(dish_with_relations.evaluation_score).to be_a(Float).or(be_a(BigDecimal))
+          expect(dish_with_relations[:evaluation_score]).to eq(4.5)
+          expect(dish_with_relations[:evaluation_score]).to be_a(Float).or(be_a(BigDecimal))
+          expect(dish_with_relations[:tags]).to be_an(Array)
+          expect(dish_with_relations[:tags].size).to eq(2)
         end
       end
 
@@ -304,10 +320,11 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
             access_user_id: user_record.id
           )
 
-          simple_dish = result.find { |d| d.name == "シンプルな料理" }
+          simple_dish = result.find { |d| d[:name] == "シンプルな料理" }
           expect(simple_dish).not_to be_nil
-          expect(simple_dish.dish_source_name).to be_nil
-          expect(simple_dish.evaluation_score).to be_nil
+          expect(simple_dish[:dish_source_relation]).to be_nil
+          expect(simple_dish[:evaluation_score]).to be_nil
+          expect(simple_dish[:tags]).to eq([])
         end
       end
     end

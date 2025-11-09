@@ -49,7 +49,13 @@ module Business::Food::Dish
                         end
       end
 
-      [registered_dish_with_meal, dish_relation].flatten.compact
+      dishes = [registered_dish_with_meal, dish_relation].flatten.compact
+
+      # N+1問題を避けるため、to_searched_valuesで必要な関連データを事前にロード
+      # search_outputでGROUP BYを使用しているため、eager_loadが機能しない関連データをここでpreload
+      ActiveRecord::Associations::Preloader.new(records: dishes, associations: [:dish_source_relation, :dish_evaluation, :dish_tags]).call
+
+      dishes.map(&:to_searched_values)
     end
   end
 end

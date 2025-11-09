@@ -110,4 +110,25 @@ class Dish < ApplicationRecord
 
     self
   end
+
+  def to_searched_values
+    result = attributes
+
+    dish_relation = if dish_source_relation.present? && dish_source.present?
+                      {
+                        dish_id: dish_source_relation.dish_id,
+                        type: dish_source.type,
+                        source_name: dish_source.name,
+                        dish_source_id: dish_source.id,
+                        recipe_book_page: dish_source_relation.recipe_book_page,
+                        recipe_website_url: dish_source_relation.recipe_website_url,
+                        recipe_source_memo: dish_source_relation.recipe_source_memo,
+                      }
+                    end
+    result[:dish_source_relation] = dish_relation
+    result[:evaluation_score] = dish_evaluation&.score
+    result[:tags] = (dish_tags.presence || []).map(&:attributes)
+
+    result.with_indifferent_access
+  end
 end
