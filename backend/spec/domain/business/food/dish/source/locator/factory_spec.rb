@@ -29,8 +29,11 @@ RSpec.describe Business::Food::Dish::Source::Locator::Factory do
         expect(locator.url).to eq(url)
       end
 
-      it "raises error when url is missing" do
-        expect { described_class.build(:website) }.to raise_error(ArgumentError)
+      it "creates Website locator with empty url" do
+        locator = described_class.build(:website)
+
+        expect(locator).to be_an_instance_of(Business::Food::Dish::Source::Locator::RecipeWebsite)
+        expect(locator.url).to eq(nil)
       end
 
       it "raises error when url is invalid" do

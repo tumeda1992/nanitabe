@@ -11,7 +11,7 @@ RSpec.describe Business::Food::Dish::Factory do
       let(:comment) { "delicious" }
 
       before do
-        allow(Business::Dish::Word::Normalize::Command::NormalizeCommand)
+        allow(Business::Food::Dish::Word::Usecase::NormalizeCommand)
           .to receive(:call)
           .with(string_sequence: name)
           .and_return("カツ丼")
@@ -27,7 +27,6 @@ RSpec.describe Business::Food::Dish::Factory do
         expect(dish.meal_position).to eq(meal_position)
         expect(dish.comment).to eq(comment)
       end
-
     end
 
     context "with invalid parameters" do

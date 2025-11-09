@@ -22,7 +22,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
   end
 
   before do
-    allow(Business::Dish::Word::Normalize::Command::NormalizeCommand)
+    allow(Business::Food::Dish::Word::Usecase::NormalizeCommand)
       .to receive(:call)
       .with(string_sequence: dish_name)
       .and_return(normalized_dish_name)

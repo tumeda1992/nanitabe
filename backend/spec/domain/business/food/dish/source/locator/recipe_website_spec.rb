@@ -16,6 +16,18 @@ RSpec.describe Business::Food::Dish::Source::Locator::RecipeWebsite do
       end
     end
 
+    context "with empty URL" do
+      it "create empty URL" do
+        locator = described_class.new("")
+        expect(locator.url).to eq(nil)
+      end
+
+      it "create empty URL" do
+        locator = described_class.new(nil)
+        expect(locator.url).to eq(nil)
+      end
+    end
+
     context "with invalid URL" do
       it "raises error for non-HTTP URL" do
         expect { described_class.new("ftp://example.com") }.to raise_error(ArgumentError, "Invalid URL")
@@ -23,14 +35,6 @@ RSpec.describe Business::Food::Dish::Source::Locator::RecipeWebsite do
 
       it "raises error for malformed URL" do
         expect { described_class.new("not-a-url") }.to raise_error(ArgumentError, "Invalid URL")
-      end
-
-      it "raises error for empty string" do
-        expect { described_class.new("") }.to raise_error(ArgumentError, "Invalid URL")
-      end
-
-      it "raises error for nil" do
-        expect { described_class.new(nil) }.to raise_error(ArgumentError)
       end
     end
   end

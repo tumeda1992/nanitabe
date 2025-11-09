@@ -37,7 +37,7 @@ RSpec.describe Business::Food::Dish::Tag::Content, type: :model do
     let(:normalized_value) { "辛い料理" }
 
     before do
-      allow(Business::Dish::Word::Normalize::Command::NormalizeCommand)
+      allow(Business::Food::Dish::Word::Usecase::NormalizeCommand)
         .to receive(:call)
         .with(string_sequence: value)
         .and_return(normalized_value)
@@ -54,7 +54,7 @@ RSpec.describe Business::Food::Dish::Tag::Content, type: :model do
     it "calls the normalize command" do
       described_class.initialize_and_normalize(value)
 
-      expect(Business::Dish::Word::Normalize::Command::NormalizeCommand)
+      expect(Business::Food::Dish::Word::Usecase::NormalizeCommand)
         .to have_received(:call)
         .with(string_sequence: value)
     end
@@ -65,7 +65,7 @@ RSpec.describe Business::Food::Dish::Tag::Content, type: :model do
     let(:normalized_value) { "辛い料理" }
 
     before do
-      allow(Business::Dish::Word::Normalize::Command::NormalizeCommand)
+      allow(Business::Food::Dish::Word::Usecase::NormalizeCommand)
         .to receive(:call)
         .with(string_sequence: value)
         .and_return(normalized_value)
@@ -85,7 +85,7 @@ RSpec.describe Business::Food::Dish::Tag::Content, type: :model do
       it "does not call normalize command" do
         described_class.initialize_with_normalizing_if_need(value, provided_normalized)
 
-        expect(Business::Dish::Word::Normalize::Command::NormalizeCommand)
+        expect(Business::Food::Dish::Word::Usecase::NormalizeCommand)
           .not_to have_received(:call)
       end
     end
@@ -102,7 +102,7 @@ RSpec.describe Business::Food::Dish::Tag::Content, type: :model do
       it "calls the normalize command" do
         described_class.initialize_with_normalizing_if_need(value, "")
 
-        expect(Business::Dish::Word::Normalize::Command::NormalizeCommand)
+        expect(Business::Food::Dish::Word::Usecase::NormalizeCommand)
           .to have_received(:call)
           .with(string_sequence: value)
       end
@@ -120,7 +120,7 @@ RSpec.describe Business::Food::Dish::Tag::Content, type: :model do
       it "calls the normalize command" do
         described_class.initialize_with_normalizing_if_need(value, nil)
 
-        expect(Business::Dish::Word::Normalize::Command::NormalizeCommand)
+        expect(Business::Food::Dish::Word::Usecase::NormalizeCommand)
           .to have_received(:call)
           .with(string_sequence: value)
       end
