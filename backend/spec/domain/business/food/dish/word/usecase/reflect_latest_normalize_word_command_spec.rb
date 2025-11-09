@@ -43,6 +43,40 @@ RSpec.describe Business::Food::Dish::Word::Usecase::ReflectLatestNormalizeWordCo
         expect(dish1.normalized_name).to eq("ヒラガナ")
       end
 
+      context "when dish has tags" do
+        let!(:dish_with_tags) do
+          dish = Dish.create!(
+            user: user_record,
+            name: "タグ付き料理",
+            normalized_name: "タグ付き料理",
+            meal_position: 1
+          )
+          # タグを直接DBに挿入（古い正規化値で）
+          DishTag.create!(
+            user: user_record,
+            dish: dish,
+            content: "ひらがなたぐ",
+            normalized_content: "OLD_TAG_VALUE"
+          )
+          dish
+        end
+
+        it "re-normalizes dish tags content" do
+          described_class.call
+
+          tags = DishTag.where(dish_id: dish_with_tags.id)
+          expect(tags.count).to eq(1)
+
+          tag = tags.first
+          # 正規化が実行されたことを確認
+          expect(tag.normalized_content).not_to eq("OLD_TAG_VALUE")
+          # 基本的な正規化が適用されている
+          expect(tag.normalized_content).to eq("ヒラガナタグ")
+          # 元の値は保持される
+          expect(tag.content).to eq("ひらがなたぐ")
+        end
+      end
+
       it "preserves the original name" do
         described_class.call
 
