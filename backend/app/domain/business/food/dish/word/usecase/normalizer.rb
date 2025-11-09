@@ -1,5 +1,5 @@
 module Business::Food::Dish::Word
-  class Usecase::NormalizeCommand < ::Business::Base::Command
+  class Usecase::Normalizer < ::Business::Base::Command
     attribute :string_sequence, :string
     validates :string_sequence, presence: true
 

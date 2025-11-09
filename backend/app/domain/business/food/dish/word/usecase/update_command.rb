@@ -12,12 +12,12 @@ module Business::Food::Dish::Word
     def call
       existing_normalize_word = NormalizeWord.find(normalize_word_id)
 
-      normalized_source = Usecase::NormalizeCommand.call(
+      normalized_source = Usecase::Normalizer.call(
         string_sequence: source,
         use_db_normalize_word: false
       )
       normalized_destination = if destination.present?
-                                 Usecase::NormalizeCommand.call(
+                                 Usecase::Normalizer.call(
                                    string_sequence: destination,
                                    use_db_normalize_word: false
                                  )

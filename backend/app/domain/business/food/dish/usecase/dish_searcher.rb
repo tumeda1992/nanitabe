@@ -28,7 +28,7 @@ module Business::Food::Dish
       dish_relation = dish_relation.where.not(id: registered_dish_with_meal.id) if registered_dish_with_meal.present?
 
       if search_string.present?
-        normalized_search_string = ::Business::Food::Dish::Word::Usecase::NormalizeCommand.call(string_sequence: search_string)
+        normalized_search_string = ::Business::Food::Dish::Word::Usecase::Normalizer.call(string_sequence: search_string)
         dish_relation = normalized_search_string.split.reduce(dish_relation) do |relation, word|
           relation.merge(
             Dish.matching_normalized_name(word)

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Business::Food::Dish::Word::Usecase::NormalizeCommand do
+RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
   describe "validations" do
     context "when string_sequence is missing" do
       it "raises validation error" do

@@ -28,7 +28,7 @@ RSpec.describe Business::Food::Dish::Name, type: :model do
 
   describe '.initialize_and_normalize' do
     it 'creates instance with normalized value' do
-      allow(::Business::Food::Dish::Word::Usecase::NormalizeCommand)
+      allow(::Business::Food::Dish::Word::Usecase::Normalizer)
         .to receive(:call)
         .with(string_sequence: 'カレーライス')
         .and_return('かれーらいす')
@@ -42,7 +42,7 @@ RSpec.describe Business::Food::Dish::Name, type: :model do
 
     context 'when normalize command returns different value' do
       before do
-        allow(::Business::Food::Dish::Word::Usecase::NormalizeCommand)
+        allow(::Business::Food::Dish::Word::Usecase::Normalizer)
           .to receive(:call)
                 .with(string_sequence: 'ハンバーグ')
                 .and_return('はんばーぐ')

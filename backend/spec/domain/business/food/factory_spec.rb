@@ -11,7 +11,7 @@ RSpec.describe Business::Food::Dish::Factory do
       let(:comment) { "delicious" }
 
       before do
-        allow(Business::Food::Dish::Word::Usecase::NormalizeCommand)
+        allow(Business::Food::Dish::Word::Usecase::Normalizer)
           .to receive(:call)
           .with(string_sequence: name)
           .and_return("カツ丼")

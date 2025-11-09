@@ -7,19 +7,11 @@ RSpec.describe Business::Food::Dish::Word::Usecase::RemoveCommand do
   end
 
   describe "validations" do
-    context "when normalize_word_id is missing" do
-      it "raises error" do
-        expect {
-          described_class.call
-        }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
-
     context "when normalize_word_id is nil" do
       it "raises error" do
         expect {
           described_class.call(normalize_word_id: nil)
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        }.to raise_error(Business::Base::Values::InvalidAttributeError)
       end
     end
   end

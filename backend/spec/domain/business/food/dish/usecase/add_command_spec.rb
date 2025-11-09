@@ -20,7 +20,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
 
   before do
     # Mock the normalize command
-    allow(Business::Food::Dish::Word::Usecase::NormalizeCommand)
+    allow(Business::Food::Dish::Word::Usecase::Normalizer)
       .to receive(:call)
       .with(string_sequence: dish_name)
       .and_return(normalized_dish_name)
