@@ -6,7 +6,7 @@ module Queries::Meal
     type [Types::Output::Meal::CalenderMeal::MealsOfDate, { null: false }], null: false
 
     def resolve(start_date:, last_date:)
-      ::Application::Finder::CalenderMeal::DateMealsFinder.call(
+      ::Business::Food::Meal::Usecase::DateMealsFinder.call(
         access_user_id: context[:current_user_id],
         start_date:,
         last_date:,

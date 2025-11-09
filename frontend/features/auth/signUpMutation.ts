@@ -38,7 +38,8 @@ const SignupSchema = z
     }
   });
 
-export type Signup = z.infer<typeof SignupSchema>;
+export type SignupInput = z.infer<typeof SignupSchema>;
+export type Signup = Required<SignupInput>;
 export const useSignup = () => {
   const [signupMutation, { loading: signupLoading, error: signupError }] =
     useSignupMutation();

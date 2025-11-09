@@ -16,6 +16,11 @@ module Mutations::Dish::Source
           ),
         )
 
+        ::Business::Food::Dish::Source::Usecase::UpdateCommand.call(
+          user_id: context[:current_user_id],
+          source_params: dish_source.convert_to_command_param(use_food_module: true),
+        )
+
         {
           dish_source_id: dish_source.id,
         }

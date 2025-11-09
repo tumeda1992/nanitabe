@@ -9,6 +9,7 @@ module Application::Finder
 
     attribute :dish_id_registered_with_meal, :integer
 
+    # DEPRECATED: Business::Food::Dish::Usecase::DishSearcher に置き換え
     def fetch
       # 追加したい取得ロジック
       # - order

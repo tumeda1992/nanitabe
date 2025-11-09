@@ -1,4 +1,4 @@
-import { useFormContext } from 'react-hook-form';
+import { FieldError, useFormContext } from 'react-hook-form';
 import { Form } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import useDish from '../../../../features/dish/useDish';
@@ -96,7 +96,7 @@ export const ExistingDishesForRegisteringWithMeal = (
           )}
         </div>
       </div>
-      <ErrorMessageIfExist errorMessage={errors.dishId?.message} />
+      <ErrorMessageIfExist fieldError={errors.dishId as FieldError} />
     </FormFieldWrapperWithLabel>
   );
 };

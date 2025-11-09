@@ -23,6 +23,7 @@ module Mutations::Dish
           }
         ) {
             dishId
+            dishSourceId
           }
         }
       GRAPHQL

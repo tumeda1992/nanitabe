@@ -1,5 +1,10 @@
 import React from 'react';
-import { useForm, FormProvider, useFormContext } from 'react-hook-form';
+import {
+  useForm,
+  FormProvider,
+  useFormContext,
+  FieldError,
+} from 'react-hook-form';
 import { Button, Form } from 'react-bootstrap';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FormFieldWrapperWithLabel from '../../../common/form/FormFieldWrapperWithLabel';
@@ -10,6 +15,7 @@ import {
   DISH_SOURCE_TYPES,
 } from '../../../../features/dish/source/const';
 import { DishSource } from '../../../../lib/graphql/generated/graphql';
+import { AddOrUpdateDishSourceInput } from './types';
 
 type DishSourceFormContentProps = {
   registeredDishSource?: DishSource;
@@ -20,7 +26,7 @@ export const DishSourceFormContent = (props: DishSourceFormContentProps) => {
   const {
     register,
     formState: { errors },
-  } = useFormContext();
+  } = useFormContext<AddOrUpdateDishSourceInput>();
 
   return (
     <div>
@@ -67,7 +73,9 @@ export const DishSourceFormContent = (props: DishSourceFormContentProps) => {
             </option>
           ))}
         </Form.Select>
-        <ErrorMessageIfExist errorMessage={errors.dishSource?.type?.message} />
+        <ErrorMessageIfExist
+          fieldError={errors.dishSource?.type as FieldError}
+        />
       </FormFieldWrapperWithLabel>
     </div>
   );
