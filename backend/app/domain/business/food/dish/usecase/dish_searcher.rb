@@ -17,6 +17,7 @@ module Business::Food::Dish
                                     ::Dish.where(id: dish_id_registered_with_meal)
                                           .with_search_relations
                                           .search_output
+                                          .to_a
                                           .first
                                   end
 
@@ -43,18 +44,13 @@ module Business::Food::Dish
 
       unless registered_with_meal.nil? # boolean値なので、blank?ではなくnil?で判定
         dish_relation = if registered_with_meal
-                          dish_relation.having("COUNT(meals.id) > 0")
+                          dish_relation.where("COALESCE(meal_counts.meals_count, 0) > 0")
                         else
-                          dish_relation.having("COUNT(meals.id) = 0")
+                          dish_relation.where("COALESCE(meal_counts.meals_count, 0) = 0")
                         end
       end
 
       dishes = [registered_dish_with_meal, dish_relation].flatten.compact
-
-      # N+1問題を避けるため、to_searched_valuesで必要な関連データを事前にロード
-      # search_outputでGROUP BYを使用しているため、eager_loadが機能しない関連データをここでpreload
-      ActiveRecord::Associations::Preloader.new(records: dishes, associations: [:dish_source_relation, :dish_evaluation, :dish_tags]).call
-
       dishes.map(&:to_searched_values)
     end
   end

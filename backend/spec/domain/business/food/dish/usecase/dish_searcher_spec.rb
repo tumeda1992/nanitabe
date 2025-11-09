@@ -76,11 +76,9 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
 
       it "does not trigger N+1 queries" do
         # 期待されるクエリ数:
-        # 1. メインクエリ (Dishの検索 with JOIN)
-        # 2. DishSourceRelation preload
-        # 3. DishEvaluation preload
-        # 4. DishTag preload
-        expect_query_count(4) do
+        # 1. メインクエリのみ（eager_loadで全関連データ + サブクエリでmeals_countを取得）
+        # GROUP BYを使わないため、eager_loadが正常に機能する
+        expect_query_count(1) do
           described_class.call(access_user_id: user_record.id)
         end
       end

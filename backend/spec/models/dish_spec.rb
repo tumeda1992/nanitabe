@@ -547,13 +547,15 @@ RSpec.describe Dish, type: :model do
       end
 
       it "includes dish_source_name in select" do
-        result = described_class.with_search_relations.search_output.find_by(id: dish1.id)
+        results = described_class.with_search_relations.search_output.to_a
+        result = results.find { |d| d.id == dish1.id }
 
         expect(result.dish_source_name).to eq("Source1")
       end
 
       it "includes evaluation_score in select" do
-        result = described_class.with_search_relations.search_output.find_by(id: dish1.id)
+        results = described_class.with_search_relations.search_output.to_a
+        result = results.find { |d| d.id == dish1.id }
 
         expect(result.evaluation_score).to eq(5.0)
       end
@@ -576,10 +578,11 @@ RSpec.describe Dish, type: :model do
         expect(top_two_ids).to contain_exactly(dish1.id, dish3.id)
       end
 
-      it "groups by dishes.id" do
+      it "uses subquery for meal counts instead of GROUP BY" do
         result = described_class.with_search_relations.search_output
 
-        expect(result.group_values).to include("dishes.id")
+        # GROUP BYを使わないアプローチに変更されたことを確認
+        expect(result.group_values).to be_empty
       end
     end
 
