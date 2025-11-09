@@ -11,6 +11,7 @@ module Business::Food::Meal
       meals = ::Meal.where(user_id: access_user_id)
                     .where(date: start_date..last_date)
                     .eager_load(:dish)
+                    # merge(Dish.with_search_relations) としたかったが、eager_loadだと動かないらしいので泣く泣く断念
                     .eager_load(dish: :dish_evaluation)
                     .eager_load(dish: :dish_source)
                     .eager_load(dish: :dish_source_relation)

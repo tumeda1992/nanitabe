@@ -42,6 +42,21 @@ class Dish < ApplicationRecord
     where("COALESCE(dishes.normalized_name, dishes.name) LIKE ?", "%#{word}%")
   }
 
+  # 食事登録の有無で絞り込み
+  # registered: true -> 食事に登録されている料理のみ
+  # registered: false -> 食事に登録されていない料理のみ
+  # registered: nil -> フィルタリングしない（全て）
+  # 注意: with_search_relations スコープと一緒に使う必要がある（meal_counts.meals_count を使用）
+  scope :by_meal_registration, ->(registered = nil) {
+    return all if registered.nil?
+
+    if registered
+      where("COALESCE(meal_counts.meals_count, 0) > 0")
+    else
+      where("COALESCE(meal_counts.meals_count, 0) = 0")
+    end
+  }
+
   class << self
     def build_existing_root_from_id(id)
       dish_record = find_by(id: id)
