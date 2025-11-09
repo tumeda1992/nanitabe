@@ -8,7 +8,7 @@ module Business::Food::Dish::Tag
 
     class << self
       def initialize_and_normalize(value)
-        normalized_value = ::Business::Dish::Word::Normalize::Command::NormalizeCommand.call(string_sequence: value)
+        normalized_value = ::Business::Food::Dish::Word::Usecase::Normalizer.call(string_sequence: value)
         new(value:, normalized: normalized_value)
       end
 

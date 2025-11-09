@@ -13,5 +13,9 @@ module Business::Food::Dish::Tag
 
       self.id = new_id
     end
+
+    def renormalize_content
+      self.content = Content.initialize_and_normalize(self.content.value)
+    end
   end
 end

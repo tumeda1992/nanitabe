@@ -45,7 +45,7 @@ RSpec.describe Business::Food::Dish::Root, type: :model do
     let(:normalized_new_name) { "new_dish_name_normalized" }
 
     before do
-      allow(::Business::Dish::Word::Normalize::Command::NormalizeCommand)
+      allow(::Business::Food::Dish::Word::Usecase::Normalizer)
         .to receive(:call)
         .with(string_sequence: new_name)
         .and_return(normalized_new_name)
