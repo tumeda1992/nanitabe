@@ -17,25 +17,24 @@
 docker compose up -d
 docker compose stop
 docker compose down
-docker compose exec backend bundle exec rspec
-docker compose logs -f backend
+docker compose exec frontend yarn test
+docker compose logs -f frontend
 ```
 
 ### トラブルシューティング
 ```sh
 docker compose ps
 docker compose build --no-cache
-docker compose exec backend sh
+docker compose exec frontend sh
 docker volume ls
 docker network ls
 ```
 
 
-## 開発フロー（Rails）
+## 開発フロー
 ```sh
 docker compose up -d
-docker compose exec backend bundle install
-docker compose exec backend rails db:create db:migrate
-docker compose exec backend bundle exec rspec {specファイルパス}
+docker compose exec frontend yarn install
+docker compose exec frontend yarn test
 ```
 
