@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:24
 
 ARG appname=nanitabe_front
 ARG apppath="/root/$appname"
