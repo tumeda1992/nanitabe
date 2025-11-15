@@ -31,7 +31,6 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@aikidosec/safe-chain": "^1.1.7",
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-codegen/client-preset": "^4.2.5",
     "@graphql-codegen/introspection": "^4.0.3",
