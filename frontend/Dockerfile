@@ -7,6 +7,10 @@ WORKDIR $apppath
 
 COPY package.json yarn.lock ./
 
+RUN npm i -g @aikidosec/safe-chain
+RUN safe-chain setup
+RUN ["/bin/bash", "-c", "source ~/.bashrc"]
+
 RUN yarn install
 
 CMD [ "./entrypoint.sh" ]
