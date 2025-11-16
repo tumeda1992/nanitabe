@@ -5,6 +5,10 @@ import { AddDish } from '../../components/dish/DishForm';
 import { DISHSOURCES_PAGE_URL } from '../dishsources';
 import { parseIntOrNull } from '../../features/utils/numberUtils';
 
+export const getServerSideProps = async () => {
+  return { props: {} };
+};
+
 export default () => {
   const router = useRouter();
   const pathname = usePathname();
