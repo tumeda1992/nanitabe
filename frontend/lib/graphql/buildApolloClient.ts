@@ -1,13 +1,15 @@
 import { useMemo } from 'react';
 import {
   ApolloClient,
-  from,
   HttpLink,
   InMemoryCache,
   ApolloLink,
+  // CombinedGraphQLErrors,
+  // ServerError,
 } from '@apollo/client';
 import { ApolloServerErrorCode } from '@apollo/server/errors';
 import { onError } from '@apollo/client/link/error';
+// import { ErrorLink } from '@apollo/client/link/error';
 import merge from 'deepmerge';
 import isEqual from 'lodash/isEqual';
 import fetch from 'isomorphic-unfetch';
@@ -23,6 +25,32 @@ import { apiErrors } from './globalVars';
 export const APOLLO_STATE_PROP_NAME = '__APOLLO_STATE__';
 
 let apolloClient;
+// 4系にあげたときの書き方
+// const errorLink = new ErrorLink(({ error, result }) => {
+//   if (CombinedGraphQLErrors.is(error)) {
+//     error.errors.forEach(({ message }) => {
+//       console.log(`GraphQL error: ${message}`);
+//
+//       // client 3.1.4の時代の書き方
+//       // const { message, locations, path, extensions } = error;
+//       //
+//       // // TODO: インプット不正のときに無限リクエストが発生してしまう件を対処したかったが諦める。そもそもcodeはundefinedだし、無理やりnullを返しても何も変わらない
+//       // // if (
+//       // //   extensions?.code === ApolloServerErrorCode.BAD_USER_INPUT ||
+//       // //   extensions === undefined
+//       // // ) {
+//       // //   console.log(error);
+//       // //   // throw error;
+//       // //   return null;
+//       // // }
+//     });
+//     apiErrors(error.errors as any[]);
+//   } else if (ServerError.is(error)) {
+//     console.log(`Server error: ${error.message}`);
+//   } else if (error) {
+//     console.log(`Other error: ${error.message}`);
+//   }
+// });
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
@@ -100,7 +128,7 @@ const afterwareLink = new ApolloLink((operation, forward) => {
 function buildApolloClient(nextJsContext = null) {
   const _apolloClient = new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: from([
+    link: ApolloLink.from([
       buildAuthLink(nextJsContext),
       afterwareLink,
       errorLink,
