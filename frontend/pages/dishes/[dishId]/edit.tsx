@@ -4,6 +4,10 @@ import { EditDish } from '../../../components/dish/DishForm';
 import useDish from '../../../features/dish/useDish';
 import { DISHSOURCES_PAGE_URL } from '../../dishsources';
 
+export const getServerSideProps = async () => {
+  return { props: {} };
+};
+
 export default () => {
   const router = useRouter();
   const { dishId: dishIdString } = router.query;

@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
+set -e # エラーが発生したらスクリプトを終了する
+
 port=18100
 
 if [ "$NODE_ENV" = "production" ]; then
   # なぜかテストのコードもビルドしようとするので、一旦テスト用ライブラリをいれる
   yarn install --production=false
-  yarn build # TODO: 失敗したら立ち上げられないようにする
+  yarn build
   yarn start -p ${port}
 
    # tail -n 1 -f package.json > /dev/null # デバッグ

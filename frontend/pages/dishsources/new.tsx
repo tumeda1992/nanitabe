@@ -4,6 +4,10 @@ import { DISHSOURCES_PAGE_URL } from './index';
 
 export const DISHSOURCE_NEW_PAGE_URL = '/dishsources/new';
 
+export const getServerSideProps = async () => {
+  return { props: {} };
+};
+
 export default () => {
   return (
     <AddSource
