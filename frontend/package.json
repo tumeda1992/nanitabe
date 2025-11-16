@@ -31,12 +31,12 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "^5.0.2",
-    "@graphql-codegen/client-preset": "^4.2.5",
-    "@graphql-codegen/introspection": "^4.0.3",
-    "@graphql-codegen/typescript": "^4.0.6",
-    "@graphql-codegen/typescript-operations": "^4.2.0",
-    "@graphql-codegen/typescript-react-apollo": "^4.3.0",
+    "@graphql-codegen/cli": "^6.0.0",
+    "@graphql-codegen/client-preset": "^5.0.1",
+    "@graphql-codegen/introspection": "^5.0.0",
+    "@graphql-codegen/typescript": "^5.0.4",
+    "@graphql-codegen/typescript-operations": "^5.0.2",
+    "@graphql-codegen/typescript-react-apollo": "^4.3.3",
     "@parcel/watcher": "^2.4.1",
     "@testing-library/dom": "^9.2.0",
     "@testing-library/jest-dom": "^5.16.5",
