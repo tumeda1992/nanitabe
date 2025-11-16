@@ -1,5 +1,5 @@
 import React from 'react';
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
 // import { useRouter } from 'next/router';
 import type { AppProps } from 'next/app';
 import { useApollo } from '../lib/graphql/buildApolloClient';

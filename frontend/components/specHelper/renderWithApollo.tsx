@@ -1,16 +1,16 @@
 import {
   ApolloClient,
-  ApolloProvider,
-  createHttpLink,
   InMemoryCache,
 } from '@apollo/client';
+import { HttpLink } from '@apollo/client/link/http';
+import { ApolloProvider } from '@apollo/client/react';
 import fetch from 'isomorphic-unfetch';
 import React from 'react';
 import { render } from '@testing-library/react';
 
 const client = new ApolloClient({
   ssrMode: false,
-  link: createHttpLink({
+  link: new HttpLink({
     uri: 'http://localhost',
     credentials: 'same-origin',
     /*

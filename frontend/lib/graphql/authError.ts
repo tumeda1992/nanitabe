@@ -1,5 +1,5 @@
 import { GraphQLError } from 'graphql';
-import { useReactiveVar } from '@apollo/client';
+import { useReactiveVar } from '@apollo/client/react';
 import { useEffect } from 'react';
 import { apiErrors } from './globalVars';
 

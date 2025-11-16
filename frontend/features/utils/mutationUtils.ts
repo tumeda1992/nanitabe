@@ -1,8 +1,6 @@
-import type { ApolloError } from '@apollo/client';
-
 export type MutationCallbacks<Output> = {
   onCompleted?: (data: Output) => void;
-  onError?: (error: ApolloError) => void;
+  onError?: (error: any) => void;
 };
 
 export type ExecMutation<Input, Output> = (
@@ -29,7 +27,7 @@ export const buildMutationExecutor = <Input = any, Output = any>(
       onCompleted: (data: Output) => {
         if (onCompleted) onCompleted(data);
       },
-      onError: (error: ApolloError) => {
+      onError: (error: any) => {
         console.error(error);
         if (onError) onError(error);
       },
