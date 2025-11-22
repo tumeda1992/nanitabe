@@ -35,6 +35,7 @@
     "node_modules",
     "../nativeApp",
     "../nativeApp/**/*",
-    "/root/nanitabe_front/nativeApp"
+    "/root/nanitabe_front/nativeApp",
+    ".next/types/validator.ts"
   ]
 }
