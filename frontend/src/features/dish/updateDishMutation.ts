@@ -30,12 +30,13 @@ export const UPDATE_DISH = gql`
     $dishSourceRelation: DishSourceRelationForUpdate
     $dishTags: [Tag!]
   ) {
-    updateDish(input: {
-      dish: $dish
-      dishSourceRelation: $dishSourceRelation
-      dishTags: $dishTags
-    }
-  ) {
+    updateDish(
+      input: {
+        dish: $dish
+        dishSourceRelation: $dishSourceRelation
+        dishTags: $dishTags
+      }
+    ) {
       dishId
     }
   }
@@ -59,7 +60,7 @@ const convertFromUpdateDishInputToGraphqlInput = (
   // TODO: UpdateDishWithNewSourceやAddDishとmutationエンドポイントの引数のスキーマ揃えて、共通メソッド使用
 
   const dishSourceRelationDetailType = dishSourceRelationDetailOf(
-    selectedDishSource.type,
+    selectedDishSource?.type,
   );
   if (
     !dishSourceRelation ||
@@ -74,8 +75,8 @@ const convertFromUpdateDishInputToGraphqlInput = (
   delete normalizedInput.dishSourceRelation.dishSourceRelationDetail.detailType;
   normalizedInput.dishSourceRelation = {
     dishId: dish.id,
-    dishSourceId: selectedDishSource.id,
-    dishSourceType: selectedDishSource.type,
+    dishSourceId: selectedDishSource?.id,
+    dishSourceType: selectedDishSource?.type,
     dishSourceRelationDetail:
       normalizedInput.dishSourceRelation.dishSourceRelationDetail,
   };

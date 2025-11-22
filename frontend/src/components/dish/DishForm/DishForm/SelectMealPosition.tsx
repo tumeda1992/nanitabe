@@ -7,8 +7,8 @@ import {
 } from '../../../../features/dish/const';
 
 type Props = {
-  onClick?: (mealPosition: MealPosition) => void;
-  onChange?: (mealPosition: MealPosition) => void;
+  onClick?: (mealPosition: MealPosition | null) => void;
+  onChange?: (mealPosition: MealPosition | null) => void;
   selectedMealPosition: MealPosition;
   existNullOption?: boolean;
 };

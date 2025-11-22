@@ -6,16 +6,10 @@ import FormFieldWrapperWithLabel from '../../../common/form/FormFieldWrapperWith
 type DishFormOfTagsProps = {
   preFilledDish?: Dish;
 };
-export const DishFormOfTags = (
-  props: DishFormOfTagsProps,
-) => {
+export const DishFormOfTags = (props: DishFormOfTagsProps) => {
   const { preFilledDish } = props;
 
-  const {
-    register,
-    setValue,
-    control,
-  } = useFormContext();
+  const { register, setValue, control } = useFormContext();
   const [tagsEdited, setTagsEdited] = useState(false);
 
   useEffect(() => {
@@ -34,8 +28,9 @@ export const DishFormOfTags = (
 
   // 初回表示時、fieldsが空でuseEffectのsetValueが反映されないため、初回はsetValueで反映させる値を表示させる
   const displayTags = (() => {
-    if(tagsEdited || fields.length > 0) return fields;
-    if(preFilledDish?.tags !== undefined && preFilledDish.tags.length > 0) return preFilledDish.tags;
+    if (tagsEdited || fields.length > 0) return fields;
+    if (!!preFilledDish?.tags && preFilledDish.tags.length > 0)
+      return preFilledDish.tags;
     return [];
   })();
 
@@ -57,41 +52,50 @@ export const DishFormOfTags = (
                   {...register(`dishTags.${index}.content`)}
                 />
                 {tag.content}
-                <span 
-                  onClick={() => {remove(index); setTagsEdited(true);}}
+                <span
+                  onClick={() => {
+                    remove(index);
+                    setTagsEdited(true);
+                  }}
                   data-testid={`removeDishTag-${index}`}
                 >
                   ×
                 </span>
               </li>
-            )
+            );
           }
 
           return (
             <li key={tag.fieldKey}>
               <input
-                {...register(`dishTags.${index}.content`)} 
+                {...register(`dishTags.${index}.content`)}
                 data-testid={`newDishTag-${index}`}
               />
-              <span 
-                onClick={() => {remove(index); setTagsEdited(true);}}
+              <span
+                onClick={() => {
+                  remove(index);
+                  setTagsEdited(true);
+                }}
                 data-testid={`removeDishTag-${index}`}
               >
                 ×
               </span>
             </li>
-          )
+          );
         })}
         <li>
           <button
             type="button"
-            onClick={() => {append({ content: "" }); setTagsEdited(true);}}
-            data-testid='appendDishTag'
+            onClick={() => {
+              append({ content: '' });
+              setTagsEdited(true);
+            }}
+            data-testid="appendDishTag"
           >
             +
           </button>
         </li>
       </ul>
     </FormFieldWrapperWithLabel>
-  )
-}
+  );
+};

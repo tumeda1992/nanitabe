@@ -50,7 +50,7 @@ export default (props: Props) => {
     addMealFunc,
     addMealSchema,
   }: {
-    addMealFunc: AddMealFunc;
+    addMealFunc: AddMealFunc | null;
     addMealSchema: any;
   } = (() => {
     if (choosingUseExistingDish) {
@@ -79,6 +79,7 @@ export default (props: Props) => {
   })();
 
   const onSubmit: SubmitHandler<AddMealMutationInput> = async (input) => {
+    if (!addMealFunc) return;
     await addMealFunc(input, {
       onCompleted: (_) => {
         if (onAddSucceeded) onAddSucceeded();

@@ -52,7 +52,7 @@ export default (props: Props) => {
   const {
     updateMealFunc,
     updateMealSchema,
-  }: { updateMealFunc: UpdateMealFunc; updateMealSchema: any } = (() => {
+  }: { updateMealFunc: UpdateMealFunc | null; updateMealSchema: any } = (() => {
     if (choosingUseExistingDish) {
       return {
         updateMealFunc: updateMeal,
@@ -80,6 +80,7 @@ export default (props: Props) => {
   })();
 
   const onSubmit: SubmitHandler<UpdateMealInput> = async (input) => {
+    if (!updateMealFunc) return;
     await updateMealFunc(input, {
       onCompleted: (data) => {
         if (onEditSucceeded) onEditSucceeded();

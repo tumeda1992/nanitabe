@@ -124,13 +124,16 @@ export const DishFormOfRelatedDishSource = (
           <FormFieldWrapperWithLabel label="参考レシピ">
             {dishSources && (
               <Form.Select
-                defaultValue={parseIntOrNull(dishSourceId)}
+                defaultValue={parseIntOrNull(dishSourceId) || undefined}
                 onChange={(e) => {
                   setDishSourceId(parseIntOrNull(e.target.value));
                 }}
                 data-testid="existingDishSources"
               >
-                <option value={null} data-testid="existingDishSource-novalue">
+                <option
+                  value={undefined}
+                  data-testid="existingDishSource-novalue"
+                >
                   --
                 </option>
                 {dishSources.map((dishSource) => (

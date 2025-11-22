@@ -71,6 +71,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
         `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
       );
     });
+    // @ts-ignore
     apiErrors(graphQLErrors.map((error) => error));
   }
   if (networkError) console.log(`[Network error]: ${networkError}`);
@@ -80,12 +81,14 @@ const generateURL: () => string = () => {
   const apiOrigin: string = (() => {
     switch (judgeExecInClientOrServer) {
       case ExecSituation.ExecInServerSide:
-        return process.env.SERVER_SIDE_ORIGIN;
+        return process.env.SERVER_SIDE_ORIGIN as string;
       case ExecSituation.ExecInClientSide:
         if (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
-          return process.env.NEXT_PUBLIC_CLIENT_SIDE_DEV_ORIGIN;
+          return process.env.NEXT_PUBLIC_CLIENT_SIDE_DEV_ORIGIN as string;
         }
-        return process.env.NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN;
+        return process.env.NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN as string;
+      default:
+        return '';
     }
   })();
   return `${apiOrigin}/graphql`;

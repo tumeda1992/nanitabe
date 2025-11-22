@@ -52,6 +52,7 @@ export const DishFormOfOnlyDishFields = (
         <SelectMealPosition
           selectedMealPosition={selectedMealPosition as MealPosition}
           onChange={(mealPosition) => {
+            if (!mealPosition) return;
             setSelectedMealPosition(mealPosition);
           }}
         />

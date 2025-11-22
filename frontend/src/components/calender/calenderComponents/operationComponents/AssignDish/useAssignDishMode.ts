@@ -3,6 +3,7 @@ import useMeal from '../../../../../features/meal/useMeal';
 import { MEAL_TYPE } from '../../../../../features/meal/const';
 import useDish from '../../../../../features/dish/useDish';
 import { parseBoolOrNull } from '../../../../../features/utils/booleanUtils';
+import { Dish } from '../../../../../lib/graphql/generated/graphql';
 
 export const ASSIGNING_DISH_MODES = {
   CHOOSING_DISH_MODE: 'CHOOSING_DISH_MODE',
@@ -61,7 +62,7 @@ const DEFAULT_MEAL_TYPE = MEAL_TYPE.DINNER;
 const useValuesAndFuncsForAddMeal = () => {
   const { addMeal } = useMeal();
 
-  const [selectedDish, setSelectedDish] = useState(null);
+  const [selectedDish, setSelectedDish] = useState<Dish | null>(null);
 
   const [selectedMealType, setSelectedMealType] = useState(DEFAULT_MEAL_TYPE);
 

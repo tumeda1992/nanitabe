@@ -15,7 +15,7 @@ type ExistingDishesForRegisteringWithMealProps = {
   onNewDishIconForSelectClick?: any;
 };
 
-let searchTimer = null;
+let searchTimer: any = null;
 
 export const ExistingDishesForRegisteringWithMeal = (
   props: ExistingDishesForRegisteringWithMealProps,

@@ -21,7 +21,7 @@ export default (args: {
     onDataChanged,
   } = args;
   const { swapMealsBetweenDays } = useMeal();
-  const [swapTargetDate1, setSwapTargetDate1] = useState(null);
+  const [swapTargetDate1, setSwapTargetDate1] = useState<Date | null>(null);
   const { backToDateWhenModeStarted } = useBackToDateWhenModeStarted();
 
   const isSwappingMealMode =
@@ -35,8 +35,13 @@ export default (args: {
     changeCalenderModeToMovingDishMode();
   };
 
+  const backToDateWhenModeStartedIfPresent = (dateOrNull: Date | null) => {
+    if (!dateOrNull) return;
+    backToDateWhenModeStarted(dateOrNull);
+  };
+
   const backToWeekOfBeforeSwapMeal = () =>
-    backToDateWhenModeStarted(swapTargetDate1);
+    backToDateWhenModeStartedIfPresent(swapTargetDate1);
 
   const onDateClickForSwappingMeals = (swapTargetDate2: Date) => {
     swapMealsBetweenDays(
@@ -47,7 +52,7 @@ export default (args: {
       {
         onCompleted: () => {
           if (onDataChanged) onDataChanged();
-          backToDateWhenModeStarted(swapTargetDate1);
+          backToDateWhenModeStartedIfPresent(swapTargetDate1);
           changeCalenderModeToDisplayCalenderMode();
         },
       },

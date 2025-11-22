@@ -5,6 +5,9 @@ export const buildISODateString = (date: Date): string => {
   return `${yyyy}-${mm}-${dd}`;
 };
 
-export const isISODateFormatString = (dateFormatStringCandidate: string) => {
+export const isISODateFormatString = (
+  dateFormatStringCandidate: string | null,
+) => {
+  if (!dateFormatStringCandidate) return false;
   return /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(dateFormatStringCandidate);
 };

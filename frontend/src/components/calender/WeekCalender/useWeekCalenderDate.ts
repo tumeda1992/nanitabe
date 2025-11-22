@@ -125,7 +125,7 @@ export const useDateFormatStringInUrl = (
   extractDateStringFromUrl: (url: string) => string | null,
 ) => {
   const router = useRouter();
-  const [dateFormatString, setDateFormatString] = useState(
+  const [dateFormatString, setDateFormatString] = useState<string | null>(
     router.query.date as string,
   );
 

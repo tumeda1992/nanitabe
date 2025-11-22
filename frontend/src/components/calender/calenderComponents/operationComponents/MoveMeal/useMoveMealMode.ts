@@ -3,6 +3,7 @@ import * as z from 'zod';
 import useMeal from '../../../../../features/meal/useMeal';
 import { updateMealSchema } from '../../../../../features/meal/schema';
 import { useBackToDateWhenModeStarted } from '../../useCalenderMode';
+import { Meal } from '../../../../../lib/graphql/generated/graphql';
 
 export const MOVING_MEAL_MODES = {
   MOVING_MEAL_MODE: 'MOVING_MEAL_MODE',
@@ -23,7 +24,7 @@ export default (args: {
     onDataChanged,
   } = args;
   const { updateMeal } = useMeal();
-  const [selectedMeal, setSelectedMeal] = useState(null);
+  const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const { backToDateWhenModeStarted } = useBackToDateWhenModeStarted();
 
   const isMovingMealMode = calenderMode === MOVING_MEAL_MODES.MOVING_MEAL_MODE;
@@ -37,9 +38,10 @@ export default (args: {
   };
 
   const backToWeekOfBeforeMoveMeal = () =>
-    backToDateWhenModeStarted(new Date(selectedMeal.date));
+    backToDateWhenModeStarted(new Date(selectedMeal!.date));
 
   const onDateClickForMovingMeal = (date: Date) => {
+    if (!selectedMeal) return;
     const { id, mealType } = selectedMeal;
     // HACK: dishIdとかいらない情報渡しているように、オーバースペックだから、専用Mutation作る
     updateMeal(

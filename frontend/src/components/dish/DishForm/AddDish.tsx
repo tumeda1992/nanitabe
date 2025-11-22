@@ -35,8 +35,7 @@ export default (props: Props) => {
   const useChoosingPutDishSourceTypeResult = useChoosingPutDishSourceType(
     CHOOSING_PUT_DISH_SOURCE_TYPE.CHOOSING_USE_EXISTING_DISH_SOURCE,
   );
-  const { choosingRegisterNewDishSource, choosingUseExistingDishSource } =
-    useChoosingPutDishSourceTypeResult;
+  const { choosingRegisterNewDishSource } = useChoosingPutDishSourceTypeResult;
 
   const [doContinuousRegistration, setDoContinuousRegistration] = useState(
     doContinuousRegistrationDefaultValue,
@@ -55,12 +54,10 @@ export default (props: Props) => {
         addDishSchema: AddDishWithNewSourceSchema,
       };
     }
-    if (choosingUseExistingDishSource) {
-      return {
-        addDishFunc: addDish,
-        addDishSchema: AddDishSchema,
-      };
-    }
+    return {
+      addDishFunc: addDish,
+      addDishSchema: AddDishSchema,
+    };
   })();
 
   const onSubmit: SubmitHandler<AddDishInput> = async (input) => {

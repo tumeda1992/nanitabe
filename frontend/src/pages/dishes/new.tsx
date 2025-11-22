@@ -18,12 +18,12 @@ export default () => {
 
   const preFilledDish = (() => {
     const dish = {};
-    const mealPosition = parseIntOrNull(searchParams.get('mealPosition'));
+    const mealPosition = parseIntOrNull(searchParams?.get('mealPosition'));
     if (mealPosition) {
       dish['mealPosition'] = mealPosition;
     }
 
-    const dishSourceId = parseIntOrNull(searchParams.get('dishSourceId'));
+    const dishSourceId = parseIntOrNull(searchParams?.get('dishSourceId'));
     if (dishSourceId) {
       dish['dishSourceRelation'] = { dishSourceId };
     }
@@ -32,13 +32,16 @@ export default () => {
   })();
 
   const doContinuousRegistrationDefaultValue =
-    searchParams.get('doContinuousRegistration') === 'true';
+    searchParams?.get('doContinuousRegistration') === 'true';
 
   return (
     <AddDish
       onAddingSucceeded={(doContinuousRegistration) => {
         if (doContinuousRegistration) {
-          const params = new URLSearchParams(searchParams);
+          const params = (() => {
+            if (!searchParams) return new URLSearchParams();
+            return new URLSearchParams(searchParams);
+          })();
           params.set('doContinuousRegistration', 'true');
           window.location.href = `${pathname}?${params}`;
         } else {

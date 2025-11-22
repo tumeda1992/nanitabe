@@ -4,7 +4,7 @@ import { graphql } from 'msw';
 const server = setupServer();
 
 export const registerMutationHandler = (mutationDocument, responseData) => {
-  const execVariables = [];
+  const execVariables: any[] = [];
   const getLatestMutationVariables = () => {
     if (execVariables.length === 0) return null;
     return execVariables[execVariables.length - 1];
@@ -27,7 +27,7 @@ export const registerMutationHandler = (mutationDocument, responseData) => {
   - nullableな値であっても定義はしておかないと長々とした警告メッセージが出る
  */
 export const registerQueryHandler = (queryDocument, responseData) => {
-  const execVariables = [];
+  const execVariables: any[] = [];
   const getLatestQueryVariables = () => {
     if (execVariables.length === 0) return null;
     return execVariables[execVariables.length - 1];

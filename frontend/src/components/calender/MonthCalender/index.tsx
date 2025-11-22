@@ -36,8 +36,8 @@ export type Props = {
 export default (props: Props) => {
   const { date: dateArg } = props;
 
-  const firstDayOfMonth = startOfMonth(dateArg);
-  const lastDayOfMonth = endOfMonth(dateArg);
+  const firstDayOfMonth = startOfMonth(dateArg || new Date());
+  const lastDayOfMonth = endOfMonth(dateArg || new Date());
 
   const { mealsForCalender, fetchMealsLoading, refetchMealsForCalender } =
     useMeal({

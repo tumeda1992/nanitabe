@@ -44,12 +44,10 @@ export default (props: Props) => {
         updateDishSchema: UpdateDishSchema,
       };
     }
-    if (choosingRegisterNewDishSource) {
-      return {
-        updateDishFunc: updateDishWithNewSource,
-        updateDishSchema: UpdateDishWithNewSourceSchema,
-      };
-    }
+    return {
+      updateDishFunc: updateDishWithNewSource,
+      updateDishSchema: UpdateDishWithNewSourceSchema,
+    };
   })();
 
   const onSubmit: SubmitHandler<UpdateDishInput> = async (input) => {

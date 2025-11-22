@@ -10,7 +10,9 @@ import { WEEK_CALENDER_PAGE_URL_OF_THIS_WEEK } from '../../pages/calender/week/[
 
 export default (props) => {
   const { login, loginLoading, LoginSchema } = useAuth();
-  const [loginResultMessage, setLoginResultMessage] = useState(null);
+  const [loginResultMessage, setLoginResultMessage] = useState<string | null>(
+    null,
+  );
   const {
     register,
     handleSubmit,
