@@ -1,18 +1,18 @@
-@import "../../../base/mixin.module";
+@use "../../../base/mixin.module";
 
 .meal-icon {
   &--breakfast {
-    background-color: $breakfast-blue;
+    background-color: mixin.$breakfast-blue;
     color: white;
   }
 
   &--lunch {
-    background-color: $lunch-green;
+    background-color: mixin.$lunch-green;
     color: white;
   }
 
   &--dinner {
-    background-color: $dinner-orange;
+    background-color: mixin.$dinner-orange;
     color: white;
   }
 
