@@ -4,7 +4,7 @@ export default (
   changeTrigger: any = null,
 ): [number, React.MutableRefObject<HTMLDivElement>] => {
   const [height, setHeight] = useState(0);
-  const measureTargetElementRef = useRef<HTMLDivElement | null>();
+  const measureTargetElementRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (
       measureTargetElementRef.current &&
