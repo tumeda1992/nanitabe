@@ -6,7 +6,7 @@ import style from './Login.module.scss';
 import FormFieldWrapperWithLabel from '../common/form/FormFieldWrapperWithLabel';
 import useAuth from '../../features/auth/useAuth';
 import type { Login } from '../../features/auth/useAuth';
-import { WEEK_CALENDER_PAGE_URL_OF_THIS_WEEK } from '../../pages/calender/week/[date]';
+import { WEEK_CALENDER_PAGE_URL_OF_THIS_WEEK } from '../../app/calender/week/[date]/consts';
 
 export default (props) => {
   const { login, loginLoading, LoginSchema } = useAuth();

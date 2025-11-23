@@ -5,7 +5,7 @@ import ApolloProvider from './apollo_provider';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const metadata: Metadata = {
-  title: 'Nanitabe',
+  title: 'なにたべ',
   icons: {
     icon: '/favicon.ico',
     apple: '/webclip.jpeg',

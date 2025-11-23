@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { addDays, format, formatISO, isSameDay } from 'date-fns';
 import Calender from '../calenderComponents/Calender';
