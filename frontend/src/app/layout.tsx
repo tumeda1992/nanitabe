@@ -1,5 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
+import ApolloProvider from './apollo_provider';
 // TODO: bootstrapのCSSを適切に読み込む
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -18,7 +19,9 @@ type Props = {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body>
+        <ApolloProvider>{children}</ApolloProvider>
+      </body>
     </html>
   );
 }
