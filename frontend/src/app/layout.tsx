@@ -19,6 +19,12 @@ type Props = {
 export default function RootLayout({ children }: Props) {
   return (
     <html lang="ja">
+      <head>
+        <link
+          href="https://use.fontawesome.com/releases/v6.3.0/css/all.css"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <ApolloProvider>{children}</ApolloProvider>
       </body>
