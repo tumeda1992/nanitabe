@@ -3,12 +3,11 @@
 import React from 'react';
 import { ApolloProvider } from '@apollo/client/react';
 // import { useRouter } from 'next/router';
-import type { AppProps } from 'next/app';
 import { useApollo } from '../lib/graphql/buildApolloClient';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../components/base/base.css';
 import { useAuthErrorHandle } from '../lib/graphql/authError';
-import { LOGIN_PAGE_URL } from '../pages/login';
+import { LOGIN_PAGE_URL } from '../app/login/consts';
 
 const useLoginPageRedirect = () => {
   // const router = useRouter();

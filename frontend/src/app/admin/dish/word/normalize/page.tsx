@@ -1,9 +1,5 @@
 import React from 'react';
 
-export const getServerSideProps = async () => {
-  return { props: {} };
-};
-
 export default () => {
   return (
     <div>
