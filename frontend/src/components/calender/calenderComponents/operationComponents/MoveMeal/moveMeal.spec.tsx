@@ -15,9 +15,10 @@ import {
 } from '../../../../../lib/graphql/generated/graphql';
 
 jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
-  usePathname: jest.fn(),
-  useSearchParams: jest.fn(),
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+  usePathname: () => '/calender/week/2023-06-26',
 }));
 
 const buildMealGraphQLParams = (meal) => {
