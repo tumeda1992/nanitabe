@@ -16,18 +16,26 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
-    "target": "ES2017"
+    "jsx": "react-jsx",
+    "target": "ES2017",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strictNullChecks": true
   },
   "include": [
-    "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
+    "**/*.tsx",
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     "../nativeApp",
     "../nativeApp/**/*",
-    "/root/nanitabe_front/nativeApp"
+    "/root/nanitabe_front/nativeApp",
+    ".next/types/validator.ts"
   ]
 }
