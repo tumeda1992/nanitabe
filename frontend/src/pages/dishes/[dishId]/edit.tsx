@@ -2,7 +2,8 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { EditDish } from '../../../components/dish/DishForm';
 import useDish from '../../../features/dish/useDish';
-import { DISHSOURCES_PAGE_URL } from '../../dishsources';
+
+import { DISHSOURCES_PAGE_URL } from '../../../app/dishsources/consts';
 
 export const getServerSideProps = async () => {
   return { props: {} };

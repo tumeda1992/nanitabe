@@ -2,8 +2,8 @@ import React from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { AddDish } from '../../components/dish/DishForm';
-import { DISHSOURCES_PAGE_URL } from '../dishsources';
 import { parseIntOrNull } from '../../features/utils/numberUtils';
+import { DISHSOURCES_PAGE_URL } from '../../app/dishsources/consts';
 
 export const getServerSideProps = async () => {
   return { props: {} };

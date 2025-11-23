@@ -1,16 +1,15 @@
 import React from 'react';
-import { useRouter } from 'next/router';
-import { EditSource } from '../../../components/dish/Source/SourceForm';
-import useDishSource from '../../../features/dish/source/useDishSource';
-import { DISHSOURCES_PAGE_URL } from '../index';
+import { EditSource } from '../../../../components/dish/Source/SourceForm';
+import useDishSource from '../../../../features/dish/source/useDishSource';
 
-export const getServerSideProps = async () => {
-  return { props: {} };
-};
+import { DISHSOURCES_PAGE_URL } from '../../consts';
 
-export default () => {
-  const router = useRouter();
-  const { dishSourceId: dishSourceIdString } = router.query;
+export default async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) => {
+  const { dishSourceId: dishSourceIdString } = await searchParams;
 
   const { dishSource } = useDishSource({
     fetchDishSourcesParams: {
