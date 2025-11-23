@@ -1,35 +1,12 @@
 import React from 'react';
-import { EditSource } from '../../../../components/dish/Source/SourceForm';
-import useDishSource from '../../../../features/dish/source/useDishSource';
-
-import { DISHSOURCES_PAGE_URL } from '../../consts';
+import ClientPage from './page.client';
 
 export default async ({
-  searchParams,
+  params,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  params: Promise<{ dishSourceId: string }>;
 }) => {
-  const { dishSourceId: dishSourceIdString } = await searchParams;
+  const { dishSourceId } = await params;
 
-  const { dishSource } = useDishSource({
-    fetchDishSourcesParams: {
-      fetchDishSourceParams: {
-        requireFetchedData: true,
-        condition: { id: Number(dishSourceIdString) },
-      },
-    },
-  });
-
-  return (
-    <>
-      {dishSource && (
-        <EditSource
-          dishSource={dishSource}
-          onEditSucceeded={() => {
-            window.location.href = DISHSOURCES_PAGE_URL;
-          }}
-        />
-      )}
-    </>
-  );
+  return <ClientPage dishSourceIdString={dishSourceId as string} />;
 };

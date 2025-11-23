@@ -14,7 +14,11 @@ import {
   UpdateMealDocument,
 } from '../../../../../lib/graphql/generated/graphql';
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(),
+  usePathname: jest.fn(),
+  useSearchParams: jest.fn(),
+}));
 
 const buildMealGraphQLParams = (meal) => {
   const { id, date, mealType, dish } = meal;

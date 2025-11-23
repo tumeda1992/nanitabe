@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { SubmitHandler } from 'react-hook-form';
 import useDishSource from '../../../../features/dish/source/useDishSource';
