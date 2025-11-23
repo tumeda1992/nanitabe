@@ -14,7 +14,12 @@ import {
   UpdateMealDocument,
 } from '../../../../../lib/graphql/generated/graphql';
 
-jest.mock('next/router', () => require('next-router-mock'));
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+  usePathname: () => '/calender/week/2023-06-26',
+}));
 
 const buildMealGraphQLParams = (meal) => {
   const { id, date, mealType, dish } = meal;

@@ -1,6 +1,7 @@
+'use client';
+
 import React, { useState } from 'react';
 import { SubmitHandler } from 'react-hook-form';
-import { usePathname, useSearchParams } from 'next/navigation';
 import DishForm from './DishForm';
 import useDish, { AddDishFunc } from '../../../features/dish/useDish';
 import type { AddDishInput } from '../../../features/dish/useDish';

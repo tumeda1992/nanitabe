@@ -5,9 +5,8 @@ import {
   previousSaturday,
   previousMonday,
 } from 'date-fns';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { weekCalenderPageUrlOf } from '../../../pages/calender/week/[date]';
+import { useRouter, useParams } from 'next/navigation';
+import { weekCalenderPageUrlOf } from '../../../app/calender/week/[date]/consts';
 import { isISODateFormatString } from '../../../features/utils/dateUtils';
 import {
   DAY_OF_FRIDAY,
@@ -124,35 +123,11 @@ export const useFirstDisplayDate = (
 export const useDateFormatStringInUrl = (
   extractDateStringFromUrl: (url: string) => string | null,
 ) => {
-  const router = useRouter();
-  const [dateFormatString, setDateFormatString] = useState<string | null>(
-    router.query.date as string,
-  );
+  const params = useParams<{ date?: string }>();
 
-  // router.pushによるURL更新や「戻る/次へ」によるURL変更への追随
-  useEffect(() => {
-    const handleChangedUrl = (changedUrl: string) => {
-      const dateStringOfNewUrl = extractDateStringFromUrl(changedUrl);
-      if (isISODateFormatString(dateStringOfNewUrl)) {
-        setDateFormatString(dateStringOfNewUrl);
-      } else {
-        setDateFormatString('');
-      }
-    };
+  const raw = params?.date ? params.date : '';
 
-    router.beforePopState(({ as }) => {
-      handleChangedUrl(as);
-      return true;
-    });
-
-    const handleRouteChange = (url) => {
-      handleChangedUrl(url);
-    };
-    router.events.on('routeChangeStart', handleRouteChange);
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChange);
-    };
-  }, [router]);
+  const dateFormatString = isISODateFormatString(raw) ? raw : '';
 
   return { dateFormatString };
 };

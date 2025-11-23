@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import {
   addDays,
@@ -11,12 +13,11 @@ import {
   formatISO,
   addHours,
 } from 'date-fns';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import Calender from '../calenderComponents/Calender';
 import useMeal from '../../../features/meal/useMeal';
 import style from '../calenderComponents/Calender/index.module.scss';
 import CalenderMenu from '../WeekCalender/CalenderMenu';
-import { monthCalenderPageUrlOf } from '../../../pages/calender/month/[date]';
 import {
   DAY_OF_FRIDAY,
   DAY_OF_MONDAY,
@@ -26,6 +27,7 @@ import {
   DAY_OF_TUESDAY,
   DAY_OF_WEDNESDAY,
 } from '../calenderComponents/useCalenderDay';
+import { monthCalenderPageUrlOf } from '../../../app/calender/month/[date]/consts';
 
 export { useDateFormatStringInUrl } from '../WeekCalender/useWeekCalenderDate';
 

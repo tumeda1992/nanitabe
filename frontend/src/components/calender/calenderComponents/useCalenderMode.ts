@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { useRouter } from 'next/router';
-import { usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import useAssignDishMode, {
   AssigningDishMode,
 } from './operationComponents/AssignDish/useAssignDishMode';
@@ -10,11 +9,11 @@ import useMoveMealMode, {
 import useSwapMealsMode, {
   SwappingMealMode,
 } from './operationComponents/SwapMeals/useSwapMealsMode';
-import { weekCalenderPageUrlOf } from '../../../pages/calender/week/[date]';
 import {
   isMonthPath,
   monthCalenderPageUrlOf,
-} from '../../../pages/calender/month/[date]';
+} from '../../../app/calender/month/[date]/consts';
+import { weekCalenderPageUrlOf } from '../../../app/calender/week/[date]/consts';
 
 export const DISPLAY_CALENDER_MODE = 'DISPLAY_CALENDER_MODE';
 

@@ -29,13 +29,13 @@
     "**/*.ts",
     "**/*.tsx",
     "next-env.d.ts",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     "../nativeApp",
     "../nativeApp/**/*",
-    "/root/nanitabe_front/nativeApp",
-    ".next/types/validator.ts"
+    "/root/nanitabe_front/nativeApp"
   ]
 }
