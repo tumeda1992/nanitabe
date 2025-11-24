@@ -3,10 +3,11 @@ FROM node:24.11.1-bullseye AS builder
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
 ARG AWS_DEFAULT_REGION
-ARG NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN
+ARG BACKEND_HOST
+ARG DEPLOY_ENV
 
 ENV NODE_ENV=production
-ENV NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN=${NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN}
+ENV NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN=https://${BACKEND_HOST}
 
 WORKDIR /app
 
@@ -26,8 +27,8 @@ COPY . .
 RUN yarn install --production=false
 RUN yarn build
 
-RUN aws s3 sync ./public s3://nanitabe-front-prod-static-files
-RUN aws s3 sync .next/static s3://nanitabe-front-prod-static-files/_next/static --delete
+RUN aws s3 sync ./public s3://nanitabe-front-${DEPLOY_ENV}-static-files
+RUN aws s3 sync .next/static s3://nanitabe-front-${DEPLOY_ENV}-static-files/_next/static --delete
 
 FROM public.ecr.aws/lambda/nodejs:20
 COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.4 /lambda-adapter /opt/extensions/lambda-adapter
