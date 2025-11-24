@@ -81,8 +81,26 @@ const generateURL: () => string = () => {
   const apiOrigin: string = (() => {
     switch (judgeExecInClientOrServer) {
       case ExecSituation.ExecInServerSide:
+        console.log(
+          'judgeExecInClientOrServer: ExecSituation.ExecInServerSide',
+        );
+        console.log(
+          'process.env.SERVER_SIDE_ORIGIN',
+          process.env.SERVER_SIDE_ORIGIN,
+        );
         return process.env.SERVER_SIDE_ORIGIN as string;
       case ExecSituation.ExecInClientSide:
+        console.log(
+          'judgeExecInClientOrServer: ExecSituation.ExecInClientSide',
+        );
+        console.log(
+          'process.env.NEXT_PUBLIC_CLIENT_SIDE_DEV_ORIGIN',
+          process.env.NEXT_PUBLIC_CLIENT_SIDE_DEV_ORIGIN,
+        );
+        console.log(
+          'process.env.NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN',
+          process.env.NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN,
+        );
         if (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
           return process.env.NEXT_PUBLIC_CLIENT_SIDE_DEV_ORIGIN as string;
         }
