@@ -1,3 +1,10 @@
+# マルチステージビルドをまたいでARGを定義
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+ARG AWS_DEFAULT_REGION
+ARG BACKEND_HOST
+ARG DEPLOY_ENV
+
 FROM node:24.11.1-bullseye AS builder
 
 ARG AWS_ACCESS_KEY_ID
@@ -27,14 +34,19 @@ COPY . .
 RUN yarn install --production=false
 RUN yarn build
 
-RUN aws s3 sync ./public s3://nanitabe-front-${DEPLOY_ENV}-static-files
 RUN aws s3 sync .next/static s3://nanitabe-front-${DEPLOY_ENV}-static-files/_next/static --delete
+RUN aws s3 sync ./public s3://nanitabe-front-${DEPLOY_ENV}-static-files
 
 FROM public.ecr.aws/lambda/nodejs:20
-COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.4 /lambda-adapter /opt/extensions/lambda-adapter
 
+# デプロイされた環境で利用する環境変数群
+ARG BACKEND_HOST
 # これがないと`[TypeError: dispatcher.getOwner is not a function]`エラーが起きるかも
 ENV NODE_ENV=production
+# この行を消したときに、環境変数がセットされないのかどうか、ローカルで確認
+ENV NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN=https://${BACKEND_HOST}
+
+COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.4 /lambda-adapter /opt/extensions/lambda-adapter
 
 WORKDIR /var/task
 

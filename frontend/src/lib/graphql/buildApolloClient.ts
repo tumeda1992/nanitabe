@@ -88,7 +88,10 @@ const generateURL: () => string = () => {
           'process.env.SERVER_SIDE_ORIGIN',
           process.env.SERVER_SIDE_ORIGIN,
         );
-        return process.env.SERVER_SIDE_ORIGIN as string;
+        if (process.env.NEXT_PUBLIC_ENVIRONMENT === 'development') {
+          return process.env.SERVER_SIDE_ORIGIN as string;
+        }
+        return process.env.NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN as string;
       case ExecSituation.ExecInClientSide:
         console.log(
           'judgeExecInClientOrServer: ExecSituation.ExecInClientSide',
