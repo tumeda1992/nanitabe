@@ -9,7 +9,14 @@ phases:
     commands:
       - echo Building the Docker image...
       - cd frontend
-      - docker build -t ${ECR_REPO_URI}:${IMAGE_TAG} -f buildOnLambda/Dockerfile .
+      - docker build
+        --build-arg AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+        --build-arg AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+        --build-arg AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
+        --build-arg NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN=${NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN}
+        --build-arg DEPLOY_ENV=${DEPLOY_ENV}
+        -t ${ECR_REPO_URI}:${IMAGE_TAG} 
+        -f buildOnLambda/Dockerfile .
   post_build:
     commands:
       - echo Pushing the Docker image...
