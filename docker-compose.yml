@@ -30,7 +30,14 @@ services:
     build:
       context: ./frontend
       dockerfile: ./buildOnLambda/Dockerfile
+      args:
+        AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+        AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+        AWS_DEFAULT_REGION: ap-northeast-1
+        BACKEND_HOST: localhost:18101
+        DEPLOY_ENV: deploy-test
     volumes:
       - ./frontend:/var/task
+    env_file: /etc/opt/app_setting_files/nanitabe/.env
     ports:
       - "8080:8080"

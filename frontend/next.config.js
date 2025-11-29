@@ -8,7 +8,9 @@ const nextConfig = (() => {
   /** @type {import('next').NextConfig} */
   const baseConfig = {
     compress: false, // API Gateway で gzip させるため
-    assetPrefix: isProd ? 'https://d2ewo1yy2ahstj.cloudfront.net' : undefined,
+    // 環境変数で出し分けられるようにする（サーバでクライアントでも読めるように接頭辞をつける）
+    assetPrefix: isProd ? 'https://d2ewo1yy2ahstj.cloudfront.net' : undefined, // prod用
+    // assetPrefix: isProd ? 'https://d1qmtpt8svn0j2.cloudfront.net' : undefined, //deploy-test用
   };
 
   // 本番以外は特に無視しなくていいならここで返してOK

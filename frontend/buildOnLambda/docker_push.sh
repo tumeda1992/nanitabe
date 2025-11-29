@@ -8,8 +8,8 @@ cd $script_parent_dir
 
 export $(grep -v '^#' /etc/opt/app_setting_files/nanitabe/.env | xargs)
 
-env="deploy-test"
-# env="prod"
+#env="deploy-test"
+env="prod"
 image_name_with_tag=nanitabe-front/next-js-on-lambda/${env}:latest
 IMAGE_REGISTRY=${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com
 
@@ -17,7 +17,7 @@ docker build \
   --build-arg AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
   --build-arg AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
   --build-arg AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} \
-  --build-arg NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN=${NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN} \
+  --build-arg BACKEND_HOST=${BACKEND_PROD_HOST} \
   --build-arg DEPLOY_ENV=${env} \
  -t ${image_name_with_tag} \
  -f buildOnLambda/Dockerfile \

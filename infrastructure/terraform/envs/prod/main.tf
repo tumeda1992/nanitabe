@@ -12,7 +12,7 @@ variable "route53_name" { type = string } # export TF_VAR_route53_name=${ROUTE53
 
 variable "codebuild_artifact_s3_bucket" { type = string } # export TF_VAR_codebuild_artifact_s3_bucket=${CODEBUILD_ARTICACT_S3_BUCKET}
 variable "aws_code_connection_id_to_github" { type = string } # export TF_VAR_aws_code_connection_id_to_github=${AWS_CODE_CONNECTION_ID_TO_GITHUB}
-variable "branch" { # export TF_VAR_route53_name=main
+variable "branch" { # export TF_VAR_branch=main
   type = string
   default = "main"
 }
