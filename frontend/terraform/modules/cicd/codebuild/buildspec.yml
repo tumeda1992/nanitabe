@@ -21,12 +21,12 @@ phases:
     commands:
       - echo Pushing the Docker image...
       - docker push ${ECR_REPO_URI}:${IMAGE_TAG}
-      # deploy
+      # deploy（いずれCodeDeployへ移動。buildspecではpost_buildとか決まった言葉でしかフェーズを作れない）
       - echo Updating Lambda function...
       - aws lambda update-function-code
         --function-name ${LAMBDA_FUNCTION_NAME}
         --image-uri ${ECR_REPO_URI}:${IMAGE_TAG}
       - echo Creating CloudFront invalidation...
-      - aws cloudfront create-invalidation \
-        --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} \
+      - aws cloudfront create-invalidation
+        --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID}
         --paths "/*"
