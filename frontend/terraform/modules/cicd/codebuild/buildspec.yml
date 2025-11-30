@@ -27,6 +27,6 @@ phases:
         --function-name ${LAMBDA_FUNCTION_NAME}
         --image-uri ${ECR_REPO_URI}:${IMAGE_TAG}
       - echo Creating CloudFront invalidation...
-        - aws cloudfront create-invalidation \
+      - aws cloudfront create-invalidation \
         --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} \
         --paths "/*"
