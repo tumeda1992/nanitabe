@@ -5,7 +5,7 @@ provider "aws" {
 module "s3" {
   source = "../"
 
-  stage = "deploy-test"
+  stage = "verify-infra"
 }
 
 output "bucket_regional_domain_name" {

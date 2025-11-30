@@ -10,6 +10,10 @@ provider "aws" {
   region = "us-east-1"
 }
 
+locals {
+  stage = "verify-infra"
+}
+
 # 起動・停止ともに5分くらいかかる
 module "cloudfront" {
   source = "../"
@@ -19,11 +23,11 @@ module "cloudfront" {
     aws.us-east-1 = aws.us-east-1
   }
 
-  stage = "deploy-test"
+  stage = local.stage
   api_endpoint = "https://xl40c159a4.execute-api.ap-northeast-1.amazonaws.com"
-  custom_domain = "nanitabe-front-deploy-test.${var.route53_name}"
+  custom_domain = "nanitabe-front-${local.stage}.${var.route53_name}"
   route53_zone_id = var.route53_zone_id
   route53_name = var.route53_name
-  assets_s3_bucket_regional_domain_name = "nanitabe-front-deploy-test-static-files.s3.ap-northeast-1.amazonaws.com"
+  assets_s3_bucket_regional_domain_name = "nanitabe-front-${local.stage}-static-files.s3.ap-northeast-1.amazonaws.com"
   assets_s3_cloudfront_access_identity_path = "origin-access-identity/cloudfront/E3ONVKYK1RA21W"
 }

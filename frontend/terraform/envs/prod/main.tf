@@ -68,5 +68,6 @@ module "cicd" {
   codebuild_artifact_s3_bucket = var.codebuild_artifact_s3_bucket
   aws_code_connection_id_to_github = var.aws_code_connection_id_to_github
   cloudfront_distribution_id = module.cloudfront.cloudfront_distribution_id
+  cloudfront_domain_name = module.cloudfront.cloudfront_domain_name
   branch = var.branch
 }

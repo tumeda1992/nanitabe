@@ -5,5 +5,5 @@ provider "aws" {
 module "ecr" {
   source = "../"
 
-  stage = "deploy-test"
+  stage = "verify-infra"
 }
