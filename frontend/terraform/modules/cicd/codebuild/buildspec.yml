@@ -21,8 +21,7 @@ phases:
     commands:
       - echo Pushing the Docker image...
       - docker push ${ECR_REPO_URI}:${IMAGE_TAG}
-  deploy:
-    commands:
+      # deploy
       - echo Updating Lambda function...
       - aws lambda update-function-code
         --function-name ${LAMBDA_FUNCTION_NAME}
