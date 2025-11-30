@@ -7,6 +7,7 @@ variable "ecr_repository_url" { type = string }
 variable "lambda_function_name" { type = string }
 variable "codebuild_artifact_s3_bucket" { type = string }
 variable "aws_code_connection_id_to_github" { type = string }
+variable "cloudfront_distribution_id" { type = string }
 variable "branch" {
   type = string
   default = "master"
@@ -22,6 +23,7 @@ module "codebuild" {
   ecr_repository_url = var.ecr_repository_url
   lambda_function_name = var.lambda_function_name
   codebuild_artifact_s3_bucket = var.codebuild_artifact_s3_bucket
+  cloudfront_distribution_id = var.cloudfront_distribution_id
 }
 
 module "codepipeline" {

@@ -5,6 +5,7 @@ variable "aws_secret_access_key" { type = string }
 variable "ecr_repository_url" { type = string }
 variable "lambda_function_name" { type = string }
 variable "codebuild_artifact_s3_bucket" { type = string }
+variable "cloudfront_distribution_id" { type = string }
 
 module "values" {
   source = "../../../values/"
@@ -57,6 +58,11 @@ resource "aws_codebuild_project" "codebuild_project" {
     environment_variable {
       name  = "DEPLOY_ENV"
       value = var.stage
+    }
+
+    environment_variable {
+      name  = "CLOUDFRONT_DISTRIBUTION_ID"
+      value = var.cloudfront_distribution_id
     }
   }
 

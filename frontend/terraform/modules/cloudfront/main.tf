@@ -162,7 +162,10 @@ module "dns" {
   cf_zone_id = aws_cloudfront_distribution.cf.hosted_zone_id
 
   depends_on = [module.cert]
+}
 
+output "cloudfront_distribution_id" {
+  value = aws_cloudfront_distribution.cf.id
 }
 
 output "cloudfront_domain_name" {
