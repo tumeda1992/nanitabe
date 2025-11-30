@@ -8,8 +8,8 @@ cd $script_parent_dir
 
 export $(grep -v '^#' /etc/opt/app_setting_files/nanitabe/.env | xargs)
 
-#env="deploy-test"
-env="prod"
+env="verify-infra"
+#env="prod"
 image_name_with_tag=nanitabe-front/next-js-on-lambda/${env}:latest
 IMAGE_REGISTRY=${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com
 
@@ -24,7 +24,7 @@ docker build \
  .
 
 # CloudFrontのキャッシュを削除
-aws cloudfront create-invalidation --distribution-id "E2DJA18AQYQO7M" --paths "/*"
+#aws cloudfront create-invalidation --distribution-id "XXX" --paths "/*"
 
 aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin ${IMAGE_REGISTRY}
 docker tag ${image_name_with_tag} ${IMAGE_REGISTRY}/${image_name_with_tag}

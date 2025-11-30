@@ -5,10 +5,14 @@ provider "aws" {
   region = "ap-northeast-1"
 }
 
+locals {
+  stage = "verify-infra"
+}
+
 module "lambda" {
   source = "../"
 
-  stage = "deploy-test"
-  ecr_repository_url = "${var.aws_account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/nanitabe-front/next-js-on-lambda/deploy-test"
+  stage = local.stage
+  ecr_repository_url = "${var.aws_account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/nanitabe-front/next-js-on-lambda/${local.stage}"
   backend_host = var.backend_host
 }

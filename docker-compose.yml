@@ -35,7 +35,7 @@ services:
         AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
         AWS_DEFAULT_REGION: ap-northeast-1
         BACKEND_HOST: localhost:18101
-        DEPLOY_ENV: deploy-test
+        DEPLOY_ENV: verify-infra
     volumes:
       - ./frontend:/var/task
     env_file: /etc/opt/app_setting_files/nanitabe/.env

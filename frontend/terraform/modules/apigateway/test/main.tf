@@ -4,9 +4,13 @@ provider "aws" {
   region = "ap-northeast-1"
 }
 
+locals {
+  stage = "verify-infra"
+}
+
 module "apigateway" {
   source = "../"
 
-  stage = "deploy-test"
-  lambda_function_arn = "arn:aws:lambda:ap-northeast-1:${var.aws_account_id}:function:nanitabe-front-deploy-test"
+  stage = local.stage
+  lambda_function_arn = "arn:aws:lambda:ap-northeast-1:${var.aws_account_id}:function:nanitabe-front-${local.stage}"
 }

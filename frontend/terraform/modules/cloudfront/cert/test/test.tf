@@ -15,6 +15,6 @@ module "cert" {
 
   providers = { aws = aws.us-east-1 }
 
-  custom_domain = "nanitabe-front-deploy-test.${var.route53_name}"
+  custom_domain = "nanitabe-front-verify-infra.${var.route53_name}"
   route53_zone_id = var.route53_zone_id
 }

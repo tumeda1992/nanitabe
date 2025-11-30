@@ -10,7 +10,7 @@ const nextConfig = (() => {
     compress: false, // API Gateway で gzip させるため
     // 環境変数で出し分けられるようにする（サーバでクライアントでも読めるように接頭辞をつける）
     assetPrefix: isProd ? 'https://d2ewo1yy2ahstj.cloudfront.net' : undefined, // prod用
-    // assetPrefix: isProd ? 'https://d1qmtpt8svn0j2.cloudfront.net' : undefined, //deploy-test用
+    // assetPrefix: isProd ? 'https://d1qmtpt8svn0j2.cloudfront.net' : undefined, //verify-infra用
   };
 
   // 本番以外は特に無視しなくていいならここで返してOK
