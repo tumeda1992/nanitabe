@@ -67,5 +67,6 @@ module "cicd" {
   lambda_function_name = module.lambda.lambda_function_name
   codebuild_artifact_s3_bucket = var.codebuild_artifact_s3_bucket
   aws_code_connection_id_to_github = var.aws_code_connection_id_to_github
+  cloudfront_distribution_id = module.cloudfront.cloudfront_distribution_id
   branch = var.branch
 }
