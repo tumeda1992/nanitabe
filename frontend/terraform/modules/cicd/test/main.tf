@@ -6,6 +6,7 @@ variable "ecr_repository_url" { type = string }
 variable "codebuild_artifact_s3_bucket" { type = string }
 variable "aws_code_connection_id_to_github" { type = string }
 variable "cloudfront_distribution_id" { type = string }
+variable "cloudfront_domain_name" { type = string }
 variable "branch" {
   type = string
   default = "master"
@@ -32,5 +33,6 @@ module "codebuild" {
   codebuild_artifact_s3_bucket = var.codebuild_artifact_s3_bucket
   aws_code_connection_id_to_github = var.aws_code_connection_id_to_github
   cloudfront_distribution_id = var.cloudfront_distribution_id
+  cloudfront_domain_name = var.cloudfront_domain_name
   branch = var.branch
 }

@@ -9,7 +9,7 @@ cd $script_parent_dir
 export $(grep -v '^#' /etc/opt/app_setting_files/nanitabe/.env | xargs)
 
 env="verify-infra"
-#env="prod"
+#env="review"
 image_name_with_tag=nanitabe-front/next-js-on-lambda/${env}:latest
 IMAGE_REGISTRY=${AWS_ACCOUNT_ID}.dkr.ecr.ap-northeast-1.amazonaws.com
 
@@ -18,6 +18,7 @@ docker build \
   --build-arg AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
   --build-arg AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} \
   --build-arg BACKEND_HOST=${BACKEND_PROD_HOST} \
+  --build-arg NEXT_PUBLIC_ASSET_ORIGIN=${NEXT_PUBLIC_ASSET_ORIGIN} \
   --build-arg DEPLOY_ENV=${env} \
  -t ${image_name_with_tag} \
  -f buildOnLambda/Dockerfile \

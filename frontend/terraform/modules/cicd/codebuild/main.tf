@@ -6,6 +6,7 @@ variable "ecr_repository_url" { type = string }
 variable "lambda_function_name" { type = string }
 variable "codebuild_artifact_s3_bucket" { type = string }
 variable "cloudfront_distribution_id" { type = string }
+variable "cloudfront_domain_name" { type = string }
 
 module "values" {
   source = "../../../values/"
@@ -63,6 +64,11 @@ resource "aws_codebuild_project" "codebuild_project" {
     environment_variable {
       name  = "CLOUDFRONT_DISTRIBUTION_ID"
       value = var.cloudfront_distribution_id
+    }
+
+    environment_variable {
+      name  = "NEXT_PUBLIC_ASSET_ORIGIN"
+      value = "https://${var.cloudfront_domain_name}"
     }
   }
 

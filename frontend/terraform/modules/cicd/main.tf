@@ -8,6 +8,7 @@ variable "lambda_function_name" { type = string }
 variable "codebuild_artifact_s3_bucket" { type = string }
 variable "aws_code_connection_id_to_github" { type = string }
 variable "cloudfront_distribution_id" { type = string }
+variable "cloudfront_domain_name" { type = string }
 variable "branch" {
   type = string
   default = "master"
@@ -24,6 +25,7 @@ module "codebuild" {
   lambda_function_name = var.lambda_function_name
   codebuild_artifact_s3_bucket = var.codebuild_artifact_s3_bucket
   cloudfront_distribution_id = var.cloudfront_distribution_id
+  cloudfront_domain_name = var.cloudfront_domain_name
 }
 
 module "codepipeline" {
