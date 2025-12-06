@@ -15,12 +15,6 @@ import {
 } from '../../../../../lib/graphql/generated/graphql';
 import { MEAL_TYPE } from '../../../../../features/meal/const';
 
-jest.mock('next/navigation', () => ({
-  useRouter: jest.fn(),
-  usePathname: jest.fn(),
-  useSearchParams: jest.fn(),
-}));
-
 const buildNewMealGraphQLParams = (newMeal) => {
   return {
     ...newMeal,

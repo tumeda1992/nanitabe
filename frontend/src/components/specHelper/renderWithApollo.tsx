@@ -1,12 +1,10 @@
-import {
-  ApolloClient,
-  InMemoryCache,
-} from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { HttpLink } from '@apollo/client/link/http';
 import { ApolloProvider } from '@apollo/client/react';
 import fetch from 'isomorphic-unfetch';
 import React from 'react';
 import { render } from '@testing-library/react';
+import { LogicalHistoryProvider } from '../../app/logical-history';
 
 const client = new ApolloClient({
   ssrMode: false,
@@ -23,5 +21,9 @@ const client = new ApolloClient({
 });
 
 export default (component: React.ReactNode) => {
-  render(<ApolloProvider client={client}>{component}</ApolloProvider>);
+  render(
+    <ApolloProvider client={client}>
+      <LogicalHistoryProvider>{component}</LogicalHistoryProvider>
+    </ApolloProvider>,
+  );
 };
