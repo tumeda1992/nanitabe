@@ -21,6 +21,7 @@ type Props = {
   children: React.ReactNode;
 };
 
+// TODO: providerをappから出して、どこかにまとめて置く
 export default ({ children }: Props) => {
   const apolloClient = useApollo({});
   useLoginPageRedirect();

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   previousSunday,
   subDays,
@@ -18,6 +18,7 @@ import {
   DAY_OF_TUESDAY,
   DAY_OF_WEDNESDAY,
 } from '../calenderComponents/useCalenderDay';
+import { useLogicalHistory } from '../../../app/logical-history';
 
 export const START_FROM_SAT = 'START_FROM_SAT';
 export const START_FROM_SUN = 'START_FROM_SUN';
@@ -104,20 +105,27 @@ export const useFirstDisplayDate = (
   specifiedDate: Date,
   getWeekStartDateFrom: (date: Date) => Date,
 ) => {
-  const [firstDisplayDate, setFirstDisplayDate] = useState(() =>
+  const { pushHistory } = useLogicalHistory();
+
+  const [firstDisplayDate, setFirstDisplayDate] = useState<Date>(() =>
     getWeekStartDateFrom(specifiedDate),
   );
 
+  useEffect(() => {
+    setFirstDisplayDate(getWeekStartDateFrom(specifiedDate));
+  }, [specifiedDate]);
+
+  const reflectDate = useCallback((date: Date) => {
+    setFirstDisplayDate(date);
+    pushHistory(weekCalenderPageUrlOf(date));
+  }, []);
+
   const updateFirstDateToPreviousWeekFirstDate = () => {
-    const previous = subDays(firstDisplayDate, 7);
-    setFirstDisplayDate(previous);
-    pushWeekToHistory(previous);
+    reflectDate(subDays(firstDisplayDate, 7));
   };
 
   const updateFirstDateToNextWeekFirstDate = () => {
-    const next = addDays(firstDisplayDate, 7);
-    setFirstDisplayDate(next);
-    pushWeekToHistory(next);
+    reflectDate(addDays(firstDisplayDate, 7));
   };
 
   return {
@@ -135,6 +143,12 @@ export const useDateFormatStringInUrl = (
   const raw = params?.date ? params.date : '';
 
   const dateFormatString = isISODateFormatString(raw) ? raw : '';
+
+  // ページ内遷移や戻るとかで動くか確認
+  useEffect(() => {
+    console.log('Date format string in URL changed:', dateFormatString);
+    console.log('Full URL:', window.location.href);
+  }, [dateFormatString]);
 
   return { dateFormatString };
 };

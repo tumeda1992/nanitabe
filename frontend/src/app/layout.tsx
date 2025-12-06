@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import ApolloProvider from './apollo_provider';
+import { LogicalHistoryProvider } from './logical-history';
 // TODO: bootstrapのCSSを適切に読み込む
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -26,7 +27,9 @@ export default function RootLayout({ children }: Props) {
         />
       </head>
       <body>
-        <ApolloProvider>{children}</ApolloProvider>
+        <ApolloProvider>
+          <LogicalHistoryProvider>{children}</LogicalHistoryProvider>
+        </ApolloProvider>
       </body>
     </html>
   );

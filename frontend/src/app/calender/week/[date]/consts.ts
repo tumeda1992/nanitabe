@@ -1,5 +1,6 @@
 import { formatISO } from 'date-fns';
 
+// TODO: URLという言葉をpathとかpathAndQueryに変更する
 export const WEEK_CALENDER_PAGE_URL = '/calender/week';
 export const WEEK_CALENDER_PAGE_URL_OF_THIS_WEEK = '/calender/week/thisweek';
 export const weekCalenderPageUrlOf = (date: Date) => {
