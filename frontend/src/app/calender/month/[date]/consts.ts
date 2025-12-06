@@ -1,5 +1,6 @@
 import { formatISO } from 'date-fns';
 
+// TODO: URLという言葉をpathとかpathAndQueryに変更する
 export const MONTH_CALENDER_PAGE_URL = '/calender/month';
 export const MONTH_CALENDER_PAGE_URL_OF_THIS_MONTH =
   '/calender/month/thismonth';

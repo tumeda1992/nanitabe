@@ -6,9 +6,7 @@ import {
   previousSaturday,
   previousMonday,
 } from 'date-fns';
-import { useRouter, useParams } from 'next/navigation';
 import { weekCalenderPageUrlOf } from '../../../app/calender/week/[date]/consts';
-import { isISODateFormatString } from '../../../features/utils/dateUtils';
 import {
   DAY_OF_FRIDAY,
   DAY_OF_MONDAY,
@@ -92,15 +90,6 @@ export const useCalenderDayOfWeek = (startFromValue: StartFromValue) => {
   };
 };
 
-const pushWeekToHistory = (date: Date) => {
-  if (typeof window === 'undefined') return;
-
-  const url = weekCalenderPageUrlOf(date);
-  const iso = date.toISOString().slice(0, 10);
-
-  window.history.pushState({ date: iso }, '', url);
-};
-
 export const useFirstDisplayDate = (
   specifiedDate: Date,
   getWeekStartDateFrom: (date: Date) => Date,
@@ -120,35 +109,17 @@ export const useFirstDisplayDate = (
     pushHistory(weekCalenderPageUrlOf(date));
   }, []);
 
-  const updateFirstDateToPreviousWeekFirstDate = () => {
+  const updateFirstDateToPreviousWeekFirstDate = useCallback(() => {
     reflectDate(subDays(firstDisplayDate, 7));
-  };
+  }, [firstDisplayDate]);
 
-  const updateFirstDateToNextWeekFirstDate = () => {
+  const updateFirstDateToNextWeekFirstDate = useCallback(() => {
     reflectDate(addDays(firstDisplayDate, 7));
-  };
+  }, [firstDisplayDate]);
 
   return {
     firstDisplayDate,
     updateFirstDateToPreviousWeekFirstDate,
     updateFirstDateToNextWeekFirstDate,
   };
-};
-
-export const useDateFormatStringInUrl = (
-  extractDateStringFromUrl: (url: string) => string | null,
-) => {
-  const params = useParams<{ date?: string }>();
-
-  const raw = params?.date ? params.date : '';
-
-  const dateFormatString = isISODateFormatString(raw) ? raw : '';
-
-  // ページ内遷移や戻るとかで動くか確認
-  useEffect(() => {
-    console.log('Date format string in URL changed:', dateFormatString);
-    console.log('Full URL:', window.location.href);
-  }, [dateFormatString]);
-
-  return { dateFormatString };
 };
