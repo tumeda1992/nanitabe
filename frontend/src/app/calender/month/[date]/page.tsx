@@ -1,25 +1,28 @@
 'use client';
 
 import React from 'react';
-import MonthCalender, {
-  useDateFormatStringInUrl,
-} from '../../../../components/calender/MonthCalender';
+import MonthCalender from '../../../../components/calender/MonthCalender';
 import { isISODateFormatString } from '../../../../features/utils/dateUtils';
-import { MONTH_CALENDER_PAGE_URL } from './consts';
+import { MONTH_CALENDER_PAGE_PATH } from './consts';
+import { useLogicalHistory } from '../../../logical-history';
 
-const extractDateStringFromCalenderMonthUrl = (url: string) => {
-  if (!url) return null;
-  const matched = url.match(new RegExp(`${MONTH_CALENDER_PAGE_URL}/(.*)`));
+const extractDateStringFromCalenderMonthPath = (path: string) => {
+  if (!path) return null;
+  const matched = path.match(new RegExp(`${MONTH_CALENDER_PAGE_PATH}/(.*)`));
   if (!matched) return null;
-  return matched[1];
+
+  const matchedDateString = matched[1];
+  if (!isISODateFormatString(matchedDateString)) return null;
+
+  return matchedDateString;
 };
 
-export default (props) => {
-  const { dateFormatString } = useDateFormatStringInUrl(
-    extractDateStringFromCalenderMonthUrl,
-  );
+export default () => {
+  const { currentPathAndQuery } = useLogicalHistory();
+  const dateFormatString =
+    extractDateStringFromCalenderMonthPath(currentPathAndQuery);
 
-  if (!isISODateFormatString(dateFormatString)) {
+  if (!dateFormatString) {
     return <MonthCalender />;
   }
   return <MonthCalender date={new Date(`${dateFormatString}T09:00:00`)} />;

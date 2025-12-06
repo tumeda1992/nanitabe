@@ -1,1 +1,1 @@
-export const DISHSOURCE_NEW_PAGE_URL = '/dishsources/new';
+export const DISHSOURCE_NEW_PAGE_PATH = '/dishsources/new';

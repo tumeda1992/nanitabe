@@ -2,18 +2,12 @@
 
 import React from 'react';
 import {
-  addDays,
   format,
   isSameDay,
   getDay,
-  startOfMonth,
-  endOfMonth,
   eachDayOfInterval,
-  subDays,
-  formatISO,
   addHours,
 } from 'date-fns';
-import { useRouter } from 'next/navigation';
 import Calender from '../calenderComponents/Calender';
 import useMeal from '../../../features/meal/useMeal';
 import style from '../calenderComponents/Calender/index.module.scss';
@@ -27,9 +21,7 @@ import {
   DAY_OF_TUESDAY,
   DAY_OF_WEDNESDAY,
 } from '../calenderComponents/useCalenderDay';
-import { monthCalenderPageUrlOf } from '../../../app/calender/month/[date]/consts';
-
-export { useDateFormatStringInUrl } from '../WeekCalender/useWeekCalenderDate';
+import { useDisplayDate } from './useMonthCalenderDate';
 
 export type Props = {
   date?: Date;
@@ -38,8 +30,12 @@ export type Props = {
 export default (props: Props) => {
   const { date: dateArg } = props;
 
-  const firstDayOfMonth = startOfMonth(dateArg || new Date());
-  const lastDayOfMonth = endOfMonth(dateArg || new Date());
+  const {
+    firstDayOfMonth,
+    lastDayOfMonth,
+    updateToPreviousMonth,
+    updateToNextMonth,
+  } = useDisplayDate(dateArg || new Date());
 
   const { mealsForCalender, fetchMealsLoading, refetchMealsForCalender } =
     useMeal({
@@ -51,15 +47,6 @@ export default (props: Props) => {
         },
       },
     });
-  const router = useRouter();
-  const updateToPreviousMonth = () => {
-    router.push(
-      monthCalenderPageUrlOf(startOfMonth(subDays(firstDayOfMonth, 1))),
-    );
-  };
-  const updateToNextMonth = () => {
-    router.push(monthCalenderPageUrlOf(addDays(lastDayOfMonth, 1)));
-  };
 
   const weekdays = [
     DAY_OF_SUNDAY,

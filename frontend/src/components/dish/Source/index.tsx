@@ -9,7 +9,7 @@ import useDish from '../../../features/dish/useDish';
 import useDishSource from '../../../features/dish/source/useDishSource';
 import { MEAL_POSITION_LABELS } from '../../../features/dish/const';
 
-import { DISHSOURCE_NEW_PAGE_URL } from '../../../app/dishsources/new/const';
+import { DISHSOURCE_NEW_PAGE_PATH } from '../../../app/dishsources/new/const';
 
 export default () => {
   const { dishesPerSource, refetchDishesPerSource } = useDish({
@@ -122,7 +122,7 @@ export default () => {
             </div>
           ),
         )}
-      <Link href={DISHSOURCE_NEW_PAGE_URL}>レシピ元作成</Link>
+      <Link href={DISHSOURCE_NEW_PAGE_PATH}>レシピ元作成</Link>
     </div>
   );
 };

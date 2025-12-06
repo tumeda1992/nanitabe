@@ -1,3 +1,4 @@
+import { useState, useEffect, useCallback } from 'react';
 import {
   previousSunday,
   subDays,
@@ -5,9 +6,7 @@ import {
   previousSaturday,
   previousMonday,
 } from 'date-fns';
-import { useRouter, useParams } from 'next/navigation';
-import { weekCalenderPageUrlOf } from '../../../app/calender/week/[date]/consts';
-import { isISODateFormatString } from '../../../features/utils/dateUtils';
+import { weekCalenderPagePathOf } from '../../../app/calender/week/[date]/consts';
 import {
   DAY_OF_FRIDAY,
   DAY_OF_MONDAY,
@@ -17,6 +16,7 @@ import {
   DAY_OF_TUESDAY,
   DAY_OF_WEDNESDAY,
 } from '../calenderComponents/useCalenderDay';
+import { useLogicalHistory } from '../../../app/logical-history';
 
 export const START_FROM_SAT = 'START_FROM_SAT';
 export const START_FROM_SUN = 'START_FROM_SUN';
@@ -57,7 +57,7 @@ const LIST_PER_START_DAY_OF_DAYS_OF_WEEK = {
 };
 
 export const useCalenderDayOfWeek = (startFromValue: StartFromValue) => {
-  const getWeekStartDateFrom = (() => {
+  const getWeekStartDateFrom: (date: Date) => Date = (() => {
     if (startFromValue === START_FROM_SAT) {
       return (date: Date) => {
         const dayOfWeekNum = date.getDay();
@@ -80,6 +80,8 @@ export const useCalenderDayOfWeek = (startFromValue: StartFromValue) => {
         return previousMonday(date);
       };
     }
+
+    return (date: Date) => date;
   })();
 
   return {
@@ -90,44 +92,34 @@ export const useCalenderDayOfWeek = (startFromValue: StartFromValue) => {
 
 export const useFirstDisplayDate = (
   specifiedDate: Date,
-  getWeekStartDateFrom,
+  getWeekStartDateFrom: (date: Date) => Date,
 ) => {
-  const firstDisplayDate = getWeekStartDateFrom(specifiedDate);
+  const { pushHistory } = useLogicalHistory();
 
-  /*
-    NOTE: 日付変更方針: URLを正として、コンポーネントはそれに追随し、更新したい場合はURLを更新する
-    - 初めにコンポーネントで閉じるstateで日付を管理していた
-      - router.pushで日付更新した後の「戻る」で戻った後の日付反映できなかった。
-    - 次にページコンポーネントでもstateを持って、このhooksを使うコンポーネントでもstateを持った
-      - 管理の側面でも二重管理になっていた
-      - 片方を変えたときに、もう一方が意図せず変わるなどが起きてしまった
-    - 最終的に不服だが、コンポーネントに閉じずにページコンポーネントで扱うURLに追随するようにした
-   */
-  const router = useRouter();
+  const [firstDisplayDate, setFirstDisplayDate] = useState<Date>(() =>
+    getWeekStartDateFrom(specifiedDate),
+  );
 
-  const updateFirstDateToPreviousWeekFirstDate = () => {
-    router.push(weekCalenderPageUrlOf(subDays(firstDisplayDate, 7)));
-  };
+  useEffect(() => {
+    setFirstDisplayDate(getWeekStartDateFrom(specifiedDate));
+  }, [specifiedDate]);
 
-  const updateFirstDateToNextWeekFirstDate = () => {
-    router.push(weekCalenderPageUrlOf(addDays(firstDisplayDate, 7)));
-  };
+  const reflectDate = useCallback((date: Date) => {
+    setFirstDisplayDate(date);
+    pushHistory(weekCalenderPagePathOf(date));
+  }, []);
+
+  const updateFirstDateToPreviousWeekFirstDate = useCallback(() => {
+    reflectDate(subDays(firstDisplayDate, 7));
+  }, [firstDisplayDate]);
+
+  const updateFirstDateToNextWeekFirstDate = useCallback(() => {
+    reflectDate(addDays(firstDisplayDate, 7));
+  }, [firstDisplayDate]);
 
   return {
     firstDisplayDate,
     updateFirstDateToPreviousWeekFirstDate,
     updateFirstDateToNextWeekFirstDate,
   };
-};
-
-export const useDateFormatStringInUrl = (
-  extractDateStringFromUrl: (url: string) => string | null,
-) => {
-  const params = useParams<{ date?: string }>();
-
-  const raw = params?.date ? params.date : '';
-
-  const dateFormatString = isISODateFormatString(raw) ? raw : '';
-
-  return { dateFormatString };
 };

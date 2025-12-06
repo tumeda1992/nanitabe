@@ -1,1 +1,1 @@
-export const LOGIN_PAGE_URL = '/login';
+export const LOGIN_PAGE_PATH = '/login';

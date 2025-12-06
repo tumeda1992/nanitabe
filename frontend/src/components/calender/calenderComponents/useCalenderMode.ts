@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
 import useAssignDishMode, {
   AssigningDishMode,
 } from './operationComponents/AssignDish/useAssignDishMode';
@@ -11,9 +10,10 @@ import useSwapMealsMode, {
 } from './operationComponents/SwapMeals/useSwapMealsMode';
 import {
   isMonthPath,
-  monthCalenderPageUrlOf,
+  monthCalenderPagePathOf,
 } from '../../../app/calender/month/[date]/consts';
-import { weekCalenderPageUrlOf } from '../../../app/calender/week/[date]/consts';
+import { weekCalenderPagePathOf } from '../../../app/calender/week/[date]/consts';
+import { useLogicalHistory } from '../../../app/logical-history';
 
 export const DISPLAY_CALENDER_MODE = 'DISPLAY_CALENDER_MODE';
 
@@ -95,18 +95,17 @@ export default ({ onDataChanged }) => {
 // 以下、カレンダーモードで流用されるものを定義
 
 export const useBackToDateWhenModeStarted = () => {
-  const router = useRouter();
-  const currentPath = usePathname();
+  const { currentPathAndQuery, pushHistory } = useLogicalHistory();
 
   const backToDateWhenModeStarted = (dateWhenModeStarted: Date) => {
     const moveTargetPath = (() => {
-      if (isMonthPath(currentPath)) {
-        return monthCalenderPageUrlOf(dateWhenModeStarted);
+      if (isMonthPath(currentPathAndQuery)) {
+        return monthCalenderPagePathOf(dateWhenModeStarted);
       }
-      return weekCalenderPageUrlOf(dateWhenModeStarted);
+      return weekCalenderPagePathOf(dateWhenModeStarted);
     })();
-    if (moveTargetPath !== currentPath) {
-      router.push(moveTargetPath);
+    if (moveTargetPath !== currentPathAndQuery) {
+      pushHistory(moveTargetPath);
     }
   };
 
