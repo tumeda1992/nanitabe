@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   previousSunday,
   subDays,
@@ -57,7 +58,7 @@ const LIST_PER_START_DAY_OF_DAYS_OF_WEEK = {
 };
 
 export const useCalenderDayOfWeek = (startFromValue: StartFromValue) => {
-  const getWeekStartDateFrom = (() => {
+  const getWeekStartDateFrom: (date: Date) => Date = (() => {
     if (startFromValue === START_FROM_SAT) {
       return (date: Date) => {
         const dayOfWeekNum = date.getDay();
@@ -80,6 +81,8 @@ export const useCalenderDayOfWeek = (startFromValue: StartFromValue) => {
         return previousMonday(date);
       };
     }
+
+    return (date: Date) => date;
   })();
 
   return {
@@ -88,29 +91,33 @@ export const useCalenderDayOfWeek = (startFromValue: StartFromValue) => {
   };
 };
 
+const pushWeekToHistory = (date: Date) => {
+  if (typeof window === 'undefined') return;
+
+  const url = weekCalenderPageUrlOf(date);
+  const iso = date.toISOString().slice(0, 10);
+
+  window.history.pushState({ date: iso }, '', url);
+};
+
 export const useFirstDisplayDate = (
   specifiedDate: Date,
-  getWeekStartDateFrom,
+  getWeekStartDateFrom: (date: Date) => Date,
 ) => {
-  const firstDisplayDate = getWeekStartDateFrom(specifiedDate);
-
-  /*
-    NOTE: 日付変更方針: URLを正として、コンポーネントはそれに追随し、更新したい場合はURLを更新する
-    - 初めにコンポーネントで閉じるstateで日付を管理していた
-      - router.pushで日付更新した後の「戻る」で戻った後の日付反映できなかった。
-    - 次にページコンポーネントでもstateを持って、このhooksを使うコンポーネントでもstateを持った
-      - 管理の側面でも二重管理になっていた
-      - 片方を変えたときに、もう一方が意図せず変わるなどが起きてしまった
-    - 最終的に不服だが、コンポーネントに閉じずにページコンポーネントで扱うURLに追随するようにした
-   */
-  const router = useRouter();
+  const [firstDisplayDate, setFirstDisplayDate] = useState(() =>
+    getWeekStartDateFrom(specifiedDate),
+  );
 
   const updateFirstDateToPreviousWeekFirstDate = () => {
-    router.push(weekCalenderPageUrlOf(subDays(firstDisplayDate, 7)));
+    const previous = subDays(firstDisplayDate, 7);
+    setFirstDisplayDate(previous);
+    pushWeekToHistory(previous);
   };
 
   const updateFirstDateToNextWeekFirstDate = () => {
-    router.push(weekCalenderPageUrlOf(addDays(firstDisplayDate, 7)));
+    const next = addDays(firstDisplayDate, 7);
+    setFirstDisplayDate(next);
+    pushWeekToHistory(next);
   };
 
   return {
