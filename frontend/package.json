@@ -19,7 +19,7 @@
     "graphql": "^15.3.0",
     "isomorphic-unfetch": "3.1.0",
     "lodash": "^4.17.21",
-    "next": "^16.0.3",
+    "next": "^16.0.7",
     "nookies": "^2.5.2",
     "prop-types": "^15.6.2",
     "react": "^19",
