@@ -11,9 +11,9 @@ import useSwapMealsMode, {
 } from './operationComponents/SwapMeals/useSwapMealsMode';
 import {
   isMonthPath,
-  monthCalenderPageUrlOf,
+  monthCalenderPagePathOf,
 } from '../../../app/calender/month/[date]/consts';
-import { weekCalenderPageUrlOf } from '../../../app/calender/week/[date]/consts';
+import { weekCalenderPagePathOf } from '../../../app/calender/week/[date]/consts';
 
 export const DISPLAY_CALENDER_MODE = 'DISPLAY_CALENDER_MODE';
 
@@ -101,9 +101,9 @@ export const useBackToDateWhenModeStarted = () => {
   const backToDateWhenModeStarted = (dateWhenModeStarted: Date) => {
     const moveTargetPath = (() => {
       if (isMonthPath(currentPath)) {
-        return monthCalenderPageUrlOf(dateWhenModeStarted);
+        return monthCalenderPagePathOf(dateWhenModeStarted);
       }
-      return weekCalenderPageUrlOf(dateWhenModeStarted);
+      return weekCalenderPagePathOf(dateWhenModeStarted);
     })();
     if (moveTargetPath !== currentPath) {
       router.push(moveTargetPath);

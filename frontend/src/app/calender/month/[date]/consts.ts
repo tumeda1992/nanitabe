@@ -1,15 +1,14 @@
 import { formatISO } from 'date-fns';
 
-// TODO: URLという言葉をpathとかpathAndQueryに変更する
-export const MONTH_CALENDER_PAGE_URL = '/calender/month';
-export const MONTH_CALENDER_PAGE_URL_OF_THIS_MONTH =
+export const MONTH_CALENDER_PAGE_PATH = '/calender/month';
+export const MONTH_CALENDER_PAGE_PATH_OF_THIS_MONTH =
   '/calender/month/thismonth';
-export const monthCalenderPageUrlOf = (date: Date) => {
+export const monthCalenderPagePathOf = (date: Date) => {
   const dateString = formatISO(date, { representation: 'date' });
-  return `${MONTH_CALENDER_PAGE_URL}/${dateString}`;
+  return `${MONTH_CALENDER_PAGE_PATH}/${dateString}`;
 };
-export const isMonthPath = (url: string | null) => {
-  if (!url) return false;
-  const matched = url.match(new RegExp(`${MONTH_CALENDER_PAGE_URL}/(.*)`));
+export const isMonthPath = (path: string | null) => {
+  if (!path) return false;
+  const matched = path.match(new RegExp(`${MONTH_CALENDER_PAGE_PATH}/(.*)`));
   return !!matched;
 };

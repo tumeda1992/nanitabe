@@ -3,7 +3,7 @@
 import React from 'react';
 import { EditDish } from '../../../../components/dish/DishForm';
 import useDish from '../../../../features/dish/useDish';
-import { DISHSOURCES_PAGE_URL } from '../../../../app/dishsources/consts';
+import { DISHSOURCES_PAGE_PATH } from '../../../../app/dishsources/consts';
 
 type Props = {
   dishIdString: string;
@@ -26,7 +26,7 @@ export default (props: Props) => {
         <EditDish
           dish={dish}
           onEditSucceeded={() => {
-            window.location.href = DISHSOURCES_PAGE_URL;
+            window.location.href = DISHSOURCES_PAGE_PATH;
           }}
         />
       )}

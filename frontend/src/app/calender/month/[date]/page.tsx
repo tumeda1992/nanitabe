@@ -3,12 +3,12 @@
 import React from 'react';
 import MonthCalender from '../../../../components/calender/MonthCalender';
 import { isISODateFormatString } from '../../../../features/utils/dateUtils';
-import { MONTH_CALENDER_PAGE_URL } from './consts';
+import { MONTH_CALENDER_PAGE_PATH } from './consts';
 import { useLogicalHistory } from '../../../logical-history';
 
-const extractDateStringFromCalenderMonthUrl = (url: string) => {
-  if (!url) return null;
-  const matched = url.match(new RegExp(`${MONTH_CALENDER_PAGE_URL}/(.*)`));
+const extractDateStringFromCalenderMonthPath = (path: string) => {
+  if (!path) return null;
+  const matched = path.match(new RegExp(`${MONTH_CALENDER_PAGE_PATH}/(.*)`));
   if (!matched) return null;
 
   const matchedDateString = matched[1];
@@ -20,7 +20,7 @@ const extractDateStringFromCalenderMonthUrl = (url: string) => {
 export default () => {
   const { currentPathAndQuery } = useLogicalHistory();
   const dateFormatString =
-    extractDateStringFromCalenderMonthUrl(currentPathAndQuery);
+    extractDateStringFromCalenderMonthPath(currentPathAndQuery);
 
   if (!dateFormatString) {
     return <MonthCalender />;

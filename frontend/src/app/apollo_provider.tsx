@@ -7,13 +7,13 @@ import { useApollo } from '../lib/graphql/buildApolloClient';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../components/base/base.css';
 import { useAuthErrorHandle } from '../lib/graphql/authError';
-import { LOGIN_PAGE_URL } from '../app/login/consts';
+import { LOGIN_PAGE_PATH } from '../app/login/consts';
 
 const useLoginPageRedirect = () => {
   // const router = useRouter();
   useAuthErrorHandle(() => {
     // router.push(LOGIN_PAGE_URL); // 本当はSPAで遷移させたいが、Apolloのエラーモーダルが鬱陶しいのでかいけつまでページ遷移で解決
-    window.location.href = LOGIN_PAGE_URL;
+    window.location.href = LOGIN_PAGE_PATH;
   });
 };
 

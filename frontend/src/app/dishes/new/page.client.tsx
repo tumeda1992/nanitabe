@@ -3,7 +3,7 @@
 import React from 'react';
 import { usePathname } from 'next/navigation';
 import { AddDish } from '../../../components/dish/DishForm';
-import { DISHSOURCES_PAGE_URL } from '../../dishsources/consts';
+import { DISHSOURCES_PAGE_PATH } from '../../dishsources/consts';
 import { SearchParams } from '../../next-types';
 
 type Props = {
@@ -25,7 +25,7 @@ export default (props: Props) => {
           params.set('doContinuousRegistration', 'true');
           window.location.href = `${pathname}?${params.toString()}`;
         } else {
-          window.location.href = DISHSOURCES_PAGE_URL;
+          window.location.href = DISHSOURCES_PAGE_PATH;
         }
       }}
       preFilledDish={preFilledDish}

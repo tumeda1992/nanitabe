@@ -1,1 +1,1 @@
-export const DISHSOURCES_PAGE_URL = '/dishsources';
+export const DISHSOURCES_PAGE_PATH = '/dishsources';

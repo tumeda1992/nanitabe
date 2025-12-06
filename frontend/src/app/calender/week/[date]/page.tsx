@@ -3,13 +3,12 @@
 import React from 'react';
 import WeekCalender from '../../../../components/calender/WeekCalender';
 import { isISODateFormatString } from '../../../../features/utils/dateUtils';
-import { WEEK_CALENDER_PAGE_URL } from './consts';
+import { WEEK_CALENDER_PAGE_PATH } from './consts';
 import { useLogicalHistory } from '../../../logical-history';
 
-// TODO: URLという言葉をpathとかpathAndQueryに変更する
-const extractDateStringFromCalenderWeekUrl = (url: string) => {
-  if (!url) return null;
-  const matched = url.match(new RegExp(`${WEEK_CALENDER_PAGE_URL}/(.*)`));
+const extractDateStringFromCalenderWeekPath = (path: string) => {
+  if (!path) return null;
+  const matched = path.match(new RegExp(`${WEEK_CALENDER_PAGE_PATH}/(.*)`));
   if (!matched) return null;
 
   const matchedDateString = matched[1];
@@ -21,7 +20,7 @@ const extractDateStringFromCalenderWeekUrl = (url: string) => {
 export default () => {
   const { currentPathAndQuery } = useLogicalHistory();
   const dateFormatString =
-    extractDateStringFromCalenderWeekUrl(currentPathAndQuery);
+    extractDateStringFromCalenderWeekPath(currentPathAndQuery);
 
   if (!dateFormatString) {
     return <WeekCalender />;
