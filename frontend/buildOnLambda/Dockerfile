@@ -1,4 +1,6 @@
 # マルチステージビルドをまたいでARGを定義
+# TODO: マルチステージで読み取られない値があったから一律外で定義して、暫定的に中にも全て渡したが、不要なものもあると思うので消す
+# 野良Dockerでマルチステージビルド時に各ステージにどのように値が渡されるか調べる
 ARG AWS_ACCESS_KEY_ID
 ARG AWS_SECRET_ACCESS_KEY
 ARG AWS_DEFAULT_REGION
