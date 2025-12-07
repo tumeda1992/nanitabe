@@ -1,6 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { screen } from '@testing-library/react';
+import { format } from 'date-fns';
 import renderWithApollo from '../../../../specHelper/renderWithApollo';
 import {
   registerMutationHandler,
@@ -74,7 +75,10 @@ describe('assign dish on week calender', () => {
       await userClick(screen, `existingDish-${registeredDish.id}`);
       await userClick(
         screen,
-        `weekCalendarDateOf${newMealWithRequiredParams.date.toISOString()}`,
+        `weekCalendarDateOf${format(
+          newMealWithRequiredParams.date,
+          'yyyy-MM-dd',
+        )}`,
       );
 
       expect(getLatestMutationVariables()).toEqual({

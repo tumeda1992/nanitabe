@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { formatISO } from 'date-fns';
+import { format } from 'date-fns';
 import useCalenderArrowComponent from '../useCalenderArrowComponent';
 import useRefreshCalenderData from '../../useRefreshCalenderData';
 import useCalenderMode from '../useCalenderMode';
@@ -12,8 +12,10 @@ import AssignDish from '../operationComponents/AssignDish';
 import MoveDish from '../operationComponents/MoveMeal';
 import SwapMeals from '../operationComponents/SwapMeals';
 
+type DateMeal = { date: Date; dayLabel: string; meals: any[] };
+
 type Props = {
-  dateMealsList: { date: Date; dayLabel: string; meals: any[] }[];
+  dateMealsList: DateMeal[];
   fetchMealsLoading: boolean;
   refetchMealsForCalender: any;
   refreshToPrev: any;
@@ -56,7 +58,14 @@ export default (props: Props) => {
     requireDisplayingBottomBar,
   );
 
-  if (fetchMealsLoading) return <>Loading...</>;
+  const existMeals =
+    dateMealsList &&
+    dateMealsList.reduce((meals: any[], dateMeals) => {
+      return meals.concat(dateMeals.meals);
+    }, []).length > 0;
+  if (fetchMealsLoading && !existMeals) {
+    return <>Loading...</>;
+  }
 
   return (
     <div className={style['calender-container']}>
@@ -71,7 +80,7 @@ export default (props: Props) => {
               <tr
                 key={`key_${dayIndex}`}
                 onClick={() => onDateClick(date)}
-                data-testid={`weekCalendarDateOf${date.toISOString()}`}
+                data-testid={`weekCalendarDateOf${format(date, 'yyyy-MM-dd')}`}
               >
                 <th>
                   <DateComponent

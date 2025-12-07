@@ -9,6 +9,8 @@ import {
   ReactNode,
 } from 'react';
 
+import { usePathname } from 'next/navigation';
+
 // Next.jsのrouterで扱う物理URLでなく、SPA的にクライアント側で使う論理URLを管理するコンテキスト
 
 type LogicalHistoryContextValue = {
@@ -36,7 +38,12 @@ export const LogicalHistoryProvider = ({
   children: ReactNode;
 }) => {
   const [currentPathAndQuery, setCurrentPathAndQuery] = useState<string>(() => {
-    if (typeof window === 'undefined') return '/';
+    if (typeof window === 'undefined') {
+      // 本来これでもいいが、サーバーサイドと足並みを揃える
+      // return '/';
+      const pathname = usePathname();
+      return pathname || '/';
+    }
     return window.location.pathname + window.location.search;
   });
 

@@ -18,7 +18,7 @@ class Dish < ApplicationRecord
     meals_count_subquery = Meal.select('dish_id, COUNT(*) as meals_count')
                                .group('dish_id')
     joins("LEFT JOIN (#{meals_count_subquery.to_sql}) AS meal_counts ON meal_counts.dish_id = dishes.id")
-      .left_joins(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags)
+      .left_joins(:dish_source, :dish_source_relation, :dish_evaluation) # has_oneのもののみ。hanyを入れると重複が発生する
       .preload(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags)
   }
 
