@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { addDays, format, isSameDay } from 'date-fns';
+import React, { useMemo, useEffect, useState } from 'react';
+import { addDays, format, isSameDay, subDays } from 'date-fns';
 import Calender from '../calenderComponents/Calender';
 import useMeal from '../../../features/meal/useMeal';
 import {
@@ -11,6 +11,8 @@ import {
 } from './useWeekCalenderDate';
 import style from '../calenderComponents/Calender/index.module.scss';
 import CalenderMenu from './CalenderMenu';
+import useCalenderArrowComponent from '../calenderComponents/useCalenderArrowComponent';
+import useRefreshCalenderData from '../useRefreshCalenderData';
 
 export type Props = {
   date: Date;
@@ -32,8 +34,8 @@ export default (props: Props) => {
       fetchMealsParams: {
         fetchMealsForCalenderParams: {
           requireFetchedData: true,
-          startDate: firstDisplayDate,
-          lastDate: addDays(firstDisplayDate, 6),
+          startDate: subDays(firstDisplayDate, 30),
+          lastDate: addDays(firstDisplayDate, 6 + 30),
         },
       },
     };
@@ -42,12 +44,20 @@ export default (props: Props) => {
   const { mealsForCalender, fetchMealsLoading, refetchMealsForCalender } =
     useMeal(fetchMealsParams);
 
+  // 多分GraphQLクライアント(apollo)のキャッシュでなんとかしたほうがいいやつ
+  const [cachedMeals, setCachedMeals] = useState([]);
+  useEffect(() => {
+    if (mealsForCalender && !fetchMealsLoading) {
+      setCachedMeals(mealsForCalender);
+    }
+  }, [mealsForCalender]);
+
   const dateMealsList: { date: Date; dayLabel: string; meals: any[] }[] =
     (() => {
       return daysOfWeek.map((day, dayIndex) => {
         const date = addDays(firstDisplayDate, Number(dayIndex));
         const meals =
-          mealsForCalender?.find((mealForCalender) => {
+          (mealsForCalender || cachedMeals)?.find((mealForCalender) => {
             return isSameDay(new Date(mealForCalender.date), date);
           })?.meals || [];
         return {

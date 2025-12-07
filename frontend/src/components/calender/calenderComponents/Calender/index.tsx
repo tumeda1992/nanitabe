@@ -12,8 +12,10 @@ import AssignDish from '../operationComponents/AssignDish';
 import MoveDish from '../operationComponents/MoveMeal';
 import SwapMeals from '../operationComponents/SwapMeals';
 
+type DateMeal = { date: Date; dayLabel: string; meals: any[] };
+
 type Props = {
-  dateMealsList: { date: Date; dayLabel: string; meals: any[] }[];
+  dateMealsList: DateMeal[];
   fetchMealsLoading: boolean;
   refetchMealsForCalender: any;
   refreshToPrev: any;
@@ -55,6 +57,15 @@ export default (props: Props) => {
   const [fixedComponentHeight, fixedComponentRef] = useMeasureHeight(
     requireDisplayingBottomBar,
   );
+
+  const existMeals =
+    dateMealsList &&
+    dateMealsList.reduce((meals: any[], dateMeals) => {
+      return meals.concat(dateMeals.meals);
+    }, []).length > 0;
+  if (fetchMealsLoading && !existMeals) {
+    return <>Loading...</>;
+  }
 
   return (
     <div className={style['calender-container']}>
