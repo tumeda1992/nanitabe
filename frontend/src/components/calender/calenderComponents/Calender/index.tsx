@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { formatISO } from 'date-fns';
+import { format } from 'date-fns';
 import useCalenderArrowComponent from '../useCalenderArrowComponent';
 import useRefreshCalenderData from '../../useRefreshCalenderData';
 import useCalenderMode from '../useCalenderMode';
@@ -56,8 +56,6 @@ export default (props: Props) => {
     requireDisplayingBottomBar,
   );
 
-  if (fetchMealsLoading) return <>Loading...</>;
-
   return (
     <div className={style['calender-container']}>
       <div className={style['calender-header']}>
@@ -71,7 +69,7 @@ export default (props: Props) => {
               <tr
                 key={`key_${dayIndex}`}
                 onClick={() => onDateClick(date)}
-                data-testid={`weekCalendarDateOf${date.toISOString()}`}
+                data-testid={`weekCalendarDateOf${format(date, 'yyyy-MM-dd')}`}
               >
                 <th>
                   <DateComponent
