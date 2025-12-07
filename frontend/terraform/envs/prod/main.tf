@@ -1,5 +1,5 @@
 variable "aws_account_id" { type = string } # export TF_VAR_aws_account_id=${AWS_ACCESS_KEY_ID}
-variable "backend_host" { type = string } # export TF_VAR_backend_host=${BACKEND_PROD_HOST}
+variable "backend_origin" { type = string } # export TF_VAR_backend_origin=${NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN}
 variable "aws_access_key" { type = string } # export TF_VAR_aws_access_key=${AWS_ACCESS_KEY_ID}
 variable "aws_secret_access_key" { type = string } # export TF_VAR_aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
 variable "route53_zone_id" { type = string } # export TF_VAR_route53_zone_id=${ROUTE53_HOSTZONE_ID}
@@ -21,7 +21,7 @@ module "lambda" {
   source = "../../modules/lambda"
   stage = local.stage
   ecr_repository_url = module.ecr.repository_url
-  backend_host = var.backend_host
+  backend_origin = var.backend_origin
 }
 
 module "api_gateway" {
@@ -62,7 +62,7 @@ module "cicd" {
   aws_account_id = var.aws_account_id
   aws_access_key = var.aws_access_key
   aws_secret_access_key = var.aws_secret_access_key
-  backend_host = var.backend_host
+  backend_origin = var.backend_origin
   ecr_repository_url = module.ecr.repository_url
   lambda_function_name = module.lambda.lambda_function_name
   codebuild_artifact_s3_bucket = var.codebuild_artifact_s3_bucket

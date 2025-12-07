@@ -8,7 +8,7 @@ export TF_VAR_aws_account_id=${AWS_ACCOUNT_ID}
 export TF_VAR_aws_access_key=${AWS_ACCESS_KEY_ID}
 export TF_VAR_aws_secret_access_key=${AWS_SECRET_ACCESS_KEY}
 
-export TF_VAR_backend_host=${BACKEND_PROD_HOST}
+export TF_VAR_backend_origin=${NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN}
 
 export TF_VAR_route53_zone_id=${ROUTE53_HOSTZONE_ID}
 export TF_VAR_route53_name=${ROUTE53_HOSTZONE_NAME}
