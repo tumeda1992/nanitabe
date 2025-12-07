@@ -5,12 +5,15 @@ config:
   withComponent: false
   withHooks: true
 generates:
-  lib/graphql/generated/graphql.ts:
-    documents: "features/**/*.ts"
+  # codegenのバージョンを上げると以下のエラーが起きる。
+  # canonizeResults is deprecated and will be removed in Apollo Client 4.0. Please remove this option.
+  src/lib/graphql/generated/graphql.ts:
+    documents: "src/features/**/*.ts"
     plugins:
       - "typescript"
       - "typescript-operations"
+      # apolloの公式でも非推奨になったらしい
       - "typescript-react-apollo"
-  lib/graphql/generated/graphql.schema.json:
+  src/lib/graphql/generated/graphql.schema.json:
     plugins:
       - "introspection"
