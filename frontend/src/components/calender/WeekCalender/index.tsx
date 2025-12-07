@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { addDays, format, isSameDay } from 'date-fns';
 import Calender from '../calenderComponents/Calender';
 import useMeal from '../../../features/meal/useMeal';
@@ -27,8 +27,8 @@ export default (props: Props) => {
     updateFirstDateToNextWeekFirstDate,
   } = useFirstDisplayDate(dateArg, getWeekStartDateFrom);
 
-  const { mealsForCalender, fetchMealsLoading, refetchMealsForCalender } =
-    useMeal({
+  const fetchMealsParams = useMemo(() => {
+    return {
       fetchMealsParams: {
         fetchMealsForCalenderParams: {
           requireFetchedData: true,
@@ -36,7 +36,11 @@ export default (props: Props) => {
           lastDate: addDays(firstDisplayDate, 6),
         },
       },
-    });
+    };
+  }, [firstDisplayDate]);
+
+  const { mealsForCalender, fetchMealsLoading, refetchMealsForCalender } =
+    useMeal(fetchMealsParams);
 
   const dateMealsList: { date: Date; dayLabel: string; meals: any[] }[] =
     (() => {
