@@ -13,7 +13,7 @@ import style from '../calenderComponents/Calender/index.module.scss';
 import CalenderMenu from './CalenderMenu';
 
 export type Props = {
-  date?: Date;
+  date: Date;
 };
 
 export default (props: Props) => {
@@ -25,7 +25,7 @@ export default (props: Props) => {
     firstDisplayDate,
     updateFirstDateToPreviousWeekFirstDate,
     updateFirstDateToNextWeekFirstDate,
-  } = useFirstDisplayDate(dateArg || new Date(), getWeekStartDateFrom);
+  } = useFirstDisplayDate(dateArg, getWeekStartDateFrom);
 
   const { mealsForCalender, fetchMealsLoading, refetchMealsForCalender } =
     useMeal({

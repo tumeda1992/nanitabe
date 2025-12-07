@@ -24,7 +24,7 @@ import {
 import { useDisplayDate } from './useMonthCalenderDate';
 
 export type Props = {
-  date?: Date;
+  date: Date;
 };
 
 export default (props: Props) => {
@@ -35,7 +35,7 @@ export default (props: Props) => {
     lastDayOfMonth,
     updateToPreviousMonth,
     updateToNextMonth,
-  } = useDisplayDate(dateArg || new Date());
+  } = useDisplayDate(dateArg);
 
   const { mealsForCalender, fetchMealsLoading, refetchMealsForCalender } =
     useMeal({
