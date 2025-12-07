@@ -1,6 +1,6 @@
 variable "stage" { type = string }
 variable "ecr_repository_url" { type = string }
-variable "backend_host" { type = string }
+variable "backend_origin" { type = string }
 
 module "values" {
   source = "../../values"
@@ -40,7 +40,7 @@ resource "aws_lambda_function" "this" {
   environment {
     variables = {
       # Lambdaからサーバサイドへのプライベートファストパスを通したいときはこちらで設定（クライアントサイドは別途設定されているから不要）
-      # SERVER_SIDE_ORIGIN = "https://${var.backend_host}"
+      # SERVER_SIDE_ORIGIN = var.backend_origin
     }
   }
 }

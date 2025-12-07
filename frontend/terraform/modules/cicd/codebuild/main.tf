@@ -1,5 +1,5 @@
 variable "stage" { type = string }
-variable "backend_host" { type = string }
+variable "backend_origin" { type = string }
 variable "aws_access_key" { type = string } # TODO: secret化する
 variable "aws_secret_access_key" { type = string }
 variable "ecr_repository_url" { type = string }
@@ -52,8 +52,8 @@ resource "aws_codebuild_project" "codebuild_project" {
     }
 
     environment_variable {
-      name  = "BACKEND_HOST"
-      value = var.backend_host
+      name  = "NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN"
+      value = var.backend_origin
     }
 
     environment_variable {

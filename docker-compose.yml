@@ -34,7 +34,7 @@ services:
         AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
         AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
         AWS_DEFAULT_REGION: ap-northeast-1
-        BACKEND_HOST: localhost:18101
+        NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN: http://localhost:18101
         NEXT_PUBLIC_ASSET_ORIGIN: ${NEXT_PUBLIC_ASSET_ORIGIN}
         DEPLOY_ENV: verify-infra
     volumes:

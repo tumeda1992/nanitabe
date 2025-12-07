@@ -17,7 +17,7 @@ docker build \
   --build-arg AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
   --build-arg AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
   --build-arg AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION} \
-  --build-arg BACKEND_HOST=${BACKEND_PROD_HOST} \
+  --build-arg NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN=${NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN} \
   --build-arg NEXT_PUBLIC_ASSET_ORIGIN=${NEXT_PUBLIC_ASSET_ORIGIN} \
   --build-arg DEPLOY_ENV=${env} \
  -t ${image_name_with_tag} \
