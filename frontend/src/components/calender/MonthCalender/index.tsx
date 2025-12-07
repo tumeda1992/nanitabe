@@ -24,7 +24,7 @@ import {
 import { useDisplayDate } from './useMonthCalenderDate';
 
 export type Props = {
-  date?: Date;
+  date: Date;
 };
 
 export default (props: Props) => {
@@ -35,7 +35,7 @@ export default (props: Props) => {
     lastDayOfMonth,
     updateToPreviousMonth,
     updateToNextMonth,
-  } = useDisplayDate(dateArg || new Date());
+  } = useDisplayDate(dateArg);
 
   const { mealsForCalender, fetchMealsLoading, refetchMealsForCalender } =
     useMeal({
@@ -69,7 +69,8 @@ export default (props: Props) => {
           })?.meals || [];
 
         return {
-          date: addHours(date, 9), // なぜか9時間ずらさないとRailsに前日で送られるので暫定的に回避させる
+          // なぜか9時間ずらさないとRailsに前日で送られるので暫定的に回避させる
+          date: new Date(`${format(date, 'yyyy-MM-dd')}T09:00:00`),
           dayLabel: weekdays[getDay(date)],
           meals,
         };

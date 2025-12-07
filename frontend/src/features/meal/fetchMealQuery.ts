@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { gql } from '@apollo/client';
 import { useCodegenQuery } from '../utils/queryUtils';
 import {
@@ -71,15 +72,21 @@ const useFetchMealsForCalender = (params: FetchMealsForCalenderParams) => {
     lastDate = null,
   } = params;
 
+  // エラー時に無限ループが発生するのでmemo化。
+  // エラー時に毎回new Dateでオブジェクトを生成してしまい再レンダーが走ってしまうため
+  const variablesForQuery = useMemo(() => {
+    return {
+      // ISO8601Dateに時間を渡すと型不正と扱われるため、時間を切り捨てる
+      startDate: truncateTimeFrom(startDate || new Date()),
+      lastDate: truncateTimeFrom(lastDate || new Date()),
+    };
+  }, [startDate, lastDate]);
+
   const { data, fetchLoading, fetchError, refetch } = useCodegenQuery(
     useMealsForCalenderQuery,
     useMealsForCalenderLazyQuery,
     requireFetchedData,
-    {
-      // ISO8601Dateに時間を渡すと型不正と扱われて、無限リクエストが発生するため、時間を切り捨てる
-      startDate: truncateTimeFrom(startDate || new Date()),
-      lastDate: truncateTimeFrom(lastDate || new Date()),
-    },
+    variablesForQuery,
   );
   return {
     mealsForCalender: data?.mealsForCalender,

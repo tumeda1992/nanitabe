@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { format } from 'date-fns';
 import MonthCalender from '../../../../components/calender/MonthCalender';
 import { isISODateFormatString } from '../../../../features/utils/dateUtils';
 import { MONTH_CALENDER_PAGE_PATH } from './consts';
@@ -23,7 +24,11 @@ export default () => {
     extractDateStringFromCalenderMonthPath(currentPathAndQuery);
 
   if (!dateFormatString) {
-    return <MonthCalender />;
+    return (
+      <MonthCalender
+        date={new Date(`${format(new Date(), 'yyyy-MM-dd')}T09:00:00`)}
+      />
+    );
   }
   return <MonthCalender date={new Date(`${dateFormatString}T09:00:00`)} />;
 };

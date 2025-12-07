@@ -1,3 +1,5 @@
+// variablesがnewを含んだオブジェクトの場合、この関数を呼ぶ側でuseMemo化推奨
+// fetchMealQueryが良い例で、new Dateをしていたためvariablesがエラーのたびに再生成されて無限再レンダーが起きてしまった
 export const useCodegenQuery = (
   codegenQueryHook: ({ variables }) => any,
   codegenLazyQueryHook: ({ variables }) => any[],
