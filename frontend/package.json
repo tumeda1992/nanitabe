@@ -9,7 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@apollo/client": "^3.14.0",
+    "@apollo/client": "3.13.9",
     "@apollo/server": "^4.10.4",
     "@hookform/resolvers": "^2.9.11",
     "bootstrap": "^5.2.3",

@@ -10,12 +10,15 @@ module Business::Food::Meal
     def fetch
       meals = ::Meal.where(user_id: access_user_id)
                     .where(date: start_date..last_date)
-                    .eager_load(:dish)
-                    # merge(Dish.with_search_relations) としたかったが、eager_loadだと動かないらしいので泣く泣く断念
-                    .eager_load(dish: :dish_evaluation)
-                    .eager_load(dish: :dish_source)
-                    .eager_load(dish: :dish_source_relation)
-                    .eager_load(dish: :dish_tags)
+                    .left_joins(:dish)
+                    .includes(
+                      dish: [
+                        :dish_source_relation,
+                        :dish_source,
+                        :dish_evaluation,
+                        :dish_tags
+                      ]
+                    )
                     .order("meals.meal_type, dishes.meal_position")
 
       meals.map do |meal|

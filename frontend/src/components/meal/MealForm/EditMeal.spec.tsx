@@ -42,6 +42,7 @@ describe('<EditMeal>', () => {
     mealPosition: 2,
     comment: null,
     dishSourceName: null,
+    evaluationScore: null,
   };
   const registeredMealWithoutDish = {
     id: 30,
@@ -59,6 +60,7 @@ describe('<EditMeal>', () => {
     mealPosition: 1,
     comment: null,
     dishSourceName: null,
+    evaluationScore: null,
   };
   const updatedMeal = {
     id: 30,
@@ -320,9 +322,7 @@ describe('<EditMeal>', () => {
           dish: newDishWithRequiredParams,
           dishSource: selectedDishSource,
           dishSourceRelationDetail: newDishSourceRelationDetailOfRecipeWebsite,
-          dishTags: [
-            { content: newDishTag.content }
-          ],
+          dishTags: [{ content: newDishTag.content }],
           meal: buildGraphQLMeal(registeredMealWithoutDish),
         });
       });
@@ -368,9 +368,7 @@ describe('<EditMeal>', () => {
           dish: newDishWithRequiredParams,
           dishSource: newDishSource,
           dishSourceRelationDetail: newDishSourceRelationDetailOfRecipeWebsite,
-          dishTags: [
-            { content: newDishTag.content }
-          ],
+          dishTags: [{ content: newDishTag.content }],
           meal: buildGraphQLMeal(registeredMealWithoutDish),
         });
       });

@@ -31,6 +31,7 @@ describe('move dish on week calender', () => {
     comment: null,
     dishSourceRelation: null,
     evaluationScore: null,
+    tags: null,
   };
   const registeredMealWithoutDish = {
     id: 30,
@@ -75,6 +76,8 @@ describe('move dish on week calender', () => {
           mealPosition: 2,
           comment: null,
           dishSourceName: null,
+          evaluationScore: null,
+          tags: null,
         },
       ],
     });
