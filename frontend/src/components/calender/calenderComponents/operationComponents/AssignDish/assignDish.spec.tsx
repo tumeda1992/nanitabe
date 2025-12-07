@@ -29,6 +29,7 @@ describe('assign dish on week calender', () => {
     mealPosition: 2,
     comment: null,
     dishSourceName: null,
+    evaluationScore: null,
   };
 
   const newMealWithRequiredParams = {

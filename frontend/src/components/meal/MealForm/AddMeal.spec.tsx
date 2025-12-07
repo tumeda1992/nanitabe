@@ -78,6 +78,7 @@ describe('<AddMeal>', () => {
           mealPosition: 2,
           comment: null,
           dishSourceName: null,
+          evaluationScore: null,
         },
       ],
     });
@@ -288,9 +289,7 @@ describe('<AddMeal>', () => {
         dish: newDishWithRequiredParams,
         dishSource: null,
         dishSourceRelationDetail: null,
-        dishTags: [
-          { content: newDishTag.content }
-        ],
+        dishTags: [{ content: newDishTag.content }],
         meal: buildNewMealGraphQLParams(newMealWithRequiredParams),
       });
     });
@@ -330,16 +329,13 @@ describe('<AddMeal>', () => {
       await userClick(screen, 'appendDishTag');
       await userType(screen, 'newDishTag-0', newDishTag.content);
 
-
       await clickSubmitButton();
 
       expect(getLatestMutationVariables()).toEqual({
         dish: newDishWithRequiredParams,
         dishSource: newDishSource,
         dishSourceRelationDetail: newDishSourceRelationDetailOfRecipeWebsite,
-        dishTags: [
-          { content: newDishTag.content }
-        ],
+        dishTags: [{ content: newDishTag.content }],
         meal: buildNewMealGraphQLParams(newMealWithRequiredParams),
       });
     });
