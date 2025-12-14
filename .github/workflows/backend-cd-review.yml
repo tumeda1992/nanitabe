@@ -21,29 +21,24 @@ jobs:
 
           COOKIE_JAR="$(mktemp)"
 
+          # CSRF情報をセッションにセット
+          CRUMB_JSON="$(curl -fsS -c "$COOKIE_JAR" "${JENKINS_URL%/}/crumbIssuer/api/json")"
+          CRUMB_FIELD="$(jq -r '.crumbRequestField' <<<"$CRUMB_JSON")"
+          CRUMB="$(jq -r '.crumb' <<<"$CRUMB_JSON")"
+
           if [ "${JENKINS_DEBUG}" = "true" ]; then
-            echo "Debug enabled"
+            echo "crumbRequestField=$CRUMB_FIELD"
           fi
 
-          # CSRF対策の crumb を取得
-          CRUMB_HEADER="$(
-            curl -fsS -c "$COOKIE_JAR" "${JENKINS_URL%/}/crumbIssuer/api/json" \
-            | python - <<'PY'
-import json,sys
-d=json.load(sys.stdin)
-print(f'{d["crumbRequestField"]}: { d[ "crumb" ] }')
-PY
-          )"
-
           if [ "${JENKINS_DEBUG}" = "true" ]; then
-          curl -i -sS --show-error -X POST \
-          -b "$COOKIE_JAR" \
-          -H "$CRUMB_HEADER" \
-          "${JENKINS_JOB_URL%/}/build?token=${JENKINS_BUILD_TOKEN}" \
-          -o -
+            curl -i -sS --show-error -X POST \
+              -b "$COOKIE_JAR" \
+              -H "${CRUMB_FIELD}: ${CRUMB}" \
+              "${JENKINS_JOB_URL%/}/build?token=${JENKINS_BUILD_TOKEN}" \
+              -o -
           else
-          curl -fsS -X POST \
-          -b "$COOKIE_JAR" \
-          -H "$CRUMB_HEADER" \
-          "${JENKINS_JOB_URL%/}/build?token=${JENKINS_BUILD_TOKEN}"
+            curl -fsS -X POST \
+              -b "$COOKIE_JAR" \
+              -H "${CRUMB_FIELD}: ${CRUMB}" \
+              "${JENKINS_JOB_URL%/}/build?token=${JENKINS_BUILD_TOKEN}"
           fi
