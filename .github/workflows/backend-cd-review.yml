@@ -19,10 +19,10 @@ jobs:
         run: |
           set -euo pipefail
           
-          JENKINS_URL="$(echo -n "$JENKINS_URL" | tr -d ' \t\r\n')"
-          JENKINS_JOB_URL="$(echo -n "$JENKINS_JOB_URL" | tr -d ' \t\r\n')"
-          JENKINS_BUILD_TOKEN="$(echo -n "$JENKINS_BUILD_TOKEN" | tr -d ' \t\r\n')"
-
+          echo "JENKINS_URL: $JENKINS_URL"
+          echo "JENKINS_JOB_URL: $JENKINS_JOB_URL"
+          echo "JENKINS_BUILD_TOKEN: $JENKINS_BUILD_TOKEN"
+          
           COOKIE_JAR="$(mktemp)"
 
           # CSRF情報をセッションにセット
