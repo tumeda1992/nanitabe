@@ -13,7 +13,7 @@ jobs:
           set -euo pipefail
 
           JENKINS_URL="https://jenkins.kibotsu.com"
-          JOB_URL="$JENKINS_URL/job/nanitabe%E3%83%90%E3%83%83%E2%82%A8%E3%83%B3%E3%83%89%E3%83%93%E3%83%AB%E3%83%89"
+          JOB_URL="$JENKINS_URL/job/nanitabe%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%E3%83%93%E3%83%AB%E3%83%89"
           TOKEN="nanitabe_backend_build"
 
           COOKIE_JAR="$(mktemp)"
