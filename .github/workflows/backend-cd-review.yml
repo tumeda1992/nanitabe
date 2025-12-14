@@ -15,7 +15,7 @@ jobs:
           JENKINS_JOB_URL: ${{ secrets.CI_JENKINS_NANITABE_BUILD_TOKEN }}
           JENKINS_BUILD_TOKEN: ${{ secrets.CI_JENKINS_NANITABE_BUILD_TOKEN }}
           # 必要なら GitHub Variables にしてもOK
-          JENKINS_DEBUG: "false"
+          JENKINS_DEBUG: "true"
         run: |
           set -euo pipefail
 
