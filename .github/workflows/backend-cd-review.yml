@@ -11,8 +11,8 @@ jobs:
       - name: Call ci webhook
         shell: bash
         env:
-          JENKINS_URL: ${{ vars.CI_JENKINS_URL }}
-          JENKINS_JOB_URL: ${{ vars.CI_JENKINS_NANITABE_BUILD_TOKEN }}
+          JENKINS_URL: ${{ secrets.CI_JENKINS_URL }}
+          JENKINS_JOB_URL: ${{ secrets.CI_JENKINS_NANITABE_BUILD_TOKEN }}
           JENKINS_BUILD_TOKEN: ${{ secrets.CI_JENKINS_NANITABE_BUILD_TOKEN }}
           # 必要なら GitHub Variables にしてもOK
           JENKINS_DEBUG: "false"
