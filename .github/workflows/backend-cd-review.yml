@@ -29,10 +29,10 @@ jobs:
           CRUMB_HEADER="$(
             curl -fsS -c "$COOKIE_JAR" "${JENKINS_URL%/}/crumbIssuer/api/json" \
             | python - <<'PY'
-              import json,sys
-              d=json.load(sys.stdin)
-              print(f'{d["crumbRequestField"]}: { d[ "crumb" ] }')
-              PY
+import json,sys
+d=json.load(sys.stdin)
+print(f'{d["crumbRequestField"]}: { d[ "crumb" ] }')
+PY
           )"
 
           if [ "${JENKINS_DEBUG}" = "true" ]; then
