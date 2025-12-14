@@ -25,6 +25,7 @@ jobs:
           # echo "crumb=$CRUMB"  # これはログに出さない方が安全
 
           # 2) crumb をヘッダに付けてビルド起動（POST）
-          curl -fsS -X POST \
+          curl -i -sS --show-error -X POST \
           -H "${CRUMB_FIELD}: ${CRUMB}" \
-          "${JOB_URL}/build?token=${TOKEN}"
+          "${JOB_URL}/build?token=${TOKEN}" \
+          -o -
