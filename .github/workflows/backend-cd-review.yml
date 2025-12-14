@@ -19,12 +19,12 @@ jobs:
         run: |
           set -euo pipefail
           
-          JENKINS_URL="$(echo -n "$JENKINS_URL" | tr -d ' \t\r\n')"
-          JENKINS_JOB_URL="$(echo -n "$JENKINS_JOB_URL" | tr -d ' \t\r\n')"
-          JENKINS_BUILD_TOKEN="$(echo -n "$JENKINS_BUILD_TOKEN" | tr -d ' \t\r\n')"
-          echo "JENKINS_URL: $JENKINS_URL"
-          echo "JENKINS_JOB_URL: $JENKINS_JOB_URL"
-          echo "JENKINS_BUILD_TOKEN: $JENKINS_BUILD_TOKEN"
+          JENKINS_URL_FOR_DISPLAY="$(echo -n "$JENKINS_URL" | tr -d ' \t\r\n')"
+          JENKINS_JOB_URL_FOR_DISPLAY="$(echo -n "$JENKINS_JOB_URL" | tr -d ' \t\r\n')"
+          JENKINS_BUILD_TOKEN_FOR_DISPLAY="$(echo -n "$JENKINS_BUILD_TOKEN" | tr -d ' \t\r\n')"
+          echo "JENKINS_URL: $JENKINS_URL_FOR_DISPLAY"
+          echo "JENKINS_JOB_URL: $JENKINS_JOB_URL_FOR_DISPLAY"
+          echo "JENKINS_BUILD_TOKEN: $JENKINS_BUILD_TOKEN_FOR_DISPLAY"
 
           COOKIE_JAR="$(mktemp)"
 
