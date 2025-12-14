@@ -18,6 +18,10 @@ jobs:
           JENKINS_DEBUG: "true"
         run: |
           set -euo pipefail
+          
+          JENKINS_URL="$(echo -n "$JENKINS_URL" | tr -d ' \t\r\n')"
+          JENKINS_JOB_URL="$(echo -n "$JENKINS_JOB_URL" | tr -d ' \t\r\n')"
+          JENKINS_BUILD_TOKEN="$(echo -n "$JENKINS_BUILD_TOKEN" | tr -d ' \t\r\n')"
 
           COOKIE_JAR="$(mktemp)"
 
