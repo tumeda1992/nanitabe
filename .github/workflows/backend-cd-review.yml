@@ -4,41 +4,46 @@ on:
   push:
 
 jobs:
-  call-url:
+  call-webhook:
     runs-on: ubuntu-latest
 
     steps:
       - name: Call ci webhook
+        shell: bash
+        env:
+          JENKINS_URL: ${{ vars.CI_JENKINS_URL }}
+          JENKINS_JOB_URL: ${{ vars.CI_JENKINS_NANITABE_BUILD_TOKEN }}
+          JENKINS_BUILD_TOKEN: ${{ secrets.JENKINS_BUILD_TOKEN }}
+          # 必要なら GitHub Variables にしてもOK
+          JENKINS_DEBUG: "false"
         run: |
           set -euo pipefail
 
-          JENKINS_URL="https://jenkins.kibotsu.com"
-          JOB_URL="$JENKINS_URL/job/nanitabe%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%E3%83%93%E3%83%AB%E3%83%89"
-          TOKEN="nanitabe_backend_build"
-
-          echo "JOB_URL=${JOB_URL}"
-          echo "BUILD_URL=${JOB_URL}/build?token=${TOKEN}"
-
           COOKIE_JAR="$(mktemp)"
 
-          # jobページが本当に存在するか（匿名GET）
-          echo "== GET job page =="
-          curl -i -sS "${JOB_URL}/" -o -
+          if [ "${JENKINS_DEBUG}" = "true" ]; then
+            echo "Debug enabled"
+          fi
 
-          # crumb取得（cookie保存）
-          echo "== GET crumb =="
-          CRUMB_JSON=$(curl -i -sS -c "$COOKIE_JAR" "$JENKINS_URL/crumbIssuer/api/json" -o -)
-          echo "$CRUMB_JSON" | tail -n +1 | head -n 30
+          # CSRF対策の crumb を取得
+          CRUMB_HEADER="$(
+            curl -fsS -c "$COOKIE_JAR" "${JENKINS_URL%/}/crumbIssuer/api/json" \
+            | python - <<'PY'
+              import json,sys
+              d=json.load(sys.stdin)
+              print(f'{d["crumbRequestField"]}: { d[ "crumb" ] }')
+              PY
+          )"
 
-          # JSON部分だけ抜く（ヘッダ混ざるので末尾から拾う）
-          CRUMB_FIELD=$(echo "$CRUMB_JSON" | tail -n 1 | jq -r '.crumbRequestField')
-          CRUMB=$(echo "$CRUMB_JSON" | tail -n 1 | jq -r '.crumb')
-
-          echo "crumbRequestField=$CRUMB_FIELD"
-
-          echo "== POST build =="
+          if [ "${JENKINS_DEBUG}" = "true" ]; then
           curl -i -sS --show-error -X POST \
           -b "$COOKIE_JAR" \
-          -H "${CRUMB_FIELD}: ${CRUMB}" \
-          "${JOB_URL}/build?token=${TOKEN}" \
+          -H "$CRUMB_HEADER" \
+          "${JENKINS_JOB_URL%/}/build?token=${JENKINS_BUILD_TOKEN}" \
           -o -
+          else
+          curl -fsS -X POST \
+          -b "$COOKIE_JAR" \
+          -H "$CRUMB_HEADER" \
+          "${JENKINS_JOB_URL%/}/build?token=${JENKINS_BUILD_TOKEN}"
+          fi
