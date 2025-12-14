@@ -10,4 +10,4 @@ jobs:
     steps:
       - name: Call ci webhook
         run: |
-          curl -X GET https://jenkins.kibotsu.com/job/nanitabe%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%E3%83%93%E3%83%AB%E3%83%89/build?token=nanitabe_backend_build
+          curl -X POST https://jenkins.kibotsu.com/job/nanitabe%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%E3%83%93%E3%83%AB%E3%83%89/build?token=nanitabe_backend_build
