@@ -1,0 +1,20 @@
+# バックエンド側の簡易的なCDワークフロー
+# - jenkinsに設定をめちゃめちゃ書き込ませたくないから、jenkins側ではgit pull だけやらせる
+# - 複雑になるなら、github actions側で多くをやるか、CodeBuildとかに移行する
+name: backendのCD
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  call-url:
+    if: >
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call ci webhook
+        run: |
+          curl -X GET https://jenkins.kibotsu.com/job/nanitabe%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%E3%83%93%E3%83%AB%E3%83%89/build?token=nanitabe_backend_build
