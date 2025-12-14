@@ -10,4 +10,21 @@ jobs:
     steps:
       - name: Call ci webhook
         run: |
-          curl -X POST https://jenkins.kibotsu.com/job/nanitabe%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%E3%83%93%E3%83%AB%E3%83%89/build?token=nanitabe_backend_build
+          set -euo pipefail
+
+          JENKINS_URL="https://jenkins.kibotsu.com"
+          JOB_URL="$JENKINS_URL/job/nanitabe%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%E3%83%93%E3%83%AB%E3%83%89"
+          TOKEN="nanitabe_backend_build"
+
+          # 1) crumb を取得（匿名）
+          CRUMB_JSON=$(curl -fsS "$JENKINS_URL/crumbIssuer/api/json")
+          CRUMB_FIELD=$(echo "$CRUMB_JSON" | jq -r '.crumbRequestField')
+          CRUMB=$(echo "$CRUMB_JSON" | jq -r '.crumb')
+
+          echo "crumbRequestField=$CRUMB_FIELD"
+          # echo "crumb=$CRUMB"  # これはログに出さない方が安全
+
+          # 2) crumb をヘッダに付けてビルド起動（POST）
+          curl -fsS -X POST \
+          -H "${CRUMB_FIELD}: ${CRUMB}" \
+          "${JOB_URL}/build?token=${TOKEN}"
