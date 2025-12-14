@@ -16,5 +16,36 @@ jobs:
 
     steps:
       - name: Call ci webhook
+        shell: bash
+        env:
+          JENKINS_URL: ${{ secrets.CI_JENKINS_URL }}
+          JENKINS_JOB_URL: ${{ secrets.CI_JENKINS_NANITABE_BUILD_JOB_URL }}
+          JENKINS_BUILD_TOKEN: ${{ secrets.CI_JENKINS_NANITABE_BUILD_TOKEN }}
+          # 必要なら GitHub Variables にしてもOK
+          JENKINS_DEBUG: "false"
         run: |
-          curl -X POST https://jenkins.kibotsu.com/job/nanitabe%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%E3%83%93%E3%83%AB%E3%83%89/build?token=nanitabe_backend_build
+          set -euo pipefail
+
+          COOKIE_JAR="$(mktemp)"
+
+          # CSRF情報をセッションにセット
+          CRUMB_JSON="$(curl -fsS -c "$COOKIE_JAR" "${JENKINS_URL%/}/crumbIssuer/api/json")"
+          CRUMB_FIELD="$(jq -r '.crumbRequestField' <<<"$CRUMB_JSON")"
+          CRUMB="$(jq -r '.crumb' <<<"$CRUMB_JSON")"
+
+          if [ "${JENKINS_DEBUG}" = "true" ]; then
+            echo "crumbRequestField=$CRUMB_FIELD"
+          fi
+
+          if [ "${JENKINS_DEBUG}" = "true" ]; then
+            curl -i -sS --show-error -X POST \
+              -b "$COOKIE_JAR" \
+              -H "${CRUMB_FIELD}: ${CRUMB}" \
+              "${JENKINS_JOB_URL%/}/build?token=${JENKINS_BUILD_TOKEN}" \
+              -o -
+          else
+            curl -fsS -X POST \
+              -b "$COOKIE_JAR" \
+              -H "${CRUMB_FIELD}: ${CRUMB}" \
+              "${JENKINS_JOB_URL%/}/build?token=${JENKINS_BUILD_TOKEN}"
+          fi
