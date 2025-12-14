@@ -12,19 +12,12 @@ jobs:
         shell: bash
         env:
           JENKINS_URL: ${{ secrets.CI_JENKINS_URL }}
-          JENKINS_JOB_URL: ${{ secrets.CI_JENKINS_NANITABE_BUILD_TOKEN }}
+          JENKINS_JOB_URL: ${{ secrets.CI_JENKINS_NANITABE_BUILD_JOB_URL }}
           JENKINS_BUILD_TOKEN: ${{ secrets.CI_JENKINS_NANITABE_BUILD_TOKEN }}
           # 必要なら GitHub Variables にしてもOK
           JENKINS_DEBUG: "true"
         run: |
           set -euo pipefail
-          
-          JENKINS_URL_FOR_DISPLAY="$(echo -n "$JENKINS_URL" | tr -d ' \t\r\n')"
-          JENKINS_JOB_URL_FOR_DISPLAY="$(echo -n "$JENKINS_JOB_URL" | tr -d ' \t\r\n')"
-          JENKINS_BUILD_TOKEN_FOR_DISPLAY="$(echo -n "$JENKINS_BUILD_TOKEN" | tr -d ' \t\r\n')"
-          echo "JENKINS_URL: $JENKINS_URL_FOR_DISPLAY"
-          echo "JENKINS_JOB_URL: $JENKINS_JOB_URL_FOR_DISPLAY"
-          echo "JENKINS_BUILD_TOKEN: $JENKINS_BUILD_TOKEN_FOR_DISPLAY"
 
           COOKIE_JAR="$(mktemp)"
 
