@@ -16,17 +16,29 @@ jobs:
           JOB_URL="$JENKINS_URL/job/nanitabe%E3%83%90%E3%83%83%E3%82%AF%E3%82%A8%E3%83%B3%E3%83%89%E3%83%93%E3%83%AB%E3%83%89"
           TOKEN="nanitabe_backend_build"
 
+          echo "JOB_URL=${JOB_URL}"
+          echo "BUILD_URL=${JOB_URL}/build?token=${TOKEN}"
+
           COOKIE_JAR="$(mktemp)"
 
-          # 1) crumb を取得（このときのセッションCookieを保存する）
-          CRUMB_JSON=$(curl -fsS -c "$COOKIE_JAR" "$JENKINS_URL/crumbIssuer/api/json")
-          CRUMB_FIELD=$(echo "$CRUMB_JSON" | jq -r '.crumbRequestField')
-          CRUMB=$(echo "$CRUMB_JSON" | jq -r '.crumb')
+          # jobページが本当に存在するか（匿名GET）
+          echo "== GET job page =="
+          curl -i -sS "${JOB_URL}/" -o -
+
+          # crumb取得（cookie保存）
+          echo "== GET crumb =="
+          CRUMB_JSON=$(curl -i -sS -c "$COOKIE_JAR" "$JENKINS_URL/crumbIssuer/api/json" -o -)
+          echo "$CRUMB_JSON" | tail -n +1 | head -n 30
+
+          # JSON部分だけ抜く（ヘッダ混ざるので末尾から拾う）
+          CRUMB_FIELD=$(echo "$CRUMB_JSON" | tail -n 1 | jq -r '.crumbRequestField')
+          CRUMB=$(echo "$CRUMB_JSON" | tail -n 1 | jq -r '.crumb')
 
           echo "crumbRequestField=$CRUMB_FIELD"
 
-          # 2) 同じCookieを付けてビルド起動（POST）
-          curl -fsS -X POST \
+          echo "== POST build =="
+          curl -i -sS --show-error -X POST \
           -b "$COOKIE_JAR" \
           -H "${CRUMB_FIELD}: ${CRUMB}" \
-          "${JOB_URL}/build?token=${TOKEN}"
+          "${JOB_URL}/build?token=${TOKEN}" \
+          -o -
