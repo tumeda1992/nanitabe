@@ -24,13 +24,8 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: backend/.ruby-version
-
-      - name: Install Bundler 2.1.2
-        run: gem install bundler -v 2.1.2
-
-      - name: Install gems
-        run: bundle _2.1.2_ install --jobs 4 --retry 3
+          ruby-version: '3.2.2'
+          bundler-cache: true
 
       - name: Prepare test database (SQLite)
         run: bundle exec rails db:prepare
