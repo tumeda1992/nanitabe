@@ -7,7 +7,7 @@ on:
       - '.github/workflows/ci-frontend-build-verification.yml'
 
 jobs:
-  build:
+  frontend-build-verification:
     runs-on: ubuntu-latest
 
     defaults:
