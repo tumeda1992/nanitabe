@@ -25,7 +25,12 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2.2'
-          bundler-cache: true
+          bundler-cache: false
+
+      - name: Install gems
+        run: |
+          gem install bundler -v 2.1.2
+          bundle _2.1.2_ install --jobs 4 --retry 3
 
       - name: Prepare test database (SQLite)
         run: bundle exec rails db:prepare
