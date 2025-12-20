@@ -1,14 +1,10 @@
-name: Frontend CI
+name: CI Frontend Build Verification
 
 on:
-  push:
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/frontend-ci.yml'
   pull_request:
     paths:
       - 'frontend/**'
-      - '.github/workflows/frontend-ci.yml'
+      - '.github/workflows/ci-frontend-build-verification.yml'
 
 jobs:
   build:
