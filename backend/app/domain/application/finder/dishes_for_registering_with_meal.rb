@@ -68,11 +68,11 @@ module Application::Finder
       end
 
       if !registered_with_meal.nil?
-        if registered_with_meal
-          dish_relation = dish_relation.having("COUNT(meals.id) > 0")
-        else
-          dish_relation = dish_relation.having("COUNT(meals.id) = 0")
-        end
+        dish_relation = if registered_with_meal
+                          dish_relation.having("COUNT(meals.id) > 0")
+                        else
+                          dish_relation.having("COUNT(meals.id) = 0")
+                        end
       end
 
       if ignore_dish_id.present?
