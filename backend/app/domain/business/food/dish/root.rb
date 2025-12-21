@@ -26,7 +26,7 @@ module Business::Food::Dish
     # TODO: 破壊的変更には`!`をつける（そして、自身をreturnする）
 
     def set_id(new_id)
-      raise "新規作成時以外idを変更できません" if self.id.present?
+      raise "新規作成時以外idを変更できません" if id.present?
 
       self.id = new_id
     end
@@ -38,7 +38,7 @@ module Business::Food::Dish
     end
 
     def renormalize_name
-      self.name = Name.initialize_and_normalize(self.name.value)
+      self.name = Name.initialize_and_normalize(name.value)
     end
 
     def reposition_in_meal(new_meal_position)

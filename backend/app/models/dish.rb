@@ -123,12 +123,12 @@ class Dish < ApplicationRecord
     save!
 
     if food_dish_root.source_id.present?
-      ::DishSourceRelation.put_dish_source_relation(self.id, food_dish_root.source_id, food_dish_root.source_locator)
+      ::DishSourceRelation.put_dish_source_relation(id, food_dish_root.source_id, food_dish_root.source_locator)
     else
-      ::DishSourceRelation.remove_dish_source_relation(self.id)
+      ::DishSourceRelation.remove_dish_source_relation(id)
     end
 
-    ::DishTag.replace_tags_of_dish(self.id, food_dish_root.tags)
+    ::DishTag.replace_tags_of_dish(id, food_dish_root.tags)
 
     self
   end
