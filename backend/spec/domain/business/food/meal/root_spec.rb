@@ -12,7 +12,7 @@ RSpec.describe Business::Food::Meal::Root do
       dish_id: dish_record.id,
       date: Date.today,
       meal_type: 1,
-      comment: "test comment"
+      comment: "test comment",
     }
   end
 

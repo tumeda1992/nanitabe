@@ -8,7 +8,7 @@ RSpec.describe Business::Food::Dish::Usecase::Params::Dish do
           {
             name: "test_dish",
             meal_position: 1,
-            comment: "test_comment"
+            comment: "test_comment",
           }
         end
 
@@ -27,7 +27,7 @@ RSpec.describe Business::Food::Dish::Usecase::Params::Dish do
           {
             id: 1,
             name: "test_dish",
-            meal_position: 1
+            meal_position: 1,
           }
         end
 
@@ -39,7 +39,7 @@ RSpec.describe Business::Food::Dish::Usecase::Params::Dish do
       context "when name is missing" do
         let(:params) do
           {
-            meal_position: 1
+            meal_position: 1,
           }
         end
 
@@ -51,7 +51,7 @@ RSpec.describe Business::Food::Dish::Usecase::Params::Dish do
       context "when meal_position is missing" do
         let(:params) do
           {
-            name: "test_dish"
+            name: "test_dish",
           }
         end
 
@@ -68,7 +68,7 @@ RSpec.describe Business::Food::Dish::Usecase::Params::Dish do
             id: 1,
             name: "updated_dish",
             meal_position: 2,
-            comment: "updated_comment"
+            comment: "updated_comment",
           }
         end
 
@@ -86,7 +86,7 @@ RSpec.describe Business::Food::Dish::Usecase::Params::Dish do
         let(:params) do
           {
             name: "updated_dish",
-            meal_position: 2
+            meal_position: 2,
           }
         end
 
@@ -99,7 +99,7 @@ RSpec.describe Business::Food::Dish::Usecase::Params::Dish do
         let(:params) do
           {
             id: 1,
-            meal_position: 2
+            meal_position: 2,
           }
         end
 
@@ -116,7 +116,7 @@ RSpec.describe Business::Food::Dish::Usecase::Params::Dish do
         let(:params) do
           {
             id: 1,
-            name: "updated_dish"
+            name: "updated_dish",
           }
         end
 
@@ -137,7 +137,7 @@ RSpec.describe Business::Food::Dish::Usecase::Params::Dish do
         id: 1,
         name: "test_dish",
         meal_position: 1,
-        comment: "test_comment"
+        comment: "test_comment",
       }
     end
 
