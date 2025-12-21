@@ -29,6 +29,7 @@ class CommandParamsArrayType < ActiveModel::Type::Value
   def cast_value(array_value)
     # nilはvalidatesのdisallow_nilで除外
     raise "値が配列ではありません" if array_value.class != Array
+
     array_value.each do |value|
       raise "フィールドの値が不正です。" if value.invalid?
     end
