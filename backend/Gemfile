@@ -50,6 +50,7 @@ group :development, :test do
 
   gem "rspec-rails", "~> 7.1.0"
   gem "rubocop"
+  gem "rubocop-rspec", require: false
   gem "spring-commands-rspec"
   gem "factory_bot_rails"
   gem "bullet"
