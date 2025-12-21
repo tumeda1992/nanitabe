@@ -9,7 +9,7 @@
 ## PROHIBITED（禁止）
 - テスト未実行のまま次タスクへ進むこと。
 - 失敗したテストを残したまま別ブランチ/別タスクへ進むこと。
-- ホストで `bundle exec rspec` 等を実行すること（**コンテナ外実行の禁止**）。
+- ホストで `yarn test` 等を実行すること（**コンテナ外実行の禁止**）。
 
 
 ## 実装サイクル（Red → Green → Refactor）
@@ -35,17 +35,21 @@
     - 呼び出し元で、そのメソッドの返り値による分岐がある場合は、その分岐をカバーする程度
 
 
-## トラブルシューティング（Docker）
+## 実行コマンド（Docker内）
 ```bash
-# 状態確認
+# テスト実行
+docker compose exec frontend yarn test
+
+# トラブルシューティング
+## 状態確認
 docker compose ps
-# コンテナ再作成
+## コンテナ再作成
 docker compose down && docker compose up -d
-# キャッシュ無効でビルド
+## キャッシュ無効でビルド
 docker compose build --no-cache
-# web コンテナに入る
+## web コンテナに入る
 docker compose exec web sh
-# ログ
+## ログ
 docker compose logs -f web
 ```
 
