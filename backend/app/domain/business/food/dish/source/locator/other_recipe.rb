@@ -3,7 +3,7 @@ module Business::Food::Dish::Source
     attr_reader :memo
 
     def initialize(memo)
-      super
+      super()
       @memo = memo
     end
 
