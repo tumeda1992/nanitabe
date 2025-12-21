@@ -71,6 +71,8 @@ Style/MultilineBlockChain:
   Enabled: false
 Style/BlockDelimiters:
   Enabled: false
+Style/StringLiteralsInInterpolation:
+  Enabled: false
 
 Layout/LineLength:
   Enabled: false
