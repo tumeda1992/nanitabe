@@ -15,10 +15,17 @@ import {
 import { DishSourceRelation } from '../../../../lib/graphql/generated/graphql';
 import { AddOrUpdateDishInput } from './types';
 
+const defaultDishSourceRelation = {
+  recipeBookPage: null,
+  recipeWebsiteUrl: '',
+  recipeSourceMemo: '',
+};
+
 type DishSourceFormRelationContentProps = {
   dishSourceType: DishSourceType | null;
   dishSourceRelation: DishSourceRelation | null;
 };
+
 export const DishSourceFormRelationContent = (
   props: DishSourceFormRelationContentProps,
 ) => {
@@ -30,38 +37,21 @@ export const DishSourceFormRelationContent = (
     formState: { errors },
   } = useFormContext<AddOrUpdateDishInput>();
 
-  const defaultDishSourceRelation = {
-    recipeBookPage: null,
-    recipeWebsiteUrl: '',
-    recipeSourceMemo: '',
-  };
   const [dishSourceRelation, setDishSourceRelation] =
-    useState<DishSourceRelation>(
-      defaultDishSourceRelation as DishSourceRelation,
-    );
-  // Q: これの存在理由は何？大元でタイプが変わったときに空の値で書き換えるため？ 不要なら削除したい
-  const existingDishSourceRelation =
-    dishSourceRelationFromProps || defaultDishSourceRelation;
-  useEffect(() => {
-    setDishSourceRelation((prevState) => ({
-      ...prevState,
-      ...existingDishSourceRelation,
-    }));
-  }, [
-    dishSourceType,
-    existingDishSourceRelation.recipeBookPage,
-    existingDishSourceRelation.recipeWebsiteUrl,
-    existingDishSourceRelation.recipeSourceMemo,
-  ]);
+    useState<DishSourceRelation>(() => {
+      return (dishSourceRelationFromProps ??
+        defaultDishSourceRelation) as DishSourceRelation;
+    });
+
   const editDishSourceRelationDetail = (params: {
     recipeBookPage?: number | null;
     recipeWebsiteUrl?: string;
     recipeSourceMemo?: string;
   }) => {
-    setDishSourceRelation({
-      ...dishSourceRelation,
+    setDishSourceRelation((prev) => ({
+      ...prev,
       ...params,
-    });
+    }));
   };
 
   const detailType = dishSourceRelationDetailOf(dishSourceType);

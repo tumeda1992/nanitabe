@@ -19,6 +19,8 @@ const eslintConfig = defineConfig([
       'import/extensions': 'off',
       'import/no-unresolved': 'off',
       'import/prefer-default-export': 'off',
+      // コンソールからのエラー特定がAnonymousで辛くなったら解除して直す
+      'import/no-anonymous-default-export': 'off',
 
       indent: 'off',
 
@@ -29,6 +31,8 @@ const eslintConfig = defineConfig([
       'react/jsx-props-no-spreading': 'off',
       'react/display-name': 'off',
       'react/require-default-props': 'off',
+
+      'react-hooks/exhaustive-deps': 'off',
 
       'jsx-a11y/click-events-have-key-events': 'off',
       'jsx-a11y/no-static-element-interactions': 'off',

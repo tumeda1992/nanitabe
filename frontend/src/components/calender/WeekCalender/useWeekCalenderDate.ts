@@ -101,17 +101,20 @@ export const useFirstDisplayDate = (
     [specifiedDate, getWeekStartDateFrom],
   );
 
-  const reflectDate = useCallback((date: Date) => {
-    pushHistory(weekCalenderPagePathOf(date));
-  }, []);
+  const reflectDate = useCallback(
+    (date: Date) => {
+      pushHistory(weekCalenderPagePathOf(date));
+    },
+    [pushHistory],
+  );
 
   const updateFirstDateToPreviousWeekFirstDate = useCallback(() => {
     reflectDate(subDays(firstDisplayDate, 7));
-  }, [firstDisplayDate]);
+  }, [firstDisplayDate, reflectDate]);
 
   const updateFirstDateToNextWeekFirstDate = useCallback(() => {
     reflectDate(addDays(firstDisplayDate, 7));
-  }, [firstDisplayDate]);
+  }, [firstDisplayDate, reflectDate]);
 
   return {
     firstDisplayDate,

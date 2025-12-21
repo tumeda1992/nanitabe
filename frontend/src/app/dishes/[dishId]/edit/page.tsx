@@ -1,4 +1,4 @@
-import React, { use } from 'react';
+import React from 'react';
 import ClientPage from './page.client';
 
 export default async ({ params }: { params: Promise<{ dishId: string }> }) => {
