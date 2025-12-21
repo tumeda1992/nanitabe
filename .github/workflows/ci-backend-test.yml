@@ -2,9 +2,6 @@ name: CI Backend Test
 
 on:
   pull_request:
-    paths:
-      - 'backend/**'
-      - '.github/workflows/ci-backend-test.yml'
 
 jobs:
   backend-test:
@@ -22,7 +19,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Detect backend changes
+        id: changes
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          BASE_SHA=$(git merge-base HEAD origin/${{ github.base_ref }})
+
+          CHANGED_FILES="$(git diff --name-only "$BASE_SHA"...HEAD)"
+
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          if echo "$CHANGED_FILES" | grep -E '^backend/|^\.github/workflows/ci-backend-test\.yml$' > /dev/null; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: No backend changes, skip tests
+        if: steps.changes.outputs.changed == 'false'
+        run: |
+          echo "No backend changes. Skipping backend tests."
+
       - name: Setup Ruby
+        if: steps.changes.outputs.changed == 'true'
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2.2'
@@ -30,7 +50,9 @@ jobs:
           bundler-cache: true
 
       - name: Prepare test database (SQLite)
+        if: steps.changes.outputs.changed == 'true'
         run: bundle exec rails db:prepare
 
       - name: Run RSpec tests
+        if: steps.changes.outputs.changed == 'true'
         run: bundle exec rspec
