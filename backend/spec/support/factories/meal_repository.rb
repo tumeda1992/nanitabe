@@ -53,6 +53,6 @@ end
 def find_or_create_meal_of_day_2_with_meal
   existing_meal = ::Meal.find_by(
     dish: find_or_create_dish_of_day_with_meal_2(),
-    )
+  )
   existing_meal || FactoryBot.create(:meal_of_day_1_with_meal)
 end

@@ -21,8 +21,9 @@ Metrics/PerceivedComplexity:
 Metrics/CyclomaticComplexity:
   Enabled: false
 
-
 Lint/EmptyBlock:
+  Enabled: false
+Lint/OrAssignmentToConstant:
   Enabled: false
 
 Bundler/OrderedGems:
@@ -75,3 +76,6 @@ Layout/EmptyLinesAroundClassBody:
   Enabled: false
 Layout/FirstHashElementIndentation:
   EnforcedStyle: consistent
+
+Naming/VariableNumber:
+  Enabled: false
