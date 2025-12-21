@@ -15,20 +15,20 @@ FactoryBot.define do
     normalized_name { DISH_NAME_OF_DISH_2 }
     meal_position { 2 }
   end
-
+  
   (1..6).each do |idx|
-    eval <<-DISH_OF_DAY_WITH_MEAL
-      factory :dish_of_day_with_multi_meals_#{idx}, class: Dish do
-        user { find_or_create_user() }
-        name { DISH_NAME_OF_DAY_WITH_MULTI_MEALS_#{idx} }
+    FactoryBot.define do
+      factory :"dish_of_day_with_multi_meals_#{idx}", class: Dish do
+        user { find_or_create_user }
+        name { Object.const_get("DISH_NAME_OF_DAY_WITH_MULTI_MEALS_#{idx}") }
         meal_position { 2 }
       end
 
-      factory :dish_of_day_with_meal_#{idx}, class: Dish do
-        user { find_or_create_user() }
-        name { DISH_NAME_OF_DAY_WITH_MEAL_#{idx} }
+      factory :"dish_of_day_with_meal_#{idx}", class: Dish do
+        user { find_or_create_user }
+        name { Object.const_get("DISH_NAME_OF_DAY_WITH_MEAL_#{idx}") }
         meal_position { 2 }
       end
-    DISH_OF_DAY_WITH_MEAL
+    end
   end
 end
