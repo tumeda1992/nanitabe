@@ -29,7 +29,7 @@ module Business::Dish::Dish::Tag
         dish_tag_record_for_update.save!
       end
 
-      def remove(dish_tag_id, force_remove: false)
+      def remove(dish_tag_id, _force_remove: false)
         existing_dish_tag_record = ::DishTag.find(dish_tag_id)
         existing_dish_tag_record.destroy!
       end
