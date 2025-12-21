@@ -306,10 +306,10 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       context "when dish has no optional relations" do
         let!(:minimal_dish) do
           FactoryBot.create(:dish,
-            user: user_record,
-            name: "シンプルな料理",
-            normalized_name: "シンプルな料理",
-            meal_position: 1,)
+                            user: user_record,
+                            name: "シンプルな料理",
+                            normalized_name: "シンプルな料理",
+                            meal_position: 1,)
         end
 
         it "returns nil for missing optional fields" do
