@@ -44,8 +44,8 @@ RSpec.describe Business::Food::Dish::Name, type: :model do
       before do
         allow(::Business::Food::Dish::Word::Usecase::Normalizer)
           .to receive(:call)
-                .with(string_sequence: "ハンバーグ")
-                .and_return("はんばーぐ")
+          .with(string_sequence: "ハンバーグ")
+          .and_return("はんばーぐ")
       end
       it "uses the normalized result" do
         name = described_class.initialize_and_normalize("ハンバーグ")
