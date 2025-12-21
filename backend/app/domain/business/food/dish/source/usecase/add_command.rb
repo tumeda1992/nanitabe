@@ -26,7 +26,7 @@ module Business::Food::Dish::Source
     def validate_source
       return if source_params.valid_for_create?
 
-      errors.add(:source_params, source_params.errors.full_messages.join(', '))
+      errors.add(:source_params, source_params.errors.full_messages.join(", "))
     end
   end
 end

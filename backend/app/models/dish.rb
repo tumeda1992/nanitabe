@@ -15,8 +15,8 @@ class Dish < ApplicationRecord
 
   scope :with_search_relations, -> {
     # サブクエリで食事登録回数を計算（GROUP BYを避けるため）
-    meals_count_subquery = Meal.select('dish_id, COUNT(*) as meals_count')
-                               .group('dish_id')
+    meals_count_subquery = Meal.select("dish_id, COUNT(*) as meals_count")
+                               .group("dish_id")
     joins("LEFT JOIN (#{meals_count_subquery.to_sql}) AS meal_counts ON meal_counts.dish_id = dishes.id")
       .left_joins(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags) # has_manyは重複するけど、あとでdistinctするので問題ない
       .preload(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags)

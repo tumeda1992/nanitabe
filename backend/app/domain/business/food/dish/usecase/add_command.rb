@@ -39,7 +39,7 @@ module Business::Food::Dish
     def validate_dish
       return if dish_params.valid_for_create?
 
-      errors.add(:dish_params, dish_params.errors.full_messages.join(', '))
+      errors.add(:dish_params, dish_params.errors.full_messages.join(", "))
     end
   end
 end

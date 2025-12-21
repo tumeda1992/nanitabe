@@ -5,7 +5,7 @@ def fetch_mutation(mutation_string, variables, headers: {})
     response_body = JSON.parse(response.body)
   rescue JSON::ParserError => e
     # HTMLレスポンスなどJSONでないレスポンスの場合の処理
-    if response.body.to_s.strip.start_with?('<!DOCTYPE', '<html')
+    if response.body.to_s.strip.start_with?("<!DOCTYPE", "<html")
       file_path = save_html_response_to_file(response.body)
       raise "JSONパースエラー: HTMLレスポンスが返されました。詳細は次のファイルを確認してください: #{file_path}\n#{e.message}"
     else
