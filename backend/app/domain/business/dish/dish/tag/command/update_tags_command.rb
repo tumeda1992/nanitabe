@@ -26,7 +26,7 @@ module Business::Dish::Dish::Tag
 
     def add_tags_if_need(dish_tags, dish_id, user_id)
       dish_tags
-        .select { |tag| tag.id.blank?}
+        .select { |tag| tag.id.blank? }
         .map do |tag|
           Tag.new(
             user_id:,
@@ -47,7 +47,7 @@ module Business::Dish::Dish::Tag
 
     def delete_tags_if_need(existing_dish_tag_ids, dish_tag_ids)
       existing_dish_tag_ids
-        .reject {|existing_dish_tag_id| dish_tag_ids.include?(existing_dish_tag_id)}
+        .reject { |existing_dish_tag_id| dish_tag_ids.include?(existing_dish_tag_id) }
         .each do |tag_id_needing_removed|
           Repository.remove(tag_id_needing_removed)
         end

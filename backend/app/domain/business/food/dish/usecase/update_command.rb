@@ -38,7 +38,7 @@ module Business::Food::Dish
       dish_root.reposition_in_meal(dish_params.meal_position) if dish_params.meal_position.present?
       dish_root.revise_comment(dish_params.comment) unless dish_params.comment.nil?
 
-      dish_root.replace_tags(dish_tags.map {|tag| tag.to_root(user_id)})
+      dish_root.replace_tags(dish_tags.map { |tag| tag.to_root(user_id) })
 
       dish_root = update_dish_source_of_dish_root(dish_root, dish_source_relation)
 

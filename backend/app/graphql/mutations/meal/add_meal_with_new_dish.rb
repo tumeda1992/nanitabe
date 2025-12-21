@@ -23,7 +23,7 @@ module Mutations::Meal
           user_id: context[:current_user_id],
           dish_params: dish.convert_to_command_param(use_food_module: true),
           dish_source_relation:,
-          dish_tags: (dish_tags || [])&.map {|dish_tag| dish_tag.convert_to_command_param(use_food_module: true) },
+          dish_tags: (dish_tags || [])&.map { |dish_tag| dish_tag.convert_to_command_param(use_food_module: true) },
         )
 
         created_meal = ::Business::Food::Meal::Usecase::AddCommand.call(

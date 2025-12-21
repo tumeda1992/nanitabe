@@ -25,7 +25,7 @@ module Business::Food::Dish
         comment: dish_params.comment,
         source:,
         source_locator:,
-        tags: dish_tags.map {|tag| tag.to_root(user_id)},
+        tags: dish_tags.map { |tag| tag.to_root(user_id) },
       )
 
       dish_record = ::Dish.persist_from_food_dish_root(dish_root)
