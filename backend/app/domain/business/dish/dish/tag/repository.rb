@@ -16,7 +16,7 @@ module Business::Dish::Dish::Tag
 
       def all_dish_tags
         ::DishTag.all.map do |dish_tag_record|
-        # ::Dish.all.where("dishes.normalized_name IS NULL").map do |dish_record| # デバッグ
+          # ::Dish.all.where("dishes.normalized_name IS NULL").map do |dish_record| # デバッグ
           build_values_object_with_existing_object(dish_tag_record, DishTag, [:id, :user_id, :dish_id, :content, :normalized_content])
         end
       end
