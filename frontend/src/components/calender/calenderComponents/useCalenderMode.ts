@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useAssignDishMode, {
   AssigningDishMode,
 } from './operationComponents/AssignDish/useAssignDishMode';
@@ -74,6 +74,17 @@ export default ({ onDataChanged }) => {
       // return;
     }
   };
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        changeCalenderModeToDisplayCalenderMode();
+      }
+    };
+
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, []);
 
   const requireDisplayingBottomBar =
     useAssignDishModeResult.inAssigningDishMode ||

@@ -187,10 +187,10 @@ export default (args: {
       if (onDataChanged) onDataChanged();
 
       if (doContinuousRegistration) {
+        // 何もしないでモードを継続する
+      } else {
         selectDish(null);
         changeCalenderModeToChoosingDishMode();
-      } else {
-        changeCalenderModeToDisplayCalenderMode();
       }
     },
   });
