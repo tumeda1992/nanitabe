@@ -16,7 +16,7 @@ jobs:
 
     env:
       RAILS_ENV: test
-      BUNDLE_WITHOUT: "development:production"
+      BUNDLE_WITHOUT: "production"
 
     steps:
       - name: Checkout repository
