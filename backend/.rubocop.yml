@@ -79,6 +79,8 @@ Style/MapToHash:
   Enabled: false
 Style/SlicingWithRange:
   Enabled: false
+Style/NegatedIf:
+  Enabled: false
 
 Layout/LineLength:
   Enabled: false
