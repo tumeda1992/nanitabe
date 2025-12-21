@@ -69,6 +69,8 @@ Style/IfUnlessModifier:
   Enabled: false
 Style/MultilineBlockChain:
   Enabled: false
+Style/BlockDelimiters:
+  Enabled: false
 
 Layout/LineLength:
   Enabled: false
