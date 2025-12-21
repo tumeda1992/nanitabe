@@ -29,4 +29,5 @@ jobs:
           bundler-cache: true
 
       - name: Run Rubocop
+        working-directory: backend
         run: bundle exec rubocop

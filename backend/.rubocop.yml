@@ -9,8 +9,7 @@ AllCops:
     - "db/migrate/*"
     - "app/graphql/backend_schema.rb"
     - "app/controllers/graphql_controller.rb"
-  Include:
-    - rubocop-rspec
+  NewCops: disable
 
 Metrics/BlockLength:
   Enabled: false
