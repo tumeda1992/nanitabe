@@ -1,13 +1,13 @@
-name: CI Backend Test
+name: CI Backend Rubocop
 
 on:
   pull_request:
     paths:
       - 'backend/**'
-      - '.github/workflows/ci-backend-test.yml'
+      - '.github/workflows/ci-backend-rubocop.yml'
 
 jobs:
-  backend-test:
+  backend-rubocop:
     runs-on: ubuntu-latest
 
     defaults:
@@ -15,7 +15,6 @@ jobs:
         working-directory: backend
 
     env:
-      RAILS_ENV: test
       BUNDLE_WITHOUT: "development:production"
 
     steps:
@@ -29,8 +28,5 @@ jobs:
           working-directory: backend
           bundler-cache: true
 
-      - name: Prepare test database (SQLite)
-        run: bundle exec rails db:prepare
-
-      - name: Run RSpec tests
-        run: bundle exec rspec
+      - name: Run Rubocop
+        run: bundle exec rubocop
