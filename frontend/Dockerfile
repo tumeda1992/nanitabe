@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:24.11.1
 
 ARG appname=nanitabe_front
 ARG apppath="/root/$appname"
@@ -6,6 +6,10 @@ ARG apppath="/root/$appname"
 WORKDIR $apppath
 
 COPY package.json yarn.lock ./
+
+RUN npm i -g @aikidosec/safe-chain
+RUN safe-chain setup
+RUN ["/bin/bash", "-c", "source ~/.bashrc"]
 
 RUN yarn install
 

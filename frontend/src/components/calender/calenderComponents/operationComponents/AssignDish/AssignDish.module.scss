@@ -1,0 +1,67 @@
+@use "../../../../base/mixin.module";
+
+.assign-dish {
+  &-header {
+    display: flex;
+
+    &-title {
+      &__container {
+        margin: 0 auto 0 0;
+      }
+    }
+
+    &-menu {
+      &__container {
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+  }
+}
+
+.choose-dish {
+  &-container {
+    height: 400px;
+    overflow: scroll;
+  }
+
+  &-form {
+    &__label-and-input-container {
+      display: flex;
+    }
+
+    &__label {
+      margin: 0 10px 0 0;
+      width: 100px;
+    }
+
+    &-select-dish {
+      &__container {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  }
+
+  &-main {
+    &-border {
+      border-top: 0.5px solid mixin.$gray;
+
+      &__wrapper {
+        padding: 10px 20px;
+      }
+    }
+
+    &-header {
+
+    }
+  }
+}
+
+.existing-dish-icon-container {
+  display: inline-flex;
+  flex-wrap: wrap;
+  height: 200px;
+  overflow: scroll;
+}
+

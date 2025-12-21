@@ -1,4 +1,4 @@
-import server from '../lib/graphql/specHelper/mockServer';
+import server from '../src/lib/graphql/specHelper/mockServer';
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());

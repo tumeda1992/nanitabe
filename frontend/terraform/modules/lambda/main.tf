@@ -1,6 +1,6 @@
 variable "stage" { type = string }
 variable "ecr_repository_url" { type = string }
-variable "backend_host" { type = string }
+variable "backend_origin" { type = string }
 
 module "values" {
   source = "../../values"
@@ -39,8 +39,8 @@ resource "aws_lambda_function" "this" {
 
   environment {
     variables = {
-      # クライアント側の環境変数はyarn build時に埋め込まれるので、ここではサーバー側の環境変数のみを設定
-      SERVER_SIDE_ORIGIN = "https://${var.backend_host}"
+      # Lambdaからサーバサイドへのプライベートファストパスを通したいときはこちらで設定（クライアントサイドは別途設定されているから不要）
+      # SERVER_SIDE_ORIGIN = var.backend_origin
     }
   }
 }
@@ -57,4 +57,8 @@ output "lambda_function_arn" {
 
 output "lambda_invoke_arn" {
   value       = aws_lambda_function.this.invoke_arn
+}
+
+output "lambda_function_name" {
+  value       = local.lambda_function_name
 }

@@ -1,0 +1,21 @@
+@use "../../base/mixin.module";
+
+.form {
+  padding: 20px 40px;
+
+  &__title {
+    font-size: 24px;
+  }
+}
+
+.meal-form {
+  padding: 20px 0px;
+}
+
+.reference-recipe {
+  padding: 20px 0px;
+
+  &__title {
+    font-size: 20px;
+  }
+}

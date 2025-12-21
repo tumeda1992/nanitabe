@@ -1,0 +1,9 @@
+@use "../base/_mixin.module";
+
+.login {
+  padding: 20px 40px;
+
+  &__title {
+    font-size: 24px;
+  }
+}

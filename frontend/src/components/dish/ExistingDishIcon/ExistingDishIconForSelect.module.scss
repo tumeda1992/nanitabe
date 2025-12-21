@@ -1,0 +1,21 @@
+@use "../../base/mixin.module";
+
+.dish-icon {
+  border: 1px solid;
+
+  &__wrap {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  &--selected {
+    background-color: mixin.$selected-blue;
+    color: mixin.$selected-text-color;
+  }
+
+  &__source-caption {
+    font-size: 8px;
+    text-align: center;
+    color: inherit;
+  }
+}

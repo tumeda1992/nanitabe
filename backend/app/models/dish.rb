@@ -18,7 +18,8 @@ class Dish < ApplicationRecord
     meals_count_subquery = Meal.select('dish_id, COUNT(*) as meals_count')
                                .group('dish_id')
     joins("LEFT JOIN (#{meals_count_subquery.to_sql}) AS meal_counts ON meal_counts.dish_id = dishes.id")
-      .eager_load(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags)
+      .left_joins(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags) # has_manyは重複するけど、あとでdistinctするので問題ない
+      .preload(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags)
   }
 
   scope :search_output, -> {
@@ -35,6 +36,7 @@ class Dish < ApplicationRecord
     order_clauses.push("dishes.created_at DESC")
 
     select(select_clauses.join(", "))
+      .distinct
       .order(Arel.sql(order_clauses.join(", ")))
   }
 

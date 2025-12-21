@@ -1,0 +1,10 @@
+@use "../../../base/mixin.module";
+
+.add-meal-icon {
+  background-color: mixin.$gray;
+
+  &__content {
+    text-decoration: none;
+    color: black;
+  }
+}

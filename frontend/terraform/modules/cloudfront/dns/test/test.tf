@@ -8,7 +8,7 @@ provider "aws" {
 module "dns" {
   source = "../"
 
-  custom_domain = "nanitabe-front-deploy-test.${var.route53_name}"
+  custom_domain = "nanitabe-front-verify-infra.${var.route53_name}"
   route53_zone_id = var.route53_zone_id
   cf_domain_name = "d1qmtpt8svn0j2.cloudfront.net"
   cf_zone_id = "Z2FDTNDATAQYW2" # CloudFrontのゾーンIDはディストリビューションに限らず固定値

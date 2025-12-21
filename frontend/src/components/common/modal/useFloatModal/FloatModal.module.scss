@@ -1,0 +1,26 @@
+@use "../../../base/mixin.module";
+
+.float-modal {
+  position: absolute;
+  border: 1px solid mixin.$gray;
+  display: inline-block;
+  border-radius: 3px;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.17);
+  z-index: mixin.$z-index-float;
+  background-color: mixin.$white;
+  color: black;
+  padding: 3px 5px;
+  cursor: default;
+
+  &__wrapper {
+    display: inline-block;
+  }
+
+  &--follow-right-edge {
+    right: 0;
+  }
+}
+
+.float-modal-opener {
+  display: inline-block;
+}

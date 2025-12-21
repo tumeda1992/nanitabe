@@ -1,0 +1,41 @@
+name: CI Backend Test
+
+on:
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/ci-backend-test.yml'
+
+jobs:
+  backend-test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    env:
+      RAILS_ENV: test
+      BUNDLE_WITHOUT: "development:production"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.2'
+          working-directory: backend
+          bundler-cache: true
+
+#      - name: Install gems
+#        run: |
+#          gem install bundler -v 2.1.2
+#          bundle _2.1.2_ install --jobs 4 --retry 3
+
+      - name: Prepare test database (SQLite)
+        run: bundle exec rails db:prepare
+
+      - name: Run RSpec tests
+        run: bundle exec rspec
