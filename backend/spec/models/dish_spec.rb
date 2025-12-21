@@ -509,7 +509,7 @@ RSpec.describe Dish, type: :model do
       it "joins dish_evaluation without N+1 queries" do
         dishes = described_class.with_search_relations
 
-        expect { dishes.map { |d| d.dish_evaluation } }.not_to raise_error
+        expect { dishes.map(&:dish_evaluation) }.not_to raise_error
       end
 
       it "joins dish_tags without N+1 queries" do
