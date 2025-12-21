@@ -63,7 +63,7 @@ RSpec.describe Business::Food::Meal::Usecase::RemoveCommand do
           rescue => e
             # Ignore the exception for count check
           end
-        }.not_to change { Meal.count }
+        }.not_to(change { Meal.count })
       end
     end
   end

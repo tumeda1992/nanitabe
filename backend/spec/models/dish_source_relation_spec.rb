@@ -38,7 +38,7 @@ RSpec.describe DishSourceRelation, type: :model do
       it "does not change the relation count" do
         expect {
           described_class.remove_dish_source_relation(dish_record.id)
-        }.not_to change { DishSourceRelation.count }
+        }.not_to(change { DishSourceRelation.count })
       end
     end
   end
@@ -128,7 +128,7 @@ RSpec.describe DishSourceRelation, type: :model do
         it "updates existing relation" do
           expect {
             described_class.put_dish_source_relation(dish_record.id, new_source_record.id, recipe_locator)
-          }.not_to change { DishSourceRelation.count }
+          }.not_to(change { DishSourceRelation.count })
 
           relation = DishSourceRelation.find_by(dish_id: dish_record.id)
           expect(relation.dish_source_id).to eq(new_source_record.id)
