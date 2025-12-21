@@ -73,6 +73,8 @@ Style/BlockDelimiters:
   Enabled: false
 Style/StringLiteralsInInterpolation:
   Enabled: false
+Style/Lambda:
+  Enabled: false
 
 Layout/LineLength:
   Enabled: false
