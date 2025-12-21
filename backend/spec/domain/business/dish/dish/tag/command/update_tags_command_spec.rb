@@ -168,7 +168,7 @@ module Business::Dish::Dish::Tag
           }
         end
 
-        comparer.define_expectation do |expected_values, prepared_records|
+        comparer.define_expectation do |_expected_values, _prepared_records|
           dish_tag_record = comparer.prepared_records[:dish_tag_record]
           existing_dish_tag_record = ::DishTag.find(dish_tag_record.id)
 
