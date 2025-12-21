@@ -126,7 +126,7 @@ module Business::Dish::Dish::Tag
           expect(existing_dish_tag_record.user_id).to eq dish_tag_record.user_id
           expect(existing_dish_tag_record.dish_id).to eq dish_tag_record.dish_id
           expect(existing_dish_tag_record.content).to eq dish_tag_record.content
-          
+
           expect(::DishTag.where(id: prepared_records[:dish_tag_record2].id).present?).to eq false
         end
 

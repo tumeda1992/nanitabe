@@ -10,9 +10,9 @@ RSpec.describe Business::Food::Dish::Source::Usecase::RemoveCommand do
       it "removes source successfully" do
         source_id = existing_source_record.id
         user_id = existing_source_record.user_id
-        
+
         expect(::DishSource.find_by(id: source_id, user_id: user_id)).not_to be_nil
-        
+
         expect {
           described_class.call(
             user_id: user_id,

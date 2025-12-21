@@ -8,7 +8,7 @@ module Business::Dish::Dish
 
     attribute :dish_source_relation, :command_params
     validates :dish_source_relation, presence: false
-    
+
     attribute :dish_tags, :command_params_array
     validates :dish_tags, presence: false
 

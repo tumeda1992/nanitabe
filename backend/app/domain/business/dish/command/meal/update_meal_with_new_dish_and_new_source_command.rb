@@ -12,7 +12,7 @@ module Business::Dish
 
       attribute :dish_source_relation_detail, :command_params
       validates :dish_source_relation_detail, presence: false
-    
+
       attribute :dish_tags, :command_params_array
       validates :dish_tags, presence: false
 

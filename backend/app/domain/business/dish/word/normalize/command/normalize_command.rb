@@ -15,7 +15,7 @@ module Business::Dish::Word::Normalize
 
       normalize_with_db_word(normalized)
     end
-    
+
     private
 
     def normalize_with_db_word(string_sequence_arg)

@@ -11,7 +11,7 @@ module Business::Dish::Dish
 
     attribute :dish_source_relation_detail_value, :any
     validates :dish_source_relation_detail_value, presence: false
-    
+
     attribute :dish_tags, :command_params_array
     validates :dish_tags, presence: false
 
