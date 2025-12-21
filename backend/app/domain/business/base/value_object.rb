@@ -1,4 +1,4 @@
-require_relative './values'
+require_relative "./values"
 
 # config/initializers/types.rb のActiveModelのタイプ定義ファイルで読めるようにネスト形式に
 module Business

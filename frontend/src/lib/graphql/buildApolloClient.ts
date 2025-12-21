@@ -71,7 +71,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
         `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
       );
     });
-    // @ts-ignore
+    // @ts-expect-error apollo error type not compatible with apiErrors signature
     apiErrors(graphQLErrors.map((error) => error));
   }
   if (networkError) console.log(`[Network error]: ${networkError}`);

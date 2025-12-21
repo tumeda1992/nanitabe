@@ -26,7 +26,7 @@ module Business::Food::Dish
     # TODO: 破壊的変更には`!`をつける（そして、自身をreturnする）
 
     def set_id(new_id)
-      raise "新規作成時以外idを変更できません" if self.id.present?
+      raise "新規作成時以外idを変更できません" if id.present?
 
       self.id = new_id
     end
@@ -38,7 +38,7 @@ module Business::Food::Dish
     end
 
     def renormalize_name
-      self.name = Name.initialize_and_normalize(self.name.value)
+      self.name = Name.initialize_and_normalize(name.value)
     end
 
     def reposition_in_meal(new_meal_position)
@@ -53,6 +53,7 @@ module Business::Food::Dish
 
     def attach_source(source, source_locator)
       raise "関連付けるレシピ元が指定されていません。" if source.blank?
+
       Policy::AttachSourcePolicy.ensure!(source, source_locator)
 
       self.source_id = source.id
@@ -67,6 +68,7 @@ module Business::Food::Dish
     def replace_tags(tags_for_replace)
       tags_for_replace.each_with_index do |tag, index|
         raise "タグ(#{index + 1})の型が不正です。" unless tag.is_a?(Business::Food::Dish::Tag::Root)
+
         tag.validate!
       end
 

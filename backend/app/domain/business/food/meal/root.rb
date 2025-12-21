@@ -18,7 +18,7 @@ module Business::Food::Meal
     validates :comment, presence: false
 
     def set_id(new_id)
-      raise "新規作成時以外idを変更できません" if self.id.present?
+      raise "新規作成時以外idを変更できません" if id.present?
 
       self.id = new_id
     end

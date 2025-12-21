@@ -12,7 +12,7 @@ module Business::Dish::Dish::Tag
         @dish_tag = Tag.new(
           user_id: comparer.prepared_records[:user_record].id,
           dish_id: comparer.prepared_records[:dish_record].id,
-          **comparer.values
+          **comparer.values,
         )
       end
 

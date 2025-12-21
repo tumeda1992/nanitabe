@@ -6,7 +6,7 @@ module Business::Food::Dish::Source
           user_id: user_id,
           name: name,
           type: type.is_a?(Business::Food::Dish::Source::Type) ? type.value : type,
-          comment: comment
+          comment: comment,
         )
         source.validate!
         source
@@ -27,7 +27,7 @@ module Business::Food::Dish::Source
           user_id: source_params["user_id"],
           name: source_params["name"],
           type: source_params["type"],
-          comment: source_params["comment"]
+          comment: source_params["comment"],
         )
       end
     end

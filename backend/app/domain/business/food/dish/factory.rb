@@ -21,7 +21,7 @@ module Business::Food::Dish
           comment:,
           source_id:,
           source_locator:,
-          tags:
+          tags:,
         )
       end
 

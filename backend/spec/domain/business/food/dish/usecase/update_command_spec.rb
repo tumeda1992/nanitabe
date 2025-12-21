@@ -17,7 +17,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
       id: existing_dish_record.id,
       name: dish_name,
       meal_position: meal_position,
-      comment: comment
+      comment: comment,
     )
   end
 
@@ -34,7 +34,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
         it "updates dish successfully and returns Business::Food::Dish::Root" do
           result = described_class.call(
             user_id: user_record.id,
-            dish_params: valid_dish_params
+            dish_params: valid_dish_params,
           )
 
           expect(result).to be_a(Business::Food::Dish::Root)
@@ -49,7 +49,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
         it "updates dish in database" do
           described_class.call(
             user_id: user_record.id,
-            dish_params: valid_dish_params
+            dish_params: valid_dish_params,
           )
 
           updated_dish = ::Dish.find(existing_dish_record.id)
@@ -64,14 +64,14 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
             Business::Food::Dish::Usecase::Params::Dish.new(
               :update,
               id: existing_dish_record.id,
-              name: dish_name
+              name: dish_name,
             )
           end
 
           it "updates only name" do
             result = described_class.call(
               user_id: user_record.id,
-              dish_params: name_only_params
+              dish_params: name_only_params,
             )
 
             expect(result.name.value).to eq(dish_name)
@@ -86,14 +86,14 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
             Business::Food::Dish::Usecase::Params::Dish.new(
               :update,
               id: existing_dish_record.id,
-              meal_position: meal_position
+              meal_position: meal_position,
             )
           end
 
           it "updates only meal_position" do
             result = described_class.call(
               user_id: user_record.id,
-              dish_params: position_only_params
+              dish_params: position_only_params,
             )
 
             expect(result.name.value).to eq(existing_dish_record.name)
@@ -107,14 +107,14 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
             Business::Food::Dish::Usecase::Params::Dish.new(
               :update,
               id: existing_dish_record.id,
-              comment: comment
+              comment: comment,
             )
           end
 
           it "updates only comment" do
             result = described_class.call(
               user_id: user_record.id,
-              dish_params: comment_only_params
+              dish_params: comment_only_params,
             )
 
             expect(result.name.value).to eq(existing_dish_record.name)
@@ -128,14 +128,14 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
             Business::Food::Dish::Usecase::Params::Dish.new(
               :update,
               id: existing_dish_record.id,
-              comment: ""
+              comment: "",
             )
           end
 
           it "clears comment" do
             result = described_class.call(
               user_id: user_record.id,
-              dish_params: clear_comment_params
+              dish_params: clear_comment_params,
             )
 
             expect(result.name.value).to eq(existing_dish_record.name)
@@ -149,8 +149,8 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
         let(:non_existing_dish_params) do
           Business::Food::Dish::Usecase::Params::Dish.new(
             :update,
-            id: 99999,
-            name: dish_name
+            id: 99_999,
+            name: dish_name,
           )
         end
 
@@ -158,7 +158,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
           expect {
             described_class.call(
               user_id: user_record.id,
-              dish_params: non_existing_dish_params
+              dish_params: non_existing_dish_params,
             )
           }.to raise_error("指定した料理は存在しません。")
         end
@@ -170,7 +170,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
         it "レシピ元の関連なしのまま料理を更新できること" do
           described_class.call(
             user_id: user_record.id,
-            dish_params: valid_dish_params
+            dish_params: valid_dish_params,
           )
 
           dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
@@ -185,7 +185,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
           Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
             dish_source_record.type,
             dish_source_record.id,
-            recipe_book_page
+            recipe_book_page,
           )
         end
 
@@ -193,7 +193,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
           described_class.call(
             user_id: user_record.id,
             dish_params: valid_dish_params,
-            dish_source_relation: dish_source_relation_params
+            dish_source_relation: dish_source_relation_params,
           )
 
           dish_source_relation = ::Dish.find(existing_dish_record.id).dish_source_relation
@@ -209,7 +209,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
             :dish_source_relation,
             dish: existing_dish_record,
             dish_source: dish_source_record,
-            recipe_book_page: 32
+            recipe_book_page: 32,
           )
         end
 
@@ -233,7 +233,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
           Business::Food::Dish::Tag::Usecase::Params::Tag.new(
             id: existing_tag1.id,
             content: "保持タグ",
-            normalized_content: "保持タグ"
+            normalized_content: "保持タグ",
           )
         end
 
@@ -244,7 +244,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
             user_id: user_record.id,
             dish_params: valid_dish_params,
             dish_source_relation: nil,
-            dish_tags: dish_tags
+            dish_tags: dish_tags,
           )
 
           expect(result).to be_a(Business::Food::Dish::Root)
@@ -278,7 +278,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
         expect {
           described_class.call(
             user_id: nil,
-            dish_params: valid_dish_params
+            dish_params: valid_dish_params,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -289,7 +289,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            dish_params: nil
+            dish_params: nil,
           )
         }.to raise_error(/Dish params can't be blank/)
       end

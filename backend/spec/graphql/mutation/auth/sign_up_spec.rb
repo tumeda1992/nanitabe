@@ -28,6 +28,7 @@ RSpec.describe Mutations::Auth::SignUp, type: :request do
       begin
         fetch_mutation(build_signup_mutation, variables)
       rescue StandardError
+        # do nothing
       end
 
       expect(::LoginUser.where(uid: variables[:email]).present?).to eq false

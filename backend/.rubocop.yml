@@ -14,15 +14,24 @@ Metrics/BlockLength:
   Enabled: false
 Metrics/MethodLength:
   Enabled: false
+Metrics/ModuleLength:
+  Enabled: false
+Metrics/ClassLength:
+  Enabled: false
 Metrics/AbcSize:
   Enabled: false
 Metrics/PerceivedComplexity:
   Enabled: false
 Metrics/CyclomaticComplexity:
   Enabled: false
-
+Metrics/ParameterLists:
+  Enabled: false
 
 Lint/EmptyBlock:
+  Enabled: false
+Lint/OrAssignmentToConstant:
+  Enabled: false
+Lint/DuplicateBranch:
   Enabled: false
 
 Bundler/OrderedGems:
@@ -68,6 +77,18 @@ Style/IfUnlessModifier:
   Enabled: false
 Style/MultilineBlockChain:
   Enabled: false
+Style/BlockDelimiters:
+  Enabled: false
+Style/StringLiteralsInInterpolation:
+  Enabled: false
+Style/Lambda:
+  Enabled: false
+Style/MapToHash:
+  Enabled: false
+Style/SlicingWithRange:
+  Enabled: false
+Style/NegatedIf:
+  Enabled: false
 
 Layout/LineLength:
   Enabled: false
@@ -75,3 +96,8 @@ Layout/EmptyLinesAroundClassBody:
   Enabled: false
 Layout/FirstHashElementIndentation:
   EnforcedStyle: consistent
+
+Naming/VariableNumber:
+  Enabled: false
+Naming/AccessorMethodName:
+  Enabled: false

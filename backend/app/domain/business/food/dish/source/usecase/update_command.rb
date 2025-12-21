@@ -21,7 +21,7 @@ module Business::Food::Dish::Source
     def validate_source
       return if source_params.valid_for_update?
 
-      errors.add(:source_params, source_params.errors.full_messages.join(', '))
+      errors.add(:source_params, source_params.errors.full_messages.join(", "))
     end
 
     def update_source_root(source_root, source_params)

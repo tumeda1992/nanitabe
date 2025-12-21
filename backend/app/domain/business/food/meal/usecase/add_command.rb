@@ -13,7 +13,7 @@ module Business::Food::Meal
         meal_params.dish_id,
         meal_params.date,
         meal_params.meal_type,
-        comment: meal_params.comment
+        comment: meal_params.comment,
       )
 
       meal_record = ::Meal.persist_from_food_meal_root(meal_root)
@@ -27,7 +27,7 @@ module Business::Food::Meal
     def validate_meal
       return if meal_params.valid_for_create?
 
-      errors.add(:meal_params, meal_params.errors.full_messages.join(', '))
+      errors.add(:meal_params, meal_params.errors.full_messages.join(", "))
     end
   end
 end

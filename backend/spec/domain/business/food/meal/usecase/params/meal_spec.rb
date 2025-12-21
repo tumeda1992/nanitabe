@@ -6,7 +6,7 @@ RSpec.describe Business::Food::Meal::Usecase::Params::Meal do
       dish_id: 1,
       date: Date.today,
       meal_type: 1,
-      comment: "test comment"
+      comment: "test comment",
     }
   end
 
@@ -16,7 +16,7 @@ RSpec.describe Business::Food::Meal::Usecase::Params::Meal do
       dish_id: 1,
       date: Date.today,
       meal_type: 1,
-      comment: "test comment"
+      comment: "test comment",
     }
   end
 

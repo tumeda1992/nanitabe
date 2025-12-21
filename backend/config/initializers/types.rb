@@ -29,6 +29,7 @@ class CommandParamsArrayType < ActiveModel::Type::Value
   def cast_value(array_value)
     # nilはvalidatesのdisallow_nilで除外
     raise "値が配列ではありません" if array_value.class != Array
+
     array_value.each do |value|
       raise "フィールドの値が不正です。" if value.invalid?
     end
@@ -41,8 +42,8 @@ ActiveModel::Type.register(:command_params_array, CommandParamsArrayType)
 
 # TODO: 動いた後にlintで怒られたら上に移す
 # requireしないと認識されない。噂だとdomainsと複数形のディレクトリにしたらいけるかもみたいな話を聞いた
-require_relative '../../app/domain/business/food/dish/source/type'
+require_relative "../../app/domain/business/food/dish/source/type"
 ActiveModel::Type.register(:dish_source_type, ::Business::Food::Dish::Source::Type::DishSourceTypeForActiveModel)
 
-require_relative '../../app/domain/business/food/dish/name'
+require_relative "../../app/domain/business/food/dish/name"
 ActiveModel::Type.register(:dish_name, ::Business::Food::Dish::Name::DishNameForActiveModel)

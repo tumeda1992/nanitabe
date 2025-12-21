@@ -98,7 +98,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::AddCommand do
           user: FactoryBot.create(:user, id_param: "user_for_add_test"),
           name: "ぶた肉",
           normalized_name: "ブタ肉",
-          meal_position: 1
+          meal_position: 1,
         )
       end
 

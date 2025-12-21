@@ -30,7 +30,7 @@ module Business::Food::Dish
     def validate_dish
       return if dish_params.valid_for_update?
 
-      errors.add(:dish_params, dish_params.errors.full_messages.join(', '))
+      errors.add(:dish_params, dish_params.errors.full_messages.join(", "))
     end
 
     def update_dish_root(dish_root, dish_params, dish_source_relation, dish_tags)
@@ -38,7 +38,7 @@ module Business::Food::Dish
       dish_root.reposition_in_meal(dish_params.meal_position) if dish_params.meal_position.present?
       dish_root.revise_comment(dish_params.comment) unless dish_params.comment.nil?
 
-      dish_root.replace_tags(dish_tags.map {|tag| tag.to_root(user_id)})
+      dish_root.replace_tags(dish_tags.map { |tag| tag.to_root(user_id) })
 
       dish_root = update_dish_source_of_dish_root(dish_root, dish_source_relation)
 

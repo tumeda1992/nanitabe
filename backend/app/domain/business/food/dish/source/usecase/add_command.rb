@@ -12,7 +12,7 @@ module Business::Food::Dish::Source
         user_id,
         source_params.name,
         source_params.type,
-        comment: source_params.comment
+        comment: source_params.comment,
       )
       source_record = ::DishSource.build_from_food_dish_source_root(source_root)
       source_record.save!
@@ -26,7 +26,7 @@ module Business::Food::Dish::Source
     def validate_source
       return if source_params.valid_for_create?
 
-      errors.add(:source_params, source_params.errors.full_messages.join(', '))
+      errors.add(:source_params, source_params.errors.full_messages.join(", "))
     end
   end
 end

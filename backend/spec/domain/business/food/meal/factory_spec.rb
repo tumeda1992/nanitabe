@@ -18,7 +18,7 @@ RSpec.describe Business::Food::Meal::Factory do
           dish_record.id,
           date,
           meal_type,
-          comment: comment
+          comment: comment,
         )
 
         expect(result).to be_a(Business::Food::Meal::Root)
@@ -36,7 +36,7 @@ RSpec.describe Business::Food::Meal::Factory do
           user_record.id,
           dish_record.id,
           date,
-          meal_type
+          meal_type,
         )
 
         expect(result).to be_a(Business::Food::Meal::Root)
@@ -49,9 +49,9 @@ RSpec.describe Business::Food::Meal::Factory do
         expect {
           described_class.build(
             user_record.id,
-            999999,
+            999_999,
             date,
-            meal_type
+            meal_type,
           )
         }.to raise_error("存在しない料理を紐付けることはできません。")
       end
@@ -64,7 +64,7 @@ RSpec.describe Business::Food::Meal::Factory do
             user_record.id,
             nil,
             date,
-            meal_type
+            meal_type,
           )
         }.to raise_error("料理が指定されていません。")
       end

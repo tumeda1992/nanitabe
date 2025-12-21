@@ -23,7 +23,7 @@ module Business::Food::Meal
     def validate_meal
       return if meal_params.valid_for_update?
 
-      errors.add(:meal_params, meal_params.errors.full_messages.join(', '))
+      errors.add(:meal_params, meal_params.errors.full_messages.join(", "))
     end
 
     def update_meal_root(meal_root, meal_params)

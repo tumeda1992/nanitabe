@@ -18,7 +18,7 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_id,
-            dish_id: dish_id
+            dish_id: dish_id,
           )
         }.to change { ::Dish.count }.by(-1)
 
@@ -36,7 +36,7 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
           :dish_source_relation,
           dish_id: dish.id,
           dish_source: dish_source,
-          recipe_book_page: 32
+          recipe_book_page: 32,
         )
       end
 
@@ -47,7 +47,7 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_id,
-            dish_id: dish.id
+            dish_id: dish.id,
           )
         }.to change { ::Dish.count }.by(-1)
 
@@ -66,7 +66,7 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
           dish: dish,
           user: user_record,
           content: "タグ1",
-          normalized_content: "タグ1"
+          normalized_content: "タグ1",
         )
       end
       let!(:dish_tag2) do
@@ -75,7 +75,7 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
           dish: dish,
           user: user_record,
           content: "タグ2",
-          normalized_content: "タグ2"
+          normalized_content: "タグ2",
         )
       end
 
@@ -86,7 +86,7 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_id,
-            dish_id: dish.id
+            dish_id: dish.id,
           )
         }.to change { ::Dish.count }.by(-1)
          .and change { ::DishTag.count }.by(-2)
@@ -101,7 +101,7 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            dish_id: 99999
+            dish_id: 99_999,
           )
         }.to raise_error("指定した料理は存在しません。")
       end
@@ -114,7 +114,7 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: other_user_record.id,
-            dish_id: existing_dish_record.id
+            dish_id: existing_dish_record.id,
           )
         }.to raise_error("指定した料理は存在しません。")
       end
@@ -143,7 +143,7 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: nil,
-            dish_id: existing_dish_record.id
+            dish_id: existing_dish_record.id,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -154,7 +154,7 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            dish_id: nil
+            dish_id: nil,
           )
         }.to raise_error(/Dish can't be blank/)
       end

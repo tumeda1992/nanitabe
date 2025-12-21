@@ -61,24 +61,24 @@ module Business::Dish::Dish
             dish_for_update: Command::Params::DishForUpdate.new(
               id: dish_comparer.prepared_records[:dish_record].id,
               name: dish_comparer.values[:name],
-              ),
+            ),
             dish_source_for_create: Source::Command::Params::SourceForCreate.new(
               name: dish_source_comparer.values[:name],
               type: dish_source_comparer.values[:type],
               comment: dish_source_comparer.values[:comment],
-              ),
+            ),
             dish_source_relation_detail_value: dish_source_relation_comparer.values[:recipe_source_memo],
-            )
+          )
 
           dish_comparer.compare_to_expectation(
             self,
             **specified_field_values_of_object(dish_comparer.prepared_records[:dish_record], [:meal_position, :comment]),
-            )
+          )
           dish_source_comparer.compare_to_expectation(self)
           dish_source_relation_comparer.compare_to_expectation(
             self,
             dish_source_id: created_dish_source.id,
-            )
+          )
         end
       end
 

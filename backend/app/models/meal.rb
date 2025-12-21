@@ -13,7 +13,7 @@ class Meal < ApplicationRecord
         dish_id: meal_record.dish_id,
         date: meal_record.date,
         meal_type: meal_record.meal_type,
-        comment: meal_record.comment
+        comment: meal_record.comment,
       )
     end
 
@@ -21,7 +21,7 @@ class Meal < ApplicationRecord
       meal_records = where(date:)
       return [] if meal_records.blank?
 
-      meal_records.map {|meal_record| build_existing_root_from_id(meal_record.id) }
+      meal_records.map { |meal_record| build_existing_root_from_id(meal_record.id) }
     end
 
     def persist_from_food_meal_root(food_meal_root)

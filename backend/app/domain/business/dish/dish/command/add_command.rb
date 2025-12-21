@@ -11,7 +11,7 @@ module Business::Dish::Dish
 
     attribute :dish_source_relation_detail, :command_params
     validates :dish_source_relation_detail, presence: false
-    
+
     attribute :dish_tags, :command_params_array
     validates :dish_tags, presence: false
 
@@ -30,13 +30,13 @@ module Business::Dish::Dish
         user_id:,
         name: dish_for_create.name,
         normalized_name: Business::Dish::Word::Normalize::Command::NormalizeCommand.call(
-          string_sequence: dish_for_create.name
+          string_sequence: dish_for_create.name,
         ),
         meal_position: dish_for_create.meal_position,
         comment: dish_for_create.comment,
       )
 
-      created_dish = Repository.add(dish)
+      Repository.add(dish)
     end
 
     def register_dish_source_relation(dish_id, dish_source_for_read, dish_source_relation_detail)
@@ -50,7 +50,7 @@ module Business::Dish::Dish
       return if dish_tags.blank? # 新規作成時はタグ作成のみで、更新・削除が行われないため、空ならスキップ可能
 
       ::Business::Dish::Dish::Tag::Command::UpdateTagsCommand.call(
-        dish_id:, user_id:, dish_tags:
+        dish_id:, user_id:, dish_tags:,
       )
     end
   end

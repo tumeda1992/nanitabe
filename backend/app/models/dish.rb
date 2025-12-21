@@ -15,8 +15,8 @@ class Dish < ApplicationRecord
 
   scope :with_search_relations, -> {
     # サブクエリで食事登録回数を計算（GROUP BYを避けるため）
-    meals_count_subquery = Meal.select('dish_id, COUNT(*) as meals_count')
-                               .group('dish_id')
+    meals_count_subquery = Meal.select("dish_id, COUNT(*) as meals_count")
+                               .group("dish_id")
     joins("LEFT JOIN (#{meals_count_subquery.to_sql}) AS meal_counts ON meal_counts.dish_id = dishes.id")
       .left_joins(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags) # has_manyは重複するけど、あとでdistinctするので問題ない
       .preload(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags)
@@ -71,7 +71,7 @@ class Dish < ApplicationRecord
         user_id: dish_record.user_id,
         name: ::Business::Food::Dish::Name.new(
           value: dish_record.name,
-          normalized: dish_record.normalized_name
+          normalized: dish_record.normalized_name,
         ),
         meal_position: dish_record.meal_position,
         comment: dish_record.comment,
@@ -103,9 +103,11 @@ class Dish < ApplicationRecord
       case source_type
       when ::Business::Food::Dish::Source::Type::RECIPE_BOOK
         return nil if relation.recipe_book_page.blank?
+
         ::Business::Food::Dish::Source::Locator::RecipeBook.new(relation.recipe_book_page)
       when ::Business::Food::Dish::Source::Type::YOUTUBE, ::Business::Food::Dish::Source::Type::WEBSITE
         return nil if relation.recipe_website_url.blank?
+
         ::Business::Food::Dish::Source::Locator::RecipeWebsite.new(relation.recipe_website_url)
       else
         ::Business::Food::Dish::Source::Locator::OtherRecipe.new(relation.recipe_source_memo)
@@ -121,12 +123,12 @@ class Dish < ApplicationRecord
     save!
 
     if food_dish_root.source_id.present?
-      ::DishSourceRelation.put_dish_source_relation(self.id, food_dish_root.source_id, food_dish_root.source_locator)
+      ::DishSourceRelation.put_dish_source_relation(id, food_dish_root.source_id, food_dish_root.source_locator)
     else
-      ::DishSourceRelation.remove_dish_source_relation(self.id)
+      ::DishSourceRelation.remove_dish_source_relation(id)
     end
 
-    ::DishTag.replace_tags_of_dish(self.id, food_dish_root.tags)
+    ::DishTag.replace_tags_of_dish(id, food_dish_root.tags)
 
     self
   end

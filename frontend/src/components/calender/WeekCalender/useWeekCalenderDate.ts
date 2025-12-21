@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   previousSunday,
   subDays,
@@ -96,26 +96,25 @@ export const useFirstDisplayDate = (
 ) => {
   const { pushHistory } = useLogicalHistory();
 
-  const [firstDisplayDate, setFirstDisplayDate] = useState<Date>(() =>
-    getWeekStartDateFrom(specifiedDate),
+  const firstDisplayDate = useMemo(
+    () => getWeekStartDateFrom(specifiedDate),
+    [specifiedDate, getWeekStartDateFrom],
   );
 
-  useEffect(() => {
-    setFirstDisplayDate(getWeekStartDateFrom(specifiedDate));
-  }, [specifiedDate]);
-
-  const reflectDate = useCallback((date: Date) => {
-    setFirstDisplayDate(date);
-    pushHistory(weekCalenderPagePathOf(date));
-  }, []);
+  const reflectDate = useCallback(
+    (date: Date) => {
+      pushHistory(weekCalenderPagePathOf(date));
+    },
+    [pushHistory],
+  );
 
   const updateFirstDateToPreviousWeekFirstDate = useCallback(() => {
     reflectDate(subDays(firstDisplayDate, 7));
-  }, [firstDisplayDate]);
+  }, [firstDisplayDate, reflectDate]);
 
   const updateFirstDateToNextWeekFirstDate = useCallback(() => {
     reflectDate(addDays(firstDisplayDate, 7));
-  }, [firstDisplayDate]);
+  }, [firstDisplayDate, reflectDate]);
 
   return {
     firstDisplayDate,

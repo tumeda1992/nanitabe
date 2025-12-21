@@ -16,7 +16,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::ReflectLatestNormalizeWordCo
           user: user_record,
           name: "ひらがな",
           normalized_name: "OLD_VALUE_1",
-          meal_position: 1
+          meal_position: 1,
         )
       end
 
@@ -25,7 +25,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::ReflectLatestNormalizeWordCo
           user: user_record,
           name: "test",
           normalized_name: "OLD_VALUE_2",
-          meal_position: 1
+          meal_position: 1,
         )
       end
 
@@ -49,14 +49,14 @@ RSpec.describe Business::Food::Dish::Word::Usecase::ReflectLatestNormalizeWordCo
             user: user_record,
             name: "タグ付き料理",
             normalized_name: "タグ付き料理",
-            meal_position: 1
+            meal_position: 1,
           )
           # タグを直接DBに挿入（古い正規化値で）
           DishTag.create!(
             user: user_record,
             dish: dish,
             content: "ひらがなたぐ",
-            normalized_content: "OLD_TAG_VALUE"
+            normalized_content: "OLD_TAG_VALUE",
           )
           dish
         end
@@ -115,7 +115,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::ReflectLatestNormalizeWordCo
           user: user_record,
           name: "ひらがな",
           normalized_name: "OLD_USER1",
-          meal_position: 1
+          meal_position: 1,
         )
       end
 
@@ -124,7 +124,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::ReflectLatestNormalizeWordCo
           user: other_user,
           name: "かたかな",
           normalized_name: "OLD_USER2",
-          meal_position: 1
+          meal_position: 1,
         )
       end
 
@@ -147,7 +147,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::ReflectLatestNormalizeWordCo
             user: user_record,
             name: "料理#{i}",
             normalized_name: "OLD_#{i}",
-            meal_position: 1
+            meal_position: 1,
           )
         end
       end

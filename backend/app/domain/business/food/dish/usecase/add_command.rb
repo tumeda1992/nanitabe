@@ -25,7 +25,7 @@ module Business::Food::Dish
         comment: dish_params.comment,
         source:,
         source_locator:,
-        tags: dish_tags.map {|tag| tag.to_root(user_id)}
+        tags: dish_tags.map { |tag| tag.to_root(user_id) },
       )
 
       dish_record = ::Dish.persist_from_food_dish_root(dish_root)
@@ -39,7 +39,7 @@ module Business::Food::Dish
     def validate_dish
       return if dish_params.valid_for_create?
 
-      errors.add(:dish_params, dish_params.errors.full_messages.join(', '))
+      errors.add(:dish_params, dish_params.errors.full_messages.join(", "))
     end
   end
 end

@@ -34,7 +34,7 @@ module Business::Food::Dish
             Dish.matching_normalized_name(word)
                 .or(::DishSource.matching_normalized_name(word))
                 .or(::DishTag.matching_normalized_content(word)),
-            )
+          )
         end
       end
 

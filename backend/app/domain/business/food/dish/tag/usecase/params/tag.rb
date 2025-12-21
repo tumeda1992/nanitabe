@@ -12,7 +12,7 @@ module Business::Food::Dish::Tag
       Root.new(
         id:,
         user_id:,
-        content: Content.initialize_with_normalizing_if_need(content, normalized_content)
+        content: Content.initialize_with_normalizing_if_need(content, normalized_content),
       )
     end
   end

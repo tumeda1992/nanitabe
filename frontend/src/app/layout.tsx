@@ -17,20 +17,18 @@ type Props = {
   children: React.ReactNode;
 };
 
-export default function RootLayout({ children }: Props) {
-  return (
-    <html lang="ja">
-      <head>
-        <link
-          href="https://use.fontawesome.com/releases/v6.3.0/css/all.css"
-          rel="stylesheet"
-        />
-      </head>
-      <body>
-        <ApolloProvider>
-          <LogicalHistoryProvider>{children}</LogicalHistoryProvider>
-        </ApolloProvider>
-      </body>
-    </html>
-  );
-}
+export default ({ children }: Props) => (
+  <html lang="ja">
+    <head>
+      <link
+        href="https://use.fontawesome.com/releases/v6.3.0/css/all.css"
+        rel="stylesheet"
+      />
+    </head>
+    <body>
+      <ApolloProvider>
+        <LogicalHistoryProvider>{children}</LogicalHistoryProvider>
+      </ApolloProvider>
+    </body>
+  </html>
+);

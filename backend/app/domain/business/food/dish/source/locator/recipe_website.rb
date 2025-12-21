@@ -3,12 +3,13 @@ module Business::Food::Dish::Source
     attr_reader :url
 
     def initialize(url)
+      super()
       @url = url.present? ? coerce_url(url) : nil
     end
 
     def kind = :website
     # def to_h = { url: }
-    def to_h = { recipe_website_url: url}
+    def to_h = { recipe_website_url: url }
     # def detail_for_dish_source_relation_class = { recipe_website_url: url }
 
     def detail_value = url

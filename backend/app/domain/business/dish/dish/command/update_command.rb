@@ -8,7 +8,7 @@ module Business::Dish::Dish
 
     attribute :dish_source_relation, :command_params
     validates :dish_source_relation, presence: false
-    
+
     attribute :dish_tags, :command_params_array
     validates :dish_tags, presence: false
 
@@ -31,7 +31,7 @@ module Business::Dish::Dish
       dish.assign_attributes(update_fields)
 
       dish.normalized_name = Business::Dish::Word::Normalize::Command::NormalizeCommand.call(
-        string_sequence: dish.name
+        string_sequence: dish.name,
       )
 
       Repository.update(dish, user_id)
@@ -48,7 +48,7 @@ module Business::Dish::Dish
 
     def register_tags(dish_tags, dish_id, user_id)
       ::Business::Dish::Dish::Tag::Command::UpdateTagsCommand.call(
-        dish_id:, user_id:, dish_tags: dish_tags.presence || []
+        dish_id:, user_id:, dish_tags: dish_tags.presence || [],
       )
     end
   end

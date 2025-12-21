@@ -3,6 +3,7 @@ module Business::Food::Dish
     class DishNameForActiveModel < ActiveModel::Type::Value
       def cast_value(value)
         raise ArgumentError, "Invalid type" unless value.is_a?(Business::Food::Dish::Name) || value.nil?
+
         value
       end
     end

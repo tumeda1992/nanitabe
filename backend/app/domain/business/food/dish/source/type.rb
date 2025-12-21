@@ -1,4 +1,4 @@
-require_relative '../../../../business/base/value_object'
+require_relative "../../../../business/base/value_object"
 
 # config/initializers/types.rb のActiveModelのタイプ定義ファイルで読めるようにネスト形式に
 module Business
@@ -16,7 +16,7 @@ module Business
             YOUTUBE,
             WEBSITE,
             RESTAURANT,
-            OTHER
+            OTHER,
           ]
 
           class DishSourceTypeForActiveModel < ActiveModel::Type::Value

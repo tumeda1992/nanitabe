@@ -13,7 +13,7 @@ module Types::Input::Dish::DishSourceRelation
         ::Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
           dish_source_type,
           dish_source_id,
-          arguments[:dish_source_relation_detail].detail_value_of(dish_source_type)
+          arguments[:dish_source_relation_detail].detail_value_of(dish_source_type),
         )
       else
         Business::Dish::Dish::Command::Params::DishSourceRelation.build_relation(
@@ -23,7 +23,6 @@ module Types::Input::Dish::DishSourceRelation
           arguments[:dish_source_relation_detail].detail_value_of(dish_source_type),
         )
       end
-
     end
   end
 end

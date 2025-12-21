@@ -1,22 +1,22 @@
 # クエリ数をカウントするヘルパー
 # Bulletが検出できないN+1問題を検出するために使用
 module QueryCounter
-  def count_queries(&block)
+  def count_queries(&)
     queries = []
-    counter = ->(name, started, finished, unique_id, payload) {
+    counter = lambda { |_name, _started, _finished, _unique_id, payload|
       # SCHEMA、CACHE、トランザクション関連のクエリは除外
       unless payload[:name] =~ /SCHEMA|CACHE/ || payload[:sql] =~ /^(BEGIN|COMMIT|SAVEPOINT|RELEASE)/
         queries << payload[:sql]
       end
     }
 
-    ActiveSupport::Notifications.subscribed(counter, "sql.active_record", &block)
+    ActiveSupport::Notifications.subscribed(counter, "sql.active_record", &)
 
     queries
   end
 
-  def expect_query_count(expected_count, &block)
-    queries = count_queries(&block)
+  def expect_query_count(expected_count, &)
+    queries = count_queries(&)
     actual_count = queries.size
 
     if actual_count != expected_count

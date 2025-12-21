@@ -43,13 +43,6 @@ export const ExistingDishesForRegisteringWithMeal = (
       },
     });
 
-  const [fetchedDishes, setFetchedDishes] = useState(null);
-  useEffect(() => {
-    if (dishes) {
-      setFetchedDishes(dishes);
-    }
-  }, [dishes]);
-
   const [selectedDishId, setSelectedDishId] = useState(
     dishIdRegisteredWithMeal || null,
   );
@@ -58,7 +51,7 @@ export const ExistingDishesForRegisteringWithMeal = (
     setValue('dishId', selectedDishId);
   }, [selectedDishId]);
 
-  if (!fetchedDishes && fetchLoading) return <>Loading</>;
+  if (!dishes && fetchLoading) return <>Loading</>;
 
   return (
     <FormFieldWrapperWithLabel label="料理">
@@ -74,7 +67,7 @@ export const ExistingDishesForRegisteringWithMeal = (
           }}
         />
         <div className={style['dish-icon-container']}>
-          {(dishes || fetchedDishes).map((dish) => (
+          {(dishes || []).map((dish) => (
             <ExistingDishIconForSelect
               key={dish.id}
               dish={dish}

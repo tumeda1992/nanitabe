@@ -54,11 +54,11 @@ module Application::Finder
     def add_filter_to_relation(dish_relation, ignore_dish_id: nil)
       if search_string.present?
         normalized_search_string = ::Business::Dish::Word::Normalize::Command::NormalizeCommand.call(string_sequence: search_string)
-        dish_relation = normalized_search_string.split(" ").reduce(dish_relation) do |relation, word|
+        dish_relation = normalized_search_string.split.reduce(dish_relation) do |relation, word|
           relation.merge(
             Dish.where("COALESCE(dishes.normalized_name, dishes.name) LIKE ?", "%#{word}%")
                 .or(::DishSource.where("dish_sources.name LIKE ?", "%#{word}%"))
-                .or(::DishTag.where("COALESCE(dish_tags.normalized_content, dish_tags.content) LIKE ?", "%#{word}%"))
+                .or(::DishTag.where("COALESCE(dish_tags.normalized_content, dish_tags.content) LIKE ?", "%#{word}%")),
           )
         end
       end
@@ -68,11 +68,11 @@ module Application::Finder
       end
 
       if !registered_with_meal.nil?
-        if registered_with_meal
-          dish_relation = dish_relation.having("COUNT(meals.id) > 0")
-        else
-          dish_relation = dish_relation.having("COUNT(meals.id) = 0")
-        end
+        dish_relation = if registered_with_meal
+                          dish_relation.having("COUNT(meals.id) > 0")
+                        else
+                          dish_relation.having("COUNT(meals.id) = 0")
+                        end
       end
 
       if ignore_dish_id.present?

@@ -13,13 +13,13 @@ module Mutations::Dish
         created_dish_source = ::Business::Food::Dish::Source::Usecase::AddCommand.call(
           user_id: context[:current_user_id],
           source_params: dish_source.convert_to_command_param(use_food_module: true),
-          )
+        )
 
         dish_source_relation = if dish_source_relation_detail.present? && dish_source.present?
                                  ::Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
                                    dish_source.type,
                                    created_dish_source.id,
-                                   dish_source_relation_detail.detail_value_of(dish_source.type)
+                                   dish_source_relation_detail.detail_value_of(dish_source.type),
                                  )
                                end
 
@@ -27,7 +27,7 @@ module Mutations::Dish
           user_id: context[:current_user_id],
           dish_params: dish.convert_to_command_param(use_food_module: true),
           dish_source_relation:,
-          dish_tags: (dish_tags || [])&.map {|dish_tag| dish_tag.convert_to_command_param(use_food_module: true) },
+          dish_tags: (dish_tags || [])&.map { |dish_tag| dish_tag.convert_to_command_param(use_food_module: true) },
         )
 
         {

@@ -11,7 +11,7 @@ module Business::Dish::Dish::Evaluation
 
         @updated_dish_evaluation = Repository.find(
           comparer.prepared_records[:dish_evaluation_record].id,
-          )
+        )
         @updated_dish_evaluation.assign_attributes(**comparer.values)
       end
 

@@ -41,7 +41,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::RemoveCommand do
     context "when the normalize word does not exist" do
       it "raises an error" do
         expect {
-          described_class.call(normalize_word_id: 99999)
+          described_class.call(normalize_word_id: 99_999)
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
@@ -52,7 +52,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::RemoveCommand do
           user: FactoryBot.create(:user, id_param: "user_for_remove_test"),
           name: "ぶた肉",
           normalized_name: "豚肉",
-          meal_position: 1
+          meal_position: 1,
         )
       end
 

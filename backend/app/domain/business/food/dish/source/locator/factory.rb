@@ -3,6 +3,7 @@ module Business::Food::Dish::Source
     class << self
       def build(kind, page: nil, url: nil, memo: nil)
         raise ArgumentError, "Unknown locator kind: #{kind}" if kind.nil?
+
         case kind.to_sym
         when :book
           Locator::RecipeBook.new(page)
