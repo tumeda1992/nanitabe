@@ -26,26 +26,17 @@
 ⑤ 全緑を確認してから次タスク
 
 ## 実行コマンド（Docker内）
-> サービス名を `web` と仮定。適宜プロジェクトの compose に合わせて変更。
 
 ```bash
 # すべてのRSpecを実行
-docker compose exec web bundle exec rspec
+docker compose exec backend bundle exec rspec
 
 # 特定ファイル/行の実行
-docker compose exec web bundle exec rspec spec/models/user_spec.rb:12
-
-# Minitest（rails test）利用時
-docker compose exec web bin/rails test
-
-# 並列実行（DBを自動で分割）
-docker compose exec web bin/rails parallel:test
+docker compose exec backend bundle exec rspec spec/models/user_spec.rb:12
 
 # DB 初期化/マイグレーション（テスト用）
-docker compose exec web bin/rails db:test:prepare
-docker compose exec web bin/rails db:migrate RAILS_ENV=test
-RSpec 基本セットアップ（例）
-Gemfile（test/development）
+docker compose exec backend bin/rails db:test:prepare
+docker compose exec backend bin/rails db:migrate RAILS_ENV=test
 ```
 
 
@@ -94,7 +85,7 @@ docker compose down && docker compose up -d
 # キャッシュ無効でビルド
 docker compose build --no-cache
 # web コンテナに入る
-docker compose exec web sh
+docker compose exec backend sh
 # ログ
 docker compose logs -f web
 ```

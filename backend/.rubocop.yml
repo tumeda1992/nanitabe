@@ -9,6 +9,8 @@ AllCops:
     - "db/migrate/*"
     - "app/graphql/backend_schema.rb"
     - "app/controllers/graphql_controller.rb"
+    - "vendor/**/*"
+  NewCops: disable
 
 Metrics/BlockLength:
   Enabled: false
