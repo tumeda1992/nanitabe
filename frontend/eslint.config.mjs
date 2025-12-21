@@ -12,6 +12,40 @@ const eslintConfig = defineConfig([
 
   // プロジェクト用の ignore
   globalIgnores(['.next/**', 'dist/**', 'node_modules/**']),
+
+  {
+    rules: {
+      'no-unused-vars': 'off',
+      'import/extensions': 'off',
+      'import/no-unresolved': 'off',
+      'import/prefer-default-export': 'off',
+
+      indent: 'off',
+
+      'arrow-body-style': 'off',
+      'dot-notation': 'off',
+
+      'react/jsx-filename-extension': 'off',
+      'react/jsx-props-no-spreading': 'off',
+      'react/display-name': 'off',
+      'react/require-default-props': 'off',
+
+      'jsx-a11y/click-events-have-key-events': 'off',
+      'jsx-a11y/no-static-element-interactions': 'off',
+      'jsx-a11y/anchor-is-valid': 'off',
+
+      'react/function-component-definition': [
+        'error',
+        {
+          namedComponents: 'arrow-function',
+          unnamedComponents: 'arrow-function',
+        },
+      ],
+
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
+  },
 ]);
 
 export default eslintConfig;
