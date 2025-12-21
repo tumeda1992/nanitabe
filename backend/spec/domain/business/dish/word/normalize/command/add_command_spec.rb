@@ -5,7 +5,6 @@ require "rails_helper"
 module Business::Dish::Word::Normalize
   RSpec.describe Command::AddCommand do
     describe ".call" do
-
       context "when add, " do
         it "adding succeeds" do
           described_class.call(

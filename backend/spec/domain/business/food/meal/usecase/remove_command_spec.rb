@@ -66,7 +66,6 @@ RSpec.describe Business::Food::Meal::Usecase::RemoveCommand do
         }.not_to change { Meal.count }
       end
     end
-
   end
 
   describe "validations" do
