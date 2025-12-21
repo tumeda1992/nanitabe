@@ -18,7 +18,7 @@ module Business::Dish::Meal
             user_id: comparer.prepared_records[:user_record].id,
             date1: comparer.values[:date1],
             date2: comparer.values[:date2],
-            )
+          )
 
           comparer.compare_to_expectation(self)
         end
@@ -32,7 +32,7 @@ module Business::Dish::Meal
             user_id: comparer.prepared_records[:user_record].id,
             date1: comparer.values[:date1],
             date2: comparer.values[:date2],
-            )
+          )
 
           comparer.compare_to_expectation(self)
         end
@@ -46,7 +46,7 @@ module Business::Dish::Meal
             user_id: comparer.prepared_records[:user_record].id,
             date1: comparer.values[:date1],
             date2: comparer.values[:date2],
-            )
+          )
 
           comparer.compare_to_expectation(self)
         end
@@ -60,7 +60,7 @@ module Business::Dish::Meal
             user_id: comparer.prepared_records[:user_record].id,
             date1: comparer.values[:date1],
             date2: comparer.values[:date2],
-            )
+          )
 
           comparer.compare_to_expectation(self)
         end

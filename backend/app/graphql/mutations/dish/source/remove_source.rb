@@ -9,7 +9,7 @@ module Mutations::Dish::Source
         ::Business::Food::Dish::Source::Usecase::RemoveCommand.call(
           user_id: context[:current_user_id],
           source_id: dish_source_id,
-          )
+        )
         { dish_source_id: }
       end
     end

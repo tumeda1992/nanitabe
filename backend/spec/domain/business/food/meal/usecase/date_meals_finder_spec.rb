@@ -37,7 +37,7 @@ RSpec.describe Business::Food::Meal::Usecase::DateMealsFinder do
           access_user_id: user_record.id,
           start_date: start_date,
           last_date: last_date,
-          )
+        )
 
         # 結果は日付ごとにグループ化されている
         expect(result).to be_an(Array)

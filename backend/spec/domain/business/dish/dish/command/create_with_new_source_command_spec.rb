@@ -64,17 +64,17 @@ module Business::Dish::Dish
               name: dish_comparer.values[:name],
               meal_position: dish_comparer.values[:meal_position],
               comment: dish_comparer.values[:comment],
-              ),
+            ),
             dish_source_for_create: Source::Command::Params::SourceForCreate.new(
               name: dish_source_comparer.values[:name],
               type: dish_source_comparer.values[:type],
               comment: dish_source_comparer.values[:comment],
-              ),
+            ),
             dish_source_relation_detail: Command::Params::DishSourceRelation.build_relation_detail(
               dish_source_comparer.values[:type],
               dish_source_relation_comparer.values[:recipe_source_memo],
-              ),
-            )
+            ),
+          )
 
           dish_comparer.compare_to_expectation(self)
           dish_source_comparer.compare_to_expectation(self)
@@ -82,7 +82,7 @@ module Business::Dish::Dish
             self,
             dish_id: created_dish.id,
             dish_source_id: created_dish_source.id,
-            )
+          )
         end
       end
 
