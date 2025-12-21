@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { useEffect, useState } from 'react';
 import {
   useExistingDishesForRegisteringWithMealLazyQuery,
   useDishesPerSourceLazyQuery,
@@ -7,6 +8,7 @@ import {
   useDishQuery,
   useDishLazyQuery,
   ExistingDishesForRegisteringWithMealDocument,
+  Dish,
 } from '../../lib/graphql/generated/graphql';
 import { useCodegenQuery } from '../utils/queryUtils';
 
@@ -81,7 +83,8 @@ const useFetchExistingDishesForRegisteringWithMeal = (
 
   return {
     existingDishesForRegisteringWithMeal:
-      data?.existingDishesForRegisteringWithMeal,
+      data?.existingDishesForRegisteringWithMeal ||
+      previousData?.existingDishesForRegisteringWithMeal,
     prefetchedExistingDishesForRegisteringWithMeal:
       previousData?.existingDishesForRegisteringWithMeal,
     fetchExistingDishesForRegisteringWithMealLoading: fetchLoading,
