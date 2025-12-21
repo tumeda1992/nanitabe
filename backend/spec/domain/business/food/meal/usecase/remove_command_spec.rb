@@ -60,7 +60,7 @@ RSpec.describe Business::Food::Meal::Usecase::RemoveCommand do
               user_id: user_record.id,
               meal_id: 99_999,
             )
-          rescue StandardError => e
+          rescue StandardError
             # Ignore the exception for count check
           end
         }.not_to(change { Meal.count })

@@ -75,6 +75,8 @@ Style/StringLiteralsInInterpolation:
   Enabled: false
 Style/Lambda:
   Enabled: false
+Style/MapToHash:
+  Enabled: false
 
 Layout/LineLength:
   Enabled: false

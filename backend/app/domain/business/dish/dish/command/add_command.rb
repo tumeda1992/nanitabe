@@ -36,7 +36,7 @@ module Business::Dish::Dish
         comment: dish_for_create.comment,
       )
 
-      created_dish = Repository.add(dish)
+      Repository.add(dish)
     end
 
     def register_dish_source_relation(dish_id, dish_source_for_read, dish_source_relation_detail)
