@@ -29,7 +29,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            source_id: 99999,
+            source_id: 99_999,
           )
         }.to raise_error("指定したレシピ元は存在しません。")
       end

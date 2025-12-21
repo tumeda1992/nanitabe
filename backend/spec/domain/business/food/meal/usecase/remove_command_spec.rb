@@ -48,7 +48,7 @@ RSpec.describe Business::Food::Meal::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            meal_id: 99999,
+            meal_id: 99_999,
           )
         }.to raise_error("指定した食事は存在しません。")
       end
@@ -58,7 +58,7 @@ RSpec.describe Business::Food::Meal::Usecase::RemoveCommand do
           begin
             described_class.call(
               user_id: user_record.id,
-              meal_id: 99999,
+              meal_id: 99_999,
             )
           rescue => e
             # Ignore the exception for count check

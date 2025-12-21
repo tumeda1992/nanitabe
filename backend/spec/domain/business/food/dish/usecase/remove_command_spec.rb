@@ -101,7 +101,7 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            dish_id: 99999,
+            dish_id: 99_999,
           )
         }.to raise_error("指定した料理は存在しません。")
       end

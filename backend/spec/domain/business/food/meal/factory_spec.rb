@@ -49,7 +49,7 @@ RSpec.describe Business::Food::Meal::Factory do
         expect {
           described_class.build(
             user_record.id,
-            999999,
+            999_999,
             date,
             meal_type,
           )

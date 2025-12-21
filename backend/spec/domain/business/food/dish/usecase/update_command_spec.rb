@@ -149,7 +149,7 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
         let(:non_existing_dish_params) do
           Business::Food::Dish::Usecase::Params::Dish.new(
             :update,
-            id: 99999,
+            id: 99_999,
             name: dish_name,
           )
         end

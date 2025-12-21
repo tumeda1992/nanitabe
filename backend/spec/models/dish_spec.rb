@@ -121,7 +121,7 @@ RSpec.describe Dish, type: :model do
 
     context "when dish does not exist" do
       it "returns nil" do
-        result = described_class.build_existing_root_from_id(99999)
+        result = described_class.build_existing_root_from_id(99_999)
 
         expect(result).to be_nil
       end

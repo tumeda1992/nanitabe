@@ -118,7 +118,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
       let(:invalid_meal_params) do
         Business::Food::Meal::Usecase::Params::Meal.new(
           :create,
-          dish_id: 999999,
+          dish_id: 999_999,
           date: Date.today,
           meal_type: 1,
           comment: "test meal",

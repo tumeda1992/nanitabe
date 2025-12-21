@@ -135,7 +135,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::UpdateCommand do
       let(:non_existing_source_params) do
         Business::Food::Dish::Source::Usecase::Params::Source.new(
           :update,
-          id: 99999,
+          id: 99_999,
           name: source_name,
         )
       end

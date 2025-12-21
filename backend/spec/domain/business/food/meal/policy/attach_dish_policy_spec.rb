@@ -31,7 +31,7 @@ RSpec.describe Business::Food::Meal::Policy::AttachDishPolicy do
     context "with non-existing dish_id" do
       it "raises error" do
         expect {
-          described_class.ensure!(999999)
+          described_class.ensure!(999_999)
         }.to raise_error("存在しない料理を紐付けることはできません。")
       end
     end

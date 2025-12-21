@@ -35,7 +35,7 @@ RSpec.describe Meal, type: :model do
     context "when meal does not exist" do
       it "raises ActiveRecord::RecordNotFound" do
         expect {
-          described_class.build_existing_root_from_id(99999)
+          described_class.build_existing_root_from_id(99_999)
         }.to raise_error(ActiveRecord::RecordNotFound, "Meal with id 99999 not found")
       end
     end

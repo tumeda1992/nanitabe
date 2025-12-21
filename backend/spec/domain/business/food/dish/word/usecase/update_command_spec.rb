@@ -111,7 +111,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::UpdateCommand do
       it "raises an error" do
         expect {
           described_class.call(
-            normalize_word_id: 99999,
+            normalize_word_id: 99_999,
             source: "とり",
             destination: "鶏",
           )

@@ -87,7 +87,7 @@ RSpec.describe Business::Food::Meal::Root do
     context "with invalid dish_id" do
       it "raises error" do
         expect {
-          root.assign_dish(999999)
+          root.assign_dish(999_999)
         }.to raise_error("存在しない料理を紐付けることはできません。")
       end
     end

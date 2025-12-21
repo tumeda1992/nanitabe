@@ -185,7 +185,7 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
       let(:non_existing_meal_params) do
         Business::Food::Meal::Usecase::Params::Meal.new(
           :update,
-          id: 99999,
+          id: 99_999,
           dish_id: dish_record.id,
           date: Date.today,
           meal_type: 1,
@@ -207,7 +207,7 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
         Business::Food::Meal::Usecase::Params::Meal.new(
           :update,
           id: existing_meal_record.id,
-          dish_id: 999999,
+          dish_id: 999_999,
           date: existing_meal_record.date,
           meal_type: existing_meal_record.meal_type,
         )
