@@ -309,8 +309,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
             user: user_record,
             name: "シンプルな料理",
             normalized_name: "シンプルな料理",
-            meal_position: 1,
-          )
+            meal_position: 1,)
         end
 
         it "returns nil for missing optional fields" do
