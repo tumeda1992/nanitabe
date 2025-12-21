@@ -23,7 +23,6 @@ module Types::Input::Dish::DishSourceRelation
           arguments[:dish_source_relation_detail].detail_value_of(dish_source_type),
         )
       end
-
     end
   end
 end
