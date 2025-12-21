@@ -7,9 +7,9 @@ module Business::Dish::Word::Normalize
 
     def call
       normalized = string_sequence.dup
-      normalized.tr!("ぁ-ん","ァ-ン")
-      normalized.tr!("０-９ａ-ｚＡ-Ｚ","0-9a-zA-Z")
-      normalized.tr!("　"," ")
+      normalized.tr!("ぁ-ん", "ァ-ン")
+      normalized.tr!("０-９ａ-ｚＡ-Ｚ", "0-9a-zA-Z")
+      normalized.tr!("　", " ")
 
       return normalized unless use_db_normalize_word
 
