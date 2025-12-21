@@ -77,6 +77,8 @@ Style/Lambda:
   Enabled: false
 Style/MapToHash:
   Enabled: false
+Style/SlicingWithRange:
+  Enabled: false
 
 Layout/LineLength:
   Enabled: false
