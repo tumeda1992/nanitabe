@@ -1,5 +1,6 @@
 module Business::Food::Dish::Source::Locator::LocatorCompatibility
   module_function
+
   def supports?(source_type, kind)
     return false if kind.nil?
 
