@@ -1,7 +1,7 @@
 # バックエンド側の簡易的なCDワークフロー
 # - jenkinsに設定をめちゃめちゃ書き込ませたくないから、jenkins側ではgit pull だけやらせる
 # - 複雑になるなら、github actions側で多くをやるか、CodeBuildとかに移行する
-name: backendのCD
+name: Backend Deploy
 
 on:
   pull_request:

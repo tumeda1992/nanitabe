@@ -1,0 +1,6 @@
+- `backend/` 
+  - バックエンドアプリケーション
+  - 指示ファイル: @backend/CLAUDE.md
+- `frontend/` 
+  - フロントエンドアプリケーション
+  - 指示ファイル: @frontend/CLAUDE.md
