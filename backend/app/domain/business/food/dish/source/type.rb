@@ -16,7 +16,7 @@ module Business
             YOUTUBE,
             WEBSITE,
             RESTAURANT,
-            OTHER
+            OTHER,
           ]
 
           class DishSourceTypeForActiveModel < ActiveModel::Type::Value

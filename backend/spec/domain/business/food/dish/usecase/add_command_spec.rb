@@ -183,7 +183,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
             Business::Food::Dish::Tag::Usecase::Params::Tag.new(
               content: "新規タグ",
               normalized_content: "新規タグ",
-            )
+            ),
           ]
         end
 

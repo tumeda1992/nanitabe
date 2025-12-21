@@ -20,7 +20,7 @@ module Business::Dish::Dish::Tag
           dish_tags: [
             Command::Params::Tag.new(
               content: comparer.values[:content],
-            )
+            ),
           ],
         )
 
