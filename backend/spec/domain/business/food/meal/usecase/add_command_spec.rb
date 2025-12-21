@@ -12,7 +12,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
       dish_id: dish_record.id,
       date: Date.today,
       meal_type: 1,
-      comment: "test meal"
+      comment: "test meal",
     )
   end
 
@@ -21,7 +21,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
       it "creates a new meal and returns Business::Food::Meal::Root" do
         result = described_class.call(
           user_id: user_record.id,
-          meal_params: valid_meal_params
+          meal_params: valid_meal_params,
         )
 
         expect(result).to be_a(Business::Food::Meal::Root)
@@ -37,7 +37,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            meal_params: valid_meal_params
+            meal_params: valid_meal_params,
           )
         }.to change { Meal.count }.by(1)
 
@@ -56,14 +56,14 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
           :create,
           dish_id: dish_record.id,
           date: Date.today,
-          meal_type: 1
+          meal_type: 1,
         )
       end
 
       it "creates meal without comment" do
         result = described_class.call(
           user_id: user_record.id,
-          meal_params: meal_params_without_comment
+          meal_params: meal_params_without_comment,
         )
 
         expect(result.comment).to be_nil
@@ -76,7 +76,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
       it "raises validation error" do
         expect {
           described_class.call(
-            meal_params: valid_meal_params
+            meal_params: valid_meal_params,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -86,7 +86,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
       it "raises validation error" do
         expect {
           described_class.call(
-            user_id: user_record.id
+            user_id: user_record.id,
           )
         }.to raise_error(/Meal params can't be blank/)
       end
@@ -97,7 +97,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: nil,
-            meal_params: valid_meal_params
+            meal_params: valid_meal_params,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -108,7 +108,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            meal_params: nil
+            meal_params: nil,
           )
         }.to raise_error(/Meal params can't be blank/)
       end
@@ -121,7 +121,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
           dish_id: 999999,
           date: Date.today,
           meal_type: 1,
-          comment: "test meal"
+          comment: "test meal",
         )
       end
 
@@ -129,7 +129,7 @@ RSpec.describe Business::Food::Meal::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            meal_params: invalid_meal_params
+            meal_params: invalid_meal_params,
           )
         }.to raise_error("存在しない料理を紐付けることはできません。")
       end

@@ -46,7 +46,7 @@ RSpec.describe Business::Food::Dish::Factory do
         name: "test_dish",
         normalized_name: "test_dish_normalized",
         meal_position: 1,
-        comment: "test_comment"
+        comment: "test_comment",
       )
     end
 

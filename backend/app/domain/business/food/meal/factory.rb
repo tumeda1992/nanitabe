@@ -14,7 +14,7 @@ module Business::Food::Meal
           dish_id:,
           date:,
           meal_type:,
-          comment:
+          comment:,
         )
       end
 

@@ -13,7 +13,7 @@ module Business::Food::Meal
         meal_params.dish_id,
         meal_params.date,
         meal_params.meal_type,
-        comment: meal_params.comment
+        comment: meal_params.comment,
       )
 
       meal_record = ::Meal.persist_from_food_meal_root(meal_root)

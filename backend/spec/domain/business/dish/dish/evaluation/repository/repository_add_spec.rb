@@ -12,7 +12,7 @@ module Business::Dish::Dish::Evaluation
         @dish_evaluation = Evaluation.new(
           user_id: comparer.prepared_records[:user_record].id,
           dish_id: comparer.prepared_records[:dish_record].id,
-          **comparer.values
+          **comparer.values,
         )
       end
 

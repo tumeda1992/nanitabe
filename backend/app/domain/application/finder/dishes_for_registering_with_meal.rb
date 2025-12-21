@@ -58,7 +58,7 @@ module Application::Finder
           relation.merge(
             Dish.where("COALESCE(dishes.normalized_name, dishes.name) LIKE ?", "%#{word}%")
                 .or(::DishSource.where("dish_sources.name LIKE ?", "%#{word}%"))
-                .or(::DishTag.where("COALESCE(dish_tags.normalized_content, dish_tags.content) LIKE ?", "%#{word}%"))
+                .or(::DishTag.where("COALESCE(dish_tags.normalized_content, dish_tags.content) LIKE ?", "%#{word}%")),
           )
         end
       end

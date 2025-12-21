@@ -52,7 +52,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::RemoveCommand do
           user: FactoryBot.create(:user, id_param: "user_for_remove_test"),
           name: "ぶた肉",
           normalized_name: "豚肉",
-          meal_position: 1
+          meal_position: 1,
         )
       end
 

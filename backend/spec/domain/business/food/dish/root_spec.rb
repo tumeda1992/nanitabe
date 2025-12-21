@@ -5,7 +5,7 @@ RSpec.describe Business::Food::Dish::Root do
     let(:original_name) do
       Business::Food::Dish::Name.new(
         value: "ひらがな料理",
-        normalized: "OLD_NORMALIZED_VALUE"
+        normalized: "OLD_NORMALIZED_VALUE",
       )
     end
 
@@ -13,7 +13,7 @@ RSpec.describe Business::Food::Dish::Root do
       described_class.new(
         user_id: 1,
         name: original_name,
-        meal_position: 1
+        meal_position: 1,
       )
     end
 
@@ -58,7 +58,7 @@ RSpec.describe Business::Food::Dish::Root do
         root_with_old_norm = described_class.new(
           user_id: 1,
           name: Business::Food::Dish::Name.new(value: "test", normalized: "NORMALIZED_V1"),
-          meal_position: 1
+          meal_position: 1,
         )
 
         # 正規化ルールが変わった

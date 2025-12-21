@@ -15,7 +15,7 @@ RSpec.describe DishSourceRelation, type: :model do
           :dish_source_relation,
           dish: dish_record,
           dish_source: dish_source_record,
-          recipe_book_page: 100
+          recipe_book_page: 100,
         )
       end
 
@@ -114,7 +114,7 @@ RSpec.describe DishSourceRelation, type: :model do
           :dish_source_relation,
           dish: dish_record,
           dish_source: existing_dish_source,
-          recipe_book_page: 100
+          recipe_book_page: 100,
         )
       end
 

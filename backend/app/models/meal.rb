@@ -13,7 +13,7 @@ class Meal < ApplicationRecord
         dish_id: meal_record.dish_id,
         date: meal_record.date,
         meal_type: meal_record.meal_type,
-        comment: meal_record.comment
+        comment: meal_record.comment,
       )
     end
 

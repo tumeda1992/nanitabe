@@ -14,7 +14,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::UpdateCommand do
       id: existing_source_record.id,
       name: source_name,
       type: source_type,
-      comment: comment
+      comment: comment,
     )
   end
 
@@ -23,7 +23,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::UpdateCommand do
       it "updates source successfully and returns Business::Food::Dish::Source::Root" do
         result = described_class.call(
           user_id: user_record.id,
-          source_params: valid_source_params
+          source_params: valid_source_params,
         )
 
         expect(result).to be_a(Business::Food::Dish::Source::Root)
@@ -37,7 +37,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::UpdateCommand do
       it "updates source in database" do
         described_class.call(
           user_id: user_record.id,
-          source_params: valid_source_params
+          source_params: valid_source_params,
         )
 
         updated_source = ::DishSource.find(existing_source_record.id)
@@ -51,14 +51,14 @@ RSpec.describe Business::Food::Dish::Source::Usecase::UpdateCommand do
           Business::Food::Dish::Source::Usecase::Params::Source.new(
             :update,
             id: existing_source_record.id,
-            name: source_name
+            name: source_name,
           )
         end
 
         it "updates only name" do
           result = described_class.call(
             user_id: user_record.id,
-            source_params: name_only_params
+            source_params: name_only_params,
           )
 
           expect(result.name).to eq(source_name)
@@ -72,14 +72,14 @@ RSpec.describe Business::Food::Dish::Source::Usecase::UpdateCommand do
           Business::Food::Dish::Source::Usecase::Params::Source.new(
             :update,
             id: existing_source_record.id,
-            type: source_type
+            type: source_type,
           )
         end
 
         it "updates only type" do
           result = described_class.call(
             user_id: user_record.id,
-            source_params: type_only_params
+            source_params: type_only_params,
           )
 
           expect(result.name).to eq(existing_source_record.name)
@@ -93,14 +93,14 @@ RSpec.describe Business::Food::Dish::Source::Usecase::UpdateCommand do
           Business::Food::Dish::Source::Usecase::Params::Source.new(
             :update,
             id: existing_source_record.id,
-            comment: comment
+            comment: comment,
           )
         end
 
         it "updates only comment" do
           result = described_class.call(
             user_id: user_record.id,
-            source_params: comment_only_params
+            source_params: comment_only_params,
           )
 
           expect(result.name).to eq(existing_source_record.name)
@@ -114,14 +114,14 @@ RSpec.describe Business::Food::Dish::Source::Usecase::UpdateCommand do
           Business::Food::Dish::Source::Usecase::Params::Source.new(
             :update,
             id: existing_source_record.id,
-            comment: ""
+            comment: "",
           )
         end
 
         it "clears comment" do
           result = described_class.call(
             user_id: user_record.id,
-            source_params: clear_comment_params
+            source_params: clear_comment_params,
           )
 
           expect(result.name).to eq(existing_source_record.name)
@@ -136,7 +136,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::UpdateCommand do
         Business::Food::Dish::Source::Usecase::Params::Source.new(
           :update,
           id: 99999,
-          name: source_name
+          name: source_name,
         )
       end
 
@@ -144,7 +144,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::UpdateCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            source_params: non_existing_source_params
+            source_params: non_existing_source_params,
           )
         }.to raise_error("指定したレシピ元は存在しません。")
       end
@@ -173,7 +173,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::UpdateCommand do
         expect {
           described_class.call(
             user_id: nil,
-            source_params: valid_source_params
+            source_params: valid_source_params,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -184,7 +184,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::UpdateCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            source_params: nil
+            source_params: nil,
           )
         }.to raise_error(/Source params can't be blank/)
       end

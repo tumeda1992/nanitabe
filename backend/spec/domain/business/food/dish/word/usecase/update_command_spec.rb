@@ -62,7 +62,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::UpdateCommand do
       described_class.call(
         normalize_word_id: normalize_word.id,
         source: "とり",
-        destination: "鶏"
+        destination: "鶏",
       )
 
       normalize_word.reload
@@ -74,7 +74,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::UpdateCommand do
       described_class.call(
         normalize_word_id: normalize_word.id,
         source: "とり",
-        destination: "鶏"
+        destination: "鶏",
       )
 
       normalize_word.reload
@@ -87,7 +87,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::UpdateCommand do
       described_class.call(
         normalize_word_id: normalize_word.id,
         source: "ａｂｃ",
-        destination: "ＸＹＺ"
+        destination: "ＸＹＺ",
       )
 
       normalize_word.reload
@@ -103,7 +103,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::UpdateCommand do
       described_class.call(
         normalize_word_id: normalize_word.id,
         source: "とり",
-        destination: "鶏"
+        destination: "鶏",
       )
     end
 
@@ -113,7 +113,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::UpdateCommand do
           described_class.call(
             normalize_word_id: 99999,
             source: "とり",
-            destination: "鶏"
+            destination: "鶏",
           )
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
@@ -124,7 +124,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::UpdateCommand do
         described_class.call(
           normalize_word_id: normalize_word.id,
           source: "とり",
-          destination: nil
+          destination: nil,
         )
 
         normalize_word.reload
@@ -141,7 +141,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::UpdateCommand do
           user: FactoryBot.create(:user, id_param: "user_for_update_test"),
           name: "ぶた肉",
           normalized_name: "豚肉",
-          meal_position: 1
+          meal_position: 1,
         )
       end
 
@@ -153,7 +153,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::UpdateCommand do
         described_class.call(
           normalize_word_id: normalize_word.id,
           source: "ぶた",
-          destination: "ポーク"
+          destination: "ポーク",
         )
 
         dish.reload

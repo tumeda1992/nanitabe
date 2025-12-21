@@ -71,7 +71,7 @@ class Dish < ApplicationRecord
         user_id: dish_record.user_id,
         name: ::Business::Food::Dish::Name.new(
           value: dish_record.name,
-          normalized: dish_record.normalized_name
+          normalized: dish_record.normalized_name,
         ),
         meal_position: dish_record.meal_position,
         comment: dish_record.comment,

@@ -12,7 +12,7 @@ module Business::Food::Dish::Source
         user_id,
         source_params.name,
         source_params.type,
-        comment: source_params.comment
+        comment: source_params.comment,
       )
       source_record = ::DishSource.build_from_food_dish_source_root(source_root)
       source_record.save!

@@ -13,11 +13,11 @@ module Business::Dish::Word::Normalize
         entered_destination: destination,
         source: Command::NormalizeCommand.call(
           string_sequence: source,
-          use_db_normalize_word: false
+          use_db_normalize_word: false,
         ),
         destination: Command::NormalizeCommand.call(
           string_sequence: destination,
-          use_db_normalize_word: false
+          use_db_normalize_word: false,
         ),
       )
     end

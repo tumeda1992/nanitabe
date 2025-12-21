@@ -32,7 +32,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
       it "converts hiragana to katakana" do
         result = described_class.call(
           string_sequence: "ひらがな",
-          use_db_normalize_word: false
+          use_db_normalize_word: false,
         )
         expect(result).to eq("ヒラガナ")
       end
@@ -40,7 +40,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
       it "converts full-width alphanumeric to half-width" do
         result = described_class.call(
           string_sequence: "０１２ａｂｃＡＢＣ",
-          use_db_normalize_word: false
+          use_db_normalize_word: false,
         )
         expect(result).to eq("012abcABC")
       end
@@ -48,7 +48,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
       it "converts full-width space to half-width space" do
         result = described_class.call(
           string_sequence: "ぜんかく　すぺーす",
-          use_db_normalize_word: false
+          use_db_normalize_word: false,
         )
         expect(result).to eq("ゼンカク スペース")
       end
@@ -56,7 +56,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
       it "applies all normalizations together" do
         result = described_class.call(
           string_sequence: "ひらがな　１２３ａｂｃ",
-          use_db_normalize_word: false
+          use_db_normalize_word: false,
         )
         expect(result).to eq("ヒラガナ 123abc")
       end
@@ -64,7 +64,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
       it "does not modify katakana" do
         result = described_class.call(
           string_sequence: "カタカナ",
-          use_db_normalize_word: false
+          use_db_normalize_word: false,
         )
         expect(result).to eq("カタカナ")
       end
@@ -72,7 +72,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
       it "does not modify half-width alphanumeric" do
         result = described_class.call(
           string_sequence: "123abc",
-          use_db_normalize_word: false
+          use_db_normalize_word: false,
         )
         expect(result).to eq("123abc")
       end
@@ -96,7 +96,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
 
       it "applies basic normalization and db word replacement" do
         result = described_class.call(
-          string_sequence: "ぶたにく"
+          string_sequence: "ぶたにく",
         )
         # "ぶたにく" -> "ブタニク" -> "豚ニク"
         expect(result).to eq("豚ニク")
@@ -104,7 +104,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
 
       it "replaces multiple occurrences of the same word" do
         result = described_class.call(
-          string_sequence: "ぶたとぶた"
+          string_sequence: "ぶたとぶた",
         )
         # "ぶたとぶた" -> "ブタトブタ" -> "豚ト豚"
         expect(result).to eq("豚ト豚")
@@ -112,7 +112,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
 
       it "applies multiple normalize word replacements" do
         result = described_class.call(
-          string_sequence: "ぶたととり"
+          string_sequence: "ぶたととり",
         )
         # "ぶたととり" -> "ブタトトリ" -> "豚ト鶏"
         expect(result).to eq("豚ト鶏")
@@ -120,7 +120,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
 
       it "replaces when source is kanji" do
         result = described_class.call(
-          string_sequence: "鳥肉"
+          string_sequence: "鳥肉",
         )
         # "鳥肉" -> "鳥肉" (no kana conversion) -> "鶏肉" (db replacement)
         expect(result).to eq("鶏肉")
@@ -128,7 +128,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
 
       it "does not replace when no match found" do
         result = described_class.call(
-          string_sequence: "まぐろ"
+          string_sequence: "まぐろ",
         )
         # "まぐろ" -> "マグロ" (no db replacement)
         expect(result).to eq("マグロ")
@@ -136,7 +136,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
 
       it "applies normalization before db lookup" do
         result = described_class.call(
-          string_sequence: "ぶた　１２３"
+          string_sequence: "ぶた　１２３",
         )
         # "ぶた　１２３" -> "ブタ 123" -> "豚 123"
         expect(result).to eq("豚 123")
@@ -147,7 +147,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
       it "handles strings with no normalizable characters" do
         result = described_class.call(
           string_sequence: "漢字文字列",
-          use_db_normalize_word: false
+          use_db_normalize_word: false,
         )
         expect(result).to eq("漢字文字列")
       end
@@ -155,7 +155,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
       it "preserves special characters" do
         result = described_class.call(
           string_sequence: "あ!@#$%",
-          use_db_normalize_word: false
+          use_db_normalize_word: false,
         )
         expect(result).to eq("ア!@#$%")
       end
@@ -169,7 +169,7 @@ RSpec.describe Business::Food::Dish::Word::Usecase::Normalizer do
 
       it "handles multi-character replacements" do
         result = described_class.call(
-          string_sequence: "かつ丼"
+          string_sequence: "かつ丼",
         )
         # "かつ丼" -> "カツ丼" -> "カカカカカツツツツツ丼丼丼丼丼"
         expect(result).to eq("カカカカカツツツツツ丼丼丼丼丼")

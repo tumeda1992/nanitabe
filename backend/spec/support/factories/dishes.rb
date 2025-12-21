@@ -15,7 +15,7 @@ FactoryBot.define do
     normalized_name { DISH_NAME_OF_DISH_2 }
     meal_position { 2 }
   end
-  
+
   (1..6).each do |idx|
     FactoryBot.define do
       factory :"dish_of_day_with_multi_meals_#{idx}", class: Dish do

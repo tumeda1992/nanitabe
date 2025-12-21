@@ -18,7 +18,7 @@ module Business::Dish::Dish::Evaluation
           described_class.call(
             user_id: comparer.prepared_records[:user_record].id,
             dish_id: comparer.prepared_records[:dish_record].id,
-            **comparer.values
+            **comparer.values,
           )
 
           comparer.compare_to_expectation(self)
@@ -32,7 +32,7 @@ module Business::Dish::Dish::Evaluation
           described_class.call(
             user_id: comparer.prepared_records[:user_record].id,
             dish_id: comparer.prepared_records[:dish_record].id,
-            **comparer.values
+            **comparer.values,
           )
 
           comparer.compare_to_expectation(self)

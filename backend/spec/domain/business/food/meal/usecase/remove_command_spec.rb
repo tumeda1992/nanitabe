@@ -12,7 +12,7 @@ RSpec.describe Business::Food::Meal::Usecase::RemoveCommand do
       dish: dish_record,
       date: Date.today,
       meal_type: 1,
-      comment: "test meal"
+      comment: "test meal",
     )
   end
 
@@ -24,7 +24,7 @@ RSpec.describe Business::Food::Meal::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            meal_id: meal_id
+            meal_id: meal_id,
           )
         }.to change { Meal.count }.by(-1)
 
@@ -34,7 +34,7 @@ RSpec.describe Business::Food::Meal::Usecase::RemoveCommand do
       it "returns the destroyed meal object when meal is successfully removed" do
         result = described_class.call(
           user_id: user_record.id,
-          meal_id: existing_meal_record.id
+          meal_id: existing_meal_record.id,
         )
 
         expect(result).to be_a(Meal)
@@ -48,7 +48,7 @@ RSpec.describe Business::Food::Meal::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            meal_id: 99999
+            meal_id: 99999,
           )
         }.to raise_error("指定した食事は存在しません。")
       end
@@ -58,7 +58,7 @@ RSpec.describe Business::Food::Meal::Usecase::RemoveCommand do
           begin
             described_class.call(
               user_id: user_record.id,
-              meal_id: 99999
+              meal_id: 99999,
             )
           rescue => e
             # Ignore the exception for count check
@@ -91,7 +91,7 @@ RSpec.describe Business::Food::Meal::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: nil,
-            meal_id: existing_meal_record.id
+            meal_id: existing_meal_record.id,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -102,7 +102,7 @@ RSpec.describe Business::Food::Meal::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            meal_id: nil
+            meal_id: nil,
           )
         }.to raise_error(/Meal can't be blank/)
       end

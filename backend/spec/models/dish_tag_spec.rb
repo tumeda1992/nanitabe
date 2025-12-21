@@ -27,7 +27,7 @@ RSpec.describe DishTag, type: :model do
           user: user_record,
           dish: dish_record,
           content: "甘い",
-          normalized_content: "甘い"
+          normalized_content: "甘い",
         )
       end
 
@@ -50,14 +50,14 @@ RSpec.describe DishTag, type: :model do
           user: user_record,
           dish: dish_record,
           content: "元の内容",
-          normalized_content: "元の内容"
+          normalized_content: "元の内容",
         )
       end
       let(:tag_root) do
         Business::Food::Dish::Tag::Root.new(
           id: existing_tag.id,
           user_id: user_record.id,
-          content: content
+          content: content,
         )
       end
 
@@ -74,7 +74,7 @@ RSpec.describe DishTag, type: :model do
       let(:tag_root) do
         Business::Food::Dish::Tag::Root.new(
           user_id: user_record.id,
-          content: content
+          content: content,
         )
       end
 
@@ -135,7 +135,7 @@ RSpec.describe DishTag, type: :model do
           user: user_record,
           dish: dish_record,
           content: "既存タグ1",
-          normalized_content: "既存タグ1"
+          normalized_content: "既存タグ1",
         )
       end
       let!(:existing_tag2) do
@@ -143,7 +143,7 @@ RSpec.describe DishTag, type: :model do
           user: user_record,
           dish: dish_record,
           content: "既存タグ2",
-          normalized_content: "既存タグ2"
+          normalized_content: "既存タグ2",
         )
       end
       let(:tag_roots_for_replace) { [] }
@@ -162,7 +162,7 @@ RSpec.describe DishTag, type: :model do
           user: user_record,
           dish: dish_record,
           content: "既存タグ1",
-          normalized_content: "既存タグ1"
+          normalized_content: "既存タグ1",
         )
       end
       let!(:existing_tag2) do
@@ -170,7 +170,7 @@ RSpec.describe DishTag, type: :model do
           user: user_record,
           dish: dish_record,
           content: "既存タグ2",
-          normalized_content: "既存タグ2"
+          normalized_content: "既存タグ2",
         )
       end
       let(:content1) { Business::Food::Dish::Tag::Content.new(value: "既存タグ1", normalized: "既存タグ1") }
@@ -196,7 +196,7 @@ RSpec.describe DishTag, type: :model do
           user: user_record,
           dish: dish_record,
           content: "保持タグ",
-          normalized_content: "保持タグ"
+          normalized_content: "保持タグ",
         )
       end
       let!(:existing_tag2) do
@@ -204,7 +204,7 @@ RSpec.describe DishTag, type: :model do
           user: user_record,
           dish: dish_record,
           content: "削除タグ",
-          normalized_content: "削除タグ"
+          normalized_content: "削除タグ",
         )
       end
 

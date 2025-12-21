@@ -17,7 +17,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
         expect {
           described_class.call(
             date1: date1,
-            date2: date2
+            date2: date2,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -28,7 +28,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            date2: date2
+            date2: date2,
           )
         }.to raise_error(/Date1 can't be blank/)
       end
@@ -39,7 +39,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            date1: date1
+            date1: date1,
           )
         }.to raise_error(/Date2 can't be blank/)
       end
@@ -51,7 +51,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
           described_class.call(
             user_id: nil,
             date1: date1,
-            date2: date2
+            date2: date2,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -63,7 +63,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
           described_class.call(
             user_id: user_record.id,
             date1: nil,
-            date2: date2
+            date2: date2,
           )
         }.to raise_error(/Date1 can't be blank/)
       end
@@ -75,7 +75,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
           described_class.call(
             user_id: user_record.id,
             date1: date1,
-            date2: nil
+            date2: nil,
           )
         }.to raise_error(/Date2 can't be blank/)
       end
@@ -91,7 +91,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
           dish: dish1_record,
           date: date1,
           meal_type: 1,
-          comment: "date1 meal1"
+          comment: "date1 meal1",
         )
       end
       let!(:date1_meal2) do
@@ -101,7 +101,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
           dish: dish2_record,
           date: date1,
           meal_type: 2,
-          comment: "date1 meal2"
+          comment: "date1 meal2",
         )
       end
       let!(:date2_meal1) do
@@ -111,7 +111,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
           dish: dish3_record,
           date: date2,
           meal_type: 1,
-          comment: "date2 meal1"
+          comment: "date2 meal1",
         )
       end
 
@@ -119,7 +119,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
         result = described_class.call(
           user_id: user_record.id,
           date1: date1,
-          date2: date2
+          date2: date2,
         )
 
         expect(result).to be_an(Array)
@@ -143,7 +143,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
         described_class.call(
           user_id: user_record.id,
           date1: date1,
-          date2: date2
+          date2: date2,
         )
 
         all_meals = Meal.where(id: [date1_meal1.id, date1_meal2.id, date2_meal1.id])
@@ -179,7 +179,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
           dish: dish1_record,
           date: date1,
           meal_type: 1,
-          comment: "only date1 meal"
+          comment: "only date1 meal",
         )
       end
 
@@ -187,7 +187,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
         result = described_class.call(
           user_id: user_record.id,
           date1: date1,
-          date2: date2
+          date2: date2,
         )
 
         expect(result.length).to eq(1)
@@ -211,7 +211,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
           dish: dish1_record,
           date: date2,
           meal_type: 1,
-          comment: "only date2 meal"
+          comment: "only date2 meal",
         )
       end
 
@@ -219,7 +219,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
         result = described_class.call(
           user_id: user_record.id,
           date1: date1,
-          date2: date2
+          date2: date2,
         )
 
         expect(result.length).to eq(1)
@@ -240,7 +240,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
         result = described_class.call(
           user_id: user_record.id,
           date1: date1,
-          date2: date2
+          date2: date2,
         )
 
         expect(result).to eq([])
@@ -257,7 +257,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
           dish: dish1_record,
           date: date1,
           meal_type: 1,
-          comment: "same date meal"
+          comment: "same date meal",
         )
       end
 
@@ -267,7 +267,7 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
         result = described_class.call(
           user_id: user_record.id,
           date1: date1,
-          date2: date1
+          date2: date1,
         )
 
         expect(result.length).to eq(2) # same meal appears twice in result

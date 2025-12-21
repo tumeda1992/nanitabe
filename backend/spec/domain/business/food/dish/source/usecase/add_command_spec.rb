@@ -12,7 +12,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::AddCommand do
       :create,
       name: source_name,
       type: source_type,
-      comment: comment
+      comment: comment,
     )
   end
 
@@ -21,7 +21,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::AddCommand do
       it "creates source successfully and returns Business::Food::Dish::Source::Root" do
         result = described_class.call(
           user_id: user_record.id,
-          source_params: valid_source_params
+          source_params: valid_source_params,
         )
 
         expect(result).to be_a(Business::Food::Dish::Source::Root)
@@ -35,7 +35,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::AddCommand do
       it "sets id after persistence" do
         result = described_class.call(
           user_id: user_record.id,
-          source_params: valid_source_params
+          source_params: valid_source_params,
         )
 
         created_source = ::DishSource.last
@@ -46,7 +46,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            source_params: valid_source_params
+            source_params: valid_source_params,
           )
         }.to change { ::DishSource.count }.by(1)
 
@@ -81,7 +81,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: nil,
-            source_params: valid_source_params
+            source_params: valid_source_params,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -92,7 +92,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            source_params: nil
+            source_params: nil,
           )
         }.to raise_error(/Source params can't be blank/)
       end

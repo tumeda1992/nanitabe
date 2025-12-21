@@ -13,7 +13,7 @@ class DishSource < ApplicationRecord
         user_id: food_dish_source_root.user_id,
         name: food_dish_source_root.name,
         type: food_dish_source_root.type.value,
-        comment: food_dish_source_root.comment
+        comment: food_dish_source_root.comment,
       )
     end
   end

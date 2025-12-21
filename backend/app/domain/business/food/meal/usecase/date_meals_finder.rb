@@ -17,7 +17,7 @@ module Business::Food::Meal
                         :dish_source,
                         :dish_evaluation,
                         :dish_tags
-                      ]
+                      ],
                     )
                     .order("meals.meal_type, dishes.meal_position")
 

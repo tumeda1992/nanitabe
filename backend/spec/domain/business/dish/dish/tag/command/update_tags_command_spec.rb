@@ -19,9 +19,9 @@ module Business::Dish::Dish::Tag
           dish_id: comparer.prepared_records[:dish_record].id,
           dish_tags: [
             Command::Params::Tag.new(
-              content: comparer.values[:content]
+              content: comparer.values[:content],
             )
-          ]
+          ],
         )
 
         comparer.compare_to_expectation(self)
@@ -39,7 +39,7 @@ module Business::Dish::Dish::Tag
         described_class.call(
           user_id: comparer.prepared_records[:user_record].id,
           dish_id: comparer.prepared_records[:dish_record].id,
-          dish_tags: []
+          dish_tags: [],
         )
 
         comparer.compare_to_expectation(self)
@@ -87,12 +87,12 @@ module Business::Dish::Dish::Tag
           dish_id: comparer.prepared_records[:dish_record].id,
           dish_tags: [
             Command::Params::Tag.new(
-              content: comparer.values[:content1]
+              content: comparer.values[:content1],
             ),
             Command::Params::Tag.new(
-              content: comparer.values[:content2]
+              content: comparer.values[:content2],
             ),
-          ]
+          ],
         )
 
         comparer.compare_to_expectation(self)
@@ -147,9 +147,9 @@ module Business::Dish::Dish::Tag
               content: comparer.prepared_records[:dish_tag_record].content,
             ),
             Command::Params::Tag.new(
-              content: comparer.values[:content]
+              content: comparer.values[:content],
             ),
-          ]
+          ],
         )
 
         comparer.compare_to_expectation(self)
@@ -194,7 +194,7 @@ module Business::Dish::Dish::Tag
               id: comparer.prepared_records[:dish_tag_record].id,
               content: comparer.prepared_records[:dish_tag_record].content,
             ),
-          ]
+          ],
         )
 
         comparer.compare_to_expectation(self)

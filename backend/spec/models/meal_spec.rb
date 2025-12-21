@@ -14,7 +14,7 @@ RSpec.describe Meal, type: :model do
         dish: dish_record,
         date: Date.today,
         meal_type: 1,
-        comment: "test meal"
+        comment: "test meal",
       )
     end
 
@@ -63,7 +63,7 @@ RSpec.describe Meal, type: :model do
           dish_id: dish_record.id,
           date: meal_date,
           meal_type: meal_type,
-          comment: comment
+          comment: comment,
         )
       end
 
@@ -88,7 +88,7 @@ RSpec.describe Meal, type: :model do
           dish: dish_record,
           date: Date.yesterday,
           meal_type: 1,
-          comment: "old comment"
+          comment: "old comment",
         )
       end
       let(:food_meal_root) do
@@ -98,7 +98,7 @@ RSpec.describe Meal, type: :model do
           dish_id: dish_record.id,
           date: meal_date,
           meal_type: meal_type,
-          comment: comment
+          comment: comment,
         )
       end
 
@@ -122,7 +122,7 @@ RSpec.describe Meal, type: :model do
         dish: dish_record,
         date: Date.yesterday,
         meal_type: 1,
-        comment: "old comment"
+        comment: "old comment",
       )
     end
     let(:new_dish_record) { FactoryBot.create(:dish, user: user_record) }
@@ -137,7 +137,7 @@ RSpec.describe Meal, type: :model do
         dish_id: new_dish_record.id,
         date: meal_date,
         meal_type: meal_type,
-        comment: comment
+        comment: comment,
       )
     end
 

@@ -14,8 +14,8 @@ class DishTag < ApplicationRecord
           user_id: tag_record.user_id,
           content: Business::Food::Dish::Tag::Content.new(
             value: tag_record.content,
-            normalized: tag_record.normalized_content
-          )
+            normalized: tag_record.normalized_content,
+          ),
         )
       end
     end

@@ -19,7 +19,7 @@ module Mutations::Dish
                                  ::Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
                                    dish_source.type,
                                    created_dish_source.id,
-                                   dish_source_relation_detail.detail_value_of(dish_source.type)
+                                   dish_source_relation_detail.detail_value_of(dish_source.type),
                                  )
                                end
 

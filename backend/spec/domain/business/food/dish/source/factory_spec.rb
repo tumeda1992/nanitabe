@@ -14,7 +14,7 @@ RSpec.describe Business::Food::Dish::Source::Factory do
           user_record.id,
           source_name,
           source_type,
-          comment: comment
+          comment: comment,
         )
 
         expect(result).to be_a(Business::Food::Dish::Source::Root)
@@ -28,7 +28,7 @@ RSpec.describe Business::Food::Dish::Source::Factory do
         result = described_class.build(
           user_record.id,
           source_name,
-          source_type
+          source_type,
         )
 
         expect(result).to be_a(Business::Food::Dish::Source::Root)
@@ -43,7 +43,7 @@ RSpec.describe Business::Food::Dish::Source::Factory do
           user_record.id,
           source_name,
           source_type.value,
-          comment: comment
+          comment: comment,
         )
 
         expect(result).to be_a(Business::Food::Dish::Source::Root)
@@ -57,7 +57,7 @@ RSpec.describe Business::Food::Dish::Source::Factory do
           described_class.build(
             nil,
             source_name,
-            source_type
+            source_type,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -67,7 +67,7 @@ RSpec.describe Business::Food::Dish::Source::Factory do
           described_class.build(
             user_record.id,
             nil,
-            source_type
+            source_type,
           )
         }.to raise_error(/Name can't be blank/)
       end
@@ -77,7 +77,7 @@ RSpec.describe Business::Food::Dish::Source::Factory do
           described_class.build(
             user_record.id,
             source_name,
-            nil
+            nil,
           )
         }.to raise_error(/Type can't be blank/)
       end

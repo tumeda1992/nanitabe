@@ -15,7 +15,7 @@ RSpec.describe Dish, type: :model do
         name: "test_dish",
         normalized_name: "test_dish_normalized",
         meal_position: 1,
-        comment: "test_comment"
+        comment: "test_comment",
       )
     end
 
@@ -53,7 +53,7 @@ RSpec.describe Dish, type: :model do
               DishSourceRelation.create!(
                 dish: recipe_book_dish,
                 dish_source: recipe_book_source,
-                recipe_book_page: page_number
+                recipe_book_page: page_number,
               )
             end
 
@@ -74,7 +74,7 @@ RSpec.describe Dish, type: :model do
               DishSourceRelation.create!(
                 dish: website_dish,
                 dish_source: website_source,
-                recipe_website_url: website_url
+                recipe_website_url: website_url,
               )
             end
 
@@ -95,7 +95,7 @@ RSpec.describe Dish, type: :model do
               DishSourceRelation.create!(
                 dish: other_dish,
                 dish_source: other_source,
-                recipe_source_memo: source_memo
+                recipe_source_memo: source_memo,
               )
             end
 
@@ -149,13 +149,13 @@ RSpec.describe Dish, type: :model do
         user_id: user_record.id,
         name: ::Business::Food::Dish::Name.new(
           value: dish_name,
-          normalized: normalized_dish_name
+          normalized: normalized_dish_name,
         ),
         meal_position: meal_position,
         comment: comment,
         source_id: nil,
         source_locator: nil,
-        tags: []
+        tags: [],
       )
     end
 
@@ -186,13 +186,13 @@ RSpec.describe Dish, type: :model do
           user_id: user_record.id,
           name: ::Business::Food::Dish::Name.new(
             value: dish_name,
-            normalized: normalized_dish_name
+            normalized: normalized_dish_name,
           ),
           meal_position: meal_position,
           comment: comment,
           source_id: dish_source_record.id,
           source_locator: source_locator,
-          tags: []
+          tags: [],
         )
       end
 
@@ -218,18 +218,18 @@ RSpec.describe Dish, type: :model do
         ::Business::Food::Dish::Tag::Root.new(
           content: ::Business::Food::Dish::Tag::Content.new(
             value: "tag1",
-            normalized: "tag1_normalized"
+            normalized: "tag1_normalized",
           ),
-          user_id: user_record.id
+          user_id: user_record.id,
         )
       end
       let(:tag2) do
         ::Business::Food::Dish::Tag::Root.new(
           content: ::Business::Food::Dish::Tag::Content.new(
             value: "tag2",
-            normalized: "tag2_normalized"
+            normalized: "tag2_normalized",
           ),
-          user_id: user_record.id
+          user_id: user_record.id,
         )
       end
       let(:food_dish_root_with_tags) do
@@ -238,13 +238,13 @@ RSpec.describe Dish, type: :model do
           user_id: user_record.id,
           name: ::Business::Food::Dish::Name.new(
             value: dish_name,
-            normalized: normalized_dish_name
+            normalized: normalized_dish_name,
           ),
           meal_position: meal_position,
           comment: comment,
           source_id: nil,
           source_locator: nil,
-          tags: [tag1, tag2]
+          tags: [tag1, tag2],
         )
       end
 
@@ -271,13 +271,13 @@ RSpec.describe Dish, type: :model do
           user_id: user_record.id,
           name: ::Business::Food::Dish::Name.new(
             value: dish_name,
-            normalized: normalized_dish_name
+            normalized: normalized_dish_name,
           ),
           meal_position: meal_position,
           comment: comment,
           source_id: nil,
           source_locator: nil,
-          tags: []
+          tags: [],
         )
       end
 
@@ -299,13 +299,13 @@ RSpec.describe Dish, type: :model do
           user_id: user_record.id,
           name: ::Business::Food::Dish::Name.new(
             value: dish_name,
-            normalized: normalized_dish_name
+            normalized: normalized_dish_name,
           ),
           meal_position: meal_position,
           comment: comment,
           source_id: nil,
           source_locator: nil,
-          tags: []
+          tags: [],
         )
       end
 
@@ -353,7 +353,7 @@ RSpec.describe Dish, type: :model do
         DishSourceRelation.create!(
           dish: dish,
           dish_source: dish_source,
-          recipe_book_page: page_number
+          recipe_book_page: page_number,
         )
         dish.reload
       end
@@ -381,7 +381,7 @@ RSpec.describe Dish, type: :model do
         DishSourceRelation.create!(
           dish: dish,
           dish_source: dish_source,
-          recipe_website_url: website_url
+          recipe_website_url: website_url,
         )
         dish.reload
       end
@@ -443,7 +443,7 @@ RSpec.describe Dish, type: :model do
         DishSourceRelation.create!(
           dish: dish,
           dish_source: dish_source,
-          recipe_book_page: page_number
+          recipe_book_page: page_number,
         )
         FactoryBot.create(:dish_evaluation, dish: dish, score: evaluation_score)
         dish.reload

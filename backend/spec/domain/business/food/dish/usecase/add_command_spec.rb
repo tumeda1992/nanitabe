@@ -14,7 +14,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
       :create,
       name: dish_name,
       meal_position: meal_position,
-      comment: comment
+      comment: comment,
     )
   end
 
@@ -31,7 +31,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
       it "creates dish successfully and returns Business::Food::Dish::Root" do
         result = described_class.call(
           user_id: user_record.id,
-          dish_params: valid_dish_params
+          dish_params: valid_dish_params,
         )
 
         expect(result).to be_a(Business::Food::Dish::Root)
@@ -46,7 +46,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
       it "sets id after persistence" do
         result = described_class.call(
           user_id: user_record.id,
-          dish_params: valid_dish_params
+          dish_params: valid_dish_params,
         )
 
         created_dish = ::Dish.last
@@ -57,7 +57,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            dish_params: valid_dish_params
+            dish_params: valid_dish_params,
           )
         }.to change { ::Dish.count }.by(1)
 
@@ -75,7 +75,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
         it "レシピ元の関連なしで料理を作成できること" do
           result = described_class.call(
             user_id: user_record.id,
-            dish_params: valid_dish_params
+            dish_params: valid_dish_params,
           )
 
           dish_source_relation = ::Dish.find(result.id).dish_source_relation
@@ -92,7 +92,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
           Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
             dish_source_record.type,
             dish_source_record.id,
-            recipe_book_page
+            recipe_book_page,
           )
         end
 
@@ -100,7 +100,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
           result = described_class.call(
             user_id: user_record.id,
             dish_params: valid_dish_params,
-            dish_source_relation: dish_source_relation_params
+            dish_source_relation: dish_source_relation_params,
           )
 
           dish_source_relation = ::Dish.find(result.id).dish_source_relation
@@ -122,7 +122,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
           Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
             dish_source_record.type,
             dish_source_record.id,
-            recipe_website_url
+            recipe_website_url,
           )
         end
 
@@ -130,7 +130,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
           result = described_class.call(
             user_id: user_record.id,
             dish_params: valid_dish_params,
-            dish_source_relation: dish_source_relation_params
+            dish_source_relation: dish_source_relation_params,
           )
 
           dish_source_relation = ::Dish.find(result.id).dish_source_relation
@@ -152,7 +152,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
           Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
             dish_source_record.type,
             dish_source_record.id,
-            recipe_source_memo
+            recipe_source_memo,
           )
         end
 
@@ -160,7 +160,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
           result = described_class.call(
             user_id: user_record.id,
             dish_params: valid_dish_params,
-            dish_source_relation: dish_source_relation_params
+            dish_source_relation: dish_source_relation_params,
           )
 
           dish_source_relation = ::Dish.find(result.id).dish_source_relation
@@ -182,7 +182,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
           [
             Business::Food::Dish::Tag::Usecase::Params::Tag.new(
               content: "新規タグ",
-              normalized_content: "新規タグ"
+              normalized_content: "新規タグ",
             )
           ]
         end
@@ -191,7 +191,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
           result = described_class.call(
             user_id: user_record.id,
             dish_params: valid_dish_params,
-            dish_tags: dish_tags
+            dish_tags: dish_tags,
           )
 
           expect(result.tags.count).to eq(1)
@@ -227,7 +227,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: nil,
-            dish_params: valid_dish_params
+            dish_params: valid_dish_params,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -238,7 +238,7 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            dish_params: nil
+            dish_params: nil,
           )
         }.to raise_error(/Dish params can't be blank/)
       end

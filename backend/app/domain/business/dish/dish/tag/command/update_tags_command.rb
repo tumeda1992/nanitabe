@@ -33,7 +33,7 @@ module Business::Dish::Dish::Tag
             dish_id:,
             content: tag.content,
             normalized_content: Business::Dish::Word::Normalize::Command::NormalizeCommand.call(
-              string_sequence: tag.content
+              string_sequence: tag.content,
             ),
           )
         end.map do |tag|

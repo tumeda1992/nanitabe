@@ -9,7 +9,7 @@ module Mutations::Meal
       ActiveRecord::Base.transaction do
         ::Business::Food::Meal::Usecase::UpdateCommand.call(
           user_id: context[:current_user_id],
-          meal_params: meal.convert_to_command_param(use_food_module: true, dish_id:)
+          meal_params: meal.convert_to_command_param(use_food_module: true, dish_id:),
         )
       end
       { meal_id: meal.id }

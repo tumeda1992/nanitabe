@@ -12,7 +12,7 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
       dish: dish_record,
       date: Date.yesterday,
       meal_type: 1,
-      comment: "old comment"
+      comment: "old comment",
     )
   end
 
@@ -23,7 +23,7 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
       dish_id: dish_record.id,
       date: Date.today,
       meal_type: 2,
-      comment: "updated comment"
+      comment: "updated comment",
     )
   end
 
@@ -32,7 +32,7 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
       it "updates meal and returns Business::Food::Meal::Root" do
         result = described_class.call(
           user_id: user_record.id,
-          meal_params: valid_meal_params
+          meal_params: valid_meal_params,
         )
 
         expect(result).to be_a(Business::Food::Meal::Root)
@@ -47,7 +47,7 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
       it "updates meal in database" do
         described_class.call(
           user_id: user_record.id,
-          meal_params: valid_meal_params
+          meal_params: valid_meal_params,
         )
 
         updated_meal = ::Meal.find(existing_meal_record.id)
@@ -64,14 +64,14 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
             id: existing_meal_record.id,
             dish_id: existing_meal_record.dish_id,
             date: Date.today,
-            meal_type: existing_meal_record.meal_type
+            meal_type: existing_meal_record.meal_type,
           )
         end
 
         it "updates only date" do
           result = described_class.call(
             user_id: user_record.id,
-            meal_params: date_only_params
+            meal_params: date_only_params,
           )
 
           expect(result.dish_id).to eq(existing_meal_record.dish_id)
@@ -88,14 +88,14 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
             id: existing_meal_record.id,
             dish_id: existing_meal_record.dish_id,
             date: existing_meal_record.date,
-            meal_type: 3
+            meal_type: 3,
           )
         end
 
         it "updates only meal_type" do
           result = described_class.call(
             user_id: user_record.id,
-            meal_params: meal_type_only_params
+            meal_params: meal_type_only_params,
           )
 
           expect(result.dish_id).to eq(existing_meal_record.dish_id)
@@ -113,14 +113,14 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
             dish_id: existing_meal_record.dish_id,
             date: existing_meal_record.date,
             meal_type: existing_meal_record.meal_type,
-            comment: "new comment only"
+            comment: "new comment only",
           )
         end
 
         it "updates only comment" do
           result = described_class.call(
             user_id: user_record.id,
-            meal_params: comment_only_params
+            meal_params: comment_only_params,
           )
 
           expect(result.dish_id).to eq(existing_meal_record.dish_id)
@@ -138,14 +138,14 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
             dish_id: existing_meal_record.dish_id,
             date: existing_meal_record.date,
             meal_type: existing_meal_record.meal_type,
-            comment: ""
+            comment: "",
           )
         end
 
         it "clears comment" do
           result = described_class.call(
             user_id: user_record.id,
-            meal_params: clear_comment_params
+            meal_params: clear_comment_params,
           )
 
           expect(result.dish_id).to eq(existing_meal_record.dish_id)
@@ -163,14 +163,14 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
             id: existing_meal_record.id,
             dish_id: new_dish_record.id,
             date: existing_meal_record.date,
-            meal_type: existing_meal_record.meal_type
+            meal_type: existing_meal_record.meal_type,
           )
         end
 
         it "updates dish" do
           result = described_class.call(
             user_id: user_record.id,
-            meal_params: dish_change_params
+            meal_params: dish_change_params,
           )
 
           expect(result.dish_id).to eq(new_dish_record.id)
@@ -188,7 +188,7 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
           id: 99999,
           dish_id: dish_record.id,
           date: Date.today,
-          meal_type: 1
+          meal_type: 1,
         )
       end
 
@@ -196,7 +196,7 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            meal_params: non_existing_meal_params
+            meal_params: non_existing_meal_params,
           )
         }.to raise_error(ActiveRecord::RecordNotFound, /Meal with id 99999 not found/)
       end
@@ -209,7 +209,7 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
           id: existing_meal_record.id,
           dish_id: 999999,
           date: existing_meal_record.date,
-          meal_type: existing_meal_record.meal_type
+          meal_type: existing_meal_record.meal_type,
         )
       end
 
@@ -217,7 +217,7 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            meal_params: invalid_dish_params
+            meal_params: invalid_dish_params,
           )
         }.to raise_error("存在しない料理を紐付けることはできません。")
       end
@@ -246,7 +246,7 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
         expect {
           described_class.call(
             user_id: nil,
-            meal_params: valid_meal_params
+            meal_params: valid_meal_params,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -257,7 +257,7 @@ RSpec.describe Business::Food::Meal::Usecase::UpdateCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            meal_params: nil
+            meal_params: nil,
           )
         }.to raise_error(/Meal params can't be blank/)
       end

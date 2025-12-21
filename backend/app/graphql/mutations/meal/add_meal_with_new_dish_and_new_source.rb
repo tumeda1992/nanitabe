@@ -21,7 +21,7 @@ module Mutations::Meal
                                  ::Business::Food::Dish::Usecase::Params::DishSourceRelation.build_relation(
                                    dish_source.type,
                                    created_dish_source.id,
-                                   dish_source_relation_detail.detail_value_of(dish_source.type)
+                                   dish_source_relation_detail.detail_value_of(dish_source.type),
                                  )
                                end
 
@@ -34,7 +34,7 @@ module Mutations::Meal
 
         created_meal = ::Business::Food::Meal::Usecase::AddCommand.call(
           user_id: context[:current_user_id],
-          meal_params: meal.convert_to_command_param(use_food_module: true, dish_id: created_dish.id)
+          meal_params: meal.convert_to_command_param(use_food_module: true, dish_id: created_dish.id),
         )
         {
           meal_id: created_meal.id,

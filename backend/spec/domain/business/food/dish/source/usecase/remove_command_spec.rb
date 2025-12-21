@@ -16,7 +16,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_id,
-            source_id: source_id
+            source_id: source_id,
           )
         }.to change { ::DishSource.count }.by(-1)
 
@@ -29,7 +29,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            source_id: 99999
+            source_id: 99999,
           )
         }.to raise_error("指定したレシピ元は存在しません。")
       end
@@ -42,7 +42,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: other_user_record.id,
-            source_id: existing_source_record.id
+            source_id: existing_source_record.id,
           )
         }.to raise_error("指定したレシピ元は存在しません。")
       end
@@ -71,7 +71,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: nil,
-            source_id: existing_source_record.id
+            source_id: existing_source_record.id,
           )
         }.to raise_error(/User can't be blank/)
       end
@@ -82,7 +82,7 @@ RSpec.describe Business::Food::Dish::Source::Usecase::RemoveCommand do
         expect {
           described_class.call(
             user_id: user_record.id,
-            source_id: nil
+            source_id: nil,
           )
         }.to raise_error(/Source can't be blank/)
       end

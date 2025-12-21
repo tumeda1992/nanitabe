@@ -44,7 +44,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       it "raises validation error" do
         expect {
           described_class.call(
-            search_string: "test"
+            search_string: "test",
           )
         }.to raise_error(/条件の値が不正です。/)
       end
@@ -55,7 +55,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
         expect {
           described_class.call(
             access_user_id: nil,
-            search_string: "test"
+            search_string: "test",
           )
         }.to raise_error(/条件の値が不正です。/)
       end
@@ -66,7 +66,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
     context "with basic search" do
       it "returns user's dishes only" do
         result = described_class.call(
-          access_user_id: user_record.id
+          access_user_id: user_record.id,
         )
 
         dish_names = result.map { |dish| dish[:name] }
@@ -85,7 +85,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
 
       it "includes dish source information" do
         result = described_class.call(
-          access_user_id: user_record.id
+          access_user_id: user_record.id,
         )
 
         dish_with_source_result = result.find { |dish| dish[:name] == "親子丼" }
@@ -95,7 +95,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
 
       it "includes evaluation score" do
         result = described_class.call(
-          access_user_id: user_record.id
+          access_user_id: user_record.id,
         )
 
         chicken_curry = result.find { |dish| dish[:name] == "チキンカレー" }
@@ -107,7 +107,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       it "searches by dish name" do
         result = described_class.call(
           access_user_id: user_record.id,
-          search_string: "カレー"
+          search_string: "カレー",
         )
 
         dish_names = result.map { |dish| dish[:name] }
@@ -118,7 +118,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       it "searches by dish source name" do
         result = described_class.call(
           access_user_id: user_record.id,
-          search_string: "料理本"
+          search_string: "料理本",
         )
 
         dish_names = result.map { |dish| dish[:name] }
@@ -129,7 +129,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       it "searches by dish tag content" do
         result = described_class.call(
           access_user_id: user_record.id,
-          search_string: "スパイス"
+          search_string: "スパイス",
         )
 
         dish_names = result.map { |dish| dish[:name] }
@@ -140,7 +140,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       it "returns empty result for non-matching search" do
         result = described_class.call(
           access_user_id: user_record.id,
-          search_string: "存在しない料理"
+          search_string: "存在しない料理",
         )
 
         expect(result).to be_empty
@@ -151,7 +151,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       it "filters by meal_position" do
         result = described_class.call(
           access_user_id: user_record.id,
-          meal_position: 1
+          meal_position: 1,
         )
 
         dish_names = result.map { |dish| dish[:name] }
@@ -168,7 +168,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       it "filters dishes registered with meals when registered_with_meal is true" do
         result = described_class.call(
           access_user_id: user_record.id,
-          registered_with_meal: true
+          registered_with_meal: true,
         )
 
         dish_names = result.map { |dish| dish[:name] }
@@ -179,7 +179,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       it "filters dishes not registered with meals when registered_with_meal is false" do
         result = described_class.call(
           access_user_id: user_record.id,
-          registered_with_meal: false
+          registered_with_meal: false,
         )
 
         dish_names = result.map { |dish| dish[:name] }
@@ -192,7 +192,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       it "includes the specified dish at the beginning of results" do
         result = described_class.call(
           access_user_id: user_record.id,
-          dish_id_registered_with_meal: dish2.id
+          dish_id_registered_with_meal: dish2.id,
         )
 
         expect(result.first[:id]).to eq(dish2.id)
@@ -206,7 +206,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       it "returns only other dishes when dish_id_registered_with_meal is specified" do
         result = described_class.call(
           access_user_id: user_record.id,
-          dish_id_registered_with_meal: dish1.id
+          dish_id_registered_with_meal: dish1.id,
         )
 
         expect(result.first[:id]).to eq(dish1.id)
@@ -222,7 +222,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
         result = described_class.call(
           access_user_id: user_record.id,
           search_string: "カレー",
-          meal_position: 1
+          meal_position: 1,
         )
 
         dish_names = result.map { |dish| dish[:name] }
@@ -245,7 +245,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
 
       it "orders by evaluation score descending" do
         result = described_class.call(
-          access_user_id: user_record.id
+          access_user_id: user_record.id,
         )
 
         # 評価スコアの高い順に並んでいることを確認
@@ -263,7 +263,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
     context "response structure" do
       it "includes all required dish fields" do
         result = described_class.call(
-          access_user_id: user_record.id
+          access_user_id: user_record.id,
         )
 
         dish_result = result.first
@@ -291,7 +291,7 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       context "when dish has all optional relations" do
         it "includes related data correctly" do
           result = described_class.call(
-            access_user_id: user_record.id
+            access_user_id: user_record.id,
           )
 
           dish_with_relations = result.find { |d| d[:name] == "チキンカレー" }
@@ -309,13 +309,13 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
             user: user_record,
             name: "シンプルな料理",
             normalized_name: "シンプルな料理",
-            meal_position: 1
+            meal_position: 1,
           )
         end
 
         it "returns nil for missing optional fields" do
           result = described_class.call(
-            access_user_id: user_record.id
+            access_user_id: user_record.id,
           )
 
           simple_dish = result.find { |d| d[:name] == "シンプルな料理" }
