@@ -3,19 +3,19 @@
 # - 複雑になるなら、github actions側で多くをやるか、CodeBuildとかに移行する
 name: Backend Deploy
 
-#on:
-#  pull_request:
-#    types: [closed]
+on:
+  pull_request:
+    types: [closed]
 
 # デバッグ時
-on:
-  push:
+#on:
+#  push:
 
 jobs:
   call-url:
-#    if: >
-#      github.event.pull_request.merged == true &&
-#      github.event.pull_request.base.ref == 'main'
+    if: >
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
 
     steps:
