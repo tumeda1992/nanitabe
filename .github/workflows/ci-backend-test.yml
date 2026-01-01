@@ -19,7 +19,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # ここが重要：完全履歴
           fetch-depth: 0
 
       - name: Detect backend changes
@@ -47,7 +46,7 @@ jobs:
       - name: No backend changes, skip tests
         if: steps.changes.outputs.changed == 'false'
         run: |
-          echo "No backend changes. Skipping backend tests."
+          echo "No backend changes. Skipping action."
 
       - name: Setup Ruby
         if: steps.changes.outputs.changed == 'true'
