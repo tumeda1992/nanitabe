@@ -2,9 +2,6 @@ name: CI Backend Rubocop
 
 on:
   pull_request:
-    paths:
-      - 'backend/**'
-      - '.github/workflows/ci-backend-rubocop.yml'
 
 jobs:
   backend-rubocop:
@@ -20,8 +17,38 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect backend changes
+        id: changes
+        run: |
+          BASE_REF="${{ github.base_ref }}"
+
+          echo "Base ref: $BASE_REF"
+
+          BASE_SHA=$(git merge-base HEAD "origin/$BASE_REF")
+
+          echo "BASE_SHA: $BASE_SHA"
+
+          CHANGED_FILES="$(git diff --name-only "$BASE_SHA"...HEAD || true)"
+
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          if echo "$CHANGED_FILES" | grep -E '^backend/|^\.github/workflows/ci-backend-rubocop\.yml$' > /dev/null; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: No backend changes, skip tests
+        if: steps.changes.outputs.changed == 'false'
+        run: |
+          echo "No backend changes. Skipping action."
 
       - name: Setup Ruby
+        if: steps.changes.outputs.changed == 'true'
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: '3.2.2'
@@ -29,5 +56,6 @@ jobs:
           bundler-cache: true
 
       - name: Run Rubocop
+        if: steps.changes.outputs.changed == 'true'
         working-directory: backend
         run: bundle exec rubocop

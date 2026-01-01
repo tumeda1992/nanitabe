@@ -2,9 +2,6 @@ name: CI Frontend Lint
 
 on:
   pull_request:
-    paths:
-      - 'frontend/**'
-      - '.github/workflows/ci-frontend-lint.yml'
 
 jobs:
   frontend-lint:
@@ -17,8 +14,38 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect frontend changes
+        id: changes
+        run: |
+          BASE_REF="${{ github.base_ref }}"
+
+          echo "Base ref: $BASE_REF"
+
+          BASE_SHA=$(git merge-base HEAD "origin/$BASE_REF")
+
+          echo "BASE_SHA: $BASE_SHA"
+
+          CHANGED_FILES="$(git diff --name-only "$BASE_SHA"...HEAD || true)"
+
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          if echo "$CHANGED_FILES" | grep -E '^frontend/|^\.github/workflows/ci-frontend-lint\.yml$' > /dev/null; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: No backend changes, skip tests
+        if: steps.changes.outputs.changed == 'false'
+        run: |
+          echo "No frontend changes. Skipping action."
 
       - name: Setup Node.js
+        if: steps.changes.outputs.changed == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '24.11.1'
@@ -26,7 +53,9 @@ jobs:
           cache-dependency-path: frontend/yarn.lock
 
       - name: Install dependencies
+        if: steps.changes.outputs.changed == 'true'
         run: yarn install --frozen-lockfile
 
       - name: Run lint
+        if: steps.changes.outputs.changed == 'true'
         run: yarn lint
