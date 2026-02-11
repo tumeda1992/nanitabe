@@ -24,6 +24,7 @@ type Props = {
   defaultDate: Date;
   registeredMealId?: number;
   registeredMealType?: number;
+  registeredMealComment?: string | null;
   registeredDishId?: number;
 
   useChoosingDishTypeResult: UseChoosingDishTypeResult;
@@ -39,6 +40,7 @@ export default (props: Props) => {
     defaultDate,
     registeredMealId,
     registeredMealType,
+    registeredMealComment,
     registeredDishId,
     useChoosingDishTypeResult: {
       setChoosingDishType,
@@ -101,6 +103,18 @@ export default (props: Props) => {
               }}
             />
             <ErrorMessageIfExist fieldError={errors.meal?.mealType} />
+          </FormFieldWrapperWithLabel>
+
+          <FormFieldWrapperWithLabel label="コメント">
+            <Form.Control
+              as="textarea"
+              {...register('meal.comment')}
+              rows={1}
+              defaultValue={registeredMealComment || ''}
+              placeholder="食事のメモや感想を入力..."
+              data-testid="mealComment"
+            />
+            <ErrorMessageIfExist fieldError={errors.meal?.comment} />
           </FormFieldWrapperWithLabel>
 
           <div className={style['meal-form']}>

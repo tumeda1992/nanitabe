@@ -95,6 +95,7 @@ export default (props: Props) => {
       defaultDate={parseISO(meal.date)}
       registeredMealId={meal.id}
       registeredMealType={meal.mealType}
+      registeredMealComment={meal.comment}
       registeredDishId={meal.dish.id}
       useChoosingDishTypeResult={{
         choosingDishType,

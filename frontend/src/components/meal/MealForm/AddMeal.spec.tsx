@@ -38,10 +38,12 @@ describe('<AddMeal>', () => {
   const newDishWithRequiredParams = {
     name: 'ハンバーグ',
     mealPosition: 2,
+    comment: '',
   };
   const newMealWithRequiredParams = {
     date: new Date(2022, 1, 1),
     mealType: 3,
+    comment: '',
   };
   const existingDishId = 55;
 
@@ -336,6 +338,54 @@ describe('<AddMeal>', () => {
         dishSource: newDishSource,
         dishSourceRelationDetail: newDishSourceRelationDetailOfRecipeWebsite,
         dishTags: [{ content: newDishTag.content }],
+        meal: buildNewMealGraphQLParams(newMealWithRequiredParams),
+      });
+    });
+  });
+
+  describe('when add meal with comment', () => {
+    it('succeeds with meal comment', async () => {
+      const { getLatestMutationVariables } = registerMutationHandler(
+        AddMealDocument,
+        {
+          addMeal: {
+            mealId: 1,
+          },
+        },
+      );
+
+      const mealComment = 'とても美味しかった';
+
+      await userClick(screen, `existingDish-${existingDishId}`);
+      await userType(screen, 'mealComment', mealComment);
+
+      await userClick(screen, 'submitMealButton');
+
+      expect(getLatestMutationVariables()).toEqual({
+        dishId: existingDishId,
+        meal: buildNewMealGraphQLParams({
+          ...newMealWithRequiredParams,
+          comment: mealComment,
+        }),
+      });
+    });
+
+    it('succeeds without comment', async () => {
+      const { getLatestMutationVariables } = registerMutationHandler(
+        AddMealDocument,
+        {
+          addMeal: {
+            mealId: 1,
+          },
+        },
+      );
+
+      await userClick(screen, `existingDish-${existingDishId}`);
+
+      await userClick(screen, 'submitMealButton');
+
+      expect(getLatestMutationVariables()).toEqual({
+        dishId: existingDishId,
         meal: buildNewMealGraphQLParams(newMealWithRequiredParams),
       });
     });

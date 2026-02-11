@@ -6,6 +6,7 @@ import renderWithApollo from '../../specHelper/renderWithApollo';
 import {
   enterTextBox,
   userChooseSelectBox,
+  userClearTextbox,
   userClick,
   userType,
   userTypeAfterClearTextBox,
@@ -48,6 +49,7 @@ describe('<EditMeal>', () => {
     id: 30,
     date: new Date(2022, 1, 1),
     mealType: 3,
+    comment: '',
   };
   const registeredMeal = {
     ...registeredMealWithoutDish,
@@ -66,11 +68,13 @@ describe('<EditMeal>', () => {
     id: 30,
     date: new Date(2023, 2, 2),
     mealType: 2,
+    comment: '',
   };
 
   const newDishWithRequiredParams = {
     name: 'カレー',
     mealPosition: 3,
+    comment: '',
   };
 
   const selectedDishSource = {
@@ -369,6 +373,51 @@ describe('<EditMeal>', () => {
           dishSource: newDishSource,
           dishSourceRelationDetail: newDishSourceRelationDetailOfRecipeWebsite,
           dishTags: [{ content: newDishTag.content }],
+          meal: buildGraphQLMeal(registeredMealWithoutDish),
+        });
+      });
+    });
+
+    describe('when update meal comment', () => {
+      it('succeeds with comment text', async () => {
+        const { getLatestMutationVariables } = registerMutationHandler(
+          UpdateMealDocument,
+          {
+            updateMeal: {
+              mealId: registeredMeal.id,
+            },
+          },
+        );
+
+        const updatedComment = 'とても美味しい食事でした';
+
+        await userType(screen, 'mealComment', updatedComment);
+        await clickSubmitButton();
+
+        expect(getLatestMutationVariables()).toEqual({
+          dishId: registeredDish.id,
+          meal: buildGraphQLMeal({
+            ...registeredMealWithoutDish,
+            comment: updatedComment,
+          }),
+        });
+      });
+
+      it('succeeds with empty comment', async () => {
+        const { getLatestMutationVariables } = registerMutationHandler(
+          UpdateMealDocument,
+          {
+            updateMeal: {
+              mealId: registeredMeal.id,
+            },
+          },
+        );
+
+        await userClearTextbox(screen, 'mealComment');
+        await clickSubmitButton();
+
+        expect(getLatestMutationVariables()).toEqual({
+          dishId: registeredDish.id,
           meal: buildGraphQLMeal(registeredMealWithoutDish),
         });
       });
