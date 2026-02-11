@@ -24,6 +24,7 @@ describe('<AddDish>', () => {
   const newDishWithRequiredParams = {
     name: 'ハンバーグ',
     mealPosition: 2,
+    comment: '',
   };
 
   const selectedDishSource = {
@@ -237,6 +238,58 @@ describe('<AddDish>', () => {
         dishTags: [
           { content: newDishTag.content }
         ],
+      });
+    });
+  });
+
+  describe('when add dish with comment', () => {
+    it('succeeds with expected graphql params', async () => {
+      const { getLatestMutationVariables } = registerMutationHandler(
+        AddDishDocument,
+        {
+          addDish: {
+            dishId: 1,
+          },
+        },
+      );
+
+      const dishComment = 'これは美味しい料理です';
+
+      await userType(screen, 'dishname', newDishWithRequiredParams.name);
+      await userType(screen, 'dishComment', dishComment);
+
+      await userClick(screen, 'submitDishButton');
+
+      expect(getLatestMutationVariables()).toEqual({
+        dish: {
+          ...newDishWithRequiredParams,
+          comment: dishComment,
+        },
+        dishSource: null,
+        dishSourceRelationDetail: null,
+        dishTags: [],
+      });
+    });
+
+    it('succeeds without comment', async () => {
+      const { getLatestMutationVariables } = registerMutationHandler(
+        AddDishDocument,
+        {
+          addDish: {
+            dishId: 1,
+          },
+        },
+      );
+
+      await userType(screen, 'dishname', newDishWithRequiredParams.name);
+
+      await userClick(screen, 'submitDishButton');
+
+      expect(getLatestMutationVariables()).toEqual({
+        dish: newDishWithRequiredParams,
+        dishSource: null,
+        dishSourceRelationDetail: null,
+        dishTags: [],
       });
     });
   });

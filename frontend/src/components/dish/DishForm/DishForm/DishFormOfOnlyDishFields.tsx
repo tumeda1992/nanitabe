@@ -60,6 +60,17 @@ export const DishFormOfOnlyDishFields = (
           errorMessage={errors.dish?.mealPosition?.message}
         />
       </FormFieldWrapperWithLabel>
+      <FormFieldWrapperWithLabel label="コメント">
+        <Form.Control
+          as="textarea"
+          {...register('dish.comment')}
+          rows={1}
+          defaultValue={preFilledDish?.comment || ''}
+          placeholder="料理のメモや感想を入力..."
+          data-testid="dishComment"
+        />
+        <ErrorMessageIfExist errorMessage={errors.dish?.comment?.message} />
+      </FormFieldWrapperWithLabel>
     </>
   );
 };

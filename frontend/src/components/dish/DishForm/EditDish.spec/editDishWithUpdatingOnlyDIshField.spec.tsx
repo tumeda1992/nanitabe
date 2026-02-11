@@ -96,5 +96,55 @@ describe('<EditDish>', () => {
         });
       });
     });
+
+    describe('when update dish comment', () => {
+      it('succeeds with comment text', async () => {
+        const { getLatestMutationVariables } = registerMutationHandler(
+          UpdateDishDocument,
+          {
+            updateDish: {
+              dishId: 1,
+            },
+          },
+        );
+
+        const updatedComment = 'とても美味しい料理でした';
+
+        await userType(screen, 'dishComment', updatedComment);
+        await userClick(screen, 'submitDishButton');
+
+        expect(getLatestMutationVariables()).toEqual({
+          dish: {
+            ...registeredDish,
+            comment: updatedComment,
+          },
+          dishSourceRelation: null,
+          dishTags: [],
+        });
+      });
+
+      it('succeeds with empty comment', async () => {
+        const { getLatestMutationVariables } = registerMutationHandler(
+          UpdateDishDocument,
+          {
+            updateDish: {
+              dishId: 1,
+            },
+          },
+        );
+
+        await userClearTextbox(screen, 'dishComment');
+        await userClick(screen, 'submitDishButton');
+
+        expect(getLatestMutationVariables()).toEqual({
+          dish: {
+            ...registeredDish,
+            comment: '',
+          },
+          dishSourceRelation: null,
+          dishTags: [],
+        });
+      });
+    });
   });
 });
