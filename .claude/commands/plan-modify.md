@@ -2,10 +2,10 @@
 description: "Spec-driven plan: steering skill を起動して steering を作る（実装はしない）"
 ---
 
-# /plan
+# /plan-modify
 
 **引数:** やりたいこと
-例: `/plan ユーザープロフィール編集`
+例: `/plan-modify ユーザープロフィール編集`
 
 ## このコマンドの責務
 - 受け取った引数をそのまま `steering` スキルに渡し、steering 作成を開始するだけ。
