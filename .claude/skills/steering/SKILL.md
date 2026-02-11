@@ -4,7 +4,7 @@ description: "Spec-driven plan を steering に落とす。Design合意→Taskli
 allowed-tools: Read, Grep, Write, Edit, Bash
 ---
 
-# Steering Skill（/plan 用・Single source of truth）
+# Steering Skill
 
 ## 入力
 - ユーザー入力（/plan の引数）: **やりたいこと**
@@ -103,7 +103,7 @@ design.md は最低限、以下を含む（短くてもよい、ただし空洞�
 ---
 
 ### 6) tasklist.md（詳細）を作る（Design合意後のみ）
-- `tasklist.md` を作成し、**詳細タスクまで**記載する（ただし実行はしない）
+- `.claude/skills/steering/templates/tasklist.md`を元に`tasklist.md` を作成し、**詳細タスクまで**記載する（ただし実行はしない）
 - 要件:
     - フェーズ分割（実装 / テスト / 移行 / リリース / ドキュメント など）
     - 各タスクは “着手可能な粒度”

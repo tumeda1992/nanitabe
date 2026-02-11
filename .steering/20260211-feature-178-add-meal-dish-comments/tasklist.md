@@ -1,219 +1,291 @@
-# Tasklist: 食事と料理のコメント機能追加
+# タスクリスト: 食事と料理のコメント機能追加
 
-## 概要
-- 料理登録/編集と食事登録/編集フォームに `comment` フィールドの入力UIを追加
-- カレンダーの食事表示アイコンにコメントを表示
-- すべてテストファースト（Red → Green → Refactor）で実装
+## 🚨 タスク完全完了の原則
+
+**このファイルの全タスクが完了するまで作業を継続すること**
+
+### 必須ルール
+- **全てのタスクを`[x]`にすること**
+- 「時間の都合により別タスクとして実施予定」は禁止
+- 「実装が複雑すぎるため後回し」は禁止
+- 未完了タスク（`[ ]`）を残したまま作業を終了しない
+
+### 実装可能なタスクのみを計画
+- 計画段階で「実装可能なタスク」のみをリストアップ
+- 「将来やるかもしれないタスク」は含めない
+- 「検討中のタスク」は含めない
+
+### タスクスキップが許可される唯一のケース
+以下の技術的理由に該当する場合のみスキップ可能:
+- 実装方針の変更により、機能自体が不要になった
+- アーキテクチャ変更により、別の実装方法に置き換わった
+- 依存関係の変更により、タスクが実行不可能になった
+
+スキップ時は必ず理由を明記:
+```markdown
+- [x] ~~タスク名~~（実装方針変更により不要: 具体的な技術的理由）
+```
+
+### タスクが大きすぎる場合
+- タスクを小さなサブタスクに分割
+- 分割したサブタスクをこのファイルに追加
+- サブタスクを1つずつ完了させる
 
 ---
 
 ## フェーズ1: 事前調査・確認
 
-### タスク1.1: GraphQLクエリの確認
-- **内容**: カレンダーのGraphQLクエリで `comment` フィールドを取得しているか確認
-- **ファイル**:
-  - `frontend/src/features/meal/fetchMealsForCalenderQuery.ts` など
-  - GraphQLクエリ定義を探す
-- **確認項目**:
-  - `meal.comment` が含まれているか
-  - `meal.dish.comment` が含まれているか
-  - 含まれていない場合は追加
-- **DoD**: クエリに `comment` フィールドが含まれている
+- [ ] GraphQLクエリの確認
+    - [ ] カレンダーのクエリで `meal.comment` が含まれているか確認
+    - [ ] カレンダーのクエリで `meal.dish.comment` が含まれているか確認
+    - [ ] 含まれていない場合はクエリ定義を修正
+
+### 各タスク詳細
+
+#### GraphQLクエリの確認
+**ファイル**: `frontend/src/features/meal/fetchMealsForCalenderQuery.ts` など
+
+**確認項目**:
+- `meal.comment` が含まれているか
+- `meal.dish.comment` が含まれているか
+- 含まれていない場合は追加
+
+**DoD**: クエリに `comment` フィールドが含まれている
 
 ---
 
 ## フェーズ2: 料理フォームへのコメント追加
 
-### タスク2.1: 料理フォームにコメント入力フィールドを追加（実装）
-- **内容**: `DishFormOfOnlyDishFields.tsx` にコメント入力（テキストエリア）を追加
-- **ファイル**: `frontend/src/components/dish/DishForm/DishForm/DishFormOfOnlyDishFields.tsx`
-- **実装内容**:
-  - `FormFieldWrapperWithLabel` を使用してラベル「コメント」を追加
-  - `<Form.Control as="textarea" {...register('dish.comment')} />` を追加
-  - プレースホルダー: 「料理のメモや感想を入力...」
-  - `defaultValue={preFilledDish?.comment}` を設定（編集時）
-- **依存**: なし
-- **DoD**: フォームにコメント入力欄が表示される
+- [ ] 料理フォームにコメント入力フィールドを追加
+    - [ ] `FormFieldWrapperWithLabel` でラベル「コメント」を追加
+    - [ ] テキストエリアを追加（`<Form.Control as="textarea">`）
+    - [ ] プレースホルダー設定
+    - [ ] 編集時のデフォルト値設定
 
-### タスク2.2: 料理追加のテストを作成（Red）
-- **内容**: `AddDish.spec.tsx` にコメント入力のテストを追加
-- **ファイル**: `frontend/src/components/dish/DishForm/AddDish.spec.tsx`
-- **テストケース**:
-  1. コメントを入力して登録し、GraphQLに正しく送信される
-  2. コメントなしで登録し、GraphQLに `undefined` が送信される
-- **実装内容**:
-  - 新しい `describe` ブロック: `'when add dish with comment'`
-  - `userType(screen, 'dishComment', 'これは美味しい料理です')`
-  - `expect(getLatestMutationVariables().dish.comment).toEqual('これは美味しい料理です')`
-- **依存**: タスク2.1
-- **DoD**: テストが失敗する（Red）
+- [ ] 料理追加のテスト作成・実行（Red → Green）
+    - [ ] テストケース追加: コメントを入力して登録
+    - [ ] テストケース追加: コメントなしで登録
+    - [ ] Docker内でテスト実行
+    - [ ] テスト失敗の修正
 
-### タスク2.3: 料理追加のテストを実行・修正（Green）
-- **内容**: Docker内でテストを実行し、失敗を修正
-- **コマンド**: `docker compose exec frontend yarn test AddDish.spec.tsx`
-- **実装内容**:
-  - テストが失敗した場合、原因を分析して修正
-  - スキーマやフォームの設定を調整
-- **依存**: タスク2.2
-- **DoD**: テストがグリーン
+- [ ] 料理編集のテスト作成・実行（Red → Green）
+    - [ ] テストケース追加: コメントを編集して保存
+    - [ ] テストケース追加: コメントを空にして保存
+    - [ ] Docker内でテスト実行
+    - [ ] テスト失敗の修正
 
-### タスク2.4: 料理編集のテストを作成・実行（Red → Green）
-- **内容**: `EditDish.spec.tsx` にコメント編集のテストを追加
-- **ファイル**: `frontend/src/components/dish/DishForm/EditDish.spec/` 配下のテストファイル
-- **テストケース**:
-  1. コメントを編集して保存し、GraphQLに正しく送信される
-  2. コメントを空にして保存し、GraphQLに空文字列が送信される
-- **実装内容**:
-  - 既存のテストファイルに追加（例: `editDishWithUpdatingOnlyDIshField.spec.tsx`）
-  - または新規ファイル: `editDishWithUpdatingComment.spec.tsx`
-- **依存**: タスク2.3
-- **DoD**: テストがグリーン
+### 各タスク詳細
+#### 料理フォームにコメント入力フィールドを追加
+**ファイル**: `frontend/src/components/dish/DishForm/DishForm/DishFormOfOnlyDishFields.tsx`
+
+**実装内容**:
+- `FormFieldWrapperWithLabel` を使用してラベル「コメント」を追加
+- `<Form.Control as="textarea" {...register('dish.comment')} />` を追加
+- プレースホルダー: 「料理のメモや感想を入力...」
+- `defaultValue={preFilledDish?.comment}` を設定（編集時）
+
+**DoD**: フォームにコメント入力欄が表示される
+
+#### 料理追加のテスト作成・実行（Red → Green）
+**ファイル**: `frontend/src/components/dish/DishForm/AddDish.spec.tsx`
+
+**テストケース**:
+1. コメントを入力して登録し、GraphQLに正しく送信される
+2. コメントなしで登録し、GraphQLに `undefined` が送信される
+
+**実装内容**:
+- 新しい `describe` ブロック: `'when add dish with comment'`
+- `userType(screen, 'dishComment', 'これは美味しい料理です')`
+- `expect(getLatestMutationVariables().dish.comment).toEqual('これは美味しい料理です')`
+
+**コマンド**: `docker compose exec frontend yarn test AddDish.spec.tsx`
+
+**DoD**: テストがグリーン
+
+#### 料理編集のテスト作成・実行（Red → Green）
+**ファイル**: `frontend/src/components/dish/DishForm/EditDish.spec/` 配下のテストファイル
+
+**テストケース**:
+1. コメントを編集して保存し、GraphQLに正しく送信される
+2. コメントを空にして保存し、GraphQLに空文字列が送信される
+
+**実装内容**:
+- 既存のテストファイルに追加（例: `editDishWithUpdatingOnlyDIshField.spec.tsx`）
+- または新規ファイル: `editDishWithUpdatingComment.spec.tsx`
+
+**DoD**: テストがグリーン
 
 ---
 
 ## フェーズ3: 食事フォームへのコメント追加
 
-### タスク3.1: 食事フォームにコメント入力フィールドを追加（実装）
-- **内容**: `MealForm/index.tsx` にコメント入力（テキストエリア）を追加
-- **ファイル**: `frontend/src/components/meal/MealForm/MealForm/index.tsx`
-- **実装内容**:
-  - 日付・時間帯の後にコメントフィールドを追加
-  - `FormFieldWrapperWithLabel` を使用してラベル「コメント」を追加
-  - `<Form.Control as="textarea" {...register('meal.comment')} />` を追加
-  - プレースホルダー: 「食事のメモや感想を入力...」
-  - 編集時のデフォルト値: `defaultValue={registeredMeal?.comment}` （propsから受け取る）
-- **依存**: なし
-- **DoD**: フォームにコメント入力欄が表示される
+- [ ] 食事フォームにコメント入力フィールドを追加
+    - [ ] `FormFieldWrapperWithLabel` でラベル「コメント」を追加
+    - [ ] テキストエリアを追加（`<Form.Control as="textarea">`）
+    - [ ] プレースホルダー設定
+    - [ ] 編集時のデフォルト値設定
 
-### タスク3.2: 食事追加のテストを作成（Red）
-- **内容**: `AddMeal.spec.tsx` にコメント入力のテストを追加
-- **ファイル**: `frontend/src/components/meal/MealForm/AddMeal.spec.tsx`
-- **テストケース**:
-  1. コメントを入力して登録し、GraphQLに正しく送信される
-  2. コメントなしで登録し、GraphQLに `undefined` が送信される
-- **実装内容**:
-  - 新しい `describe` ブロック: `'when add meal with comment'`
-  - `userType(screen, 'mealComment', 'とても美味しかった')`
-  - `expect(getLatestMutationVariables().meal.comment).toEqual('とても美味しかった')`
-- **依存**: タスク3.1
-- **DoD**: テストが失敗する（Red）
+- [ ] 食事追加のテスト作成・実行（Red → Green）
+    - [ ] テストケース追加: コメントを入力して登録
+    - [ ] テストケース追加: コメントなしで登録
+    - [ ] Docker内でテスト実行
+    - [ ] テスト失敗の修正
 
-### タスク3.3: 食事追加のテストを実行・修正（Green）
-- **内容**: Docker内でテストを実行し、失敗を修正
-- **コマンド**: `docker compose exec frontend yarn test AddMeal.spec.tsx`
-- **実装内容**:
-  - テストが失敗した場合、原因を分析して修正
-  - スキーマやフォームの設定を調整
-- **依存**: タスク3.2
-- **DoD**: テストがグリーン
+- [ ] 食事編集のテスト作成・実行（Red → Green）
+    - [ ] テストケース追加: コメントを編集して保存
+    - [ ] テストケース追加: コメントを空にして保存
+    - [ ] Docker内でテスト実行
+    - [ ] テスト失敗の修正
 
-### タスク3.4: 食事編集のテストを作成・実行（Red → Green）
-- **内容**: `EditMeal.spec.tsx` にコメント編集のテストを追加
-- **ファイル**: `frontend/src/components/meal/MealForm/EditMeal.spec.tsx`
-- **テストケース**:
-  1. コメントを編集して保存し、GraphQLに正しく送信される
-  2. コメントを空にして保存し、GraphQLに空文字列が送信される
-- **依存**: タスク3.3
-- **DoD**: テストがグリーン
+### 各タスク詳細
+#### 食事フォームにコメント入力フィールドを追加
+**ファイル**: `frontend/src/components/meal/MealForm/MealForm/index.tsx`
+
+**実装内容**:
+- 日付・時間帯の後にコメントフィールドを追加
+- `FormFieldWrapperWithLabel` を使用してラベル「コメント」を追加
+- `<Form.Control as="textarea" {...register('meal.comment')} />` を追加
+- プレースホルダー: 「食事のメモや感想を入力...」
+- 編集時のデフォルト値: `defaultValue={registeredMeal?.comment}` （propsから受け取る）
+
+**DoD**: フォームにコメント入力欄が表示される
+
+#### 食事追加のテスト作成・実行（Red → Green）
+**ファイル**: `frontend/src/components/meal/MealForm/AddMeal.spec.tsx`
+
+**テストケース**:
+1. コメントを入力して登録し、GraphQLに正しく送信される
+2. コメントなしで登録し、GraphQLに `undefined` が送信される
+
+**実装内容**:
+- 新しい `describe` ブロック: `'when add meal with comment'`
+- `userType(screen, 'mealComment', 'とても美味しかった')`
+- `expect(getLatestMutationVariables().meal.comment).toEqual('とても美味しかった')`
+
+**コマンド**: `docker compose exec frontend yarn test AddMeal.spec.tsx`
+
+**DoD**: テストがグリーン
+
+#### 食事編集のテスト作成・実行（Red → Green）
+**ファイル**: `frontend/src/components/meal/MealForm/EditMeal.spec.tsx`
+
+**テストケース**:
+1. コメントを編集して保存し、GraphQLに正しく送信される
+2. コメントを空にして保存し、GraphQLに空文字列が送信される
+
+**DoD**: テストがグリーン
 
 ---
 
 ## フェーズ4: カレンダー表示へのコメント追加
 
-### タスク4.1: カレンダーのMealIconにコメント表示を追加（実装）
-- **内容**: `MealIcon/index.tsx` でコメントを表示
-- **ファイル**: `frontend/src/components/calender/calenderComponents/MealIcon/index.tsx`
-- **実装内容**:
-  - 料理コメント: `meal.dish.comment` を表示
-  - 食事コメント: `meal.comment` を表示
-  - 表示ロジック:
-    - コメントがない場合は非表示
-    - 30文字以上の場合は省略表示（「...」）
-  - 配置: 既存の `caption` の下に新しい `<div>` を追加
-  - CSSクラス: `style['dish-content-comment']` など（後で調整可能）
-- **依存**: タスク1.1
-- **DoD**: カレンダーにコメントが表示される（デザインは雑でOK）
+- [ ] カレンダーのMealIconにコメント表示を追加
+    - [ ] 料理コメント（`meal.dish.comment`）の表示実装
+    - [ ] 食事コメント（`meal.comment`）の表示実装
+    - [ ] 30文字以上の省略表示実装
+    - [ ] コメントがない場合の非表示実装
 
-### タスク4.2: カレンダー表示のテストを作成（Red）
-- **内容**: `MealIcon/index.spec.tsx` を作成（存在しない場合）
-- **ファイル**: `frontend/src/components/calender/calenderComponents/MealIcon/index.spec.tsx`
-- **テストケース**:
-  1. 料理コメントがある場合、表示される
-  2. 食事コメントがある場合、表示される
-  3. 両方のコメントがある場合、両方表示される
-  4. コメントがない場合、非表示
-  5. 長いコメント（30文字以上）の場合、省略表示される
-- **実装内容**:
-  - モックデータを準備（`meal` オブジェクトに `comment` と `dish.comment` を含める）
-  - `screen.getByText` でコメントが表示されているか確認
-- **依存**: タスク4.1
-- **DoD**: テストが失敗する（Red）
+- [ ] カレンダー表示のテスト作成・実行（Red → Green）
+    - [ ] テストケース追加: 料理コメントがある場合
+    - [ ] テストケース追加: 食事コメントがある場合
+    - [ ] テストケース追加: 両方のコメントがある場合
+    - [ ] テストケース追加: コメントがない場合
+    - [ ] テストケース追加: 長いコメントの省略表示
+    - [ ] Docker内でテスト実行
+    - [ ] テスト失敗の修正
 
-### タスク4.3: カレンダー表示のテストを実行・修正（Green）
-- **内容**: Docker内でテストを実行し、失敗を修正
-- **コマンド**: `docker compose exec frontend yarn test MealIcon`
-- **実装内容**:
-  - テストが失敗した場合、原因を分析して修正
-  - 表示ロジックやCSSを調整
-- **依存**: タスク4.2
-- **DoD**: テストがグリーン
+### 各タスク詳細
 
----
+#### カレンダーのMealIconにコメント表示を追加
+**ファイル**: `frontend/src/components/calender/calenderComponents/MealIcon/index.tsx`
 
-## フェーズ5: フォーマット・最終確認
+**実装内容**:
+- 料理コメント: `meal.dish.comment` を表示
+- 食事コメント: `meal.comment` を表示
+- 表示ロジック:
+  - コメントがない場合は非表示
+  - 30文字以上の場合は省略表示（「...」）
+- 配置: 既存の `caption` の下に新しい `<div>` を追加
+- CSSクラス: `style['dish-content-comment']` など（後で調整可能）
 
-### タスク5.1: ESLintを実行
-- **内容**: 修正したコードに対してESLintを実行
-- **コマンド**: `docker compose exec frontend yarn lint`
-- **実装内容**:
-  - エラーがある場合は修正
-  - 自動修正可能な場合は `yarn lint --fix`
-- **依存**: すべての実装タスク完了
-- **DoD**: ESLintエラーなし
+**DoD**: カレンダーにコメントが表示される（デザインは雑でOK）
 
-### タスク5.2: 全テストを実行
-- **内容**: すべてのテストを実行して、グリーンであることを確認
-- **コマンド**: `docker compose exec frontend yarn test`
-- **依存**: タスク5.1
-- **DoD**: すべてのテストがグリーン
+#### カレンダー表示のテスト作成・実行（Red → Green）
+**ファイル**: `frontend/src/components/calender/calenderComponents/MealIcon/index.spec.tsx`
 
-### タスク5.3: 手動確認
-- **内容**: ブラウザで実際に動作確認
-- **確認項目**:
-  1. 料理登録時にコメントを入力し、保存後に編集画面で確認できる
-  2. 食事登録時にコメントを入力し、保存後に編集画面で確認できる
-  3. カレンダーの食事アイコンで料理コメント・食事コメントが表示される
-- **依存**: タスク5.2
-- **DoD**: すべての確認項目が動作する
+**テストケース**:
+1. 料理コメントがある場合、表示される
+2. 食事コメントがある場合、表示される
+3. 両方のコメントがある場合、両方表示される
+4. コメントがない場合、非表示
+5. 長いコメント（30文字以上）の場合、省略表示される
+
+**実装内容**:
+- モックデータを準備（`meal` オブジェクトに `comment` と `dish.comment` を含める）
+- `screen.getByText` でコメントが表示されているか確認
+
+**コマンド**: `docker compose exec frontend yarn test MealIcon`
+
+**DoD**: テストがグリーン
 
 ---
 
-## 備考
+## フェーズ5: 品質チェックと修正
 
-### 前提条件
-- Docker環境が起動している（`docker compose up -d`）
-- フロントエンドコンテナが正常に動作している
+- [ ] すべてのテストが通ることを確認
+    - [ ] `docker compose exec frontend yarn test`
 
-### 不確実な項目
-- **TBD**: カレンダーのGraphQLクエリに `comment` フィールドが含まれているか
-  - 調査項目: タスク1.1で確認
-  - 含まれていない場合は、クエリ定義を修正してから進める
+- [ ] リントエラーがないことを確認
+    - [ ] `docker compose exec frontend yarn lint`
+    - [ ] エラーがある場合は修正（`yarn lint --fix`）
 
-### タスク完了の目安時間
-- フェーズ1: 15分
-- フェーズ2: 1.5時間
-- フェーズ3: 1.5時間
-- フェーズ4: 1時間
-- フェーズ5: 30分
-- **合計**: 約5時間
+- [ ] 手動確認
+    - [ ] 料理登録時にコメントを入力し、保存後に編集画面で確認できる
+    - [ ] 食事登録時にコメントを入力し、保存後に編集画面で確認できる
+    - [ ] カレンダーの食事アイコンで料理コメント・食事コメントが表示される
 
 ---
 
-## 実行順序
-1. フェーズ1（事前調査）
-2. フェーズ2（料理フォーム）
-3. フェーズ3（食事フォーム）
-4. フェーズ4（カレンダー表示）
-5. フェーズ5（フォーマット・確認）
+## フェーズ6: ドキュメント更新
 
-各フェーズ内のタスクは、番号順に実行する。
+- [ ] README.md を更新（必要に応じて）
+- [ ] 実装後の振り返り（このファイルの下部に記録）
+
+---
+
+## 実装後の振り返り
+
+### 実装完了日
+{YYYY-MM-DD}
+
+### 計画と実績の差分
+
+**計画と異なった点**:
+- {計画時には想定していなかった技術的な変更点}
+- {実装方針の変更とその理由}
+
+**新たに必要になったタスク**:
+- {実装中に追加したタスク}
+- {なぜ追加が必要だったか}
+
+**技術的理由でスキップしたタスク**（該当する場合のみ）:
+- {タスク名}
+    - スキップ理由: {具体的な技術的理由}
+    - 代替実装: {何に置き換わったか}
+
+**⚠️ 注意**: 「時間の都合」「難しい」などの理由でスキップしたタスクはここに記載しないこと。全タスク完了が原則。
+
+### 学んだこと
+
+**技術的な学び**:
+- {実装を通じて学んだ技術的な知見}
+- {新しく使った技術やパターン}
+
+**プロセス上の改善点**:
+- {タスク管理で良かった点}
+- {ステアリングファイルの活用方法}
+
+### 次回への改善提案
+- {次回の機能追加で気をつけること}
+- {より効率的な実装方法}
+- {タスク計画の改善点}
