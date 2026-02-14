@@ -52,7 +52,7 @@ allowed-tools: Read, Grep, Write, Edit, Bash
 
 ### 1) steering ディレクトリ作成
 1. `[YYYYMMDD]`, `[branch]`, `[slug]` を決める
-2. `.steering/[YYYYMMDD]-[branch]-[slug]/` を作成
+2. `.steering/[YYYYM]/[YYYYMMDD]-[branch]-[slug]/` を作成
 3. `design.md` を作成（なければ新規）
 
 > この時点では tasklist は作らない
