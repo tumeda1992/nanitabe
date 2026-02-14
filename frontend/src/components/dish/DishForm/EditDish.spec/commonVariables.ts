@@ -11,6 +11,7 @@ export const registeredDish = {
   id: 55,
   name: '生姜焼き',
   mealPosition: 2,
+  comment: '',
 };
 
 export const updatedDish = {
