@@ -74,8 +74,8 @@ export default (props: Props) => {
   })();
 
   const dishName = (() => {
-    if (dish.name.length <= 15) return dish.name;
-    return `${dish.name.slice(0, 7)}…${dish.name.slice(-7)}`;
+    if (dish.name.length <= 50) return dish.name;
+    return `${dish.name.slice(0, 25)}…${dish.name.slice(-25)}`;
   })();
 
   const caption = (() => {
@@ -83,8 +83,8 @@ export default (props: Props) => {
       if (!dish?.dishSourceRelation?.sourceName) return '';
       const displaySourceName = (() => {
         const { sourceName } = dish.dishSourceRelation;
-        if (sourceName.length <= 5) return sourceName;
-        return `${sourceName.slice(0, 5)}…`;
+        if (sourceName.length <= 10) return sourceName;
+        return `${sourceName.slice(0, 10)}…`;
       })();
       const pageString = (() => {
         if (!dish.dishSourceRelation.recipeBookPage) return '';
@@ -92,11 +92,19 @@ export default (props: Props) => {
       })();
       return `(${displaySourceName}${pageString})`;
     })();
+
     const evaluationCaption = (() => {
       if (!dish?.evaluationScore) return '';
       return `★${dish.evaluationScore}`;
     })();
-    return `${dishSourceCaption} ${evaluationCaption}`;
+
+    const commentCaption = (() => {
+      const comment = (meal?.comment || '') + (dish?.comment || '');
+      if (comment.length <= 100) return comment;
+      return `${comment.slice(0, 100)}...`;
+    })();
+
+    return `${evaluationCaption} ${dishSourceCaption} ${commentCaption}`;
   })();
 
   return (
