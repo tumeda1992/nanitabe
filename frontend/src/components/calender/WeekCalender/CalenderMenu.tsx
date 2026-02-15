@@ -45,6 +45,23 @@ export default (props: { useAssignDishModeResult: any }) => {
             今週に移動
           </Link>
         </li>
+        <li
+          className={classnames(
+            calenderMenuStyle['calender-header-float-menu__row'],
+          )}
+        >
+          <Link
+            href={{
+              pathname:
+                'https://nanitabe_back.kibotsu.com/admin/food/dish/word/normalize_words',
+            }}
+            className={classnames(
+              calenderMenuStyle['calender-header-float-menu__content'],
+            )}
+          >
+            (admin)ワード正規化
+          </Link>
+        </li>
       </>
     </CalenderMenuWrapper>
   );

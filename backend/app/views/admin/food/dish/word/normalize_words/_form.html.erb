@@ -1,0 +1,14 @@
+<%= form_with(model: normalize_word, url: normalize_word.persisted? ? admin_food_dish_word_normalize_word_path(normalize_word) : admin_food_dish_word_normalize_words_path, local: true) do |form| %>
+  <div class="mb-3">
+    <%= form.label :source, '元ワード（source）', class: 'form-label' %>
+    <%= form.text_field :source, class: 'form-control', placeholder: '例: トマト煮込み' %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :destination, '正規化先（destination）', class: 'form-label' %>
+    <%= form.text_field :destination, class: 'form-control', placeholder: '例: トマト煮（空欄可：sourceと同じになります）' %>
+    <small class="form-text text-muted">空欄の場合、sourceと同じ値になります</small>
+  </div>
+
+  <%= form.submit normalize_word.persisted? ? '更新' : '作成', class: 'btn btn-primary' %>
+<% end %>
