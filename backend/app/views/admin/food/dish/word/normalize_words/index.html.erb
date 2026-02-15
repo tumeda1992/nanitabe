@@ -1,0 +1,37 @@
+<div class="container mt-4">
+  <h1>正規化ワード管理</h1>
+
+  <% if notice %>
+    <div class="alert alert-success" role="alert"><%= notice %></div>
+  <% end %>
+
+  <%= link_to '新規作成', new_admin_food_dish_word_normalize_word_path, class: 'btn btn-primary mb-3' %>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>入力元（source）</th>
+        <th>入力先（destination）</th>
+        <th>正規化元</th>
+        <th>正規化先</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @normalize_words.each do |word| %>
+        <tr>
+          <td><%= word.id %></td>
+          <td><%= word.entered_source %></td>
+          <td><%= word.entered_destination %></td>
+          <td><%= word.source %></td>
+          <td><%= word.destination %></td>
+          <td>
+            <%= link_to '編集', edit_admin_food_dish_word_normalize_word_path(word), class: 'btn btn-sm btn-secondary' %>
+            <%= button_to '削除', admin_food_dish_word_normalize_word_path(word), method: :delete, data: { confirm: '本当に削除しますか?' }, class: 'btn btn-sm btn-danger' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

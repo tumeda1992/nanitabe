@@ -102,12 +102,8 @@ class Dish < ApplicationRecord
 
       case source_type
       when ::Business::Food::Dish::Source::Type::RECIPE_BOOK
-        return nil if relation.recipe_book_page.blank?
-
         ::Business::Food::Dish::Source::Locator::RecipeBook.new(relation.recipe_book_page)
       when ::Business::Food::Dish::Source::Type::YOUTUBE, ::Business::Food::Dish::Source::Type::WEBSITE
-        return nil if relation.recipe_website_url.blank?
-
         ::Business::Food::Dish::Source::Locator::RecipeWebsite.new(relation.recipe_website_url)
       else
         ::Business::Food::Dish::Source::Locator::OtherRecipe.new(relation.recipe_source_memo)

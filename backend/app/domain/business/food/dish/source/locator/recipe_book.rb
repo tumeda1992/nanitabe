@@ -4,6 +4,7 @@ module Business::Food::Dish::Source
 
     def initialize(page)
       super()
+      return unless page.present?
       raise ArgumentError, "page must be a positive integer" unless page.to_i >= 1
 
       @page = page.to_i

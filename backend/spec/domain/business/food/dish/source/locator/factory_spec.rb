@@ -11,10 +11,6 @@ RSpec.describe Business::Food::Dish::Source::Locator::Factory do
         expect(locator.page).to eq(page)
       end
 
-      it "raises error when page is missing" do
-        expect { described_class.build(:book) }.to raise_error(ArgumentError, "page must be a positive integer")
-      end
-
       it "raises error when page is invalid" do
         expect { described_class.build(:book, page: 0) }.to raise_error(ArgumentError, "page must be a positive integer")
       end

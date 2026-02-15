@@ -1,0 +1,11 @@
+<div class="container mt-4">
+  <h1>正規化ワード新規作成</h1>
+
+  <% if flash[:alert] %>
+    <div class="alert alert-danger" role="alert"><%= flash[:alert] %></div>
+  <% end %>
+
+  <%= render 'form', normalize_word: @normalize_word %>
+
+  <%= link_to '戻る', admin_food_dish_word_normalize_words_path, class: 'btn btn-secondary mt-3' %>
+</div>
