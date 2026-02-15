@@ -15,11 +15,14 @@ allowed-tools: Read, Grep, Write, Edit, Bash
 `.steering/.../design.md` を作って合意し、その後 `.steering/.../tasklist.md`（詳細タスク）を作って合意して終了する。  
 **このスキルは実装しない**（コード変更・テスト実行・タスク遂行は別コマンド）。
 
+## 注意事項
+会話は日本語で行うこと。
+
 ---
 
 ## 命名規則（固定）
 ディレクトリ名:
-- `.steering/[YYYYM]/[YYYYMMDD]-[branch]-[slug]/`
+- `.steering/[YYYY]/[YYYYMMDD]-[branch]-[slug]/`
 
 ### YYYYMMDD
 - 実行日
@@ -52,7 +55,7 @@ allowed-tools: Read, Grep, Write, Edit, Bash
 
 ### 1) steering ディレクトリ作成
 1. `[YYYYMMDD]`, `[branch]`, `[slug]` を決める
-2. `.steering/[YYYYM]/[YYYYMMDD]-[branch]-[slug]/` を作成
+2. `.steering/[YYYY]/[YYYYMMDD]-[branch]-[slug]/` を作成
 3. `.claude/skills/steering/templates/design.md`を元に`design.md` を作成
 
 > この時点では tasklist は作らない
