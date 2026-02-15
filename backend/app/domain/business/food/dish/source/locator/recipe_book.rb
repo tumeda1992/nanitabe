@@ -4,11 +4,10 @@ module Business::Food::Dish::Source
 
     def initialize(page)
       super()
-      if page.present?
-        raise ArgumentError, "page must be a positive integer" unless page.to_i >= 1
+      return unless page.present?
+      raise ArgumentError, "page must be a positive integer" unless page.to_i >= 1
 
-        @page = page.to_i
-      end
+      @page = page.to_i
     end
 
     def kind = :book

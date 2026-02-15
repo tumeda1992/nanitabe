@@ -19,8 +19,8 @@ module Business::Food::Dish::Word
           dish_root.renormalize_name
           ::Dish.persist_from_food_dish_root(dish_root)
           Rails.logger.info("#{log_prefix(i + 1, dish_ids.size, dish_id, dish_name)}の正規化が完了しました")
-        rescue => e
-          raise Errors::ReflectLatestNormalizeWordError.new("#{log_prefix(i + 1, dish_ids.size, dish_id, dish_name)}の正規化に失敗しました: #{e.message}")
+        rescue StandardError => e
+          raise Errors::ReflectLatestNormalizeWordError, "#{log_prefix(i + 1, dish_ids.size, dish_id, dish_name)}の正規化に失敗しました: #{e.message}"
         end
       end
     end

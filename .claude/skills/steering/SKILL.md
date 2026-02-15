@@ -65,6 +65,9 @@ allowed-tools: Read, Grep, Write, Edit, Bash
 ### 2) 読み取り調査（Designの根拠を集める）
 - `CLAUDE.md` があれば読む
 - `docs/` があれば読む
+- **プロジェクトのコーディング規約を読む**:
+    - `backend/docs/ai_guideline/development_standard/formatting.md` (Rubocop実行方針)
+    - `frontend/docs/ai_guideline/development_standard/formatting.md` (ESLint/Prettier実行方針)
 - Grep で類似実装を探す
     - 類似機能
     - 命名
@@ -116,6 +119,10 @@ design.md は最低限、以下を含む（短くてもよい、ただし空洞�
     - 各タスクは "着手可能な粒度"
     - 順序・依存が分かる
     - 主要タスク or フェーズに DoD（完了条件）
+    - **品質チェックフェーズの要件**:
+        - **MUST**: プロジェクト全体のスタイルチェック（Rubocop/ESLint）を含める
+        - 特定ファイルのみでなく、全体への影響を確認すること
+        - これにより、新規コードが既存コードに与える影響を早期発見する
     - 不確実なものは `TBD` で残し、前提・調査項目を明記
 
 ---
