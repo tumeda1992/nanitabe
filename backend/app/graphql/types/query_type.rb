@@ -21,5 +21,6 @@ module Types
 
     field :dish_source, resolver: Queries::Dish::Source::DishSource
     field :dish_sources, resolver: Queries::Dish::Source::DishSources
+    field :normalize_words, resolver: Queries::Dish::Word::NormalizeWords
   end
 end
