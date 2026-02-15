@@ -54,6 +54,19 @@ mutation/
    - `fetch_mutation_with_auth` で実行
    - DBから取得して検証
 
+### テストデータのクリーンアップ
+- **MUST: 他のデータに影響を与えるUsecaseを呼ぶ場合、テスト前にクリーンアップする**
+  - 例: `ReflectLatestNormalizeWordCommand` が既存Dishを参照する場合
+  - `before` ブロックで関連モデルを `delete_all` する
+  - 例:
+    ```ruby
+    before do
+      NormalizeWord.delete_all
+      Dish.delete_all
+    end
+    ```
+- **理由:** 既存のテストデータがUsecaseの副作用で不正な状態になると、テストが失敗する
+
 ### テンプレート
 ```ruby
 require "rails_helper"

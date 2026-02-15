@@ -1,10 +1,10 @@
 ---
-name: doc_enricher
+name: doc-enricher
 description: "コードリーディング/タスク遂行後に、永続性が高く高レバレッジな知識だけをディレクトリREADMEに提案する。デフォルトは提案のみ。ユーザー承認後にのみREADME/docsを更新。新規docs/作成は禁止。"
 allowed-tools: Read, Grep, Write, Edit
 ---
 
-# skill: doc_enricher（ディレクトリREADME知識の強化）
+# skill: doc-enricher（ディレクトリREADME知識の強化）
 
 ## 目的（Goal）
 コードリーディングやタスク遂行の後に、次回以降の読み解き／探索／レビューを楽にするための

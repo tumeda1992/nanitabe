@@ -57,24 +57,35 @@ mutations/
 3. **`MutationType` に登録**: `types/mutation_type.rb`
 4. **テスト作成**: `spec/graphql/mutation/[domain]/[subdomain]/[action]_spec.rb`
 
-### Input Typeを作るか判断する
-- **引数が2-3個で単純** → 直接 `argument` で定義
-- **複数の引数や複雑な構造** → `types/input/` にInput Type作成
+### Input Typeの作成（必須）
+- **MUST: すべてのmutationでInput Typeを作成すること**
+  - Relay形式では引数の数に関わらずInput Typeが必要
+  - 直接 `argument` で定義するとGraphQLエラーになる
+- Input Typeの配置: `types/input/[domain]/[subdomain]/[name]_for_[action].rb`
+- 例: `Types::Input::Dish::Word::WordForCreate`
 
 ### 実装例
 ```ruby
-module Mutations::Dish::Word
-  class AddWord < ::Mutations::BaseMutation
+# Input Type
+module Types::Input::Dish::Word
+  class WordForCreate < ::Types::BaseInputObject
     argument :source, String, required: true
     argument :destination, String, required: false
+  end
+end
+
+# Mutation
+module Mutations::Dish::Word
+  class AddWord < ::Mutations::BaseMutation
+    argument :word, ::Types::Input::Dish::Word::WordForCreate, required: true
 
     field :normalize_word_id, Int, null: false
 
-    def resolve(source:, destination: nil)
+    def resolve(word:)
       ActiveRecord::Base.transaction do
         created = ::Business::Food::Dish::Word::Usecase::AddCommand.call(
-          source: source,
-          destination: destination,
+          source: word[:source],
+          destination: word[:destination],
         )
 
         { normalize_word_id: created.id }
