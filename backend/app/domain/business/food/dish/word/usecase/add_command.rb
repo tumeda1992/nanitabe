@@ -20,7 +20,7 @@ module Business::Food::Dish::Word
                                  normalized_source
                                end
 
-      NormalizeWord.create(
+      normalize_word = NormalizeWord.create(
         entered_source: source,
         entered_destination: destination.presence || "",
         source: normalized_source,
@@ -28,6 +28,8 @@ module Business::Food::Dish::Word
       )
 
       Usecase::ReflectLatestNormalizeWordCommand.call
+
+      normalize_word
     end
   end
 end

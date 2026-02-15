@@ -15,11 +15,14 @@ allowed-tools: Read, Grep, Write, Edit, Bash
 `.steering/.../design.md` を作って合意し、その後 `.steering/.../tasklist.md`（詳細タスク）を作って合意して終了する。  
 **このスキルは実装しない**（コード変更・テスト実行・タスク遂行は別コマンド）。
 
+## 注意事項
+会話は日本語で行うこと。
+
 ---
 
 ## 命名規則（固定）
 ディレクトリ名:
-- `.steering/[YYYYMMDD]-[branch]-[slug]/`
+- `.steering/[YYYY]/[YYYYMMDD]-[branch]-[slug]/`
 
 ### YYYYMMDD
 - 実行日
@@ -52,8 +55,8 @@ allowed-tools: Read, Grep, Write, Edit, Bash
 
 ### 1) steering ディレクトリ作成
 1. `[YYYYMMDD]`, `[branch]`, `[slug]` を決める
-2. `.steering/[YYYYM]/[YYYYMMDD]-[branch]-[slug]/` を作成
-3. `design.md` を作成（なければ新規）
+2. `.steering/[YYYY]/[YYYYMMDD]-[branch]-[slug]/` を作成
+3. `.claude/skills/steering/templates/design.md`を元に`design.md` を作成
 
 > この時点では tasklist は作らない
 
@@ -117,6 +120,19 @@ design.md は最低限、以下を含む（短くてもよい、ただし空洞�
 - tasklist.md の要点（フェーズと主要タスク）を短く示してレビュー依頼
 - OK/はい/進めて 等なら **ここで終了**
 - 修正なら tasklist.md を更新して再レビュー（OKまで）
+
+---
+
+### 8) 振り返り：doc_enricher を起動（提案のみ → 承認があれば適用）
+- tasklist 合意後、`Skill('doc_enricher')` を **Phase 1（提案のみ）**として実行する
+- doc_enricher には以下を渡す前提で実行する:
+  - 対象ディレクトリ（今回読み/触りが発生した範囲）
+  - 関連ファイル（調査で読んだ/参照したファイル）
+  - steering パス（`.steering/.../`）
+
+- doc_enricher の提案を提示し、ユーザーに自然言語で確認する:
+  - OK/はい/適用して → doc_enricher を Phase 2（適用）で再実行（承認された変更だけ）
+  - いいえ/やめて/あとで → 提案のみで終了
 
 ---
 
