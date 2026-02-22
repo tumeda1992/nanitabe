@@ -6,48 +6,15 @@ class GraphqlController < ApplicationController
   include GraphqlDevise::SetUserByToken
 
   def execute
-    if defined?(Bullet)
-      Bullet.enable = false
-    end
-
-    timer = ExecutionTimer.new(execution_name: "GraphQL Controller")
     variables = prepare_variables(params[:variables])
     query = params[:query]
     operation_name = params[:operationName]
 
-    timer.log_elapsed_time(phase_name: "after preparing variables")
-
-    ctx = nil
-    if Rails.env.development?
-      StackProf.run(mode: :wall, out: "tmp/stackprof-ctx.dump", interval: 1000) do
-        ctx = build_context
-      end
-    else
-      ctx = build_context
-    end
-    context = ctx
-
-    timer.log_elapsed_time(phase_name: "after building context")
-
-    result = nil
-    if Rails.env.development?
-      StackProf.run(mode: :cpu, out: "tmp/stackprof-gql.dump", interval: 1000) do
-        result = BackendSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
-      end
-    else
-      result = BackendSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
-    end
-
-    timer.log_elapsed_time(phase_name: "after schema.execute")
-
+    result = BackendSchema.execute(query, variables: variables, context: build_context(), operation_name: operation_name)
     render json: result
   rescue StandardError => e
     raise e unless Rails.env.development?
     handle_error_in_development(e)
-  ensure
-    if defined?(Bullet)
-      Bullet.enable = true
-    end
   end
 
   private

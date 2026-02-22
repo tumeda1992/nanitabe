@@ -54,8 +54,7 @@ Rails.application.configure do
   config.active_record.migration_error = :page_load
 
   # Highlight code that triggered database queries in logs.
-  # 例: SQL文の後のapp/controllers/graphql_controller.rb:75
-  # config.active_record.verbose_query_logs = true
+  config.active_record.verbose_query_logs = true
 
   # Suppress logger output for asset requests.
   config.assets.quiet = true
@@ -75,7 +74,4 @@ Rails.application.configure do
     Bullet.rails_logger = true
     Bullet.add_footer = true
   end
-
-  # スキーマ取得の動的取得で遅くなるため、スキーマキャッシュを有効にする
-  config.active_record.use_schema_cache_dump = true
 end
