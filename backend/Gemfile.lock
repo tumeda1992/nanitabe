@@ -131,6 +131,9 @@ GEM
     factory_bot_rails (6.5.0)
       factory_bot (~> 6.5)
       railties (>= 6.1.0)
+    ffi (1.17.3-aarch64-linux-gnu)
+    ffi (1.17.3-arm64-darwin)
+    ffi (1.17.3-x86_64-linux-gnu)
     fiber-storage (1.0.1)
     globalid (1.2.1)
       activesupport (>= 6.1)
@@ -164,6 +167,10 @@ GEM
       base64
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
+    listen (3.10.0)
+      logger
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
     logger (1.7.0)
     loofah (2.24.1)
       crass (~> 1.0.2)
@@ -253,6 +260,9 @@ GEM
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
     rake (13.3.0)
+    rb-fsevent (0.11.2)
+    rb-inotify (0.11.1)
+      ffi (~> 1.0)
     rdoc (6.14.2)
       erb
       psych (>= 4.0.0)
@@ -382,6 +392,7 @@ DEPENDENCIES
   graphql_devise
   importmap-rails
   jbuilder
+  listen (~> 3.9)
   mysql2
   puma
   rack-cors
