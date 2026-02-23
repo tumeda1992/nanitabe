@@ -4,9 +4,9 @@ class ExecutionTimer
     @start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     @before_phase_time = @start_time
 
-    if execution_name.present?
-      Rails.logger.info "★Started(#{current_time_string}): #{@execution_name}"
-    end
+    return unless execution_name.present?
+
+    Rails.logger.info "★Started(#{current_time_string}): #{@execution_name}"
   end
 
   def log_elapsed_time(phase_name: nil)
