@@ -44,6 +44,8 @@ gem "devise-jwt"
 
 gem "standard_assert"
 
+gem "listen", "~> 3.9"
+
 group :development, :test do
   # これがあることで、パフォーマンスが落ちるため、入れない。binding.pryみたいなことができるやつで、ステップインとかできる
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
