@@ -25,6 +25,7 @@ module Backend
     config.encoding = "utf-8"
 
     config.autoload_paths += ["#{config.root}/app/domain"]
+    config.autoload_paths += ["#{config.root}/lib"]
 
     config.generators do |g|
       g.stylesheets false
