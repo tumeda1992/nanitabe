@@ -34,8 +34,8 @@ export default (props: Props) => {
       fetchMealsParams: {
         fetchMealsForCalenderParams: {
           requireFetchedData: true,
-          startDate: subDays(firstDisplayDate, 30),
-          lastDate: addDays(firstDisplayDate, 6 + 30),
+          startDate: subDays(firstDisplayDate, 7),
+          lastDate: addDays(firstDisplayDate, 6 + 7),
         },
       },
     };
