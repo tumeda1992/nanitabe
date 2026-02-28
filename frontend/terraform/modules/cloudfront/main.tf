@@ -83,7 +83,7 @@ resource "aws_cloudfront_distribution" "cf" {
   }
 
   ordered_cache_behavior {
-    path_pattern           = "/system/cache*"
+    path_pattern           = "/system/warmup*"
     target_origin_id       = "apiGatewayOrigin"
     viewer_protocol_policy = "redirect-to-https"
 
