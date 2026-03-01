@@ -1,5 +1,7 @@
 module Types
   class QueryType < Types::BaseObject
+    has_no_fields(true)
+
     # Add `node(id: ID!) and `nodes(ids: [ID!]!)`
     include GraphQL::Types::Relay::HasNodeField
     include GraphQL::Types::Relay::HasNodesField
@@ -21,6 +23,5 @@ module Types
 
     field :dish_source, resolver: Queries::Dish::Source::DishSource
     field :dish_sources, resolver: Queries::Dish::Source::DishSources
-    field :normalize_words, resolver: Queries::Dish::Word::NormalizeWords
   end
 end

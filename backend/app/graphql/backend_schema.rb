@@ -1,4 +1,5 @@
 class BackendSchema < GraphQL::Schema
+  # 後述の `query(Types::QueryType)` とかの定義と重複すると言われるが、重複して書くのがGraphqlDevise推奨の書き方。
   use GraphqlDevise::SchemaPlugin.new(
     query:            Types::QueryType,
     mutation:         Types::MutationType,
