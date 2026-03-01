@@ -21,7 +21,5 @@ module Types
     field :remove_dish_source, mutation: ::Mutations::Dish::Source::RemoveSource
 
     field :evaluate_dish, mutation: ::Mutations::Dish::Evaluation::EvaluateDish
-
-    field :add_dish_word, mutation: ::Mutations::Dish::Word::AddWord
   end
 end
