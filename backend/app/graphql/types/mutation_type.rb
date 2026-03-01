@@ -1,5 +1,7 @@
 module Types
   class MutationType < Types::BaseObject
+    has_no_fields(true)
+
     field :add_meal, mutation: ::Mutations::Meal::AddMeal
     field :add_meal_with_new_dish, mutation: ::Mutations::Meal::AddMealWithNewDish
     field :add_meal_with_new_dish_and_new_source, mutation: ::Mutations::Meal::AddMealWithNewDishAndNewSource

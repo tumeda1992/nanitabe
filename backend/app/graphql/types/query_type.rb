@@ -1,5 +1,7 @@
 module Types
   class QueryType < Types::BaseObject
+    has_no_fields(true)
+
     # Add `node(id: ID!) and `nodes(ids: [ID!]!)`
     include GraphQL::Types::Relay::HasNodeField
     include GraphQL::Types::Relay::HasNodesField
