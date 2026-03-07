@@ -1,3 +1,4 @@
+import './globals.css';
 import React from 'react';
 import type { Metadata } from 'next';
 import ApolloProvider from './apollo_provider';
