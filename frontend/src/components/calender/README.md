@@ -14,6 +14,8 @@
     Calender を変更すると週・月ビュー両方に影響する。**
 - 操作モード管理: `calenderComponents/useCalenderMode.ts`
 - 料理アイコン: `calenderComponents/MealIcon/index.tsx`
+- ページナビ用パス定義: `app/calender/week/[date]/consts.ts`・`app/calender/month/[date]/consts.ts`
+  - `weekCalenderPagePathOf` / `monthCalenderPagePathOf` / `isMonthPath` はここに定義
 
 grep キーワード: `calender`（"calendar" ではなくスペルミス表記で統一）
 
@@ -31,3 +33,7 @@ grep キーワード: `calender`（"calendar" ではなくスペルミス表記�
   操作 UI が画面下部固定バーに移動する。
 - MonthCalender の日付処理に `T09:00:00` の +9時間オフセットがある（暫定）。
   Rails に日付が前日として送られる問題の回避策。日付処理を変更する場合は注意。
+- ナビゲーション実装時は `pushHistory` と `<Link>` を使い分ける:
+  - MUST: 同じ物理ルート内の日付移動（前週/次週）は `LogicalHistory.pushHistory` を使う
+  - MUST: 週ビュー↔月ビューの切替は Next.js `<Link>` を使う。
+    `pushHistory` は `window.history.pushState` ベースのため物理ルート変更ができず、コンポーネントが切り替わらない。

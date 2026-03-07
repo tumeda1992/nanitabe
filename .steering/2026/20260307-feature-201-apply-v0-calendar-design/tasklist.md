@@ -28,12 +28,12 @@
 
 ### タスク
 
-- [ ] Tailwind CSS を Next.js フロントエンドに追加
+- [x] Tailwind CSS を Next.js フロントエンドに追加
     - `tailwind.config.ts` + `postcss.config.mjs` の設定
     - 既存 Bootstrap/SCSS との共存：`preflight` を無効化して CSS リセット競合を防ぐ
     - `globals.css`（または既存の CSS エントリポイント）に Tailwind ディレクティブを追加
 
-- [ ] shadcn/ui に必要なパッケージを追加
+- [x] shadcn/ui に必要なパッケージを追加
     - lucide-react
     - clsx, tailwind-merge（`cn` ユーティリティ用）
     - @radix-ui/react-dropdown-menu（DropdownMenu 用）
@@ -41,12 +41,12 @@
     - vaul（Drawer 用）
     - class-variance-authority
 
-- [ ] shadcn/ui コンポーネントを `frontend/src/components/ui/` に追加
+- [x] shadcn/ui コンポーネントを `frontend/src/components/ui/` に追加
     - Button
     - DropdownMenu
     - Drawer（後フェーズで使用。先行追加しておく）
 
-- [ ] 既存画面の動作確認・テスト実行
+- [x] 既存画面の動作確認・テスト実行
 
 ---
 
