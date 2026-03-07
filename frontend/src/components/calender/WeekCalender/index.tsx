@@ -9,10 +9,7 @@ import {
   useCalenderDayOfWeek,
   useFirstDisplayDate,
 } from './useWeekCalenderDate';
-import style from '../calenderComponents/Calender/index.module.scss';
-import CalenderMenu from './CalenderMenu';
-import useCalenderArrowComponent from '../calenderComponents/useCalenderArrowComponent';
-import useRefreshCalenderData from '../useRefreshCalenderData';
+import CalendarHeader from '../calenderComponents/CalendarHeader';
 
 export type Props = {
   date: Date;
@@ -68,6 +65,9 @@ export default (props: Props) => {
       });
     })();
 
+  const weekEndDate = addDays(firstDisplayDate, 6);
+  const displayLabel = `${format(firstDisplayDate, 'M/d')} - ${format(weekEndDate, 'M/d')}`;
+
   return (
     <Calender
       dateMealsList={dateMealsList}
@@ -76,19 +76,16 @@ export default (props: Props) => {
       refreshToPrev={updateFirstDateToPreviousWeekFirstDate}
       refreshToNext={updateFirstDateToNextWeekFirstDate}
     >
-      {({ isDisplayCalenderMode, useAssignDishModeResult }) => (
-        <>
-          <div className={style['calender-header-title']}>
-            {format(firstDisplayDate, 'yyyy年M月')}
-          </div>
-          {/* &nbsp; */}
-          {/* 今週(枠で括う) */}
-          <div className={style['calender-header-menu']}>
-            {isDisplayCalenderMode && (
-              <CalenderMenu useAssignDishModeResult={useAssignDishModeResult} />
-            )}
-          </div>
-        </>
+      {({ isDisplayCalenderMode, useAssignDishModeResult, refreshToPrev, refreshToNext }) => (
+        <CalendarHeader
+          viewType="week"
+          displayLabel={displayLabel}
+          currentDate={firstDisplayDate}
+          refreshToPrev={refreshToPrev}
+          refreshToNext={refreshToNext}
+          isDisplayCalenderMode={isDisplayCalenderMode}
+          onStartAssigningDish={useAssignDishModeResult.startAssigningDishMode}
+        />
       )}
     </Calender>
   );

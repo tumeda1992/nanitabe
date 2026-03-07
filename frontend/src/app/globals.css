@@ -2,7 +2,10 @@
 @import "tailwindcss/theme";
 @import "tailwindcss/utilities";
 
-/* shadcn/ui CSS カスタムプロパティ（フェーズ2以降で使用） */
+/* Tailwind のソーススキャン対象を TS/TSX ファイルに限定（デフォルトは全ファイルスキャン） */
+@source "../**/*.{ts,tsx}";
+
+/* shadcn/ui CSS カスタムプロパティ */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -23,6 +26,8 @@
     --input: 240 5.9% 90%;
     --ring: 240 5.9% 10%;
     --radius: 0.5rem;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
     /* カレンダー用カラー */
     --lunch: 34 100% 50%;
     --lunch-bg: 34 100% 97%;
@@ -31,4 +36,34 @@
     --dinner-bg: 221 83% 97%;
     --dinner-foreground: 221 83% 30%;
   }
+}
+
+/* Tailwind v4: CSS変数をカラーシステムにマップ（これがないと bg-background 等が生成されない） */
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-lunch: hsl(var(--lunch));
+  --color-lunch-bg: hsl(var(--lunch-bg));
+  --color-lunch-foreground: hsl(var(--lunch-foreground));
+  --color-dinner: hsl(var(--dinner));
+  --color-dinner-bg: hsl(var(--dinner-bg));
+  --color-dinner-foreground: hsl(var(--dinner-foreground));
+  --radius: var(--radius);
 }

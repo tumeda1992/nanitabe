@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react';
 import { format } from 'date-fns';
-import useCalenderArrowComponent from '../useCalenderArrowComponent';
 import useRefreshCalenderData from '../../useRefreshCalenderData';
 import useCalenderMode from '../useCalenderMode';
 import useMeasureHeight from '../../../common/useMeasureHeight';
@@ -31,12 +30,6 @@ export default (props: Props) => {
     refreshToNext,
     children,
   } = props;
-
-  const { PreviousWeekDisplayButton, NextWeekDisplayButton } =
-    useCalenderArrowComponent({
-      refreshToPrev,
-      refreshToNext,
-    });
 
   const { refreshData } = useRefreshCalenderData({ refetchMealsForCalender });
 
@@ -70,9 +63,13 @@ export default (props: Props) => {
   return (
     <div className={style['calender-container']}>
       <div className={style['calender-header']}>
-        {children({ isDisplayCalenderMode, useAssignDishModeResult })}
+        {children({
+          isDisplayCalenderMode,
+          useAssignDishModeResult,
+          refreshToPrev,
+          refreshToNext,
+        })}
       </div>
-      <PreviousWeekDisplayButton />
       <table>
         <tbody>
           {dateMealsList.map(({ date, dayLabel, meals }, dayIndex) => {
@@ -124,8 +121,6 @@ export default (props: Props) => {
         </tbody>
       </table>
 
-      {!requireDisplayingBottomBar && <NextWeekDisplayButton />}
-
       {/* 食事割当以外にも下からせり出るバーを使うようになったら条件変える */}
       {requireDisplayingBottomBar && (
         <>
@@ -133,7 +128,6 @@ export default (props: Props) => {
             ref={fixedComponentRef}
             className={style['fixed-bar-from-bottom']}
           >
-            <NextWeekDisplayButton />
             <div className={style['bottom-bar']}>
               {useAssignDishModeResult.inAssigningDishMode && (
                 <AssignDish useAssignDishModeResult={useAssignDishModeResult} />

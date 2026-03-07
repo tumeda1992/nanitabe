@@ -17,7 +17,7 @@
 
 ### タスク
 
-- [ ] `frontend/src/components/calender/calenderComponents/CalendarHeader/index.tsx` を新規作成
+- [x] `frontend/src/components/calender/calenderComponents/CalendarHeader/index.tsx` を新規作成
     - 使用コンポーネント: `@/components/ui/button`（Button）、`@/components/ui/dropdown-menu`（DropdownMenu 系）
     - 使用アイコン（lucide-react）: `ChevronLeft`, `ChevronRight`, `CalendarRange`, `CalendarDays`, `EllipsisVertical`, `UtensilsCrossed`
     - Props:
@@ -63,17 +63,17 @@
 
 ### タスク
 
-- [ ] `Calender/index.tsx` の children callback に `refreshToPrev`・`refreshToNext` を追加
+- [x] `Calender/index.tsx` の children callback に `refreshToPrev`・`refreshToNext` を追加
     - 変更前: `children({ isDisplayCalenderMode, useAssignDishModeResult })`
     - 変更後: `children({ isDisplayCalenderMode, useAssignDishModeResult, refreshToPrev, refreshToNext })`
     - `refreshToPrev`・`refreshToNext` は Calender の props からそのまま渡す
 
-- [ ] Calender/index.tsx 内の `<PreviousWeekDisplayButton />` と `<NextWeekDisplayButton />` の描画を削除
+- [x] Calender/index.tsx 内の `<PreviousWeekDisplayButton />` と `<NextWeekDisplayButton />` の描画を削除
     - `useCalenderArrowComponent` の呼び出しも削除（CalendarHeader が直接 refreshToPrev/Next を使う）
     - `BottomBar` エリアの `<NextWeekDisplayButton />` も削除
     - ※ `requireDisplayingBottomBar` や bottom-bar の構造自体は維持（次フェーズで AssignDish 等に使う）
 
-- [ ] TypeScript の型エラーがないことを確認
+- [x] TypeScript の型エラーがないことを確認
     - `docker compose exec frontend yarn lint`
 
 ---
@@ -88,7 +88,7 @@
 
 ### タスク
 
-- [ ] `WeekCalender/index.tsx` の children を CalendarHeader に置き換える
+- [x] `WeekCalender/index.tsx` の children を CalendarHeader に置き換える
     - `viewType`: `"week"`
     - `displayLabel`: `format(firstDisplayDate, 'yyyy年M月d日')` + 週末日付（例: "2026年3月7日〜13日"）
         - `addDays(firstDisplayDate, 6)` で週末を計算
@@ -98,7 +98,7 @@
     - `isDisplayCalenderMode`: children callback から受け取る
     - `onStartAssigningDish`: `useAssignDishModeResult.startAssigningDishMode`
 
-- [ ] テスト実行: `docker compose exec frontend yarn test` → 全グリーン確認
+- [x] テスト実行: `docker compose exec frontend yarn test` → 全グリーン確認
 
 ---
 
@@ -110,13 +110,13 @@
 
 ### タスク
 
-- [ ] `MonthCalender/index.tsx` の children を CalendarHeader に置き換える
+- [x] `MonthCalender/index.tsx` の children を CalendarHeader に置き換える
     - `viewType`: `"month"`
     - `displayLabel`: `format(firstDayOfMonth, 'yyyy年M月')`
     - `currentDate`: `firstDayOfMonth`（リンク計算は CalendarHeader 内で行う）
     - その他（refreshToPrev/Next, isDisplayCalenderMode, onStartAssigningDish）は WeekCalender と同様
 
-- [ ] テスト実行: `docker compose exec frontend yarn test` → 全グリーン確認
+- [x] テスト実行: `docker compose exec frontend yarn test` → 全グリーン確認
 
 ---
 
@@ -128,13 +128,13 @@
 
 ### タスク
 
-- [ ] `WeekCalender/CalenderMenu.tsx` を削除
+- [x] `WeekCalender/CalenderMenu.tsx` を削除
     - 削除前に import 参照がなくなっていることを確認
 
-- [ ] `calenderComponents/CalenderMenu/useCalenderMenuComponent.tsx` を削除
+- [x] `calenderComponents/CalenderMenu/useCalenderMenuComponent.tsx` を削除
     - 削除前に import 参照がなくなっていることを確認
 
-- [ ] `calenderComponents/CalenderMenu/` ディレクトリを削除
+- [x] `calenderComponents/CalenderMenu/` ディレクトリを削除
 
 ---
 
@@ -146,24 +146,24 @@
 
 ### タスク
 
-- [ ] 全テスト実行
-    - [ ] `docker compose exec frontend yarn test`
-    - [ ] 全グリーン確認。失敗があれば原因を修正して再実行
+- [x] 全テスト実行
+    - [x] `docker compose exec frontend yarn test`
+    - [x] 全グリーン確認。失敗があれば原因を修正して再実行
 
-- [ ] ESLint 実行（新規・変更ファイル）
-    - [ ] `docker compose exec frontend yarn lint src/components/calender/`
-    - [ ] エラーがあれば修正して再実行
+- [x] ESLint 実行（新規・変更ファイル）
+    - [x] `docker compose exec frontend yarn lint src/components/calender/`
+    - [x] エラーがあれば修正して再実行
 
-- [ ] ESLint 実行（プロジェクト全体）
-    - [ ] `docker compose exec frontend yarn lint`
-    - [ ] エラーがあれば修正して再実行
+- [x] ESLint 実行（プロジェクト全体）
+    - [x] `docker compose exec frontend yarn lint`
+    - [x] エラーがあれば修正して再実行
 
 ---
 
 ## 実装後の振り返り
 
 ### 実装完了日
-{YYYY-MM-DD}
+2026-03-07
 
 ### 計画と実績の差分
 

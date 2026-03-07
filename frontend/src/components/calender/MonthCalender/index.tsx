@@ -6,12 +6,9 @@ import {
   isSameDay,
   getDay,
   eachDayOfInterval,
-  addHours,
 } from 'date-fns';
 import Calender from '../calenderComponents/Calender';
 import useMeal from '../../../features/meal/useMeal';
-import style from '../calenderComponents/Calender/index.module.scss';
-import CalenderMenu from '../WeekCalender/CalenderMenu';
 import {
   DAY_OF_FRIDAY,
   DAY_OF_MONDAY,
@@ -22,6 +19,7 @@ import {
   DAY_OF_WEDNESDAY,
 } from '../calenderComponents/useCalenderDay';
 import { useDisplayDate } from './useMonthCalenderDate';
+import CalendarHeader from '../calenderComponents/CalendarHeader';
 
 export type Props = {
   date: Date;
@@ -77,6 +75,8 @@ export default (props: Props) => {
       });
     })();
 
+  const displayLabel = format(firstDayOfMonth, 'yyyy年M月');
+
   return (
     <Calender
       dateMealsList={dateMealsList}
@@ -85,19 +85,16 @@ export default (props: Props) => {
       refreshToPrev={updateToPreviousMonth}
       refreshToNext={updateToNextMonth}
     >
-      {({ isDisplayCalenderMode, useAssignDishModeResult }) => (
-        <>
-          <div className={style['calender-header-title']}>
-            {format(firstDayOfMonth, 'yyyy年M月')}
-          </div>
-          {/* &nbsp; */}
-          {/* 今週(枠で括う) */}
-          <div className={style['calender-header-menu']}>
-            {isDisplayCalenderMode && (
-              <CalenderMenu useAssignDishModeResult={useAssignDishModeResult} />
-            )}
-          </div>
-        </>
+      {({ isDisplayCalenderMode, useAssignDishModeResult, refreshToPrev, refreshToNext }) => (
+        <CalendarHeader
+          viewType="month"
+          displayLabel={displayLabel}
+          currentDate={firstDayOfMonth}
+          refreshToPrev={refreshToPrev}
+          refreshToNext={refreshToNext}
+          isDisplayCalenderMode={isDisplayCalenderMode}
+          onStartAssigningDish={useAssignDishModeResult.startAssigningDishMode}
+        />
       )}
     </Calender>
   );
