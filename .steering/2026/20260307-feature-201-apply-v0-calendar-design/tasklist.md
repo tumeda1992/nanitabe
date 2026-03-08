@@ -28,12 +28,12 @@
 
 ### タスク
 
-- [x] Tailwind CSS を Next.js フロントエンドに追加
+- Tailwind CSS を Next.js フロントエンドに追加
     - `tailwind.config.ts` + `postcss.config.mjs` の設定
     - 既存 Bootstrap/SCSS との共存：`preflight` を無効化して CSS リセット競合を防ぐ
     - `globals.css`（または既存の CSS エントリポイント）に Tailwind ディレクティブを追加
 
-- [x] shadcn/ui に必要なパッケージを追加
+- shadcn/ui に必要なパッケージを追加
     - lucide-react
     - clsx, tailwind-merge（`cn` ユーティリティ用）
     - @radix-ui/react-dropdown-menu（DropdownMenu 用）
@@ -41,12 +41,15 @@
     - vaul（Drawer 用）
     - class-variance-authority
 
-- [x] shadcn/ui コンポーネントを `frontend/src/components/ui/` に追加
+- shadcn/ui コンポーネントを `frontend/src/components/ui/` に追加
     - Button
     - DropdownMenu
     - Drawer（後フェーズで使用。先行追加しておく）
 
-- [x] 既存画面の動作確認・テスト実行
+- 既存画面の動作確認・テスト実行
+
+.steering/2026/20260307-feature-201-ph1-setup-tailwind-shadcn-ui
+で対応
 
 ---
 
@@ -60,20 +63,24 @@
 
 ### タスク
 
-- [ ] `/calender/week` と `/calender/month` を統合した単一ページに変更
+- `/calender/week` と `/calender/month` を統合した単一ページに変更
     - `/calender` ルートに新しい統合ページを作る（または既存ルートを統合画面にリダイレクト）
     - 週/月タブの状態を URL パラメータ or ステートで管理
 
-- [ ] 新ヘッダーコンポーネントの実装（`calenderComponents/CalenderHeader/` など）
+- 新ヘッダーコンポーネントの実装（`calenderComponents/CalenderHeader/` など）
     - 前後ナビボタン（ChevronLeft/Right アイコン）
     - 今週/今月ボタン
     - 週月切替ボタン（週: CalendarRange、月: CalendarDays）
     - ドロップダウンメニュー（料理一覧リンクのみ。料理検索はスコープ外）
     - 期間ラベル表示（週: 「XX年X月X日〜X日」、月: 「XX年X月」）
 
-- [ ] 新ヘッダーの配下に既存 WeekCalender/MonthCalender を接続
+- 新ヘッダーの配下に既存 WeekCalender/MonthCalender を接続
 
-- [ ] 既存画面の動作確認・テスト実行
+- 既存画面の動作確認・テスト実行
+
+.steering/2026/20260307-feature-201-ph2-redesign-calendar-app-shell
+で対応
+
 
 ---
 
@@ -89,9 +96,9 @@
 
 ### タスク
 
-- [ ] `Calender/index.tsx`（table 形式）を `Calender/old/` に移動し、インポートパスを修正して動作維持
+- `Calender/index.tsx`（table 形式）を `Calender/old/` に移動し、インポートパスを修正して動作維持
 
-- [ ] 新しい `Calender/index.tsx` を DayColumn カード形式で実装
+- 新しい `Calender/index.tsx` を DayColumn カード形式で実装
     - table → `flex flex-col gap-1.5` の縦リストに変更
     - 各日付を `rounded-xl border bg-card px-2.5 py-1.5` のカードで表示
     - 日付ヘッダー: 日番号（丸囲み）+ 曜日ラベル + 追加ボタン（+）
@@ -99,16 +106,19 @@
     - 空日付: 点線ボーダーの「追加」ボタン
     - 今日ハイライト・土曜青・日曜赤 の色分け
 
-- [ ] "calender" スペルミスを "calendar" に修正
+- "calender" スペルミスを "calendar" に修正
     - 新規作成するコンポーネント・ディレクトリ名は "calendar" 正綴で作る
     - 既存の old/ に移動したコンポーネントはスペルミスのまま残してよい（参照が切れないように）
     - ルーティングパス（`/calender/week`, `/calender/month`）も `/calendar/...` に変更
     - `features/calender/` ディレクトリも `features/calendar/` にリネーム
     - import パスを一括置換し、テスト・ESLint でエラーがないことを確認
 
-- [ ] 週・月ビュー（WeekCalender/MonthCalender）が新 Calender を正しく使えるよう接続確認
+- 週・月ビュー（WeekCalender/MonthCalender）が新 Calender を正しく使えるよう接続確認
 
-- [ ] 既存画面の動作確認・テスト実行
+- 既存画面の動作確認・テスト実行
+
+.steering/2026/20260308-feature-201-ph3-implement-calendar-daycolumn-card-view
+で対応
 
 ---
 
@@ -123,10 +133,10 @@
 
 ### タスク
 
-- [ ] `MealIcon/index.tsx` と `MealIcon/Menu.tsx` を `MealIcon/old/` に移動し、インポートパスを修正して動作維持
+- `MealIcon/index.tsx` と `MealIcon/Menu.tsx` を `MealIcon/old/` に移動し、インポートパスを修正して動作維持
     - `MealIcon/Menu.spec.tsx` も old/ に移動してテスト継続
 
-- [ ] 新しい DishCard コンポーネントを実装（`calenderComponents/DishCard/` など）
+- 新しい DishCard コンポーネントを実装（`calenderComponents/DishCard/` など）
     - 左カラーバー（昼: lunch色、夜: dinner色）
     - 1行目: カテゴリアイコン + 料理名 + 昼夜ラベル + クイックアイコン（UtensilsCrossed / Star / MoreHorizontal）
     - 2行目: 評価（dish.evaluationScore）+ レシピ元（dishSourceRelation）
@@ -141,15 +151,18 @@
         - 料理複製（CopyPlus）→ disabled（未実装）
         - 削除（Trash2）→ 既存 removeMeal mutation
 
-- [ ] DayColumn の料理一覧に DishCard を接続（MealIcon の代替として）
+- DayColumn の料理一覧に DishCard を接続（MealIcon の代替として）
 
-- [ ] + ボタンから既存の AddMeal / AssignDish フローを起動するよう接続
+- + ボタンから既存の AddMeal / AssignDish フローを起動するよう接続
 
-- [ ] 新コンポーネントにユニットテストを追加（最低限：表示確認・アクションパネル開閉）
+- 新コンポーネントにユニットテストを追加（最低限：表示確認・アクションパネル開閉）
 
-- [ ] 品質チェック
+- 品質チェック
     - `docker compose exec frontend yarn test`（全テストグリーン）
     - `docker compose exec frontend yarn lint`（プロジェクト全体）
+
+.steering/2026/20260308-feature-201-ph4-implement-dishcard-meal-display
+で対応
 
 ---
 

@@ -1,21 +1,16 @@
 import { FieldError, useFormContext } from 'react-hook-form';
-import { Input } from '@/components/ui/input';
 import React, { useEffect, useState } from 'react';
-import useDish from '../../../../features/dish/useDish';
 import FormFieldWrapperWithLabel from '../../../common/form/FormFieldWrapperWithLabel';
 import ErrorMessageIfExist from '../../../common/form/ErrorMessageIfExist';
-import style from './ExistingDishesForRegisteringWithMeal.module.scss';
-import ExistingDishIconForSelect, {
-  NewDishIconForSelect,
-} from '../../../dish/ExistingDishIcon/ExistingDishIconForSelect';
+import DishSearchPanel from '../../../dish/DishSearchPanel/index';
+import { type DishForSearchCard } from '../../../dish/DishSearchCard/index';
+import { Button } from '@/components/ui/button';
 
 type ExistingDishesForRegisteringWithMealProps = {
   dishIdRegisteredWithMeal?: number;
   displayNewDishIconForSelect?: boolean;
   onNewDishIconForSelectClick?: any;
 };
-
-let searchTimer: any = null;
 
 export const ExistingDishesForRegisteringWithMeal = (
   props: ExistingDishesForRegisteringWithMealProps,
@@ -30,65 +25,42 @@ export const ExistingDishesForRegisteringWithMeal = (
     formState: { errors },
   } = useFormContext();
 
-  const [searchString, setSearchString] = useState('');
-
-  const { existingDishesForRegisteringWithMeal: dishes, fetchLoading } =
-    useDish({
-      fetchDishesParams: {
-        fetchExistingDishesForRegisteringWithMealParams: {
-          requireFetchedData: true,
-          searchString,
-          dishIdRegisteredWithMeal,
-        },
-      },
-    });
-
-  const [selectedDishId, setSelectedDishId] = useState(
+  const [selectedDishId, setSelectedDishId] = useState<number | null>(
     dishIdRegisteredWithMeal || null,
   );
+
   // NOTE: onClickでsetValueしたいが、初期値セットも込みで行うためにuseEffect利用
   useEffect(() => {
     setValue('dishId', selectedDishId);
   }, [selectedDishId]);
 
-  if (!dishes && fetchLoading) return <>Loading</>;
+  const handleSelect = (dish: DishForSearchCard) => {
+    setSelectedDishId(dish.id);
+  };
 
   return (
     <FormFieldWrapperWithLabel label="料理">
-      <div className={style['select-dishes-container']}>
-        <Input
-          type="text"
-          data-testid="existingDishSearchWord"
-          onChange={(e) => {
-            if (searchTimer !== null) clearTimeout(searchTimer);
-            searchTimer = setTimeout(() => {
-              setSearchString(e.target.value);
-            }, 400);
+      <DishSearchPanel
+        mode="library"
+        selectedDishId={selectedDishId}
+        onSelect={handleSelect}
+      />
+      {displayNewDishIconForSelect && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="mt-2 w-full"
+          onClick={() => {
+            if (onNewDishIconForSelectClick) {
+              onNewDishIconForSelectClick('');
+            }
           }}
-        />
-        <div className={style['dish-icon-container']}>
-          {(dishes || []).map((dish) => (
-            <ExistingDishIconForSelect
-              key={dish.id}
-              dish={dish}
-              selected={dish.id === selectedDishId}
-              onClick={() => {
-                setSelectedDishId(dish.id);
-              }}
-            />
-          ))}
-          {displayNewDishIconForSelect && (
-            <NewDishIconForSelect
-              onClick={() => {
-                if (onNewDishIconForSelectClick) {
-                  onNewDishIconForSelectClick(searchString);
-                }
-              }}
-              exampleDishName={searchString}
-            />
-          )}
-        </div>
-      </div>
+          data-testid="existingDish-new"
+        >
+          新規料理を登録
+        </Button>
+      )}
       <ErrorMessageIfExist fieldError={errors.dishId as FieldError} />
     </FormFieldWrapperWithLabel>
   );
