@@ -43,6 +43,10 @@
     --dinner: 221 83% 53%;
     --dinner-bg: 221 83% 97%;
     --dinner-foreground: 221 83% 30%;
+    /* 朝食カラー */
+    --breakfast: 189 100% 47%;
+    --breakfast-bg: 189 100% 97%;
+    --breakfast-foreground: 189 100% 25%;
   }
 }
 
@@ -73,5 +77,8 @@
   --color-dinner: hsl(var(--dinner));
   --color-dinner-bg: hsl(var(--dinner-bg));
   --color-dinner-foreground: hsl(var(--dinner-foreground));
+  --color-breakfast: hsl(var(--breakfast));
+  --color-breakfast-bg: hsl(var(--breakfast-bg));
+  --color-breakfast-foreground: hsl(var(--breakfast-foreground));
   --radius: var(--radius);
 }

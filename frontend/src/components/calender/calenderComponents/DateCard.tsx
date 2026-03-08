@@ -1,7 +1,7 @@
 import React from 'react';
 import { getDate, getDay, isSameDay } from 'date-fns';
 import { MealForCalender } from '../../../lib/graphql/generated/graphql';
-import CalenderMealIcon from './MealIcon';
+import DishCard from './DishCard';
 import AddMealIcon from './MealIcon/AddMealIcon';
 
 type DateCardProps = {
@@ -91,13 +91,14 @@ export default (props: DateCardProps) => {
         {hasMeals ? (
           meals.map((meal) => (
             <React.Fragment key={meal.id}>
-              <CalenderMealIcon
+              <DishCard
                 meal={meal}
                 onChanged={async () => {
                   await onChanged();
                 }}
-                canAnythingExeptDisplayDishName={isDisplayCalenderMode}
+                canAnythingExceptDisplayDishName={isDisplayCalenderMode}
                 calenderModeChangers={calenderModeChangers}
+                startSwappingMealsMode={startSwappingMealsMode}
               />
             </React.Fragment>
           ))

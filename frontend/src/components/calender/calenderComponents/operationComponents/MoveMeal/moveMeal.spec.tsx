@@ -8,6 +8,7 @@ import {
   registerQueryHandler,
 } from '../../../../../lib/graphql/specHelper/mockServer';
 import { userClick } from '../../../../specHelper/userEvents';
+import userEvent from '@testing-library/user-event';
 import WeekCalender from '../../../WeekCalender';
 import {
   ExistingDishesForRegisteringWithMealDocument,
@@ -97,8 +98,10 @@ describe('move dish on week calender', () => {
         },
       );
 
-      await userClick(screen, `mealMenuOpener-${movedMeal.id}`);
-      await userClick(screen, 'mealMoveButton');
+      await screen.findByLabelText('その他のアクション');
+      await userEvent.click(screen.getByLabelText('その他のアクション'));
+      await screen.findByText('他の日へ');
+      await userEvent.click(screen.getByText('他の日へ'));
       await userClick(
         screen,
         `weekCalendarDateOf${format(moveTargetDate, 'yyyy-MM-dd')}`,
