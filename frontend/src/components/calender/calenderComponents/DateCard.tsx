@@ -1,0 +1,113 @@
+import React from 'react';
+import { getDate, getDay, isSameDay } from 'date-fns';
+import { MealForCalender } from '../../../lib/graphql/generated/graphql';
+import CalenderMealIcon from './MealIcon';
+import AddMealIcon from './MealIcon/AddMealIcon';
+
+type DateCardProps = {
+  date: Date;
+  dayLabel: string;
+  meals: MealForCalender[];
+  isDisplayCalenderMode: boolean;
+  calenderModeChangers: any;
+  onChanged: () => Promise<void>;
+  startSwappingMealsMode: (date: Date) => void;
+};
+
+export default (props: DateCardProps) => {
+  const {
+    date,
+    dayLabel,
+    meals,
+    isDisplayCalenderMode,
+    calenderModeChangers,
+    onChanged,
+    startSwappingMealsMode,
+  } = props;
+
+  const isToday = isSameDay(date, new Date());
+  const dayIndex = getDay(date);
+  const dateNumber = getDate(date);
+
+  const isSaturday = dayIndex === 6;
+  const isSunday = dayIndex === 0;
+
+  const dateColorClass = (() => {
+    if (isSaturday) return 'text-blue-500';
+    if (isSunday) return 'text-red-500';
+    return '';
+  })();
+
+  const hasMeals = meals && meals.length > 0;
+
+  return (
+    <div
+      className={[
+        'rounded-xl border bg-card px-2.5 py-1.5',
+        isToday ? 'ring-2 ring-primary/40' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      data-testid="dateCard-card"
+      data-today={isToday ? 'true' : 'false'}
+    >
+      {/* 日付ヘッダーエリア */}
+      <div className="flex items-center justify-between mb-1">
+        <button
+          type="button"
+          className="flex items-center gap-1"
+          data-testid="dateCard-dateHeader"
+          onClick={() => startSwappingMealsMode(date)}
+        >
+          <span
+            className={[
+              'size-6 rounded-full flex items-center justify-center text-xs font-medium',
+              dateColorClass,
+            ]
+              .filter(Boolean)
+              .join(' ')}
+          >
+            {dateNumber}
+          </span>
+          <span className={['text-xs', dateColorClass].filter(Boolean).join(' ')}>
+            {dayLabel}
+          </span>
+        </button>
+
+        {isDisplayCalenderMode && (
+          <div data-testid="dateCard-addMeal">
+            <AddMealIcon
+              dateForAdd={date}
+              onAddSucceeded={async () => {
+                await onChanged();
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* 料理一覧エリア */}
+      <div>
+        {hasMeals ? (
+          meals.map((meal) => (
+            <React.Fragment key={meal.id}>
+              <CalenderMealIcon
+                meal={meal}
+                onChanged={async () => {
+                  await onChanged();
+                }}
+                canAnythingExeptDisplayDishName={isDisplayCalenderMode}
+                calenderModeChangers={calenderModeChangers}
+              />
+            </React.Fragment>
+          ))
+        ) : isDisplayCalenderMode ? (
+          <div
+            className="border border-dashed rounded-lg p-2 text-center text-xs text-muted-foreground"
+            data-testid="dateCard-emptyMealArea"
+          />
+        ) : null}
+      </div>
+    </div>
+  );
+};

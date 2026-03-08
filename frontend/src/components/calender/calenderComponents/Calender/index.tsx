@@ -3,10 +3,7 @@ import { format } from 'date-fns';
 import useRefreshCalenderData from '../../useRefreshCalenderData';
 import useCalenderMode from '../useCalenderMode';
 import useMeasureHeight from '../../../common/useMeasureHeight';
-import style from './index.module.scss';
-import DateComponent from '../Date';
-import CalenderMealIcon from '../MealIcon';
-import AddMealIcon from '../MealIcon/AddMealIcon';
+import DateCard from '../DateCard';
 import AssignDish from '../operationComponents/AssignDish';
 import MoveDish from '../operationComponents/MoveMeal';
 import SwapMeals from '../operationComponents/SwapMeals';
@@ -21,6 +18,7 @@ type Props = {
   refreshToNext: any;
   children: (props: any) => ReactNode;
 };
+
 export default (props: Props) => {
   const {
     dateMealsList,
@@ -61,8 +59,9 @@ export default (props: Props) => {
   }
 
   return (
-    <div className={style['calender-container']}>
-      <div className={style['calender-header']}>
+    <div>
+      {/* カレンダーヘッダー */}
+      <div>
         {children({
           isDisplayCalenderMode,
           useAssignDishModeResult,
@@ -70,65 +69,40 @@ export default (props: Props) => {
           refreshToNext,
         })}
       </div>
-      <table>
-        <tbody>
-          {dateMealsList.map(({ date, dayLabel, meals }, dayIndex) => {
-            return (
-              <tr
-                key={`key_${dayIndex}`}
-                onClick={() => onDateClick(date)}
-                data-testid={`weekCalendarDateOf${format(date, 'yyyy-MM-dd')}`}
-              >
-                <th>
-                  <DateComponent
-                    date={date}
-                    dayOfWeekLabel={dayLabel}
-                    canAnythingExceptDisplay={isDisplayCalenderMode}
-                    startSwappingMealsMode={
-                      useSwapMealsModeResult.startSwappingMealsMode
-                    }
-                  />
-                </th>
-                <td className={style['dish-container__wrapper']}>
-                  <div className={style['dish-container']}>
-                    {meals?.map((meal) => (
-                      <React.Fragment key={meal.id}>
-                        <CalenderMealIcon
-                          meal={meal}
-                          onChanged={async () => {
-                            await refreshData();
-                          }}
-                          canAnythingExeptDisplayDishName={
-                            isDisplayCalenderMode
-                          }
-                          calenderModeChangers={calenderModeChangers}
-                        />{' '}
-                      </React.Fragment>
-                    ))}
-                    {isDisplayCalenderMode && (
-                      <AddMealIcon
-                        dateForAdd={date}
-                        onAddSucceeded={async () => {
-                          await refreshData();
-                        }}
-                      />
-                    )}
-                  </div>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
 
-      {/* 食事割当以外にも下からせり出るバーを使うようになったら条件変える */}
+      {/* DateCard を縦に並べる */}
+      <div className="flex flex-col gap-1.5 px-2 py-2">
+        {dateMealsList.map(({ date, dayLabel, meals }, dayIndex) => (
+          <div
+            key={`key_${dayIndex}`}
+            onClick={() => onDateClick(date)}
+            data-testid={`weekCalendarDateOf${format(date, 'yyyy-MM-dd')}`}
+          >
+            <DateCard
+              date={date}
+              dayLabel={dayLabel}
+              meals={meals}
+              isDisplayCalenderMode={isDisplayCalenderMode}
+              calenderModeChangers={calenderModeChangers}
+              onChanged={async () => {
+                await refreshData();
+              }}
+              startSwappingMealsMode={
+                useSwapMealsModeResult.startSwappingMealsMode
+              }
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* 底部バー */}
       {requireDisplayingBottomBar && (
         <>
           <div
             ref={fixedComponentRef}
-            className={style['fixed-bar-from-bottom']}
+            className="w-full fixed bottom-0 bg-white"
           >
-            <div className={style['bottom-bar']}>
+            <div className="border-t">
               {useAssignDishModeResult.inAssigningDishMode && (
                 <AssignDish useAssignDishModeResult={useAssignDishModeResult} />
               )}

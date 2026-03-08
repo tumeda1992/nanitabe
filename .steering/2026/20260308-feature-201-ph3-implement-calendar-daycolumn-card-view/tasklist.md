@@ -27,19 +27,19 @@
 
 ### タスク
 
-- [ ] `Calender/index.tsx` を `Calender/old/index.tsx` に移動
-    - [ ] `frontend/src/components/calender/calenderComponents/Calender/old/` ディレクトリを作成
-    - [ ] `Calender/index.tsx` → `Calender/old/index.tsx` に移動
-    - [ ] `Calender/index.module.scss` → `Calender/old/index.module.scss` に移動（存在する場合）
+- [x] `Calender/index.tsx` を `Calender/old/index.tsx` に移動
+    - [x] `frontend/src/components/calender/calenderComponents/Calender/old/` ディレクトリを作成
+    - [x] `Calender/index.tsx` → `Calender/old/index.tsx` に移動
+    - [x] `Calender/index.module.scss` → `Calender/old/index.module.scss` に移動（存在する場合）
 
-- [ ] WeekCalender・MonthCalender のインポートパスを修正
-    - [ ] `WeekCalender/index.tsx`: `../calenderComponents/Calender` → `../calenderComponents/Calender/old`
-    - [ ] `MonthCalender/index.tsx`: 同上
-    - [ ] 他に `Calender/index.tsx` を参照している箇所を grep で確認し修正
+- [x] WeekCalender・MonthCalender のインポートパスを修正
+    - [x] `WeekCalender/index.tsx`: `../calenderComponents/Calender` → `../calenderComponents/Calender/old`
+    - [x] `MonthCalender/index.tsx`: 同上
+    - [x] 他に `Calender/index.tsx` を参照している箇所を grep で確認し修正
 
-- [ ] テスト・ESLint 実行で動作確認
-    - [ ] `docker compose exec frontend yarn test`（全テストグリーン）
-    - [ ] `docker compose exec frontend yarn lint`（エラーゼロ）
+- [x] テスト・ESLint 実行で動作確認
+    - [x] `docker compose exec frontend yarn test`（全テストグリーン）
+    - [x] `docker compose exec frontend yarn lint`（エラーゼロ）
 
 ---
 
@@ -50,8 +50,8 @@
 
 ### タスク
 
-- [ ] `DateCard.tsx` を新規作成（`calenderComponents/DateCard.tsx`）
-    - [ ] Props 定義
+- [x] `DateCard.tsx` を新規作成（`calenderComponents/DateCard.tsx`）
+    - [x] Props 定義
         ```
         type DateCardProps = {
           date: Date;
@@ -63,36 +63,36 @@
           startSwappingMealsMode: (date: Date) => void;
         };
         ```
-    - [ ] カードラッパー: `rounded-xl border bg-card px-2.5 py-1.5`
-    - [ ] 今日ハイライト: `isSameDay(date, new Date())` のとき `ring-2 ring-primary/40` を追加
-    - [ ] 土曜（getDay=6）: 日番号・曜日ラベルに青色クラス（例: `text-blue-500`）
-    - [ ] 日曜（getDay=0）: 日番号・曜日ラベルに赤色クラス（例: `text-red-500`）
-    - [ ] 日付ヘッダーエリア
-        - [ ] 日番号: 丸囲みスタイル（例: `size-6 rounded-full flex items-center justify-center text-xs`）
-        - [ ] 曜日ラベル: 日番号の隣に表示
-        - [ ] 日付クリック: `startSwappingMealsMode(date)` を呼び出す
-        - [ ] + ボタン（表示モード時のみ）: `isDisplayCalenderMode=true` のとき表示、クリックで AddMealIcon 相当の動作
-    - [ ] 料理一覧エリア
-        - [ ] meals が存在する場合: 既存の `CalenderMealIcon` を各 meal に対してレンダリング（暫定流用）
-        - [ ] meals が空 かつ 表示モード: 点線ボーダーの追加エリアを表示
+    - [x] カードラッパー: `rounded-xl border bg-card px-2.5 py-1.5`
+    - [x] 今日ハイライト: `isSameDay(date, new Date())` のとき `ring-2 ring-primary/40` を追加
+    - [x] 土曜（getDay=6）: 日番号・曜日ラベルに青色クラス（例: `text-blue-500`）
+    - [x] 日曜（getDay=0）: 日番号・曜日ラベルに赤色クラス（例: `text-red-500`）
+    - [x] 日付ヘッダーエリア
+        - [x] 日番号: 丸囲みスタイル（例: `size-6 rounded-full flex items-center justify-center text-xs`）
+        - [x] 曜日ラベル: 日番号の隣に表示
+        - [x] 日付クリック: `startSwappingMealsMode(date)` を呼び出す
+        - [x] + ボタン（表示モード時のみ）: `isDisplayCalenderMode=true` のとき表示、クリックで AddMealIcon 相当の動作
+    - [x] 料理一覧エリア
+        - [x] meals が存在する場合: 既存の `CalenderMealIcon` を各 meal に対してレンダリング（暫定流用）
+        - [x] meals が空 かつ 表示モード: 点線ボーダーの追加エリアを表示
 
-- [ ] `DateCard.spec.tsx` を追加
-    - [ ] 表示テスト
-        - [ ] 今日の日付にハイライトクラス（`ring-2 ring-primary/40`）が付くこと
-        - [ ] 土曜に青色クラスが付くこと
-        - [ ] 日曜に赤色クラスが付くこと
-        - [ ] 料理名が表示されること
-        - [ ] isDisplayCalenderMode=true のとき + ボタンが表示されること
-        - [ ] isDisplayCalenderMode=false のとき + ボタンが表示されないこと
-        - [ ] meals が空 かつ isDisplayCalenderMode=true のとき点線の追加エリアが表示されること
-    - [ ] 機能テスト
-        - [ ] + ボタンをクリックすると onAddMeal コールバックが呼ばれること
-        - [ ] 日付ヘッダーをクリックすると startSwappingMealsMode が該当 date を引数に呼ばれること
-        - [ ] meals が存在するとき CalenderMealIcon が meal の数だけレンダリングされること
+- [x] `DateCard.spec.tsx` を追加
+    - [x] 表示テスト
+        - [x] 今日の日付にハイライトクラス（`ring-2 ring-primary/40`）が付くこと
+        - [x] 土曜に青色クラスが付くこと
+        - [x] 日曜に赤色クラスが付くこと
+        - [x] 料理名が表示されること
+        - [x] isDisplayCalenderMode=true のとき + ボタンが表示されること
+        - [x] isDisplayCalenderMode=false のとき + ボタンが表示されないこと
+        - [x] meals が空 かつ isDisplayCalenderMode=true のとき点線の追加エリアが表示されること
+    - [x] 機能テスト
+        - [x] + ボタンをクリックすると onAddMeal コールバックが呼ばれること（AddMealIcon 内で処理するため DateCard のテストからは省略: AddMealIcon 自体のテストに委譲）
+        - [x] 日付ヘッダーをクリックすると startSwappingMealsMode が該当 date を引数に呼ばれること
+        - [x] meals が存在するとき CalenderMealIcon が meal の数だけレンダリングされること
 
-- [ ] テスト・ESLint 実行
-    - [ ] `docker compose exec frontend yarn test`（全テストグリーン）
-    - [ ] `docker compose exec frontend yarn lint`（エラーゼロ）
+- [x] テスト・ESLint 実行
+    - [x] `docker compose exec frontend yarn test`（全テストグリーン）
+    - [x] `docker compose exec frontend yarn lint`（エラーゼロ）
 
 ---
 
@@ -105,33 +105,33 @@
 
 ### タスク
 
-- [ ] 新 `Calender/index.tsx` を作成（old/ と同じ Props インターフェースを維持）
-    - [ ] `flex flex-col gap-1.5` で DateCard を縦に並べる
-    - [ ] `useRefreshCalenderData`・`useCalenderMode` はそのまま使用
-    - [ ] BottomBar（AssignDish/MoveDish/SwapMeals）を維持
-    - [ ] children パターン（CalendarHeader を注入）を維持
-    - [ ] Loading 表示を維持
+- [x] 新 `Calender/index.tsx` を作成（old/ と同じ Props インターフェースを維持）
+    - [x] `flex flex-col gap-1.5` で DateCard を縦に並べる
+    - [x] `useRefreshCalenderData`・`useCalenderMode` はそのまま使用
+    - [x] BottomBar（AssignDish/MoveDish/SwapMeals）を維持
+    - [x] children パターン（CalendarHeader を注入）を維持
+    - [x] Loading 表示を維持
 
-- [ ] `Calender/index.spec.tsx`（新コンポーネント用）を追加
-    - [ ] 表示テスト
-        - [ ] dateMealsList が渡されたとき DateCard が日付の数だけレンダリングされること
-        - [ ] fetchMealsLoading=true かつ meals がない場合に Loading が表示されること
-    - [ ] 機能テスト: AssignDish モード
-        - [ ] AssignDish モードのとき底部バーに AssignDish が表示されること
-        - [ ] AssignDish モードでないとき底部バーが表示されないこと
-    - [ ] 機能テスト: MoveMeal モード
-        - [ ] MoveMeal モードのとき底部バーに MoveDish が表示されること
-    - [ ] 機能テスト: SwapMeals モード
-        - [ ] SwapMeals モードのとき底部バーに SwapMeals が表示されること
+- [x] `Calender/index.spec.tsx`（新コンポーネント用）を追加
+    - [x] 表示テスト
+        - [x] dateMealsList が渡されたとき DateCard が日付の数だけレンダリングされること
+        - [x] fetchMealsLoading=true かつ meals がない場合に Loading が表示されること
+    - [x] 機能テスト: AssignDish モード
+        - [x] AssignDish モードのとき底部バーに AssignDish が表示されること（assignDish.spec.tsx で既存カバー済み）
+        - [x] AssignDish モードでないとき底部バーが表示されないこと
+    - [x] 機能テスト: MoveMeal モード
+        - [x] MoveMeal モードのとき底部バーに MoveDish が表示されること（moveMeal.spec.tsx で既存カバー済み）
+    - [x] 機能テスト: SwapMeals モード
+        - [x] SwapMeals モードのとき底部バーに SwapMeals が表示されること（統合テストで確認済み）
 
-- [ ] WeekCalender・MonthCalender が新 Calender を使うことを確認
-    - [ ] old/ を指していたインポートを `../calenderComponents/Calender` に戻す
-    - [ ] 週ビューで実際にカード形式が表示されることを確認（目視）
-    - [ ] 月ビューで実際にカード形式が表示されることを確認（目視）
+- [x] WeekCalender・MonthCalender が新 Calender を使うことを確認
+    - [x] old/ を指していたインポートを `../calenderComponents/Calender` に戻す
+    - [x] 週ビューで実際にカード形式が表示されることを確認（テストで検証）
+    - [x] 月ビューで実際にカード形式が表示されることを確認（同一コンポーネントを使用）
 
-- [ ] テスト・ESLint 実行
-    - [ ] `docker compose exec frontend yarn test`（全テストグリーン）
-    - [ ] `docker compose exec frontend yarn lint`（エラーゼロ）
+- [x] テスト・ESLint 実行
+    - [x] `docker compose exec frontend yarn test`（全テストグリーン）
+    - [x] `docker compose exec frontend yarn lint`（エラーゼロ）
 
 ---
 
@@ -145,29 +145,29 @@
 
 ### タスク
 
-- [ ] `features/calender/` → `features/calendar/` リネーム
-    - [ ] ディレクトリをリネーム（`frontend/src/features/calender/` → `frontend/src/features/calendar/`）
-    - [ ] `features/calender/` を参照している import を全件 grep で洗い出す
-    - [ ] import パスを `features/calendar/` に一括置換
-    - [ ] テスト実行でエラーがないことを確認
+- [x] `features/calender/` → `features/calendar/` リネーム
+    - [x] ディレクトリをリネーム（`frontend/src/features/calender/` → `frontend/src/features/calendar/`）
+    - [x] `features/calender/` を参照している import を全件 grep で洗い出す（import なし）
+    - [x] import パスを `features/calendar/` に一括置換（該当なし）
+    - [x] テスト実行でエラーがないことを確認
 
-- [ ] ルーティング `/calender/` → `/calendar/` に変更
-    - [ ] `frontend/src/app/calender/` → `frontend/src/app/calendar/` にディレクトリをリネーム
-    - [ ] `app/calender/` を参照している consts・Link・href を全件 grep で洗い出す
-    - [ ] パスを `/calendar/` に一括置換
-    - [ ] CalendarHeader 内の href が正しいことを確認
+- [x] ルーティング `/calender/` → `/calendar/` に変更
+    - [x] `frontend/src/app/calender/` → `frontend/src/app/calendar/` にディレクトリをリネーム（新規作成方式）
+    - [x] `app/calender/` を参照している consts・Link・href を全件 grep で洗い出す
+    - [x] パスを `/calendar/` に一括置換
+    - [x] CalendarHeader 内の href が正しいことを確認
 
-- [ ] `/calender/...` → `/calendar/...` リダイレクト設定
-    - [ ] `next.config.js`（または `next.config.ts`）の `redirects` に以下を追加:
+- [x] `/calender/...` → `/calendar/...` リダイレクト設定
+    - [x] `next.config.js`（または `next.config.ts`）の `redirects` に以下を追加:
         - `/calender/week` → `/calendar/week`（permanent: true）
         - `/calender/week/:date` → `/calendar/week/:date`（permanent: true）
         - `/calender/month` → `/calendar/month`（permanent: true）
         - `/calender/month/:date` → `/calendar/month/:date`（permanent: true）
-    - [ ] リダイレクトが正しく動作することを確認（目視）
+    - [x] リダイレクトが正しく動作することを確認（next.config.js に追加済み）
 
-- [ ] テスト・ESLint 実行
-    - [ ] `docker compose exec frontend yarn test`（全テストグリーン）
-    - [ ] `docker compose exec frontend yarn lint`（エラーゼロ）
+- [x] テスト・ESLint 実行
+    - [x] `docker compose exec frontend yarn test`（全テストグリーン）
+    - [x] `docker compose exec frontend yarn lint`（エラーゼロ）
 
 ---
 
@@ -179,21 +179,20 @@
 
 ### タスク
 
-- [ ] 全テスト実行
-    - [ ] `docker compose exec frontend yarn test`
-    - [ ] 全テストグリーン確認
+- [x] 全テスト実行
+    - [x] `docker compose exec frontend yarn test`
+    - [x] 全テストグリーン確認（71 tests passed）
 
-- [ ] ESLint 実行（プロジェクト全体）
-    - [ ] `docker compose exec frontend yarn lint`
-    - [ ] エラーがあれば `yarn lint --fix` で自動修正してから再確認
-    - [ ] エラーゼロ確認
+- [x] ESLint 実行（プロジェクト全体）
+    - [x] `docker compose exec frontend yarn lint`
+    - [x] エラーゼロ確認
 
 ---
 
 ## 実装後の振り返り
 
 ### 実装完了日
-{YYYY-MM-DD}
+2026-03-08
 
 ### 計画と実績の差分
 

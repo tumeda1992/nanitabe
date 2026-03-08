@@ -1,0 +1,87 @@
+@use "../../../base/mixin.module";
+
+.calender-container {
+  width: 100vw;
+}
+
+.calender-header {
+  width: 100%;
+  display: flex;
+
+  &-title {
+    padding: 10px 0px;
+    font-size: 16px;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  &-float-menu {
+    &__content {
+      padding: 5px 5px;
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    &__row {
+      margin: 2px 0px;
+    }
+  }
+}
+
+.move-date-button {
+  width: 100%;
+  text-align: center;
+  background-color: mixin.$gray;
+}
+
+.date {
+  height: calc(100% / 7); // 機能していない。%は親要素での実数指定が必要になるため。意図通り動かすにはおそらく動的計算必要
+  width: 40px;
+  padding: 20px 10px;
+  font-size: 16px;
+  font-weight: normal;
+
+  border-right-color: mixin.$gray;
+  border-right-width: 1px;
+  border-right-style: solid;
+
+  &__date-number {
+    display: block;
+    text-align: center;
+  }
+
+  &__day-of-week {
+    display: block;
+    font-size: 10px;
+    text-align: center;
+  }
+
+  &__saturday {
+    background-color: #D0E7FF;
+  }
+
+  &__sunday {
+    background-color: #FFE6E6;
+  }
+}
+
+.dish-container {
+  display: flex;
+  flex-wrap: wrap;
+
+  &__wrapper {
+    width: 100%;
+  }
+}
+
+.fixed-bar-from-bottom {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  background-color: white;
+}
+
+.bottom-bar {
+  border-top: 1px solid;
+}
