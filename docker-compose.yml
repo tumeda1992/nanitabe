@@ -31,11 +31,11 @@ services:
       context: ./frontend
       dockerfile: ./buildOnLambda/Dockerfile
       args: # 参照するのはdocker compose 実行時のターミナルの環境変数
-        AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
-        AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+        # AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID} # どうせdocker-compose時は空
+        # AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY} # どうせdocker-compose時は空
         AWS_DEFAULT_REGION: ap-northeast-1
         NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN: http://localhost:18101
-        NEXT_PUBLIC_ASSET_ORIGIN: ${NEXT_PUBLIC_ASSET_ORIGIN}
+        # NEXT_PUBLIC_ASSET_ORIGIN: ${NEXT_PUBLIC_ASSET_ORIGIN} # どうせdocker-compose時は空
         DEPLOY_ENV: verify-infra
     volumes:
       - ./frontend:/var/task

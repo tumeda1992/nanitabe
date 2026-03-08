@@ -1,6 +1,17 @@
-# frontend (Next.js + Apollo + Tailwind CSS v4)
+# frontend
+jsのフロントエンド。
 
-## Tailwind CSS v4 セットアップ（制約）
+## 想定ユーザ
+ほぼ自分しか使わない。
+毎日の料理だったり、今週分の買い出しのために献立を考える、更には数分で考えることを求められる日常がしんどかったから作った。
+
+## インフラ
+本番では、Next.jsを動かすDockerイメージをLambdaで動かし、API Gateway経由でCloudFrontからアクセスさせている
+
+## 主要ライブラリ
+Next.js(React) + Apollo + Tailwind CSS(v4) 構成
+
+### Tailwind CSS v4 セットアップ（制約）
 
 - `@tailwindcss/postcss` は使用禁止。Turbopack との組み合わせでコンパイルが2分超になる
 - `@tailwindcss/cli` を `entrypoint.sh` の `build_tailwind()` で独立プロセス実行する方式を採用

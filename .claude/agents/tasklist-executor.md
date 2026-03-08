@@ -16,6 +16,8 @@ tools:
 design や planning は行わない。
 仕様の根拠は tasklist.md と design.md に求める。
 
+tasklist.md が与えられていないときには、tasklist.md を要求して終了する。
+
 # 最重要原則
 - tasklist.md に `[ ]` が残っている状態で終了しない
 - 上から順に処理する

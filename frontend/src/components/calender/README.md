@@ -31,6 +31,13 @@ grep キーワード: `calender`（"calendar" ではなくスペルミス表記�
 - 操作モード（食事追加・移動・交換）を変更するなら `useCalenderMode.ts` を確認する。
   操作中は `requireDisplayingBottomBar=true` になり、NextWeekDisplayButton と
   操作 UI が画面下部固定バーに移動する。
+- カレンダー上で「操作モード」を実現するとき、UIの選択方針:
+    - SHOULD: 継続的な操作（移動先選択・交換対象選択など）は底部固定バー（BottomBar）を使う
+        - ページ遷移は使わない（カレンダーを見ながら操作する必要があるため）
+        - ドロワーも使わない（操作中に複数日付を選択する必要があるため）
+    - SHOULD: 単発の入力（食事追加・編集）は FloatModal（ポップアップ）を使う
+    - 実装: `useCalenderMode.ts` でモードを管理し、`requireDisplayingBottomBar=true` のとき
+      Calender/index.tsx の底部に操作UIを固定表示する
 - MonthCalender の日付処理に `T09:00:00` の +9時間オフセットがある（暫定）。
   Rails に日付が前日として送られる問題の回避策。日付処理を変更する場合は注意。
 - ナビゲーション実装時は `pushHistory` と `<Link>` を使い分ける:

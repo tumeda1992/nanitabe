@@ -1,6 +1,6 @@
 ---
 name: steering
-description: "Spec-driven plan を steering に落とす。Design合意→Tasklist合意で終了。実装は別コマンド。"
+description: "Spec-driven plan を steering に落とす。Design合意→Tasklist合意で終了。実装は別コマンド。明示的に指定されたときはもちろん、軽度の修正でない場合（複数ファイルの編集、ステップを持つ修正）にはこのスキルを起動する"
 allowed-tools: Read, Grep, Write, Edit, Bash
 ---
 
