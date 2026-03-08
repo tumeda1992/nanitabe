@@ -1,0 +1,84 @@
+/* Tailwind v4: preflight を除いて utilities のみ有効化 */
+@import "tailwindcss/theme";
+@import "tailwindcss/utilities";
+
+/* Tailwind のソーススキャン対象を TS/TSX ファイルに限定（デフォルトは全ファイルスキャン） */
+@source "../**/*.{ts,tsx}";
+
+/* Bootstrap削除後にブラウザデフォルトのbutton枠線をリセット */
+@layer base {
+  button {
+    border: none;
+    background: transparent;
+  }
+}
+
+/* shadcn/ui CSS カスタムプロパティ */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    /* カレンダー用カラー */
+    --lunch: 34 100% 50%;
+    --lunch-bg: 34 100% 97%;
+    --lunch-foreground: 34 100% 30%;
+    --dinner: 221 83% 53%;
+    --dinner-bg: 221 83% 97%;
+    --dinner-foreground: 221 83% 30%;
+    /* 朝食カラー */
+    --breakfast: 189 100% 47%;
+    --breakfast-bg: 189 100% 97%;
+    --breakfast-foreground: 189 100% 25%;
+  }
+}
+
+/* Tailwind v4: CSS変数をカラーシステムにマップ（これがないと bg-background 等が生成されない） */
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-lunch: hsl(var(--lunch));
+  --color-lunch-bg: hsl(var(--lunch-bg));
+  --color-lunch-foreground: hsl(var(--lunch-foreground));
+  --color-dinner: hsl(var(--dinner));
+  --color-dinner-bg: hsl(var(--dinner-bg));
+  --color-dinner-foreground: hsl(var(--dinner-foreground));
+  --color-breakfast: hsl(var(--breakfast));
+  --color-breakfast-bg: hsl(var(--breakfast-bg));
+  --color-breakfast-foreground: hsl(var(--breakfast-foreground));
+  --radius: var(--radius);
+}

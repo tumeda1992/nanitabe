@@ -1,5 +1,5 @@
 import { FieldError, useFormContext } from 'react-hook-form';
-import { Form } from 'react-bootstrap';
+import { Input } from '@/components/ui/input';
 import React, { useEffect, useState } from 'react';
 import useDish from '../../../../features/dish/useDish';
 import FormFieldWrapperWithLabel from '../../../common/form/FormFieldWrapperWithLabel';
@@ -56,7 +56,7 @@ export const ExistingDishesForRegisteringWithMeal = (
   return (
     <FormFieldWrapperWithLabel label="料理">
       <div className={style['select-dishes-container']}>
-        <Form.Control
+        <Input
           type="text"
           data-testid="existingDishSearchWord"
           onChange={(e) => {

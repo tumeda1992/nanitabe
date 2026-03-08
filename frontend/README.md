@@ -1,35 +1,22 @@
-# Apollo Example
+# frontend
+jsのフロントエンド。
 
-[Apollo](https://www.apollographql.com/client/) is a GraphQL client that allows you to easily query the exact data you need from a GraphQL server. In addition to fetching and mutating data, Apollo analyzes your queries and their results to construct a client-side cache of your data, which is kept up to date as further queries and mutations are run.
+## 想定ユーザ
+ほぼ自分しか使わない。
+毎日の料理だったり、今週分の買い出しのために献立を考える、更には数分で考えることを求められる日常がしんどかったから作った。
 
-In this simple example, we integrate Apollo seamlessly with [Next.js data fetching methods](https://nextjs.org/docs/basic-features/data-fetching) to fetch queries in the server and hydrate them in the browser.
+## インフラ
+本番では、Next.jsを動かすDockerイメージをLambdaで動かし、API Gateway経由でCloudFrontからアクセスさせている
 
-This example relies on [Prisma + Nexus](https://github.com/prisma-labs/nextjs-graphql-api-examples) for its GraphQL backend.
+## 主要ライブラリ
+Next.js(React) + Apollo + Tailwind CSS(v4) 構成
 
-## Demo
+### Tailwind CSS v4 セットアップ（制約）
 
-[https://next-with-apollo.vercel.app](https://next-with-apollo.vercel.app)
-
-## Deploy your own
-
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example):
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-apollo&project-name=with-apollo&repository-name=with-apollo)
-
-## How to use
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
-
-```bash
-npx create-next-app --example with-apollo with-apollo-app
-```
-
-```bash
-yarn create next-app --example with-apollo with-apollo-app
-```
-
-```bash
-pnpm create next-app --example with-apollo with-apollo-app
-```
-
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+- `@tailwindcss/postcss` は使用禁止。Turbopack との組み合わせでコンパイルが2分超になる
+- `@tailwindcss/cli` を `entrypoint.sh` の `build_tailwind()` で独立プロセス実行する方式を採用
+- `src/app/tailwind-output.css` は生成物（gitignore済み）。`layout.tsx` で `import './tailwind-output.css'` としてインポート
+- **Lambda ビルド時も要注意**: `buildOnLambda/Dockerfile` では `yarn build` 前に tailwindcss CLI を明示実行すること
+- カラーユーティリティ（`bg-background`, `text-foreground` 等）を使うには `src/app/globals.css` の `@theme inline { --color-xxx: hsl(var(--xxx)) }` が必須
+- `@import "tailwindcss/preflight"` はDocker container内でメモリ超過によりkill（exit 137）されるため使用禁止。`button` 等のブラウザデフォルトスタイルリセットは `globals.css` の `@layer base { button { border: none; background: transparent; } }` で個別対処する
+- tailwindcss watcherプロセスが死んだ場合（`docker compose exec frontend` で tailwindcss を手動実行するとOOM競合でwatcherが死ぬ）: `docker compose restart frontend` で復旧

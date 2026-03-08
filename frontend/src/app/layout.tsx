@@ -1,3 +1,5 @@
+// Tailwind CSS: tailwindcss CLI が globals.css を処理して生成（entrypoint.sh 参照）
+import './tailwind-output.css';
 import React from 'react';
 import type { Metadata } from 'next';
 import ApolloProvider from './apollo_provider';

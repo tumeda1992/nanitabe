@@ -12,6 +12,30 @@ const nextConfig = (() => {
     // assetPrefix: isProd ? 'https://d2ewo1yy2ahstj.cloudfront.net' : undefined, // prod用
     // assetPrefix: isProd ? 'https://d1qmtpt8svn0j2.cloudfront.net' : undefined, //verify-infra用
     assetPrefix: isProd ? process.env.NEXT_PUBLIC_ASSET_ORIGIN : undefined,
+    async redirects() {
+      return [
+        {
+          source: '/calender/week',
+          destination: '/calendar/week',
+          permanent: true,
+        },
+        {
+          source: '/calender/week/:date',
+          destination: '/calendar/week/:date',
+          permanent: true,
+        },
+        {
+          source: '/calender/month',
+          destination: '/calendar/month',
+          permanent: true,
+        },
+        {
+          source: '/calender/month/:date',
+          destination: '/calendar/month/:date',
+          permanent: true,
+        },
+      ];
+    },
   };
 
   if (!isProd) return baseConfig;

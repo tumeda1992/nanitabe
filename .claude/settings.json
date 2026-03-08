@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(/frontend/**)",
+      "Edit(/backend/**)",
+      "Skill(steering)",
+      "Edit(/.steering/**)",
+      "Skill(doc-enricher)"
+    ]
+  }
+}

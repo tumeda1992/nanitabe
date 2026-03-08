@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import style from '../MealForm.module.scss';
@@ -77,7 +78,7 @@ export default (props: Props) => {
   return (
     <div className={style['form']}>
       <FormProvider {...methods}>
-        <Form onSubmit={handleSubmit(onSubmit, onError)}>
+        <form onSubmit={handleSubmit(onSubmit, onError)}>
           {registeredMealId && (
             <input
               type="hidden"
@@ -86,7 +87,7 @@ export default (props: Props) => {
             />
           )}
           <FormFieldWrapperWithLabel label="日付" required>
-            <Form.Control
+            <Input
               type="date"
               defaultValue={buildISODateString(defaultDate)}
               {...register('meal.date', { valueAsDate: true })}
@@ -106,8 +107,8 @@ export default (props: Props) => {
           </FormFieldWrapperWithLabel>
 
           <FormFieldWrapperWithLabel label="コメント">
-            <Form.Control
-              as="textarea"
+            <textarea
+              className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               {...register('meal.comment')}
               rows={1}
               defaultValue={registeredMealComment || ''}
@@ -118,38 +119,32 @@ export default (props: Props) => {
           </FormFieldWrapperWithLabel>
 
           <div className={style['meal-form']}>
-            <Form.Group>
-              <Form.Check
-                type="radio"
-                inline
-                name="add_meal_type"
-                value={CHOOSING_DISH_TYPE.CHOOSING_USE_EXISTING_DISH}
-                onChange={() =>
-                  setChoosingDishType(
-                    CHOOSING_DISH_TYPE.CHOOSING_USE_EXISTING_DISH,
-                  )
-                }
-                checked={choosingUseExistingDish}
-                label="料理を選択"
-                id="optionOfUsingExistingDish"
-                data-testid="optionOfUsingExistingDish"
-              />
-              <Form.Check
-                type="radio"
-                inline
-                name="add_meal_type"
-                value={CHOOSING_DISH_TYPE.CHOOSING_REGISTER_NEW_DISH}
-                onChange={() =>
-                  setChoosingDishType(
-                    CHOOSING_DISH_TYPE.CHOOSING_REGISTER_NEW_DISH,
-                  )
-                }
-                checked={choosingRegisterNewDish}
-                label="新しく料理を登録"
-                id="optionOfRegisteringNewDish"
-                data-testid="optionOfRegisteringNewDish"
-              />
-            </Form.Group>
+            <div>
+              <span className="inline-flex items-center gap-1 mr-3">
+                <input
+                  type="radio"
+                  name="add_meal_type"
+                  value={CHOOSING_DISH_TYPE.CHOOSING_USE_EXISTING_DISH}
+                  onChange={() => setChoosingDishType(CHOOSING_DISH_TYPE.CHOOSING_USE_EXISTING_DISH)}
+                  checked={choosingUseExistingDish}
+                  id="optionOfUsingExistingDish"
+                  data-testid="optionOfUsingExistingDish"
+                />
+                <label htmlFor="optionOfUsingExistingDish">料理を選択</label>
+              </span>
+              <span className="inline-flex items-center gap-1 mr-3">
+                <input
+                  type="radio"
+                  name="add_meal_type"
+                  value={CHOOSING_DISH_TYPE.CHOOSING_REGISTER_NEW_DISH}
+                  onChange={() => setChoosingDishType(CHOOSING_DISH_TYPE.CHOOSING_REGISTER_NEW_DISH)}
+                  checked={choosingRegisterNewDish}
+                  id="optionOfRegisteringNewDish"
+                  data-testid="optionOfRegisteringNewDish"
+                />
+                <label htmlFor="optionOfRegisteringNewDish">新しく料理を登録</label>
+              </span>
+            </div>
 
             {/*
               現在新規dish作成コンポーネントが使い回せるから使いまわしているが、
@@ -178,12 +173,12 @@ export default (props: Props) => {
             )}
           </div>
 
-          <Form.Group>
+          <div>
             <Button type="submit" data-testid="submitMealButton">
               登録
             </Button>
-          </Form.Group>
-        </Form>
+          </div>
+        </form>
       </FormProvider>
     </div>
   );

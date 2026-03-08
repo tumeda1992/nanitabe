@@ -11,7 +11,12 @@ import {
 
 import { usePathname } from 'next/navigation';
 
-// Next.jsのrouterで扱う物理URLでなく、SPA的にクライアント側で使う論理URLを管理するコンテキスト
+/**
+ * Next.jsのrouterで扱う物理URLでなく、SPA的にクライアント側で使う論理URLを管理するコンテキスト
+ * - Next.jsのrouterも存在する
+ *   - しかし、history.pushStateを行うと、ページ遷移はしないが、ページ遷移時と同様コンポーネントが再描画され、本来historyを使いたい用途と逆行するため、Next.jsのrouterは使わない
+ * - 旧来のhistoryライブラリのようなものを自前で実装するイメージ
+ */
 
 type LogicalHistoryContextValue = {
   /**

@@ -56,6 +56,10 @@ jobs:
         if: steps.changes.outputs.changed == 'true'
         run: yarn install --frozen-lockfile
 
+      - name: Generate Tailwind CSS
+        if: steps.changes.outputs.changed == 'true'
+        run: node_modules/.bin/tailwindcss -i src/app/globals.css -o src/app/tailwind-output.css
+
       - name: Build
         if: steps.changes.outputs.changed == 'true'
         run: yarn build

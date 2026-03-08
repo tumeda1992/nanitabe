@@ -1,5 +1,4 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
 import {
   MEAL_TYPE_LABELS,
   MEAL_TYPES,
@@ -16,26 +15,22 @@ export default (props: Props) => {
   const { onClick, onChange, selectedMealType } = props;
 
   return (
-    <Form.Group>
+    <div>
       {MEAL_TYPES.map((mealType) => (
-        <Form.Check
-          key={mealType}
-          type="radio"
-          inline
-          name="meal_type"
-          value={mealType}
-          onClick={() => {
-            if (onClick) onClick(mealType);
-          }}
-          onChange={() => {
-            if (onChange) onChange(mealType);
-          }}
-          checked={mealType === selectedMealType}
-          label={MEAL_TYPE_LABELS[mealType]}
-          id={`mealTypeOption-${mealType}`}
-          data-testid={`mealTypeOption-${mealType}`}
-        />
+        <span key={mealType} className="inline-flex items-center gap-1 mr-3">
+          <input
+            type="radio"
+            name="meal_type"
+            value={mealType}
+            onClick={() => { if (onClick) onClick(mealType); }}
+            onChange={() => { if (onChange) onChange(mealType); }}
+            checked={mealType === selectedMealType}
+            id={`mealTypeOption-${mealType}`}
+            data-testid={`mealTypeOption-${mealType}`}
+          />
+          <label htmlFor={`mealTypeOption-${mealType}`}>{MEAL_TYPE_LABELS[mealType]}</label>
+        </span>
       ))}
-    </Form.Group>
+    </div>
   );
 };

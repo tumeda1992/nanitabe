@@ -7,7 +7,8 @@ import {
   useFormContext,
   FieldError,
 } from 'react-hook-form';
-import { Button, Form } from 'react-bootstrap';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FormFieldWrapperWithLabel from '../../../common/form/FormFieldWrapperWithLabel';
 import ErrorMessageIfExist from '../../../common/form/ErrorMessageIfExist';
@@ -44,7 +45,7 @@ export const DishSourceFormContent = (props: DishSourceFormContentProps) => {
         />
       )}
       <FormFieldWrapperWithLabel label="名前">
-        <Form.Control
+        <Input
           type="text"
           {...register('dishSource.name')}
           defaultValue={registeredDishSource?.name || ''}
@@ -53,12 +54,9 @@ export const DishSourceFormContent = (props: DishSourceFormContentProps) => {
         <ErrorMessageIfExist errorMessage={errors.dishSource?.name?.message} />
       </FormFieldWrapperWithLabel>
       <FormFieldWrapperWithLabel label="タイプ">
-        <Form.Select
-          defaultValue={
-            // 本当は初期値を設定したいけど、新規食事登録時に変更を挟まないとwatchで検知できないから仕方なく選ばせる
-            // registeredDishSource?.type || DISH_SOURCE_TYPE.RECIPE_BOOK
-            registeredDishSource?.type || undefined
-          }
+        <select
+          className="h-9 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          defaultValue={registeredDishSource?.type || undefined}
           {...register('dishSource.type', { valueAsNumber: true })}
           data-testid="dishSourceTypeOption"
         >
@@ -74,7 +72,7 @@ export const DishSourceFormContent = (props: DishSourceFormContentProps) => {
               {DISH_SOURCE_TYPE_LABELS[type]}
             </option>
           ))}
-        </Form.Select>
+        </select>
         <ErrorMessageIfExist
           fieldError={errors.dishSource?.type as FieldError}
         />
@@ -103,14 +101,14 @@ export default (props: Props) => {
 
   return (
     <FormProvider {...methods}>
-      <Form onSubmit={handleSubmit(onSubmit, onError)}>
+      <form onSubmit={handleSubmit(onSubmit, onError)}>
         <DishSourceFormContent registeredDishSource={registeredDishSource} />
-        <Form.Group>
+        <div>
           <Button type="submit" data-testid="submitDishSourceButton">
             登録
           </Button>
-        </Form.Group>
-      </Form>
+        </div>
+      </form>
     </FormProvider>
   );
 };

@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form';
-import { Form } from 'react-bootstrap';
+import { Input } from '@/components/ui/input';
 import React, { useEffect, useState } from 'react';
 import { Dish } from '../../../../lib/graphql/generated/graphql';
 import FormFieldWrapperWithLabel from '../../../common/form/FormFieldWrapperWithLabel';
@@ -40,7 +40,7 @@ export const DishFormOfOnlyDishFields = (
         />
       )}
       <FormFieldWrapperWithLabel label="料理名" required>
-        <Form.Control
+        <Input
           type="text"
           {...register('dish.name')}
           defaultValue={preFilledDish?.name}
@@ -61,8 +61,8 @@ export const DishFormOfOnlyDishFields = (
         />
       </FormFieldWrapperWithLabel>
       <FormFieldWrapperWithLabel label="コメント">
-        <Form.Control
-          as="textarea"
+        <textarea
+          className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
           {...register('dish.comment')}
           rows={1}
           defaultValue={preFilledDish?.comment || ''}

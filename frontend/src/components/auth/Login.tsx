@@ -1,14 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import style from './Login.module.scss';
 import FormFieldWrapperWithLabel from '../common/form/FormFieldWrapperWithLabel';
 import useAuth from '../../features/auth/useAuth';
 import type { Login } from '../../features/auth/useAuth';
-import { WEEK_CALENDER_PAGE_PATH_OF_THIS_WEEK } from '../../app/calender/week/[date]/consts';
+import { WEEK_CALENDAR_PAGE_PATH_OF_THIS_WEEK } from '../../app/calendar/week/[date]/consts';
 
 export default (props) => {
   const { login, loginLoading, LoginSchema } = useAuth();
@@ -28,7 +29,7 @@ export default (props) => {
       onCompleted: async () => {
         setLoginResultMessage('ログインが成功しました');
         reset();
-        window.location.href = WEEK_CALENDER_PAGE_PATH_OF_THIS_WEEK;
+        window.location.href = WEEK_CALENDAR_PAGE_PATH_OF_THIS_WEEK;
       },
       onError: async () => {
         setLoginResultMessage('ログインに失敗しました');
@@ -37,13 +38,13 @@ export default (props) => {
   };
   return (
     <div className={style['login']}>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className={style['login__title']}>ログイン</div>
         {loginResultMessage && (
           <div data-testid="loginResultMessage">{loginResultMessage}</div>
         )}
         <FormFieldWrapperWithLabel label="メールアドレス">
-          <Form.Control
+          <Input
             type="email"
             {...register('email')}
             data-testid="email"
@@ -51,7 +52,7 @@ export default (props) => {
           {errors.email?.message && <p>{errors.email.message.toString()}</p>}
         </FormFieldWrapperWithLabel>
         <FormFieldWrapperWithLabel label="パスワード">
-          <Form.Control
+          <Input
             type="password"
             {...register('password')}
             data-testid="password"
@@ -63,7 +64,7 @@ export default (props) => {
         <Button type="submit" disabled={loginLoading} data-testid="loginButton">
           ログイン
         </Button>
-      </Form>
+      </form>
     </div>
   );
 };

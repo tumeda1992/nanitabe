@@ -34,3 +34,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# tailwind (Tailwind CLI の出力。entrypoint.sh で生成される)
+/src/app/tailwind-output.css

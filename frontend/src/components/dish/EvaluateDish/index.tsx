@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import classnames from 'classnames';
-import { Button, Form } from 'react-bootstrap';
+import { Button } from '@/components/ui/button';
 import style from './index.module.scss';
 import useDish from '../../../features/dish/useDish';
 
@@ -93,16 +93,16 @@ export default (props: Props) => {
           />
         ))}
       </div>
-      <Form.Group>
+      <div>
         <Button
           type="submit"
-          variant="light"
+          variant="secondary"
           data-testid="submitEvaluateDishButton"
           onClick={submitHandler}
         >
           登録
         </Button>
-      </Form.Group>
+      </div>
     </>
   );
 };
