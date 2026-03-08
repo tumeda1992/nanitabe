@@ -36,9 +36,6 @@ type CalendarHeaderProps = {
   onStartAssigningDish: () => void;
 };
 
-const ADMIN_NORMALIZE_WORDS_URL =
-  'https://nanitabe_back.kibotsu.com/admin/food/dish/word/normalize_words';
-
 const CalendarHeader = ({
   viewType,
   displayLabel,
@@ -71,7 +68,12 @@ const CalendarHeader = ({
             >
               <ChevronLeft className="size-4" />
             </Button>
-            <Button variant="ghost" size="sm" className="h-8 px-2 text-xs font-medium" asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 px-2 text-xs font-medium"
+              asChild
+            >
               <Link href={todayHref}>{isWeek ? '今週' : '今月'}</Link>
             </Button>
             <Button
@@ -139,12 +141,15 @@ const CalendarHeader = ({
                 )}
                 <DropdownMenuItem asChild>
                   <a
-                    href={ADMIN_NORMALIZE_WORDS_URL}
+                    href="https://nanitabe_back.kibotsu.com/admin/food/dish/word/normalize_words"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     (admin)ワード正規化
                   </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/dishes">料理検索</a>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

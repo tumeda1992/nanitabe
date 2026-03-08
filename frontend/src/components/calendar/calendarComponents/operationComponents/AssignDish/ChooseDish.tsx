@@ -1,11 +1,9 @@
 import React from 'react';
-import { Input } from '@/components/ui/input';
 import classnames from 'classnames';
 import style from './AssignDish.module.scss';
-import ExistingDishIconForSelect from '../../../../dish/ExistingDishIcon/ExistingDishIconForSelect';
 import SelectMealType from '../../../../meal/MealForm/MealForm/SelectMealType';
-import SelectMealPosition from '../../../../dish/DishForm/DishForm/SelectMealPosition';
-import { MealPosition } from '../../../../../features/dish/const';
+import DishSearchPanel from '../../../../dish/DishSearchPanel/index';
+import { type DishForSearchCard } from '../../../../dish/DishSearchCard/index';
 
 type Props = {
   useAssignDishModeResult: any;
@@ -21,18 +19,15 @@ export default (props: Props) => {
     selectDish,
     selectedMealType,
     selectMealType,
-    dishes,
-    fetchLoading,
-    selectedMealPositionForSearch,
-    selectMealPosition,
-    searchedDishesAreRegisteredWithMeal,
-    setSearchedDishesAreRegisteredWithMeal,
-    updateSearchString,
     doContinuousRegistration,
     toggleDoContinuousRegistration,
   } = useAssignDishModeResult;
 
-  if (!dishes && fetchLoading) return <>Loading</>;
+  const handleSelect = (dish: DishForSearchCard) => {
+    selectDish(dish);
+    changeCalendarModeToAssigningSelectedDishMode();
+  };
+
   return (
     <div className={style['choose-dish-container']}>
       <div className={style['assign-dish-header']}>
@@ -93,63 +88,11 @@ export default (props: Props) => {
         </div>
         <div className={style['choose-dish-main-header']}>料理</div>
 
-        <div className={style['choose-dish-form__label-and-input-container']}>
-          <div className={style['choose-dish-form__label']}>位置</div>
-          <SelectMealPosition
-            selectedMealPosition={selectedMealPositionForSearch as MealPosition}
-            onClick={(mealPosition) => {
-              selectMealPosition(mealPosition);
-            }}
-            existNullOption
-          />
-        </div>
-
-        <div className={style['choose-dish-form__label-and-input-container']}>
-          <div className={style['choose-dish-form__label']}>関連食事</div>
-          {[
-            { value: null, checkboxValue: '', label: '指定なし' },
-            { value: 'true', checkboxValue: 'true', label: '関連食事あり' },
-            { value: 'false', checkboxValue: 'false', label: '関連食事なし' },
-          ].map((registeredWithMealOption) => (
-            <span key={registeredWithMealOption.checkboxValue} className="inline-flex items-center gap-1 mr-3">
-              <input
-                type="radio"
-                name="registeredWithMeal"
-                value={registeredWithMealOption.checkboxValue}
-                checked={searchedDishesAreRegisteredWithMeal === registeredWithMealOption.value}
-                onChange={() => { setSearchedDishesAreRegisteredWithMeal(registeredWithMealOption.value); }}
-                id={`optionOfRegisteredWithMeal-${registeredWithMealOption.value}`}
-              />
-              <label htmlFor={`optionOfRegisteredWithMeal-${registeredWithMealOption.value}`}>{registeredWithMealOption.label}</label>
-            </span>
-          ))}
-        </div>
-
-        <div className={style['choose-dish-form-select-dish__container']}>
-          <Input
-            type="text"
-            placeholder="料理を検索できます"
-            data-testid="existingDishSearchWord"
-            onChange={(e) => {
-              updateSearchString(e.target.value);
-            }}
-          />
-          <div>
-            <div className={style['existing-dish-icon-container']}>
-              {dishes.map((dish) => (
-                <ExistingDishIconForSelect
-                  key={dish.id}
-                  dish={dish}
-                  selected={dish.id === selectedDish?.id}
-                  onClick={() => {
-                    selectDish(dish);
-                    changeCalendarModeToAssigningSelectedDishMode();
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+        <DishSearchPanel
+          mode="picker"
+          selectedDishId={selectedDish?.id ?? null}
+          onSelect={handleSelect}
+        />
       </div>
     </div>
   );
