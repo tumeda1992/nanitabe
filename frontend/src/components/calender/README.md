@@ -31,6 +31,13 @@ grep キーワード: `calender`（"calendar" ではなくスペルミス表記�
 - 操作モード（食事追加・移動・交換）を変更するなら `useCalenderMode.ts` を確認する。
   操作中は `requireDisplayingBottomBar=true` になり、NextWeekDisplayButton と
   操作 UI が画面下部固定バーに移動する。
+- 料理カードに新しいアクション操作を追加するとき、操作の「起動レベル」で渡し方が変わる:
+    - 食事（Meal）レベルの操作（例: 移動）:
+        `useCalenderMode.ts` の `calenderModeChangers` に追加し、
+        Calender → DateCard → DishCard と props で伝搬させる
+    - 日付（Date）レベルの操作（例: 日付交換）:
+        DateCard の props として個別に追加し、DishCard に渡す
+        MUST: calenderModeChangers に混ぜない（DateCard が担う操作のため）
 - カレンダー上で「操作モード」を実現するとき、UIの選択方針:
     - SHOULD: 継続的な操作（移動先選択・交換対象選択など）は底部固定バー（BottomBar）を使う
         - ページ遷移は使わない（カレンダーを見ながら操作する必要があるため）
