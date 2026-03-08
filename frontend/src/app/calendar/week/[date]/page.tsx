@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { format } from 'date-fns';
-import WeekCalender from '../../../../components/calender/WeekCalender';
+import WeekCalendar from '../../../../components/calendar/WeekCalendar';
 import { isISODateFormatString } from '../../../../features/utils/dateUtils';
 import { WEEK_CALENDAR_PAGE_PATH } from './consts';
 import { useLogicalHistory } from '../../../logical-history';
@@ -25,10 +25,10 @@ export default () => {
 
   if (!dateFormatString) {
     return (
-      <WeekCalender
+      <WeekCalendar
         date={new Date(`${format(new Date(), 'yyyy-MM-dd')}T09:00:00`)}
       />
     );
   }
-  return <WeekCalender date={new Date(`${dateFormatString}T09:00:00`)} />;
+  return <WeekCalendar date={new Date(`${dateFormatString}T09:00:00`)} />;
 };

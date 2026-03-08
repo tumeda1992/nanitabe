@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { format } from 'date-fns';
-import MonthCalender from '../../../../components/calender/MonthCalender';
+import MonthCalendar from '../../../../components/calendar/MonthCalendar';
 import { isISODateFormatString } from '../../../../features/utils/dateUtils';
 import { MONTH_CALENDAR_PAGE_PATH } from './consts';
 import { useLogicalHistory } from '../../../logical-history';
@@ -25,10 +25,10 @@ export default () => {
 
   if (!dateFormatString) {
     return (
-      <MonthCalender
+      <MonthCalendar
         date={new Date(`${format(new Date(), 'yyyy-MM-dd')}T09:00:00`)}
       />
     );
   }
-  return <MonthCalender date={new Date(`${dateFormatString}T09:00:00`)} />;
+  return <MonthCalendar date={new Date(`${dateFormatString}T09:00:00`)} />;
 };
