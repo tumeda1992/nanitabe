@@ -6,7 +6,10 @@ import DishSearchCardLibrary from '../DishSearchCard/Library';
 import DishSearchCardPicker from '../DishSearchCard/Picker';
 import { type DishForSearchCard } from '../DishSearchCard/index';
 import useDish from '../../../features/dish/useDish';
-import { MEAL_POSITION, MEAL_POSITION_LABELS } from '../../../features/dish/const';
+import {
+  MEAL_POSITION,
+  MEAL_POSITION_LABELS,
+} from '../../../features/dish/const';
 import { Search } from 'lucide-react';
 
 export type DishSearchPanelMode = 'page' | 'library' | 'picker';
@@ -26,15 +29,37 @@ type RelatedMealFilter = boolean | null;
 
 const mealPositionFilters: { value: MealPositionFilter; label: string }[] = [
   { value: null, label: '指定なし' },
-  { value: MEAL_POSITION.STAPLE_FOOD, label: MEAL_POSITION_LABELS[MEAL_POSITION.STAPLE_FOOD] },
-  { value: MEAL_POSITION.MAIN_DISH, label: MEAL_POSITION_LABELS[MEAL_POSITION.MAIN_DISH] },
-  { value: MEAL_POSITION.SIDE_DISH, label: MEAL_POSITION_LABELS[MEAL_POSITION.SIDE_DISH] },
-  { value: MEAL_POSITION.SOUP, label: MEAL_POSITION_LABELS[MEAL_POSITION.SOUP] },
-  { value: MEAL_POSITION.DESSERT, label: MEAL_POSITION_LABELS[MEAL_POSITION.DESSERT] },
-  { value: MEAL_POSITION.OTHER, label: MEAL_POSITION_LABELS[MEAL_POSITION.OTHER] },
+  {
+    value: MEAL_POSITION.STAPLE_FOOD,
+    label: MEAL_POSITION_LABELS[MEAL_POSITION.STAPLE_FOOD],
+  },
+  {
+    value: MEAL_POSITION.MAIN_DISH,
+    label: MEAL_POSITION_LABELS[MEAL_POSITION.MAIN_DISH],
+  },
+  {
+    value: MEAL_POSITION.SIDE_DISH,
+    label: MEAL_POSITION_LABELS[MEAL_POSITION.SIDE_DISH],
+  },
+  {
+    value: MEAL_POSITION.SOUP,
+    label: MEAL_POSITION_LABELS[MEAL_POSITION.SOUP],
+  },
+  {
+    value: MEAL_POSITION.DESSERT,
+    label: MEAL_POSITION_LABELS[MEAL_POSITION.DESSERT],
+  },
+  {
+    value: MEAL_POSITION.OTHER,
+    label: MEAL_POSITION_LABELS[MEAL_POSITION.OTHER],
+  },
 ];
 
-const relatedMealFilters: { value: string; label: string; boolValue: RelatedMealFilter }[] = [
+const relatedMealFilters: {
+  value: string;
+  label: string;
+  boolValue: RelatedMealFilter;
+}[] = [
   { value: '', label: '指定なし', boolValue: null },
   { value: 'true', label: '関連食事あり', boolValue: true },
   { value: 'false', label: '関連食事なし', boolValue: false },
@@ -52,27 +77,33 @@ const DishSearchPanel = ({
   onToggle,
 }: DishSearchPanelProps) => {
   const [searchString, setSearchString] = useState('');
-  const [mealPositionFilter, setMealPositionFilter] = useState<MealPositionFilter>(null);
-  const [registeredWithMealFilter, setRegisteredWithMealFilter] = useState<RelatedMealFilter>(null);
+  const [mealPositionFilter, setMealPositionFilter] =
+    useState<MealPositionFilter>(null);
+  const [registeredWithMealFilter, setRegisteredWithMealFilter] =
+    useState<RelatedMealFilter>(null);
 
-  const { existingDishesForRegisteringWithMeal: dishes, fetchLoading } = useDish({
-    fetchDishesParams: {
-      fetchExistingDishesForRegisteringWithMealParams: {
-        requireFetchedData: true,
-        searchString: searchString || null,
-        mealPosition: mealPositionFilter,
-        registeredWithMeal: registeredWithMealFilter,
+  const { existingDishesForRegisteringWithMeal: dishes, fetchLoading } =
+    useDish({
+      fetchDishesParams: {
+        fetchExistingDishesForRegisteringWithMealParams: {
+          requireFetchedData: true,
+          searchString: searchString || null,
+          mealPosition: mealPositionFilter,
+          registeredWithMeal: registeredWithMealFilter,
+        },
       },
-    },
-  });
+    });
 
-  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (searchTimer !== null) clearTimeout(searchTimer);
-    const value = e.target.value;
-    searchTimer = setTimeout(() => {
-      setSearchString(value);
-    }, 400);
-  }, []);
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (searchTimer !== null) clearTimeout(searchTimer);
+      const value = e.target.value;
+      searchTimer = setTimeout(() => {
+        setSearchString(value);
+      }, 400);
+    },
+    [],
+  );
 
   const handleToggle = useCallback(
     (dishId: number) => {
@@ -152,9 +183,7 @@ const DishSearchPanel = ({
 
       {/* 件数 */}
       {dishList.length > 0 && (
-        <p className="text-xs text-muted-foreground">
-          {dishList.length} 件
-        </p>
+        <p className="text-xs text-muted-foreground">{dishList.length} 件</p>
       )}
 
       {/* 結果リスト */}
@@ -163,7 +192,7 @@ const DishSearchPanel = ({
           該当する料理がありません
         </p>
       ) : (
-        <div className="flex flex-col divide-y divide-border">
+        <div className="flex flex-col divide-y divide-border max-h-[50vh] overflow-y-auto">
           {dishList.map((dish) => {
             const dishForCard = dish as DishForSearchCard;
             if (mode === 'picker') {
