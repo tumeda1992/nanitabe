@@ -29,7 +29,6 @@ export const ExistingDishesForRegisteringWithMeal = (
     dishIdRegisteredWithMeal || null,
   );
 
-  // NOTE: onClickでsetValueしたいが、初期値セットも込みで行うためにuseEffect利用
   useEffect(() => {
     setValue('dishId', selectedDishId);
   }, [selectedDishId]);
@@ -40,11 +39,13 @@ export const ExistingDishesForRegisteringWithMeal = (
 
   return (
     <FormFieldWrapperWithLabel label="料理">
-      <DishSearchPanel
-        mode="library"
-        selectedDishId={selectedDishId}
-        onSelect={handleSelect}
-      />
+      <div className="max-h-[50vh] overflow-y-auto">
+        <DishSearchPanel
+          mode="library"
+          selectedDishId={selectedDishId}
+          onSelect={handleSelect}
+        />
+      </div>
       {displayNewDishIconForSelect && (
         <Button
           type="button"
