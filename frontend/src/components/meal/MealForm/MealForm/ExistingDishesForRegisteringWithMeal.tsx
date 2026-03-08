@@ -38,14 +38,12 @@ export const ExistingDishesForRegisteringWithMeal = (
   };
 
   return (
-    <FormFieldWrapperWithLabel label="料理">
-      <div className="max-h-[50vh] overflow-y-auto">
-        <DishSearchPanel
-          mode="library"
-          selectedDishId={selectedDishId}
-          onSelect={handleSelect}
-        />
-      </div>
+    <>
+      <DishSearchPanel
+        mode="library"
+        selectedDishId={selectedDishId}
+        onSelect={handleSelect}
+      />
       {displayNewDishIconForSelect && (
         <Button
           type="button"
@@ -63,6 +61,6 @@ export const ExistingDishesForRegisteringWithMeal = (
         </Button>
       )}
       <ErrorMessageIfExist fieldError={errors.dishId as FieldError} />
-    </FormFieldWrapperWithLabel>
+    </>
   );
 };
