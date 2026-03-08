@@ -5,6 +5,14 @@
 /* Tailwind のソーススキャン対象を TS/TSX ファイルに限定（デフォルトは全ファイルスキャン） */
 @source "../**/*.{ts,tsx}";
 
+/* Bootstrap削除後にブラウザデフォルトのbutton枠線をリセット */
+@layer base {
+  button {
+    border: none;
+    background: transparent;
+  }
+}
+
 /* shadcn/ui CSS カスタムプロパティ */
 @layer base {
   :root {

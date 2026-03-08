@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Form, Button } from 'react-bootstrap';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import useAuth from '../../features/auth/useAuth';
@@ -33,20 +34,20 @@ export default () => {
 
   return (
     <div className={style['register-user']}>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className={style['register-user__title']}>ユーザ登録</div>
         <FormFieldWrapperWithLabel label="メールアドレス">
-          <Form.Control type="email" {...register('email')} />
+          <Input type="email" {...register('email')} />
           {errors.email?.message && <p>{errors.email.message.toString()}</p>}
         </FormFieldWrapperWithLabel>
         <FormFieldWrapperWithLabel label="パスワード">
-          <Form.Control type="password" {...register('password')} />
+          <Input type="password" {...register('password')} />
           {errors.password?.message && (
             <p>{errors.password.message.toString()}</p>
           )}
         </FormFieldWrapperWithLabel>
         <FormFieldWrapperWithLabel label="パスワード確認">
-          <Form.Control type="password" {...register('passwordConfirmation')} />
+          <Input type="password" {...register('passwordConfirmation')} />
           {errors.passwordConfirmation?.message && (
             <p>{errors.passwordConfirmation.message.toString()}</p>
           )}
@@ -54,7 +55,7 @@ export default () => {
         <Button type="submit" disabled={signupLoading}>
           登録
         </Button>
-      </Form>
+      </form>
     </div>
   );
 };

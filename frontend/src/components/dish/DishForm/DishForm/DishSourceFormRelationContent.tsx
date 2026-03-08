@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
-import { Form } from 'react-bootstrap';
+import { Input } from '@/components/ui/input';
 import {
   DISH_SOURCE_TYPE,
   DISH_SOURCE_TYPES,
@@ -66,7 +66,7 @@ export const DishSourceFormRelationContent = (
       {detailType ===
         DISH_SOURCE_RELATION_DETAIL_VALUE_TYPE.RECIPE_BOOK_PAGE && (
         <FormFieldWrapperWithLabel label="ページ数">
-          <Form.Control
+          <Input
             type="number"
             {...register(
               'dishSourceRelation.dishSourceRelationDetail.recipeBookPage',
@@ -95,7 +95,7 @@ export const DishSourceFormRelationContent = (
       {detailType ===
         DISH_SOURCE_RELATION_DETAIL_VALUE_TYPE.RECIPE_WEBSITE_URL && (
         <FormFieldWrapperWithLabel label="レシピURL">
-          <Form.Control
+          <Input
             type="text"
             {...register(
               'dishSourceRelation.dishSourceRelationDetail.recipeWebsiteUrl',
@@ -119,7 +119,7 @@ export const DishSourceFormRelationContent = (
       {detailType ===
         DISH_SOURCE_RELATION_DETAIL_VALUE_TYPE.RECIPE_SOURCE_MEMO && (
         <FormFieldWrapperWithLabel label="メモ">
-          <Form.Control
+          <Input
             type="text"
             {...register(
               'dishSourceRelation.dishSourceRelationDetail.recipeSourceMemo',

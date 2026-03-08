@@ -38,3 +38,9 @@ docker compose exec frontend yarn install
 docker compose exec frontend yarn test
 ```
 
+## Tailwind watcher のトラブルシューティング
+
+- MUST: `docker compose exec frontend` で `tailwindcss` を手動実行しない（起動済みの watcher と競合してOOMが発生し、watcher プロセスが死ぬ）
+- watcher が死んでいる兆候: `src/app/globals.css` を変更しても `tailwind-output.css` の行数・内容が変わらない
+- 復旧: `docker compose restart frontend`（entrypoint.sh が watcher を再起動する）
+

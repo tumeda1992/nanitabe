@@ -1,5 +1,4 @@
 import React from 'react';
-import { Col, Form, Row } from 'react-bootstrap';
 import RequireCaution from './RequireCaution';
 import style from './FormFieldWrapperWithLabel.module.scss';
 
@@ -14,13 +13,13 @@ export default (props: Props) => {
   const { required, label, formFieldId, children } = props;
 
   return (
-    <Form.Group as={Row} className={style['form-field']}>
-      <Form.Label column sm={2} htmlFor={formFieldId}>
+    <div className={style['form-field']} style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem', marginBottom: '0.5rem' }}>
+      <label htmlFor={formFieldId} style={{ minWidth: '8rem', paddingTop: '0.375rem', fontSize: '0.875rem', fontWeight: 500 }}>
         {label}
         &nbsp;
         {required && <RequireCaution />}
-      </Form.Label>
-      <Col sm={10}>{children}</Col>
-    </Form.Group>
+      </label>
+      <div style={{ flex: 1 }}>{children}</div>
+    </div>
   );
 };

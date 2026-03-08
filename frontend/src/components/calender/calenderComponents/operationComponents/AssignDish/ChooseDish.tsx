@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
+import { Input } from '@/components/ui/input';
 import classnames from 'classnames';
 import style from './AssignDish.module.scss';
 import ExistingDishIconForSelect from '../../../../dish/ExistingDishIcon/ExistingDishIconForSelect';
@@ -111,29 +111,22 @@ export default (props: Props) => {
             { value: 'true', checkboxValue: 'true', label: '関連食事あり' },
             { value: 'false', checkboxValue: 'false', label: '関連食事なし' },
           ].map((registeredWithMealOption) => (
-            <Form.Check
-              type="radio"
-              key={registeredWithMealOption.value}
-              inline
-              name="registeredWithMeal"
-              value={registeredWithMealOption.checkboxValue}
-              checked={
-                searchedDishesAreRegisteredWithMeal ===
-                registeredWithMealOption.value
-              }
-              onChange={() => {
-                setSearchedDishesAreRegisteredWithMeal(
-                  registeredWithMealOption.value,
-                );
-              }}
-              label={registeredWithMealOption.label}
-              id={`optionOfRegisteredWithMeal-${registeredWithMealOption.value}`}
-            />
+            <span key={registeredWithMealOption.checkboxValue} className="inline-flex items-center gap-1 mr-3">
+              <input
+                type="radio"
+                name="registeredWithMeal"
+                value={registeredWithMealOption.checkboxValue}
+                checked={searchedDishesAreRegisteredWithMeal === registeredWithMealOption.value}
+                onChange={() => { setSearchedDishesAreRegisteredWithMeal(registeredWithMealOption.value); }}
+                id={`optionOfRegisteredWithMeal-${registeredWithMealOption.value}`}
+              />
+              <label htmlFor={`optionOfRegisteredWithMeal-${registeredWithMealOption.value}`}>{registeredWithMealOption.label}</label>
+            </span>
           ))}
         </div>
 
         <div className={style['choose-dish-form-select-dish__container']}>
-          <Form.Control
+          <Input
             type="text"
             placeholder="料理を検索できます"
             data-testid="existingDishSearchWord"

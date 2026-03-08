@@ -1,5 +1,4 @@
 import { useFormContext } from 'react-hook-form';
-import { Form } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import {
   CHOOSING_PUT_DISH_SOURCE_TYPE,
@@ -81,49 +80,52 @@ export const DishFormOfRelatedDishSource = (
 
   return (
     <>
-      <Form.Group>
-        <Form.Check
-          type="radio"
-          inline
-          name="add_put_dish_source_type"
-          value={
-            CHOOSING_PUT_DISH_SOURCE_TYPE.CHOOSING_USE_EXISTING_DISH_SOURCE
-          }
-          onChange={() =>
-            setChoosingPutDishSourceType(
-              CHOOSING_PUT_DISH_SOURCE_TYPE.CHOOSING_USE_EXISTING_DISH_SOURCE,
-            )
-          }
-          checked={choosingUseExistingDishSource}
-          label="登録済みの参考レシピから選択"
-          id="optionOfUsingExistingDishSource"
-          data-testid="optionOfUsingExistingDishSource"
-        />
-        <Form.Check
-          type="radio"
-          inline
-          name="add_put_dish_source_type"
-          value={
-            CHOOSING_PUT_DISH_SOURCE_TYPE.CHOOSING_REGISTER_NEW_DISH_SOURCE
-          }
-          onChange={() =>
-            setChoosingPutDishSourceType(
-              CHOOSING_PUT_DISH_SOURCE_TYPE.CHOOSING_REGISTER_NEW_DISH_SOURCE,
-            )
-          }
-          checked={choosingRegisterNewDishSource}
-          label="新しく参考レシピを登録"
-          id="optionOfRegisteringNewDishSource"
-          data-testid="optionOfRegisteringNewDishSource"
-        />
-      </Form.Group>
+      <div>
+        <span className="inline-flex items-center gap-1 mr-3">
+          <input
+            type="radio"
+            name="add_put_dish_source_type"
+            value={
+              CHOOSING_PUT_DISH_SOURCE_TYPE.CHOOSING_USE_EXISTING_DISH_SOURCE
+            }
+            onChange={() =>
+              setChoosingPutDishSourceType(
+                CHOOSING_PUT_DISH_SOURCE_TYPE.CHOOSING_USE_EXISTING_DISH_SOURCE,
+              )
+            }
+            checked={choosingUseExistingDishSource}
+            id="optionOfUsingExistingDishSource"
+            data-testid="optionOfUsingExistingDishSource"
+          />
+          <label htmlFor="optionOfUsingExistingDishSource">登録済みの参考レシピから選択</label>
+        </span>
+        <span className="inline-flex items-center gap-1 mr-3">
+          <input
+            type="radio"
+            name="add_put_dish_source_type"
+            value={
+              CHOOSING_PUT_DISH_SOURCE_TYPE.CHOOSING_REGISTER_NEW_DISH_SOURCE
+            }
+            onChange={() =>
+              setChoosingPutDishSourceType(
+                CHOOSING_PUT_DISH_SOURCE_TYPE.CHOOSING_REGISTER_NEW_DISH_SOURCE,
+              )
+            }
+            checked={choosingRegisterNewDishSource}
+            id="optionOfRegisteringNewDishSource"
+            data-testid="optionOfRegisteringNewDishSource"
+          />
+          <label htmlFor="optionOfRegisteringNewDishSource">新しく参考レシピを登録</label>
+        </span>
+      </div>
 
       {/* TODO: DishSourceFormに移行 */}
       {choosingUseExistingDishSource && (
         <>
           <FormFieldWrapperWithLabel label="参考レシピ">
             {dishSources && (
-              <Form.Select
+              <select
+                className="h-9 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                 defaultValue={parseIntOrNull(dishSourceId) || undefined}
                 onChange={(e) => {
                   setDishSourceId(parseIntOrNull(e.target.value));
@@ -145,7 +147,7 @@ export const DishFormOfRelatedDishSource = (
                     {dishSource.name}
                   </option>
                 ))}
-              </Form.Select>
+              </select>
             )}
           </FormFieldWrapperWithLabel>
           <DishSourceFormRelationContent

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { Button, Form } from 'react-bootstrap';
+import { Button } from '@/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Dish } from '../../../../lib/graphql/generated/graphql';
 import { DishFormOfOnlyDishFields } from './DishFormOfOnlyDishFields';
@@ -63,7 +63,7 @@ export default (props: Props) => {
 
   return (
     <FormProvider {...methods}>
-      <Form onSubmit={handleSubmit(onSubmit, onError)}>
+      <form onSubmit={handleSubmit(onSubmit, onError)}>
         <DishFormContent
           preFilledDish={preFilledDish}
           useChoosingPutDishSourceTypeResult={
@@ -85,12 +85,12 @@ export default (props: Props) => {
             <label htmlFor="continuousRegistrationCheck">連続登録する</label>
           </div>
         )}
-        <Form.Group>
+        <div>
           <Button type="submit" data-testid="submitDishButton">
             登録
           </Button>
-        </Form.Group>
-      </Form>
+        </div>
+      </form>
     </FormProvider>
   );
 };
