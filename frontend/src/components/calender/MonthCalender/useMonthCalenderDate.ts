@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { subDays, addDays, startOfMonth, endOfMonth } from 'date-fns';
 import { useLogicalHistory } from '../../../app/logical-history';
-import { monthCalenderPagePathOf } from '../../../app/calender/month/[date]/consts';
+import { monthCalendarPagePathOf } from '../../../app/calendar/month/[date]/consts';
 
 export const useDisplayDate = (specifiedDate: Date) => {
   const { pushHistory } = useLogicalHistory();
@@ -21,7 +21,7 @@ export const useDisplayDate = (specifiedDate: Date) => {
   const reflectDate = useCallback((date: Date) => {
     setFirstDayOfMonth(startOfMonth(date));
     setLastDayOfMonth(endOfMonth(date));
-    pushHistory(monthCalenderPagePathOf(startOfMonth(date)));
+    pushHistory(monthCalendarPagePathOf(startOfMonth(date)));
   }, []);
 
   const updateToPreviousMonth = useCallback(() => {

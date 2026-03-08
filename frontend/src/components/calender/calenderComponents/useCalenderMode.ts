@@ -10,9 +10,9 @@ import useSwapMealsMode, {
 } from './operationComponents/SwapMeals/useSwapMealsMode';
 import {
   isMonthPath,
-  monthCalenderPagePathOf,
-} from '../../../app/calender/month/[date]/consts';
-import { weekCalenderPagePathOf } from '../../../app/calender/week/[date]/consts';
+  monthCalendarPagePathOf,
+} from '../../../app/calendar/month/[date]/consts';
+import { weekCalendarPagePathOf } from '../../../app/calendar/week/[date]/consts';
 import { useLogicalHistory } from '../../../app/logical-history';
 
 export const DISPLAY_CALENDER_MODE = 'DISPLAY_CALENDER_MODE';
@@ -111,9 +111,9 @@ export const useBackToDateWhenModeStarted = () => {
   const backToDateWhenModeStarted = (dateWhenModeStarted: Date) => {
     const moveTargetPath = (() => {
       if (isMonthPath(currentPathAndQuery)) {
-        return monthCalenderPagePathOf(dateWhenModeStarted);
+        return monthCalendarPagePathOf(dateWhenModeStarted);
       }
-      return weekCalenderPagePathOf(dateWhenModeStarted);
+      return weekCalendarPagePathOf(dateWhenModeStarted);
     })();
     if (moveTargetPath !== currentPathAndQuery) {
       pushHistory(moveTargetPath);

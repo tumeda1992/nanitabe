@@ -6,7 +6,7 @@ import {
   previousSaturday,
   previousMonday,
 } from 'date-fns';
-import { weekCalenderPagePathOf } from '../../../app/calender/week/[date]/consts';
+import { weekCalendarPagePathOf } from '../../../app/calendar/week/[date]/consts';
 import {
   DAY_OF_FRIDAY,
   DAY_OF_MONDAY,
@@ -103,7 +103,7 @@ export const useFirstDisplayDate = (
 
   const reflectDate = useCallback(
     (date: Date) => {
-      pushHistory(weekCalenderPagePathOf(date));
+      pushHistory(weekCalendarPagePathOf(date));
     },
     [pushHistory],
   );

@@ -18,13 +18,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
-  WEEK_CALENDER_PAGE_PATH_OF_THIS_WEEK,
-  weekCalenderPagePathOf,
-} from '@/app/calender/week/[date]/consts';
+  WEEK_CALENDAR_PAGE_PATH_OF_THIS_WEEK,
+  weekCalendarPagePathOf,
+} from '@/app/calendar/week/[date]/consts';
 import {
-  MONTH_CALENDER_PAGE_PATH_OF_THIS_MONTH,
-  monthCalenderPagePathOf,
-} from '@/app/calender/month/[date]/consts';
+  MONTH_CALENDAR_PAGE_PATH_OF_THIS_MONTH,
+  monthCalendarPagePathOf,
+} from '@/app/calendar/month/[date]/consts';
 
 type CalendarHeaderProps = {
   viewType: 'week' | 'month';
@@ -51,10 +51,10 @@ const CalendarHeader = ({
   const isWeek = viewType === 'week';
 
   const todayHref = isWeek
-    ? WEEK_CALENDER_PAGE_PATH_OF_THIS_WEEK
-    : MONTH_CALENDER_PAGE_PATH_OF_THIS_MONTH;
-  const weekViewHref = weekCalenderPagePathOf(currentDate);
-  const monthViewHref = monthCalenderPagePathOf(currentDate);
+    ? WEEK_CALENDAR_PAGE_PATH_OF_THIS_WEEK
+    : MONTH_CALENDAR_PAGE_PATH_OF_THIS_MONTH;
+  const weekViewHref = weekCalendarPagePathOf(currentDate);
+  const monthViewHref = monthCalendarPagePathOf(currentDate);
 
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
