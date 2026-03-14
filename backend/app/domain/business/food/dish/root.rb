@@ -75,6 +75,15 @@ module Business::Food::Dish
       self.tags = tags_for_replace
     end
 
+    def add_tag(tag)
+      raise "タグの型が不正です。" unless tag.is_a?(Business::Food::Dish::Tag::Root)
+
+      tag.validate!
+      return if tags.any? { |existing| existing.content.normalized == tag.content.normalized }
+
+      self.tags = tags + [tag]
+    end
+
     private
 
     def validate_tags

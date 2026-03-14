@@ -23,5 +23,7 @@ module Types
     field :remove_dish_source, mutation: ::Mutations::Dish::Source::RemoveSource
 
     field :evaluate_dish, mutation: ::Mutations::Dish::Evaluation::EvaluateDish
+
+    field :bulk_add_tag_to_dishes, mutation: ::Mutations::Dish::Tag::BulkAddTagToDishes
   end
 end

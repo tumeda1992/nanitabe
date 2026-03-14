@@ -20,16 +20,16 @@
 
 ### タスク
 
-- [ ] `add_tag` のspec を書く（テストファースト）
-    - [ ] `spec/domain/business/food/dish/root_spec.rb` に `add_tag` のテストを追加
-        - [ ] タグが追加される（正常系）
-        - [ ] 正規化後内容が同じタグは重複追加されない
-        - [ ] 型が不正なタグはエラー
-- [ ] `Dish::Root#add_tag` を実装する
-    - [ ] `app/domain/business/food/dish/root.rb` に `add_tag` を追加
-    - [ ] 重複チェックは `content.normalized` で比較
-- [ ] テスト実行・グリーン確認
-    - [ ] `docker compose exec backend bundle exec rspec spec/domain/business/food/dish/root_spec.rb`
+- [x] `add_tag` のspec を書く（テストファースト）
+    - [x] `spec/domain/business/food/dish/root_spec.rb` に `add_tag` のテストを追加
+        - [x] タグが追加される（正常系）
+        - [x] 正規化後内容が同じタグは重複追加されない
+        - [x] 型が不正なタグはエラー
+- [x] `Dish::Root#add_tag` を実装する
+    - [x] `app/domain/business/food/dish/root.rb` に `add_tag` を追加
+    - [x] 重複チェックは `content.normalized` で比較
+- [x] テスト実行・グリーン確認
+    - [x] `docker compose exec backend bundle exec rspec spec/domain/business/food/dish/root_spec.rb`
 
 ---
 
@@ -41,15 +41,15 @@
 
 ### タスク
 
-- [ ] specを書く（テストファースト）
-    - [ ] `spec/domain/business/food/dish/tag/usecase/add_tag_to_dish_command_spec.rb` を新規作成
-        - [ ] 正常系: 指定DishにTagが追加される
-        - [ ] 存在しないdish_idはエラー
-- [ ] `AddTagToDishCommand` を実装する
-    - [ ] `app/domain/business/food/dish/tag/usecase/add_tag_to_dish_command.rb` を新規作成
-    - [ ] `dish_root.add_tag` を呼び、`Dish.persist_from_food_dish_root` で保存
-- [ ] テスト実行・グリーン確認
-    - [ ] `docker compose exec backend bundle exec rspec spec/domain/business/food/dish/tag/usecase/add_tag_to_dish_command_spec.rb`
+- [x] specを書く（テストファースト）
+    - [x] `spec/domain/business/food/dish/tag/usecase/add_tag_to_dish_command_spec.rb` を新規作成
+        - [x] 正常系: 指定DishにTagが追加される
+        - [x] 存在しないdish_idはエラー
+- [x] `AddTagToDishCommand` を実装する
+    - [x] `app/domain/business/food/dish/tag/usecase/add_tag_to_dish_command.rb` を新規作成
+    - [x] `dish_root.add_tag` を呼び、`Dish.persist_from_food_dish_root` で保存
+- [x] テスト実行・グリーン確認
+    - [x] `docker compose exec backend bundle exec rspec spec/domain/business/food/dish/tag/usecase/add_tag_to_dish_command_spec.rb`
 
 ---
 
@@ -61,17 +61,17 @@
 
 ### タスク
 
-- [ ] specを書く（テストファースト）
-    - [ ] `spec/domain/business/food/dish/tag/usecase/bulk_add_tag_to_dishes_command_spec.rb` を新規作成
-        - [ ] 正常系: 複数DishにTagが追加される
-        - [ ] 存在しないdish_idが含まれる場合はトランザクションがロールバックされる
-        - [ ] dish_idsが空の場合はエラー
-        - [ ] tag_contentが空の場合はエラー
-- [ ] `BulkAddTagToDishesCommand` を実装する
-    - [ ] `app/domain/business/food/dish/tag/usecase/bulk_add_tag_to_dishes_command.rb` を新規作成
-    - [ ] トランザクション内で `AddTagToDishCommand` を各dish_idに対して呼ぶ
-- [ ] テスト実行・グリーン確認
-    - [ ] `docker compose exec backend bundle exec rspec spec/domain/business/food/dish/tag/usecase/bulk_add_tag_to_dishes_command_spec.rb`
+- [x] specを書く（テストファースト）
+    - [x] `spec/domain/business/food/dish/tag/usecase/bulk_add_tag_to_dishes_command_spec.rb` を新規作成
+        - [x] 正常系: 複数DishにTagが追加される
+        - [x] 存在しないdish_idが含まれる場合はトランザクションがロールバックされる
+        - [x] dish_idsが空の場合はエラー
+        - [x] tag_contentが空の場合はエラー
+- [x] `BulkAddTagToDishesCommand` を実装する
+    - [x] `app/domain/business/food/dish/tag/usecase/bulk_add_tag_to_dishes_command.rb` を新規作成
+    - [x] トランザクション内で `AddTagToDishCommand` を各dish_idに対して呼ぶ
+- [x] テスト実行・グリーン確認
+    - [x] `docker compose exec backend bundle exec rspec spec/domain/business/food/dish/tag/usecase/bulk_add_tag_to_dishes_command_spec.rb`
 
 ---
 
@@ -83,17 +83,17 @@
 
 ### タスク
 
-- [ ] specを書く（テストファースト）
-    - [ ] `spec/graphql/mutation/dish/tag/bulk_add_tag_to_dishes_spec.rb` を新規作成
-        - [ ] アーキテクチャ疎通確認（正常系1ケース）
-- [ ] GraphQL mutation を実装する
-    - [ ] `app/graphql/mutations/dish/tag/bulk_add_tag_to_dishes.rb` を新規作成
-        - [ ] arguments: `dish_ids: [Int!]!`, `tag: String!`
-        - [ ] returns: `dish_ids: [Int]`
-        - [ ] `BulkAddTagToDishesCommand` を呼ぶ
-    - [ ] `app/graphql/types/mutation_type.rb` に `bulk_add_tag_to_dishes` を登録
-- [ ] テスト実行・グリーン確認
-    - [ ] `docker compose exec backend bundle exec rspec spec/graphql/mutation/dish/tag/`
+- [x] specを書く（テストファースト）
+    - [x] `spec/graphql/mutation/dish/tag/bulk_add_tag_to_dishes_spec.rb` を新規作成
+        - [x] アーキテクチャ疎通確認（正常系1ケース）
+- [x] GraphQL mutation を実装する
+    - [x] `app/graphql/mutations/dish/tag/bulk_add_tag_to_dishes.rb` を新規作成
+        - [x] arguments: `dish_ids: [Int!]!`, `tag: String!`
+        - [x] returns: `dish_ids: [Int]`
+        - [x] `BulkAddTagToDishesCommand` を呼ぶ
+    - [x] `app/graphql/types/mutation_type.rb` に `bulk_add_tag_to_dishes` を登録
+- [x] テスト実行・グリーン確認
+    - [x] `docker compose exec backend bundle exec rspec spec/graphql/mutation/dish/tag/`
 
 ---
 
@@ -105,35 +105,35 @@
 
 ### タスク
 
-- [ ] 全テスト実行・グリーン確認
-    - [ ] `docker compose exec backend bundle exec rspec`
+- [x] 全テスト実行・グリーン確認
+    - [x] `docker compose exec backend bundle exec rspec`
 
-- [ ] Rubocop 実行（プロジェクト全体）
-    - [ ] `docker compose exec backend bundle exec rubocop`
-    - [ ] エラーがあれば修正して再実行
-    - [ ] エラーゼロ確認
+- [x] Rubocop 実行（プロジェクト全体）
+    - [x] `docker compose exec backend bundle exec rubocop`
+    - [x] エラーがあれば修正して再実行
+    - [x] エラーゼロ確認
 
 ---
 
 ## フェーズ6: ドキュメント更新
 
-- [ ] doc-enricher スキルを利用したREADME.md を更新（必要な場合のみ）
-- [ ] 実装後の振り返り（このファイルの下部に記録）
+- [x] doc-enricher スキルを利用したREADME.md を更新（必要な場合のみ）- README更新不要（内部実装のみ）
+- [x] 実装後の振り返り（このファイルの下部に記録）
 
 ---
 
 ## 実装後の振り返り
 
 ### 実装完了日
-{YYYY-MM-DD}
+2026-03-14
 
 ### 計画と実績の差分
 
 **計画と異なった点**:
--
+- `dish_ids: []` や `tag_content: ""` のバリデーションエラーが `RuntimeError` ではなく `Business::Base::Values::InvalidAttributeError` として発生するため、specの期待値を `StandardError` に変更した
 
 **新たに必要になったタスク**:
--
+- なし
 
 **技術的理由でスキップしたタスク**（該当する場合のみ）:
--
+- フェーズ6のREADME.md更新: 内部実装（ドメイン層・ユースケース層・GraphQL mutation）のみの追加であり、ユーザー向けドキュメントへの記載は不要と判断
