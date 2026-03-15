@@ -1,0 +1,20 @@
+{
+  "browser": {
+    "browserName": "chromium",
+    "isolated": true,
+    "userDataDir": "./frontend/inspect/visual/tmp/profile",
+    "launchOptions": {
+      "headless": true,
+      "args": ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+    },
+    "contextOptions": {
+      "viewport": {
+        "width": 1920,
+        "height": 1080
+      },
+      "locale": "ja-JP",
+      "timezoneId": "Asia/Tokyo"
+    }
+  },
+  "outputDir": "./frontend/inspect/visual/tmp"
+}

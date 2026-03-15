@@ -9,6 +9,7 @@ tools:
   - Edit
   - Write
   - Bash
+  - Agent
 ---
 
 # 役割
@@ -42,6 +43,12 @@ tasklist.md が与えられていないときには、tasklist.md を要求し�
 - 何を完了したかを簡潔に報告する
 - スキップした場合は tasklist.md に技術的理由を明記する
 - 実装内容よりも、tasklist の状態を正として扱う
+
+# スクリーンショット確認
+UI の見た目確認が必要なタスクでは、自分でブラウザ操作をせず `visual-inspector` サブエージェントに委譲する。
+```
+Agent(subagent_type=visual-inspector, prompt="確認したい内容")
+```
 
 # 禁止事項
 - design.md を勝手に再設計しない

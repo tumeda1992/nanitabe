@@ -5,7 +5,11 @@
       "Edit(/backend/**)",
       "Skill(steering)",
       "Edit(/.steering/**)",
-      "Skill(doc-enricher)"
+      "Skill(doc-enricher)",
+      "READ(/tmp/**)",
+      "Edit(/tmp/**)",
+      "Edit(/frontend/inspect/visual/tmp/**)",
+      "Bash(node:*)"
     ]
   }
 }

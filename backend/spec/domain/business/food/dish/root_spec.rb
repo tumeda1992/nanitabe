@@ -1,6 +1,53 @@
 require "rails_helper"
 
 RSpec.describe Business::Food::Dish::Root do
+  describe "#add_tag" do
+    let(:root) do
+      described_class.new(
+        user_id: 1,
+        name: Business::Food::Dish::Name.initialize_and_normalize("テスト料理"),
+        meal_position: 1,
+        tags: [],
+      )
+    end
+
+    let(:valid_tag) do
+      Business::Food::Dish::Tag::Root.new(
+        user_id: 1,
+        content: Business::Food::Dish::Tag::Content.initialize_and_normalize("白ワインに合う"),
+      )
+    end
+
+    context "when adding a valid tag" do
+      it "adds the tag to tags" do
+        root.add_tag(valid_tag)
+
+        expect(root.tags.size).to eq(1)
+        expect(root.tags.first.content.value).to eq("白ワインに合う")
+      end
+    end
+
+    context "when adding a tag with the same normalized content as an existing tag" do
+      it "does not add a duplicate tag" do
+        root.add_tag(valid_tag)
+
+        duplicate_tag = Business::Food::Dish::Tag::Root.new(
+          user_id: 1,
+          content: Business::Food::Dish::Tag::Content.initialize_and_normalize("白ワインに合う"),
+        )
+        root.add_tag(duplicate_tag)
+
+        expect(root.tags.size).to eq(1)
+      end
+    end
+
+    context "when adding a tag with invalid type" do
+      it "raises an error" do
+        expect { root.add_tag("not_a_tag") }.to raise_error(RuntimeError)
+      end
+    end
+  end
+
   describe "#renormalize_name" do
     let(:original_name) do
       Business::Food::Dish::Name.new(
