@@ -1,12 +1,9 @@
 import { gql } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import {
-  useExistingDishesForRegisteringWithMealLazyQuery,
-  useDishesPerSourceLazyQuery,
   useDishesPerSourceQuery,
   useExistingDishesForRegisteringWithMealQuery,
   useDishQuery,
-  useDishLazyQuery,
   ExistingDishesForRegisteringWithMealDocument,
   Dish,
 } from '../../lib/graphql/generated/graphql';
@@ -71,7 +68,6 @@ const useFetchExistingDishesForRegisteringWithMeal = (
   const { data, previousData, fetchLoading, fetchError, refetch } =
     useCodegenQuery(
       useExistingDishesForRegisteringWithMealQuery,
-      useExistingDishesForRegisteringWithMealLazyQuery,
       requireFetchedData,
       {
         dishIdRegisteredWithMeal,
@@ -126,7 +122,6 @@ const useFetchDish = (params: FetchDishParams = {}) => {
   const { condition, requireFetchedData = false } = params;
   const { data, fetchLoading, fetchError, refetch } = useCodegenQuery(
     useDishQuery,
-    useDishLazyQuery,
     requireFetchedData,
     condition,
   );
@@ -171,7 +166,6 @@ const useFetchDishesPerSource = (params: FetchDishesPerSourceParams) => {
   const { requireFetchedData = false } = params;
   const { data, fetchLoading, fetchError, refetch } = useCodegenQuery(
     useDishesPerSourceQuery,
-    useDishesPerSourceLazyQuery,
     requireFetchedData,
   );
 

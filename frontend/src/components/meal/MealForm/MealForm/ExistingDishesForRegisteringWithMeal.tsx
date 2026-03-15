@@ -45,6 +45,7 @@ export const ExistingDishesForRegisteringWithMeal = (
       <DishSearchPanel
         initialSearchString={initialSearchString}
         onSearchStringChange={setSearchString}
+        dishIdRegisteredWithMeal={selectedDishId}
         renderCard={(dish) => (
           <DishSearchCardLibrary
             dish={dish}

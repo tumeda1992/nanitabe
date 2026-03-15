@@ -14,6 +14,7 @@ type DishSearchPanelProps = {
   renderCard: (dish: DishForSearchCard) => React.ReactNode;
   initialSearchString?: string;
   onSearchStringChange?: (s: string) => void;
+  dishIdRegisteredWithMeal?: number | null;
 };
 
 type MealPositionFilter = number | null;
@@ -63,6 +64,7 @@ const DishSearchPanel = ({
   renderCard,
   initialSearchString,
   onSearchStringChange,
+  dishIdRegisteredWithMeal,
 }: DishSearchPanelProps) => {
   const [searchString, setSearchString] = useState(initialSearchString ?? '');
   const [mealPositionFilter, setMealPositionFilter] =
@@ -75,6 +77,7 @@ const DishSearchPanel = ({
       fetchDishesParams: {
         fetchExistingDishesForRegisteringWithMealParams: {
           requireFetchedData: true,
+          dishIdRegisteredWithMeal: dishIdRegisteredWithMeal ?? null,
           searchString: searchString || null,
           mealPosition: mealPositionFilter,
           registeredWithMeal: registeredWithMealFilter,

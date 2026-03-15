@@ -1,6 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { useForm, FormProvider } from 'react-hook-form';
 import {
   registerQueryHandler,
@@ -84,6 +84,34 @@ describe('<ExistingDishesForRegisteringWithMeal>', () => {
       fireEvent.click(newDishButton);
 
       expect(onNewDishIconForSelectClick).toHaveBeenCalledWith('');
+    });
+  });
+
+  describe('dishIdRegisteredWithMeal propagation', () => {
+    it('passes selected dish id to query variables after selecting a dish', async () => {
+      const { getLatestQueryVariables, queryInterceptor } = registerQueryHandler(
+        ExistingDishesForRegisteringWithMealDocument,
+        { existingDishesForRegisteringWithMeal: [registeredDish] },
+      );
+
+      renderWithApollo(<Wrapper />);
+
+      // 料理カードが表示されるまで待つ
+      const dishCard = await screen.findByTestId(`existingDish-${registeredDish.id}`);
+
+      // 料理を選択する
+      fireEvent.click(dishCard);
+
+      // 選択後: queryInterceptor が再度呼ばれ、dishIdRegisteredWithMeal が選択した料理の ID になる
+      await waitFor(() => {
+        // インターセプタが複数回呼ばれていること（最初の呼び出し + 選択後の再フェッチ）
+        expect(queryInterceptor).toHaveBeenCalledTimes(2);
+      });
+
+      await waitFor(() => {
+        const variables = getLatestQueryVariables();
+        expect(variables?.dishIdRegisteredWithMeal).toBe(registeredDish.id);
+      });
     });
   });
 });
