@@ -24,6 +24,8 @@ const DishSearchCardLibrary = ({
   selected,
   onToggle,
 }: DishSearchCardLibraryProps) => {
+  const showMenu = onEdit !== undefined || onDelete !== undefined;
+
   const actionMenu = (
     <div onClick={(e) => e.stopPropagation()}>
       <DropdownMenu>
@@ -96,7 +98,7 @@ const DishSearchCardLibrary = ({
           dish={dish}
           selected={selected}
           onClick={onToggle ? () => onToggle(dish.id) : undefined}
-          trailing={actionMenu}
+          trailing={showMenu ? actionMenu : undefined}
         />
       </div>
     </div>

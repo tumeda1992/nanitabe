@@ -29,7 +29,7 @@ const registeredDish2 = {
 };
 
 describe('<DishSearchPanel>', () => {
-  describe('when mode=page', () => {
+  describe('when renderCard renders dish name', () => {
     beforeEach(() => {
       registerQueryHandler(ExistingDishesForRegisteringWithMealDocument, {
         existingDishesForRegisteringWithMeal: [registeredDish1, registeredDish2],
@@ -37,9 +37,9 @@ describe('<DishSearchPanel>', () => {
 
       renderWithApollo(
         <DishSearchPanel
-          mode="page"
-          onEdit={() => {}}
-          onDelete={() => {}}
+          renderCard={(dish) => (
+            <div key={dish.id} data-testid={`card-${dish.id}`}>{dish.name}</div>
+          )}
         />,
       );
     });
@@ -49,30 +49,10 @@ describe('<DishSearchPanel>', () => {
       expect(screen.getByText('味噌汁')).toBeInTheDocument();
     });
 
-    it('shows Library card (... menu) for each dish', async () => {
-      await screen.findByText('ハンバーグ');
-      const menuButtons = screen.getAllByLabelText('操作メニュー');
-      expect(menuButtons.length).toBeGreaterThan(0);
-    });
-  });
-
-  describe('when mode=picker', () => {
-    beforeEach(() => {
-      registerQueryHandler(ExistingDishesForRegisteringWithMealDocument, {
-        existingDishesForRegisteringWithMeal: [registeredDish1],
-      });
-
-      renderWithApollo(
-        <DishSearchPanel
-          mode="picker"
-          selectedDishId={null}
-          onSelect={() => {}}
-        />,
-      );
-    });
-
-    it('shows Picker card for each dish', async () => {
-      expect(await screen.findByText('ハンバーグ')).toBeInTheDocument();
+    it('renders each dish via renderCard', async () => {
+      await screen.findByTestId('card-1');
+      expect(screen.getByTestId('card-1')).toBeInTheDocument();
+      expect(screen.getByTestId('card-2')).toBeInTheDocument();
     });
   });
 });

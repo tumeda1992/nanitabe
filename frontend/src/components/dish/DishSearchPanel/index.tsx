@@ -2,8 +2,6 @@
 
 import React, { useState, useCallback } from 'react';
 import { Input } from '../../ui/input';
-import DishSearchCardLibrary from '../DishSearchCard/Library';
-import DishSearchCardPicker from '../DishSearchCard/Picker';
 import { type DishForSearchCard } from '../DishSearchCard/index';
 import useDish from '../../../features/dish/useDish';
 import {
@@ -12,16 +10,10 @@ import {
 } from '../../../features/dish/const';
 import { Search } from 'lucide-react';
 
-export type DishSearchPanelMode = 'page' | 'library' | 'picker';
-
 type DishSearchPanelProps = {
-  mode: DishSearchPanelMode;
-  selectedDishId?: number | null;
-  onSelect?: (dish: DishForSearchCard) => void;
-  onEdit?: (dish: DishForSearchCard) => void;
-  onDelete?: (dish: DishForSearchCard) => void;
-  selectedIds?: Set<number>;
-  onToggle?: (dishId: number) => void;
+  renderCard: (dish: DishForSearchCard) => React.ReactNode;
+  initialSearchString?: string;
+  onSearchStringChange?: (s: string) => void;
 };
 
 type MealPositionFilter = number | null;
@@ -68,15 +60,11 @@ const relatedMealFilters: {
 let searchTimer: ReturnType<typeof setTimeout> | null = null;
 
 const DishSearchPanel = ({
-  mode,
-  selectedDishId,
-  onSelect,
-  onEdit,
-  onDelete,
-  selectedIds = new Set(),
-  onToggle,
+  renderCard,
+  initialSearchString,
+  onSearchStringChange,
 }: DishSearchPanelProps) => {
-  const [searchString, setSearchString] = useState('');
+  const [searchString, setSearchString] = useState(initialSearchString ?? '');
   const [mealPositionFilter, setMealPositionFilter] =
     useState<MealPositionFilter>(null);
   const [registeredWithMealFilter, setRegisteredWithMealFilter] =
@@ -100,21 +88,10 @@ const DishSearchPanel = ({
       const value = e.target.value;
       searchTimer = setTimeout(() => {
         setSearchString(value);
+        onSearchStringChange?.(value);
       }, 400);
     },
-    [],
-  );
-
-  const handleToggle = useCallback(
-    (dishId: number) => {
-      if ((mode === 'picker' || mode === 'library') && onSelect && dishes) {
-        const dish = dishes.find((d) => d.id === dishId);
-        if (dish) onSelect(dish as DishForSearchCard);
-      } else if (onToggle) {
-        onToggle(dishId);
-      }
-    },
-    [mode, onSelect, dishes, onToggle],
+    [onSearchStringChange],
   );
 
   const dishList = dishes || [];
@@ -193,41 +170,11 @@ const DishSearchPanel = ({
         </p>
       ) : (
         <div className="flex flex-col divide-y divide-border max-h-[50vh] overflow-y-auto">
-          {dishList.map((dish) => {
-            const dishForCard = dish as DishForSearchCard;
-            if (mode === 'picker') {
-              return (
-                <DishSearchCardPicker
-                  key={dish.id}
-                  dish={dishForCard}
-                  selected={selectedDishId === dish.id}
-                  onToggle={handleToggle}
-                />
-              );
-            }
-            return (
-              <DishSearchCardLibrary
-                key={dish.id}
-                dish={dishForCard}
-                selected={
-                  mode === 'page'
-                    ? selectedIds.has(dish.id)
-                    : mode === 'library'
-                      ? selectedDishId === dish.id
-                      : false
-                }
-                onToggle={
-                  mode === 'page'
-                    ? handleToggle
-                    : mode === 'library' && onSelect
-                      ? handleToggle
-                      : undefined
-                }
-                onEdit={onEdit}
-                onDelete={onDelete}
-              />
-            );
-          })}
+          {dishList.map((dish) => (
+            <React.Fragment key={dish.id}>
+              {renderCard(dish as DishForSearchCard)}
+            </React.Fragment>
+          ))}
         </div>
       )}
     </div>

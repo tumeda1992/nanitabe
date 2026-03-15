@@ -1,15 +1,16 @@
 import { FieldError, useFormContext } from 'react-hook-form';
 import React, { useEffect, useState } from 'react';
-import FormFieldWrapperWithLabel from '../../../common/form/FormFieldWrapperWithLabel';
 import ErrorMessageIfExist from '../../../common/form/ErrorMessageIfExist';
 import DishSearchPanel from '../../../dish/DishSearchPanel/index';
+import DishSearchCardLibrary from '../../../dish/DishSearchCard/Library';
 import { type DishForSearchCard } from '../../../dish/DishSearchCard/index';
 import { Button } from '@/components/ui/button';
 
 type ExistingDishesForRegisteringWithMealProps = {
   dishIdRegisteredWithMeal?: number;
   displayNewDishIconForSelect?: boolean;
-  onNewDishIconForSelectClick?: any;
+  onNewDishIconForSelectClick?: (searchString: string) => void;
+  initialSearchString?: string;
 };
 
 export const ExistingDishesForRegisteringWithMeal = (
@@ -19,12 +20,14 @@ export const ExistingDishesForRegisteringWithMeal = (
     dishIdRegisteredWithMeal,
     displayNewDishIconForSelect = false,
     onNewDishIconForSelectClick,
+    initialSearchString,
   } = props;
   const {
     setValue,
     formState: { errors },
   } = useFormContext();
 
+  const [searchString, setSearchString] = useState(initialSearchString ?? '');
   const [selectedDishId, setSelectedDishId] = useState<number | null>(
     dishIdRegisteredWithMeal || null,
   );
@@ -33,16 +36,22 @@ export const ExistingDishesForRegisteringWithMeal = (
     setValue('dishId', selectedDishId);
   }, [selectedDishId]);
 
-  const handleSelect = (dish: DishForSearchCard) => {
-    setSelectedDishId(dish.id);
+  const handleToggle = (dish: DishForSearchCard) => {
+    setSelectedDishId((prev) => (prev === dish.id ? null : dish.id));
   };
 
   return (
     <>
       <DishSearchPanel
-        mode="library"
-        selectedDishId={selectedDishId}
-        onSelect={handleSelect}
+        initialSearchString={initialSearchString}
+        onSearchStringChange={setSearchString}
+        renderCard={(dish) => (
+          <DishSearchCardLibrary
+            dish={dish}
+            selected={selectedDishId === dish.id}
+            onToggle={() => handleToggle(dish)}
+          />
+        )}
       />
       {displayNewDishIconForSelect && (
         <Button
@@ -52,7 +61,7 @@ export const ExistingDishesForRegisteringWithMeal = (
           className="mt-2 w-full"
           onClick={() => {
             if (onNewDishIconForSelectClick) {
-              onNewDishIconForSelectClick('');
+              onNewDishIconForSelectClick(searchString);
             }
           }}
           data-testid="existingDish-new"
