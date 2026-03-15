@@ -13,7 +13,8 @@ export async function createLoggedInPage(credentials) {
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
   });
   const context = await browser.newContext({
-    viewport: { width: 1920, height: 1080 },
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
     locale: 'ja-JP',
     timezoneId: 'Asia/Tokyo',
   });

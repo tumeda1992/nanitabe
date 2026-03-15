@@ -6,13 +6,15 @@ import { Button } from '../../components/ui/button';
 import DishSearchPanel from '../../components/dish/DishSearchPanel/index';
 import { type DishForSearchCard } from '../../components/dish/DishSearchCard/index';
 import useDish from '../../features/dish/useDish';
-import { ChevronLeft, Plus, Trash2, X } from 'lucide-react';
+import { ChevronLeft, Plus, Tag, Trash2, X } from 'lucide-react';
+import BulkTagDrawer from '../../components/dish/BulkTagDrawer/index';
 
 const cn = (...classes: (string | undefined | false | null)[]) =>
   classes.filter(Boolean).join(' ');
 
 const DishesPageClient = () => {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [bulkTagOpen, setBulkTagOpen] = useState(false);
   const { removeDish } = useDish();
 
   const handleToggle = (dishId: number) => {
@@ -87,6 +89,13 @@ const DishesPageClient = () => {
         </main>
       </div>
 
+      <BulkTagDrawer
+        open={bulkTagOpen}
+        onOpenChange={setBulkTagOpen}
+        dishIds={selectedIds}
+        onCompleted={() => setSelectedIds(new Set())}
+      />
+
       {/* 一括アクション: フローティングバー (選択時のみ表示) */}
       <div
         className={cn(
@@ -115,6 +124,15 @@ const DishesPageClient = () => {
 
             {/* アクションボタン群 */}
             <div className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5 text-xs flex-1"
+                onClick={() => setBulkTagOpen(true)}
+              >
+                <Tag className="size-3.5" />
+                タグを付ける
+              </Button>
               <Button
                 variant="destructive"
                 size="sm"

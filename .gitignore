@@ -79,3 +79,6 @@ yarn-debug.log*
 
 .playwright-mcp/
 
+# Claude Code のユーザー固有メモリ（マシン固有パス・認証情報を含む）
+.claude/projects/
+

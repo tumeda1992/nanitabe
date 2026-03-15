@@ -9,7 +9,7 @@
 
 - 入口: `useDish.ts` — fetch + 全 mutation を束ねるfacade。dish操作を使う側はここをimportする
 - 個別 mutation: `addDishMutation.ts` / `updateDishMutation.ts` / `removeDishMutation.ts`
-- タグ操作: `tag/` サブディレクトリ
+- タグ操作: `tag/` サブディレクトリ（例: `tag/bulkAddTagMutation.ts`）
 - grep キーワード: `useDish`, `buildMutationExecutor`
 
 ## 変更ガイド
