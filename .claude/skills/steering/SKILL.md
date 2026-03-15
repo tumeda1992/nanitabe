@@ -74,6 +74,11 @@ allowed-tools: Read, Grep, Write, Edit, Bash
     - 例外処理
     - テスト方針
     - レイヤ/責務境界
+- **UI挙動・表示に関するタスクの場合（MUST）**:
+    - `visual-inspector` サブエージェントを使ってスクリーンショットを撮り、現状の実際の動作をファクトとして確認する
+    - 「コードを読んだ推測」ではなく「実際に見た事実」を design.md の根拠にする
+    - 例: ヘッダが固定されているか、スクロール時の挙動、レイアウト崩れ等
+    - ⚠️ Playwright ツールを直接呼び出すことは禁止。必ず `Agent(subagent_type="visual-inspector")` を使うこと
 
 ---
 
@@ -109,6 +114,24 @@ design.md は最低限、以下を含む（短くてもよい、ただし空洞�
 ---
 
 ### 6) tasklist.md（詳細）を作る（Design合意後のみ）
+
+> ⚠️ tasklist を作る前に、以下の2パターンのどちらに該当するか判断すること。
+
+#### パターンA: タスクが大きすぎる場合（親子 steering）
+- タスクが大きすぎて1つの steering で詳細タスクまで落とせない場合
+- `.claude/skills/steering/templates/roadmap.md` を元に `roadmap.md` を作成する（`tasklist.md` は作らない）
+- roadmap.md はチェックボックスを持たず、フェーズと子 steering パスの一覧のみ
+- 各子 steering は独立して実施し、完了時に親の roadmap.md の対応箇所を更新する
+- **`tasklist.md` という名前にしない**（tasklist-executor が誤って拾わないよう）
+- 例: `.steering/2026/20260307-feature-201-apply-v0-calendar-design/tasklist.md`（過去実績）
+
+#### パターンB: 調査結果によって方針が変わる場合（investigation + tasklist）
+- 調査しないと実装方針が決まらない場合
+- `investigation.md` を steering ディレクトリ内に作成し、調査方針を合意してから調査を進める
+- 調査完了後に `investigation.md` に結果を記録し、方針を確定させてから `tasklist.md` を作る
+- 通常の `tasklist.md`（下記）を使う。親子 steering は不要
+
+#### 通常パターン（上記に該当しない場合）
 - `.claude/skills/steering/templates/tasklist.md`を元に`tasklist.md` を作成し、**詳細タスクまで**記載する（ただし実行はしない）
 - 要件:
     - **フェーズ分割の方針**:
