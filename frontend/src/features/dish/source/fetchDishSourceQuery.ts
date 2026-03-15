@@ -1,9 +1,7 @@
 import { gql } from '@apollo/client';
 import { useCodegenQuery } from '../../utils/queryUtils';
 import {
-  useDishSourcesLazyQuery,
   useDishSourcesQuery,
-  useDishSourceLazyQuery,
   useDishSourceQuery,
 } from '../../../lib/graphql/generated/graphql';
 
@@ -25,7 +23,6 @@ const useFetchDishSourcesOnly = (params: FetchDishSourcesOnlyParams = {}) => {
   const { requireFetchedData = false } = params;
   const { data, fetchLoading, fetchError, refetch } = useCodegenQuery(
     useDishSourcesQuery,
-    useDishSourcesLazyQuery,
     requireFetchedData,
     {},
   );
@@ -59,7 +56,6 @@ const useFetchDishSource = (params: FetchDishSourceParams = {}) => {
   const { condition, requireFetchedData = false } = params;
   const { data, fetchLoading, fetchError, refetch } = useCodegenQuery(
     useDishSourceQuery,
-    useDishSourceLazyQuery,
     requireFetchedData,
     condition,
   );

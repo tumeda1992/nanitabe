@@ -99,7 +99,8 @@
     - [ ] エラーゼロ確認
 
 - [ ] （UI変更がある場合のみ）最終スクリーンショットで見た目を目視確認
-    - [ ] Playwright でブラウザを開き、変更した画面のスクリーンショットを撮る
+    - [ ] `visual-inspector` サブエージェント（`Agent(subagent_type="visual-inspector")`）でスクリーンショットを撮る
+    - ⚠️ `npx playwright` やPlaywright ツールの直接呼び出しは禁止。必ず visual-inspector サブエージェントを使うこと
     - [ ] 全体のデザイン・レイアウトが意図通りか確認
     - [ ] 問題があれば修正して再確認
 

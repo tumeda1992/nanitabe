@@ -3,15 +3,18 @@ import classnames from 'classnames';
 import style from './AssignDish.module.scss';
 import SelectMealType from '../../../../meal/MealForm/MealForm/SelectMealType';
 import DishSearchPanel from '../../../../dish/DishSearchPanel/index';
+import DishSearchCardPicker from '../../../../dish/DishSearchCard/Picker';
 import { type DishForSearchCard } from '../../../../dish/DishSearchCard/index';
 
 type Props = {
   useAssignDishModeResult: any;
+  initialSearchString?: string;
+  onSearchStringChange?: (s: string) => void;
 };
 
 // TODO: ChooseDish→SelectDishに命名変更
 export default (props: Props) => {
-  const { useAssignDishModeResult } = props;
+  const { useAssignDishModeResult, initialSearchString, onSearchStringChange } = props;
   const {
     changeCalendarModeToDisplayCalendarMode,
     changeCalendarModeToAssigningSelectedDishMode,
@@ -89,9 +92,15 @@ export default (props: Props) => {
         <div className={style['choose-dish-main-header']}>料理</div>
 
         <DishSearchPanel
-          mode="picker"
-          selectedDishId={selectedDish?.id ?? null}
-          onSelect={handleSelect}
+          initialSearchString={initialSearchString}
+          onSearchStringChange={onSearchStringChange}
+          renderCard={(dish) => (
+            <DishSearchCardPicker
+              dish={dish}
+              selected={selectedDish?.id === dish.id}
+              onToggle={() => handleSelect(dish)}
+            />
+          )}
         />
       </div>
     </div>

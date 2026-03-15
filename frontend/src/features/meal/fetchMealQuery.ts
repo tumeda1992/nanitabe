@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 import { gql } from '@apollo/client';
 import { useCodegenQuery } from '../utils/queryUtils';
 import {
-  useMealsForCalenderLazyQuery,
   useMealsForCalenderQuery,
 } from '../../lib/graphql/generated/graphql';
 
@@ -84,7 +83,6 @@ const useFetchMealsForCalender = (params: FetchMealsForCalenderParams) => {
 
   const { data, fetchLoading, fetchError, refetch } = useCodegenQuery(
     useMealsForCalenderQuery,
-    useMealsForCalenderLazyQuery,
     requireFetchedData,
     variablesForQuery,
   );

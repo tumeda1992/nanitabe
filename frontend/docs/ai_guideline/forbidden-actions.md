@@ -12,3 +12,9 @@
       - `git status` や `git diff` などの読み取り
 - 禁止：
     - 許可のない副作用（例：`git add` 等の副作用のあるGit操作、環境設定変更）
+
+## Playwright 使用ルール（Prohibited）
+- **MUST**: ブラウザ操作・スクリーンショット取得は必ず `visual-inspector` サブエージェント（`Agent(subagent_type="visual-inspector")`）経由で行うこと
+- **禁止**: `npx playwright`・`mcp__playwright__*` ツールの直接呼び出し、playwright バイナリの直接実行
+- **禁止**: playwright バイナリを `find` や `which` で検索すること（visual-inspector に委譲すれば不要）
+

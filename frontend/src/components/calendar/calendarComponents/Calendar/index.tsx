@@ -61,14 +61,12 @@ export default (props: Props) => {
   return (
     <div>
       {/* カレンダーヘッダー */}
-      <div>
-        {children({
-          isDisplayCalendarMode,
-          useAssignDishModeResult,
-          refreshToPrev,
-          refreshToNext,
-        })}
-      </div>
+      {children({
+        isDisplayCalendarMode,
+        useAssignDishModeResult,
+        refreshToPrev,
+        refreshToNext,
+      })}
 
       {/* DateCard を縦に並べる */}
       <div className="flex flex-col gap-1.5 px-2 py-2">

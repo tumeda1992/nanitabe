@@ -4,10 +4,13 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Button } from '../../components/ui/button';
 import DishSearchPanel from '../../components/dish/DishSearchPanel/index';
+import DishSearchCardLibrary from '../../components/dish/DishSearchCard/Library';
 import { type DishForSearchCard } from '../../components/dish/DishSearchCard/index';
 import useDish from '../../features/dish/useDish';
 import { ChevronLeft, Plus, Tag, Trash2, X } from 'lucide-react';
 import BulkTagDrawer from '../../components/dish/BulkTagDrawer/index';
+import useFullScreenModal from '../../components/common/modal/useFullScreenModal';
+import { EditDish } from '../../components/dish/DishForm';
 
 const cn = (...classes: (string | undefined | false | null)[]) =>
   classes.filter(Boolean).join(' ');
@@ -15,7 +18,20 @@ const cn = (...classes: (string | undefined | false | null)[]) =>
 const DishesPageClient = () => {
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [bulkTagOpen, setBulkTagOpen] = useState(false);
+  const [editingDishId, setEditingDishId] = useState<number | null>(null);
+
+  const EditDishModal = useFullScreenModal({});
+
   const { removeDish } = useDish();
+
+  const { dish: editingDish } = useDish({
+    fetchDishesParams: {
+      fetchDishParams: {
+        requireFetchedData: !!editingDishId,
+        condition: editingDishId ? { id: editingDishId } : undefined,
+      },
+    },
+  });
 
   const handleToggle = (dishId: number) => {
     setSelectedIds((prev) => {
@@ -30,7 +46,8 @@ const DishesPageClient = () => {
   };
 
   const handleEdit = (dish: DishForSearchCard) => {
-    window.location.href = `/dishes/${dish.id}/edit`;
+    setEditingDishId(dish.id);
+    EditDishModal.openModal();
   };
 
   const handleDelete = (dish: DishForSearchCard) => {
@@ -80,11 +97,15 @@ const DishesPageClient = () => {
           )}
         >
           <DishSearchPanel
-            mode="page"
-            selectedIds={selectedIds}
-            onToggle={handleToggle}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
+            renderCard={(dish) => (
+              <DishSearchCardLibrary
+                dish={dish}
+                selected={selectedIds.has(dish.id)}
+                onToggle={handleToggle}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            )}
           />
         </main>
       </div>
@@ -95,6 +116,18 @@ const DishesPageClient = () => {
         dishIds={selectedIds}
         onCompleted={() => setSelectedIds(new Set())}
       />
+
+      {editingDish && (
+        <EditDishModal.FullScreenModal title="料理修正">
+          <EditDish
+            dish={editingDish}
+            onEditSucceeded={() => {
+              EditDishModal.closeModal();
+              setEditingDishId(null);
+            }}
+          />
+        </EditDishModal.FullScreenModal>
+      )}
 
       {/* 一括アクション: フローティングバー (選択時のみ表示) */}
       <div

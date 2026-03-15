@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import style from './AssignDish.module.scss';
 import ChooseDish from './ChooseDish';
 import AssignChosenDishForDate from './AssignChosenDishForDate';
@@ -12,10 +12,16 @@ export default (props: Props) => {
   const { isChoosingDishMode, isAssigningSelectedDishMode } =
     useAssignDishModeResult;
 
+  const [chooseDishSearchString, setChooseDishSearchString] = useState('');
+
   return (
     <>
       {isChoosingDishMode && (
-        <ChooseDish useAssignDishModeResult={useAssignDishModeResult} />
+        <ChooseDish
+          useAssignDishModeResult={useAssignDishModeResult}
+          initialSearchString={chooseDishSearchString}
+          onSearchStringChange={setChooseDishSearchString}
+        />
       )}
 
       {isAssigningSelectedDishMode && (

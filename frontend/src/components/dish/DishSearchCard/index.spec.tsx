@@ -56,6 +56,15 @@ describe('<Library>', () => {
     );
     expect(screen.getByLabelText('操作メニュー')).toBeInTheDocument();
   });
+
+  it('does not show ... menu when both onEdit and onDelete are undefined', () => {
+    render(
+      <Library
+        dish={baseDish}
+      />,
+    );
+    expect(screen.queryByLabelText('操作メニュー')).not.toBeInTheDocument();
+  });
 });
 
 describe('<Picker>', () => {
