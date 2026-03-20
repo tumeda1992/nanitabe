@@ -23,6 +23,9 @@ module Business::Food::Dish
     attribute :tags, :any, default: []
     validate :validate_tags, if: -> { tags.present? }
 
+    attribute :effort_level_id, :integer
+    validates :effort_level_id, presence: false
+
     # TODO: 破壊的変更には`!`をつける（そして、自身をreturnする）
 
     def set_id(new_id)
@@ -63,6 +66,10 @@ module Business::Food::Dish
     def detach_source
       self.source_id = nil
       self.source_locator = nil
+    end
+
+    def assign_effort_level(new_effort_level_id)
+      self.effort_level_id = new_effort_level_id
     end
 
     def replace_tags(tags_for_replace)

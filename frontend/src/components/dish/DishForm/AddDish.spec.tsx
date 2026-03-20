@@ -9,6 +9,7 @@ import {
   AddDishDocument,
   DishSourcesDocument,
   AddDishWithNewSourceDocument,
+  DishEffortLevelsDocument,
 } from '../../../lib/graphql/generated/graphql';
 import renderWithApollo from '../../specHelper/renderWithApollo';
 import AddDish from './AddDish';
@@ -51,6 +52,9 @@ describe('<AddDish>', () => {
   };
 
   beforeEach(() => {
+    registerQueryHandler(DishEffortLevelsDocument, {
+      dishEffortLevels: [],
+    });
     registerQueryHandler(DishSourcesDocument, {
       dishSources: [registeredDishSource].map((dishSource) => {
         return {
@@ -85,7 +89,7 @@ describe('<AddDish>', () => {
       await userClick(screen, 'submitDishButton');
 
       expect(getLatestMutationVariables()).toEqual({
-        dish: newDishWithRequiredParams,
+        dish: { ...newDishWithRequiredParams, dishEffortLevelId: null },
         dishSource: null,
         dishSourceRelationDetail: null,
         dishTags: [],
@@ -118,9 +122,7 @@ describe('<AddDish>', () => {
       await userClick(screen, 'submitDishButton');
 
       expect(getLatestMutationVariables()).toEqual({
-        dish: {
-          ...newDishWithRequiredParams,
-        },
+        dish: { ...newDishWithRequiredParams, dishEffortLevelId: null },
         dishSource: selectedDishSource,
         dishSourceRelationDetail: newDishSourceRelationDetailOfRecipeWebsite,
         dishTags: [],
@@ -157,9 +159,7 @@ describe('<AddDish>', () => {
       await userClick(screen, 'submitDishButton');
 
       expect(getLatestMutationVariables()).toEqual({
-        dish: {
-          ...newDishWithRequiredParams,
-        },
+        dish: { ...newDishWithRequiredParams, dishEffortLevelId: null },
         dishSource: newDishSource,
         dishSourceRelationDetail: newDishSourceRelationDetailOfRecipeWebsite,
         dishTags: [],
@@ -186,9 +186,7 @@ describe('<AddDish>', () => {
       await userClick(screen, 'submitDishButton');
 
       expect(getLatestMutationVariables()).toEqual({
-        dish: {
-          ...newDishWithRequiredParams,
-        },
+        dish: { ...newDishWithRequiredParams, dishEffortLevelId: null },
         dishSource: null,
         dishSourceRelationDetail: null,
         dishTags: [
@@ -230,9 +228,7 @@ describe('<AddDish>', () => {
       await userClick(screen, 'submitDishButton');
 
       expect(getLatestMutationVariables()).toEqual({
-        dish: {
-          ...newDishWithRequiredParams,
-        },
+        dish: { ...newDishWithRequiredParams, dishEffortLevelId: null },
         dishSource: newDishSource,
         dishSourceRelationDetail: newDishSourceRelationDetailOfRecipeWebsite,
         dishTags: [
@@ -264,6 +260,7 @@ describe('<AddDish>', () => {
         dish: {
           ...newDishWithRequiredParams,
           comment: dishComment,
+          dishEffortLevelId: null,
         },
         dishSource: null,
         dishSourceRelationDetail: null,
@@ -286,7 +283,7 @@ describe('<AddDish>', () => {
       await userClick(screen, 'submitDishButton');
 
       expect(getLatestMutationVariables()).toEqual({
-        dish: newDishWithRequiredParams,
+        dish: { ...newDishWithRequiredParams, dishEffortLevelId: null },
         dishSource: null,
         dishSourceRelationDetail: null,
         dishTags: [],

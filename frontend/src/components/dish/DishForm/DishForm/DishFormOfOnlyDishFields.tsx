@@ -6,7 +6,14 @@ import FormFieldWrapperWithLabel from '../../../common/form/FormFieldWrapperWith
 import ErrorMessageIfExist from '../../../common/form/ErrorMessageIfExist';
 import { MEAL_POSITION, MealPosition } from '../../../../features/dish/const';
 import SelectMealPosition from './SelectMealPosition';
+import SelectEffortLevel from './SelectEffortLevel';
 import { AddOrUpdateDishInput } from './types';
+
+const MEAL_POSITIONS_WITH_EFFORT_LEVEL = [
+  MEAL_POSITION.STAPLE_FOOD,
+  MEAL_POSITION.MAIN_DISH,
+  MEAL_POSITION.SIDE_DISH,
+];
 
 type DishFormOfOnlyDishFieldsProps = {
   preFilledDish?: Dish;
@@ -28,6 +35,7 @@ export const DishFormOfOnlyDishFields = (
     );
   useEffect(() => {
     setValue('dish.mealPosition', selectedMealPosition);
+    setValue('dish.dishEffortLevelId', null);
   }, [selectedMealPosition]);
 
   return (
@@ -60,6 +68,11 @@ export const DishFormOfOnlyDishFields = (
           errorMessage={errors.dish?.mealPosition?.message}
         />
       </FormFieldWrapperWithLabel>
+      {MEAL_POSITIONS_WITH_EFFORT_LEVEL.includes(selectedMealPosition) && (
+        <FormFieldWrapperWithLabel label="手間">
+          <SelectEffortLevel mealPosition={selectedMealPosition} />
+        </FormFieldWrapperWithLabel>
+      )}
       <FormFieldWrapperWithLabel label="コメント">
         <textarea
           className="flex w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"

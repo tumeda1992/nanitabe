@@ -23,6 +23,7 @@ module Business::Food::Dish
         dish_params.name,
         dish_params.meal_position,
         comment: dish_params.comment,
+        effort_level_id: dish_params.effort_level_id,
         source:,
         source_locator:,
         tags: dish_tags.map { |tag| tag.to_root(user_id) },

@@ -21,6 +21,7 @@ import {
   ExistingDishesForRegisteringWithMealDocument,
   DishSourcesDocument,
   UpdateMealWithNewDishDocument,
+  DishEffortLevelsDocument,
 } from '../../../lib/graphql/generated/graphql';
 import { buildISODateString } from '../../../features/utils/dateUtils';
 import { DISH_SOURCE_TYPE } from '../../../features/dish/source/const';
@@ -75,6 +76,7 @@ describe('<EditMeal>', () => {
     name: 'カレー',
     mealPosition: 3,
     comment: '',
+    dishEffortLevelId: null,
   };
 
   const selectedDishSource = {
@@ -101,6 +103,9 @@ describe('<EditMeal>', () => {
   };
 
   beforeEach(() => {
+    registerQueryHandler(DishEffortLevelsDocument, {
+      dishEffortLevels: [],
+    });
     registerQueryHandler(ExistingDishesForRegisteringWithMealDocument, {
       existingDishesForRegisteringWithMeal: [
         {

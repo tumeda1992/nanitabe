@@ -6,6 +6,7 @@ module Business::Food::Dish
         unnormalized_name,
         meal_position,
         comment: nil,
+        effort_level_id: nil,
         source: nil,
         source_locator: nil,
         tags: []
@@ -19,6 +20,7 @@ module Business::Food::Dish
           name: Name.initialize_and_normalize(unnormalized_name),
           meal_position:,
           comment:,
+          effort_level_id:,
           source_id:,
           source_locator:,
           tags:,

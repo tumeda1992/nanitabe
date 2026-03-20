@@ -37,6 +37,7 @@ module Business::Food::Dish
       dish_root.rename(dish_params.name) if dish_params.name.present?
       dish_root.reposition_in_meal(dish_params.meal_position) if dish_params.meal_position.present?
       dish_root.revise_comment(dish_params.comment) unless dish_params.comment.nil?
+      dish_root.assign_effort_level(dish_params.effort_level_id)
 
       dish_root.replace_tags(dish_tags.map { |tag| tag.to_root(user_id) })
 

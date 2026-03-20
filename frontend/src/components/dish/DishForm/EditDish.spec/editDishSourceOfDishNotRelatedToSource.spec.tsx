@@ -7,6 +7,7 @@ import {
 } from '../../../../lib/graphql/specHelper/mockServer';
 import {
   DishSourcesDocument,
+  DishEffortLevelsDocument,
   UpdateDishDocument,
   UpdateDishWithNewSourceDocument,
 } from '../../../../lib/graphql/generated/graphql';
@@ -60,6 +61,9 @@ export const updatedDishSourceRelationOfRestaurant = {
 };
 
 beforeEach(() => {
+  registerQueryHandler(DishEffortLevelsDocument, {
+    dishEffortLevels: [],
+  });
   registerQueryHandler(DishSourcesDocument, {
     dishSources: [
       registeredDishSource,

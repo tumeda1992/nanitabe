@@ -176,6 +176,44 @@ RSpec.describe Business::Food::Dish::Usecase::AddCommand do
       end
     end
 
+    describe "手間レベルの設定" do
+      context "effort_level_idを指定した場合" do
+        let!(:effort_level) { DishEffortLevel.create!(meal_position: 1, minutes: 10, label: "ぱぱっとできる") }
+
+        let(:dish_params_with_effort) do
+          Business::Food::Dish::Usecase::Params::Dish.new(
+            :create,
+            name: dish_name,
+            meal_position: meal_position,
+            comment: comment,
+            effort_level_id: effort_level.id,
+          )
+        end
+
+        it "effort_level_idが保存されること" do
+          result = described_class.call(
+            user_id: user_record.id,
+            dish_params: dish_params_with_effort,
+          )
+
+          created_dish = ::Dish.find(result.id)
+          expect(created_dish.dish_effort_level_id).to eq(effort_level.id)
+        end
+      end
+
+      context "effort_level_idを指定しない場合" do
+        it "dish_effort_level_idがnilで保存されること" do
+          result = described_class.call(
+            user_id: user_record.id,
+            dish_params: valid_dish_params,
+          )
+
+          created_dish = ::Dish.find(result.id)
+          expect(created_dish.dish_effort_level_id).to be_nil
+        end
+      end
+    end
+
     describe "タグ作成" do
       context "タグを指定した場合" do
         let(:dish_tags) do
