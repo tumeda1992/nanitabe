@@ -76,6 +76,8 @@ export const EXISTING_DISHES_FOR_REGISTERING_WITH_MEAL = gql`
       dishSourceName
       evaluationScore
       effortLevelMinutes
+      mealsCount
+      lastCookedDate
     }
   }
 `;

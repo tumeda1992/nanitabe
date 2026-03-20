@@ -1,4 +1,5 @@
 import React from 'react';
+import { CalendarDays, ChefHat } from 'lucide-react';
 import CategoryIcon from '../../calendar/calendarComponents/DishCard/CategoryIcon';
 
 export type DishForSearchCard = {
@@ -9,6 +10,8 @@ export type DishForSearchCard = {
   dishSourceName?: string | null;
   evaluationScore?: number | null;
   effortLevelMinutes?: number | null;
+  mealsCount?: number | null;
+  lastCookedDate?: string | null;
 };
 
 const formatEffortTime = (minutes: number): string => {
@@ -77,6 +80,22 @@ const DishSearchCard = ({
             {dish.effortLevelMinutes != null && (
               <span>🕐 {formatEffortTime(dish.effortLevelMinutes)}</span>
             )}
+          </div>
+        )}
+
+        {/* 3行目: 最終調理日・調理回数 */}
+        {(dish.mealsCount != null || dish.lastCookedDate != null) && (
+          <div className="flex items-center gap-3 flex-wrap text-xs text-muted-foreground">
+            <span className="flex items-center gap-1">
+              <CalendarDays size={12} />
+              {dish.lastCookedDate
+                ? `最終 ${dish.lastCookedDate.split('-')[0]}/${parseInt(dish.lastCookedDate.split('-')[1], 10)}/${parseInt(dish.lastCookedDate.split('-')[2], 10)}`
+                : '未調理'}
+            </span>
+            <span className="flex items-center gap-1">
+              <ChefHat size={12} />
+              {`${dish.mealsCount ?? 0}回`}
+            </span>
           </div>
         )}
 

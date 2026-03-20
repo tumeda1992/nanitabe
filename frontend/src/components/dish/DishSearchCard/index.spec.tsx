@@ -12,6 +12,8 @@ const baseDish = {
   comment: null,
   dishSourceName: null,
   evaluationScore: null,
+  mealsCount: null,
+  lastCookedDate: null,
 };
 
 describe('<DishSearchCard>', () => {
@@ -66,6 +68,26 @@ describe('<DishSearchCard>', () => {
         render(<DishSearchCard dish={baseDish} />);
         expect(screen.queryByText(/🕐/)).not.toBeInTheDocument();
       });
+    });
+
+    it('shows last cooked date and meals count when provided', () => {
+      const dish = { ...baseDish, mealsCount: 3, lastCookedDate: '2024-03-20' };
+      render(<DishSearchCard dish={dish} />);
+      expect(screen.getByText('最終 2024/3/20')).toBeInTheDocument();
+      expect(screen.getByText('3回')).toBeInTheDocument();
+    });
+
+    it('shows 未調理 and 0回 when lastCookedDate is null', () => {
+      const dish = { ...baseDish, mealsCount: 0, lastCookedDate: null };
+      render(<DishSearchCard dish={dish} />);
+      expect(screen.getByText('未調理')).toBeInTheDocument();
+      expect(screen.getByText('0回')).toBeInTheDocument();
+    });
+
+    it('shows 0回 when mealsCount is 0', () => {
+      const dish = { ...baseDish, mealsCount: 0, lastCookedDate: null };
+      render(<DishSearchCard dish={dish} />);
+      expect(screen.getByText('0回')).toBeInTheDocument();
     });
   });
 });

@@ -300,7 +300,9 @@ export type ExistingDishForRegisteringWithMeal = DishFields & {
   effortLevelMinutes?: Maybe<Scalars['Int']['output']>;
   evaluationScore?: Maybe<Scalars['Float']['output']>;
   id: Scalars['Int']['output'];
+  lastCookedDate?: Maybe<Scalars['String']['output']>;
   mealPosition: Scalars['Int']['output'];
+  mealsCount: Scalars['Int']['output'];
   name: Scalars['String']['output'];
   tags?: Maybe<Array<DishTag>>;
 };
@@ -861,7 +863,7 @@ export type ExistingDishesForRegisteringWithMealQueryVariables = Exact<{
 }>;
 
 
-export type ExistingDishesForRegisteringWithMealQuery = { __typename?: 'Query', existingDishesForRegisteringWithMeal: Array<{ __typename?: 'ExistingDishForRegisteringWithMeal', id: number, name: string, mealPosition: number, comment?: string | null, dishSourceName?: string | null, evaluationScore?: number | null, effortLevelMinutes?: number | null }> };
+export type ExistingDishesForRegisteringWithMealQuery = { __typename?: 'Query', existingDishesForRegisteringWithMeal: Array<{ __typename?: 'ExistingDishForRegisteringWithMeal', id: number, name: string, mealPosition: number, comment?: string | null, dishSourceName?: string | null, evaluationScore?: number | null, effortLevelMinutes?: number | null, mealsCount: number, lastCookedDate?: string | null }> };
 
 export type DishQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -1245,6 +1247,8 @@ export const ExistingDishesForRegisteringWithMealDocument = gql`
     dishSourceName
     evaluationScore
     effortLevelMinutes
+    mealsCount
+    lastCookedDate
   }
 }
     `;

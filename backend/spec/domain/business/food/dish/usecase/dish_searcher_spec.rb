@@ -280,6 +280,8 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
         expect(dish_result).to have_key(:dish_source_relation)
         expect(dish_result).to have_key(:evaluation_score)
         expect(dish_result).to have_key(:tags)
+        expect(dish_result).to have_key(:meals_count)
+        expect(dish_result).to have_key(:last_cooked_date)
 
         # 基本フィールドの値チェック
         expect(dish_result[:id]).to be_a(Integer)
@@ -322,6 +324,48 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
           expect(simple_dish[:dish_source_relation]).to be_nil
           expect(simple_dish[:evaluation_score]).to be_nil
           expect(simple_dish[:tags]).to eq([])
+        end
+      end
+
+      context "meals_count and last_cooked_date" do
+        let!(:cooked_dish) do
+          FactoryBot.create(:dish, user: user_record, name: "調理済み料理", normalized_name: "調理済み料理", meal_position: 1)
+        end
+        let!(:uncooked_dish) do
+          FactoryBot.create(:dish, user: user_record, name: "未調理料理", normalized_name: "未調理料理", meal_position: 1)
+        end
+
+        before do
+          FactoryBot.create(:meal, user: user_record, dish: cooked_dish, date: Date.new(2024, 1, 10))
+          FactoryBot.create(:meal, user: user_record, dish: cooked_dish, date: Date.new(2024, 3, 20))
+        end
+
+        it "returns meals_count for dish with meals" do
+          result = described_class.call(access_user_id: user_record.id)
+
+          dish_result = result.find { |d| d[:name] == "調理済み料理" }
+          expect(dish_result[:meals_count]).to eq(2)
+        end
+
+        it "returns last_cooked_date as the most recent meal date for dish with meals" do
+          result = described_class.call(access_user_id: user_record.id)
+
+          dish_result = result.find { |d| d[:name] == "調理済み料理" }
+          expect(dish_result[:last_cooked_date].to_date).to eq(Date.new(2024, 3, 20))
+        end
+
+        it "returns 0 for meals_count when dish has no meals" do
+          result = described_class.call(access_user_id: user_record.id)
+
+          dish_result = result.find { |d| d[:name] == "未調理料理" }
+          expect(dish_result[:meals_count]).to eq(0)
+        end
+
+        it "returns nil for last_cooked_date when dish has no meals" do
+          result = described_class.call(access_user_id: user_record.id)
+
+          dish_result = result.find { |d| d[:name] == "未調理料理" }
+          expect(dish_result[:last_cooked_date]).to be_nil
         end
       end
     end
