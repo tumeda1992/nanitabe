@@ -58,7 +58,8 @@ jobs:
 
       - name: Prepare test database (SQLite)
         if: steps.changes.outputs.changed == 'true'
-        run: bundle exec rails db:prepare
+        # db:prepare はシードも実行するため使用禁止。テストはシードに依存せず自己完結させること。
+        run: bundle exec rails db:schema:load
 
       - name: Run RSpec tests
         if: steps.changes.outputs.changed == 'true'
