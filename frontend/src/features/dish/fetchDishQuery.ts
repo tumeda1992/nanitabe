@@ -43,6 +43,8 @@ export const EXISTING_DISHES_FOR_REGISTERING_WITH_MEAL = gql`
       comment
       dishSourceName
       evaluationScore
+      mealsCount
+      lastCookedDate
     }
   }
 `;

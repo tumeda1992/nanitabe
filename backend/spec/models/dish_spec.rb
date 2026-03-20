@@ -546,6 +546,28 @@ RSpec.describe Dish, type: :model do
         FactoryBot.create(:meal, user: user_record, dish: dish2)
       end
 
+      it "includes last_cooked_date for dish with meals" do
+        older_date = Date.new(2024, 1, 10)
+        newer_date = Date.new(2024, 3, 20)
+        dish = FactoryBot.create(:dish, user: user_record, name: "LastCookedDish", created_at: 4.days.ago)
+        FactoryBot.create(:meal, user: user_record, dish: dish, date: older_date)
+        FactoryBot.create(:meal, user: user_record, dish: dish, date: newer_date)
+
+        results = described_class.with_search_relations.search_output.to_a
+        result = results.find { |d| d.id == dish.id }
+
+        expect(result.last_cooked_date.to_date).to eq(newer_date)
+      end
+
+      it "returns nil for last_cooked_date when dish has no meals" do
+        dish = FactoryBot.create(:dish, user: user_record, name: "NoCookDish", created_at: 5.days.ago)
+
+        results = described_class.with_search_relations.search_output.to_a
+        result = results.find { |d| d.id == dish.id }
+
+        expect(result.last_cooked_date).to be_nil
+      end
+
       it "includes dish_source_name in select" do
         results = described_class.with_search_relations.search_output.to_a
         result = results.find { |d| d.id == dish1.id }

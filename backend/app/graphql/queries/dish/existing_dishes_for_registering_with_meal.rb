@@ -3,6 +3,8 @@ module Queries::Dish
     implements ::Types::Output::Dish::DishFields
 
     field :dish_source_name, String, null: true
+    field :meals_count, Integer, null: false
+    field :last_cooked_date, String, null: true
   end
 
   class ExistingDishesForRegisteringWithMeal < ::Queries::BaseQuery
