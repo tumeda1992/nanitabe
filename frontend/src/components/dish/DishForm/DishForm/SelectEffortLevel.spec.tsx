@@ -54,6 +54,19 @@ describe('<SelectEffortLevel>', () => {
       expect(screen.getByText('20分 - 普通')).toBeInTheDocument();
     });
 
+    it('60分以上は時間表記になること', async () => {
+      registerQueryHandler(DishEffortLevelsDocument, {
+        dishEffortLevels: [
+          { __typename: 'DishEffortLevel' as const, id: 3, minutes: 150, label: '結構手間' },
+          { __typename: 'DishEffortLevel' as const, id: 4, minutes: 480, label: 'かなり手間' },
+        ],
+      });
+      renderWithProviders(<SelectEffortLevel mealPosition={1} />);
+
+      expect(await screen.findByText('2時間30分 - 結構手間')).toBeInTheDocument();
+      expect(screen.getByText('8時間 - かなり手間')).toBeInTheDocument();
+    });
+
     it('選択なし選択肢が含まれること', async () => {
       renderWithProviders(<SelectEffortLevel mealPosition={1} />);
 
