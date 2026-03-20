@@ -1,0 +1,28 @@
+<%= form_with(model: dish_effort_level, url: dish_effort_level.persisted? ? admin_food_dish_effort_level_dish_effort_level_path(dish_effort_level) : admin_food_dish_effort_level_dish_effort_levels_path, local: true) do |form| %>
+  <% if dish_effort_level.errors.any? %>
+    <div class="alert alert-danger">
+      <ul>
+        <% dish_effort_level.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :meal_position, '食事ポジション', class: 'form-label' %>
+    <%= form.number_field :meal_position, class: 'form-control', placeholder: '例: 1（主食）、2（メインディッシュ）、3（副菜）' %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :minutes, '目安分数', class: 'form-label' %>
+    <%= form.number_field :minutes, class: 'form-control', placeholder: '例: 10' %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :label, 'ラベル', class: 'form-label' %>
+    <%= form.text_field :label, class: 'form-control', placeholder: '例: ぱぱっとできる' %>
+  </div>
+
+  <%= form.submit dish_effort_level.persisted? ? '更新' : '作成', class: 'btn btn-primary' %>
+<% end %>

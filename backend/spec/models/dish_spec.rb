@@ -119,6 +119,28 @@ RSpec.describe Dish, type: :model do
       end
     end
 
+    context "when dish has dish_effort_level_id" do
+      let!(:effort_level) { DishEffortLevel.create!(meal_position: 1, minutes: 10, label: "ぱぱっとできる") }
+
+      before do
+        existing_dish.update!(dish_effort_level_id: effort_level.id)
+      end
+
+      it "includes effort_level_id in the root" do
+        result = described_class.build_existing_root_from_id(existing_dish.id)
+
+        expect(result.effort_level_id).to eq(effort_level.id)
+      end
+    end
+
+    context "when dish has no dish_effort_level_id" do
+      it "sets effort_level_id to nil" do
+        result = described_class.build_existing_root_from_id(existing_dish.id)
+
+        expect(result.effort_level_id).to be_nil
+      end
+    end
+
     context "when dish does not exist" do
       it "returns nil" do
         result = described_class.build_existing_root_from_id(99_999)
@@ -157,6 +179,44 @@ RSpec.describe Dish, type: :model do
         source_locator: nil,
         tags: [],
       )
+    end
+
+    context "with effort_level_id" do
+      let!(:effort_level) { DishEffortLevel.create!(meal_position: 1, minutes: 10, label: "ぱぱっとできる") }
+
+      let(:food_dish_root_with_effort) do
+        ::Business::Food::Dish::Root.new(
+          id: dish_record.id,
+          user_id: user_record.id,
+          name: ::Business::Food::Dish::Name.new(
+            value: dish_name,
+            normalized: normalized_dish_name,
+          ),
+          meal_position: meal_position,
+          comment: comment,
+          source_id: nil,
+          source_locator: nil,
+          tags: [],
+          effort_level_id: effort_level.id,
+        )
+      end
+
+      it "saves dish_effort_level_id" do
+        result = dish_record.persist_from_food_dish_root(food_dish_root_with_effort)
+
+        expect(result.dish_effort_level_id).to eq(effort_level.id)
+
+        dish_record.reload
+        expect(dish_record.dish_effort_level_id).to eq(effort_level.id)
+      end
+    end
+
+    context "without effort_level_id" do
+      it "saves dish_effort_level_id as nil" do
+        result = dish_record.persist_from_food_dish_root(food_dish_root)
+
+        expect(result.dish_effort_level_id).to be_nil
+      end
     end
 
     it "updates dish attributes" do
@@ -605,6 +665,30 @@ RSpec.describe Dish, type: :model do
 
         # GROUP BYを使わないアプローチに変更されたことを確認
         expect(result.group_values).to be_empty
+      end
+
+      context "手間レベルが設定されている場合" do
+        let!(:effort_level) { DishEffortLevel.create!(meal_position: 1, minutes: 10, label: "ぱぱっとできる") }
+
+        before do
+          dish1.update!(dish_effort_level_id: effort_level.id)
+        end
+
+        it "effort_level_minutesに対応するminutesを返すこと" do
+          results = described_class.with_search_relations.search_output.to_a
+          result = results.find { |d| d.id == dish1.id }
+
+          expect(result.effort_level_minutes).to eq(effort_level.minutes)
+        end
+      end
+
+      context "手間レベルが設定されていない場合" do
+        it "effort_level_minutesがnilを返すこと" do
+          results = described_class.with_search_relations.search_output.to_a
+          result = results.find { |d| d.id == dish1.id }
+
+          expect(result.effort_level_minutes).to be_nil
+        end
       end
     end
 

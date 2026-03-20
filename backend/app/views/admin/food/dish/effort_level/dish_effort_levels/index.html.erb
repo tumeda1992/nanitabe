@@ -1,0 +1,35 @@
+<div class="container mt-4">
+  <h1>手間レベル管理</h1>
+
+  <% if notice %>
+    <div class="alert alert-success" role="alert"><%= notice %></div>
+  <% end %>
+
+  <%= link_to '新規作成', new_admin_food_dish_effort_level_dish_effort_level_path, class: 'btn btn-primary mb-3' %>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>食事ポジション</th>
+        <th>目安分数</th>
+        <th>ラベル</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @dish_effort_levels.each do |effort_level| %>
+        <tr>
+          <td><%= effort_level.id %></td>
+          <td><%= effort_level.meal_position %></td>
+          <td><%= effort_level.minutes %>分</td>
+          <td><%= effort_level.label %></td>
+          <td>
+            <%= link_to '編集', edit_admin_food_dish_effort_level_dish_effort_level_path(effort_level), class: 'btn btn-sm btn-secondary' %>
+            <%= button_to '削除', admin_food_dish_effort_level_dish_effort_level_path(effort_level), method: :delete, data: { confirm: '本当に削除しますか?' }, class: 'btn btn-sm btn-danger' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

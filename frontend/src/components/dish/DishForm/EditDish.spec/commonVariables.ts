@@ -4,6 +4,7 @@ import {
 } from '../../../../lib/graphql/specHelper/mockServer';
 import {
   DishSourcesDocument,
+  DishEffortLevelsDocument,
 } from '../../../../lib/graphql/generated/graphql';
 import { DISH_SOURCE_TYPE } from '../../../../features/dish/source/const';
 
@@ -12,6 +13,7 @@ export const registeredDish = {
   name: '生姜焼き',
   mealPosition: 2,
   comment: '',
+  dishEffortLevelId: null,
 };
 
 export const updatedDish = {
@@ -51,6 +53,9 @@ export const updatedDishSourceRelation = {
 
 
 export const registerDishSourcesQuery = () => {
+  registerQueryHandler(DishEffortLevelsDocument, {
+    dishEffortLevels: [],
+  });
   registerQueryHandler(DishSourcesDocument, {
     dishSources: [
       registeredDishSource,

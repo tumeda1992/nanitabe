@@ -8,6 +8,7 @@ import {
   ExistingDishesForRegisteringWithMealDocument,
   DishSourcesDocument,
   AddMealWithNewDishDocument,
+  DishEffortLevelsDocument,
 } from '../../../lib/graphql/generated/graphql';
 import renderWithApollo from '../../specHelper/renderWithApollo';
 import {
@@ -39,6 +40,7 @@ describe('<AddMeal>', () => {
     name: 'ハンバーグ',
     mealPosition: 2,
     comment: '',
+    dishEffortLevelId: null,
   };
   const newMealWithRequiredParams = {
     date: new Date(2022, 1, 1),
@@ -71,6 +73,9 @@ describe('<AddMeal>', () => {
   };
 
   beforeEach(() => {
+    registerQueryHandler(DishEffortLevelsDocument, {
+      dishEffortLevels: [],
+    });
     registerQueryHandler(ExistingDishesForRegisteringWithMealDocument, {
       existingDishesForRegisteringWithMeal: [
         {

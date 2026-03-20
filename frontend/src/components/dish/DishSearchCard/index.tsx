@@ -9,8 +9,17 @@ export type DishForSearchCard = {
   comment?: string | null;
   dishSourceName?: string | null;
   evaluationScore?: number | null;
+  effortLevelMinutes?: number | null;
   mealsCount?: number | null;
   lastCookedDate?: string | null;
+};
+
+const formatEffortTime = (minutes: number): string => {
+  if (minutes < 60) return `${minutes}分`;
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  if (remainingMinutes === 0) return `${hours}時間`;
+  return `${hours}時間${remainingMinutes}分`;
 };
 
 type DishSearchCardProps = {
@@ -59,14 +68,17 @@ const DishSearchCard = ({
           <CategoryIcon mealPosition={dish.mealPosition} />
         </div>
 
-        {/* 2行目: レシピ元 + 評価 */}
-        {(dish.dishSourceName || (dish.evaluationScore != null && dish.evaluationScore > 0)) && (
+        {/* 2行目: レシピ元 + 評価 + 手間 */}
+        {(dish.dishSourceName || (dish.evaluationScore != null && dish.evaluationScore > 0) || dish.effortLevelMinutes != null) && (
           <div className="flex items-center gap-3 flex-wrap text-xs text-muted-foreground">
             {dish.dishSourceName && (
               <span>{dish.dishSourceName}</span>
             )}
             {dish.evaluationScore != null && dish.evaluationScore > 0 && (
               <span>★{dish.evaluationScore}</span>
+            )}
+            {dish.effortLevelMinutes != null && (
+              <span>🕐 {formatEffortTime(dish.effortLevelMinutes)}</span>
             )}
           </div>
         )}

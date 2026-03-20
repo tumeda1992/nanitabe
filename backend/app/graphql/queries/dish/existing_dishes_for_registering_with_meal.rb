@@ -3,6 +3,7 @@ module Queries::Dish
     implements ::Types::Output::Dish::DishFields
 
     field :dish_source_name, String, null: true
+    field :effort_level_minutes, Int, null: true
     field :meals_count, Integer, null: false
     field :last_cooked_date, String, null: true
   end

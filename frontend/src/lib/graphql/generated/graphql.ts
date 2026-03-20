@@ -168,6 +168,14 @@ export type Dish = DishFields & {
   tags?: Maybe<Array<DishTag>>;
 };
 
+export type DishEffortLevel = {
+  __typename?: 'DishEffortLevel';
+  id: Scalars['Int']['output'];
+  label: Scalars['String']['output'];
+  mealPosition: Scalars['Int']['output'];
+  minutes: Scalars['Int']['output'];
+};
+
 export type DishFields = {
   comment?: Maybe<Scalars['String']['output']>;
   dishSourceRelation?: Maybe<DishSourceRelation>;
@@ -180,12 +188,14 @@ export type DishFields = {
 
 export type DishForCreate = {
   comment?: InputMaybe<Scalars['String']['input']>;
+  dishEffortLevelId?: InputMaybe<Scalars['Int']['input']>;
   mealPosition: Scalars['Int']['input'];
   name: Scalars['String']['input'];
 };
 
 export type DishForUpdate = {
   comment?: InputMaybe<Scalars['String']['input']>;
+  dishEffortLevelId?: InputMaybe<Scalars['Int']['input']>;
   id: Scalars['Int']['input'];
   mealPosition?: InputMaybe<Scalars['Int']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
@@ -287,6 +297,7 @@ export type ExistingDishForRegisteringWithMeal = DishFields & {
   comment?: Maybe<Scalars['String']['output']>;
   dishSourceName?: Maybe<Scalars['String']['output']>;
   dishSourceRelation?: Maybe<DishSourceRelation>;
+  effortLevelMinutes?: Maybe<Scalars['Int']['output']>;
   evaluationScore?: Maybe<Scalars['Float']['output']>;
   id: Scalars['Int']['output'];
   lastCookedDate?: Maybe<Scalars['String']['output']>;
@@ -549,6 +560,7 @@ export type MutationUpdateMealWithNewDishAndNewSourceArgs = {
 export type Query = {
   __typename?: 'Query';
   dish: SpecifiedDish;
+  dishEffortLevels: Array<DishEffortLevel>;
   dishSource: SpecifiedDishSource;
   dishSources: Array<DishSourceRegisteredWithDish>;
   dishesPerSource: Array<DishesForDisplayWithSource>;
@@ -561,6 +573,11 @@ export type Query = {
 
 export type QueryDishArgs = {
   id: Scalars['Int']['input'];
+};
+
+
+export type QueryDishEffortLevelsArgs = {
+  mealPosition: Scalars['Int']['input'];
 };
 
 
@@ -831,6 +848,13 @@ export type AddDishWithNewSourceMutationVariables = Exact<{
 
 export type AddDishWithNewSourceMutation = { __typename?: 'Mutation', addDishWithNewSource?: { __typename?: 'AddDishWithNewSourcePayload', dishId: number, dishSourceId: number } | null };
 
+export type DishEffortLevelsQueryVariables = Exact<{
+  mealPosition: Scalars['Int']['input'];
+}>;
+
+
+export type DishEffortLevelsQuery = { __typename?: 'Query', dishEffortLevels: Array<{ __typename?: 'DishEffortLevel', id: number, minutes: number, label: string }> };
+
 export type ExistingDishesForRegisteringWithMealQueryVariables = Exact<{
   dishIdRegisteredWithMeal?: InputMaybe<Scalars['Int']['input']>;
   searchString?: InputMaybe<Scalars['String']['input']>;
@@ -839,7 +863,7 @@ export type ExistingDishesForRegisteringWithMealQueryVariables = Exact<{
 }>;
 
 
-export type ExistingDishesForRegisteringWithMealQuery = { __typename?: 'Query', existingDishesForRegisteringWithMeal: Array<{ __typename?: 'ExistingDishForRegisteringWithMeal', id: number, name: string, mealPosition: number, comment?: string | null, dishSourceName?: string | null, evaluationScore?: number | null, mealsCount: number, lastCookedDate?: string | null }> };
+export type ExistingDishesForRegisteringWithMealQuery = { __typename?: 'Query', existingDishesForRegisteringWithMeal: Array<{ __typename?: 'ExistingDishForRegisteringWithMeal', id: number, name: string, mealPosition: number, comment?: string | null, dishSourceName?: string | null, evaluationScore?: number | null, effortLevelMinutes?: number | null, mealsCount: number, lastCookedDate?: string | null }> };
 
 export type DishQueryVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -1166,6 +1190,48 @@ export function useAddDishWithNewSourceMutation(baseOptions?: Apollo.MutationHoo
 export type AddDishWithNewSourceMutationHookResult = ReturnType<typeof useAddDishWithNewSourceMutation>;
 export type AddDishWithNewSourceMutationResult = Apollo.MutationResult<AddDishWithNewSourceMutation>;
 export type AddDishWithNewSourceMutationOptions = Apollo.BaseMutationOptions<AddDishWithNewSourceMutation, AddDishWithNewSourceMutationVariables>;
+export const DishEffortLevelsDocument = gql`
+    query dishEffortLevels($mealPosition: Int!) {
+  dishEffortLevels(mealPosition: $mealPosition) {
+    id
+    minutes
+    label
+  }
+}
+    `;
+
+/**
+ * __useDishEffortLevelsQuery__
+ *
+ * To run a query within a React component, call `useDishEffortLevelsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useDishEffortLevelsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useDishEffortLevelsQuery({
+ *   variables: {
+ *      mealPosition: // value for 'mealPosition'
+ *   },
+ * });
+ */
+export function useDishEffortLevelsQuery(baseOptions: Apollo.QueryHookOptions<DishEffortLevelsQuery, DishEffortLevelsQueryVariables> & ({ variables: DishEffortLevelsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<DishEffortLevelsQuery, DishEffortLevelsQueryVariables>(DishEffortLevelsDocument, options);
+      }
+export function useDishEffortLevelsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<DishEffortLevelsQuery, DishEffortLevelsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<DishEffortLevelsQuery, DishEffortLevelsQueryVariables>(DishEffortLevelsDocument, options);
+        }
+export function useDishEffortLevelsSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<DishEffortLevelsQuery, DishEffortLevelsQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<DishEffortLevelsQuery, DishEffortLevelsQueryVariables>(DishEffortLevelsDocument, options);
+        }
+export type DishEffortLevelsQueryHookResult = ReturnType<typeof useDishEffortLevelsQuery>;
+export type DishEffortLevelsLazyQueryHookResult = ReturnType<typeof useDishEffortLevelsLazyQuery>;
+export type DishEffortLevelsSuspenseQueryHookResult = ReturnType<typeof useDishEffortLevelsSuspenseQuery>;
+export type DishEffortLevelsQueryResult = Apollo.QueryResult<DishEffortLevelsQuery, DishEffortLevelsQueryVariables>;
 export const ExistingDishesForRegisteringWithMealDocument = gql`
     query existingDishesForRegisteringWithMeal($dishIdRegisteredWithMeal: Int, $searchString: String, $mealPosition: Int, $registeredWithMeal: Boolean) {
   existingDishesForRegisteringWithMeal(
@@ -1180,6 +1246,7 @@ export const ExistingDishesForRegisteringWithMealDocument = gql`
     comment
     dishSourceName
     evaluationScore
+    effortLevelMinutes
     mealsCount
     lastCookedDate
   }

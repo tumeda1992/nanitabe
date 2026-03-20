@@ -225,6 +225,55 @@ RSpec.describe Business::Food::Dish::Usecase::UpdateCommand do
       end
     end
 
+    describe "手間レベルの更新" do
+      let!(:effort_level) { DishEffortLevel.create!(meal_position: 1, minutes: 10, label: "ぱぱっとできる") }
+      let!(:effort_level2) { DishEffortLevel.create!(meal_position: 1, minutes: 20, label: "普通") }
+
+      context "effort_level_idを指定した場合" do
+        let(:dish_params_with_effort) do
+          Business::Food::Dish::Usecase::Params::Dish.new(
+            :update,
+            id: existing_dish_record.id,
+            effort_level_id: effort_level.id,
+          )
+        end
+
+        it "effort_level_idが更新されること" do
+          described_class.call(
+            user_id: user_record.id,
+            dish_params: dish_params_with_effort,
+          )
+
+          updated_dish = ::Dish.find(existing_dish_record.id)
+          expect(updated_dish.dish_effort_level_id).to eq(effort_level.id)
+        end
+      end
+
+      context "effort_level_idをnilで更新した場合" do
+        before do
+          existing_dish_record.update!(dish_effort_level_id: effort_level2.id)
+        end
+
+        let(:dish_params_clear_effort) do
+          Business::Food::Dish::Usecase::Params::Dish.new(
+            :update,
+            id: existing_dish_record.id,
+            effort_level_id: nil,
+          )
+        end
+
+        it "dish_effort_level_idがnilになること" do
+          described_class.call(
+            user_id: user_record.id,
+            dish_params: dish_params_clear_effort,
+          )
+
+          updated_dish = ::Dish.find(existing_dish_record.id)
+          expect(updated_dish.dish_effort_level_id).to be_nil
+        end
+      end
+    end
+
     describe "タグ更新" do
       context "タグありで更新" do
         let!(:existing_tag1) { FactoryBot.create(:dish_tag, dish: existing_dish_record, user: user_record, content: "保持タグ", normalized_content: "保持タグ") }

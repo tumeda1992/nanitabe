@@ -12,6 +12,8 @@ module Business::Food::Dish
 
     attribute :comment, :string
 
+    attribute :effort_level_id, :integer
+
     def valid_for_create?
       valid?(on: :create)
     end

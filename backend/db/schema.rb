@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_04_28_080754) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_20_034532) do
+  create_table "dish_effort_levels", force: :cascade do |t|
+    t.integer "meal_position", null: false
+    t.integer "minutes", null: false
+    t.string "label", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["meal_position"], name: "index_dish_effort_levels_on_meal_position"
+  end
+
   create_table "dish_evaluations", id: false, force: :cascade do |t|
     t.bigint "dish_id", null: false
     t.bigint "user_id", null: false
@@ -64,6 +73,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_04_28_080754) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "normalized_name"
+    t.bigint "dish_effort_level_id"
     t.index ["user_id"], name: "index_dishes_on_user_id"
   end
 
@@ -132,6 +142,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_04_28_080754) do
   add_foreign_key "dish_sources", "users"
   add_foreign_key "dish_tags", "dishes"
   add_foreign_key "dish_tags", "users"
+  add_foreign_key "dishes", "dish_effort_levels"
   add_foreign_key "dishes", "users"
   add_foreign_key "login_users", "users"
   add_foreign_key "meals", "dishes"

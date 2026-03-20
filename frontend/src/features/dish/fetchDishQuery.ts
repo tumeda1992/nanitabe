@@ -4,6 +4,7 @@ import {
   useDishesPerSourceQuery,
   useExistingDishesForRegisteringWithMealQuery,
   useDishQuery,
+  useDishEffortLevelsQuery,
   ExistingDishesForRegisteringWithMealDocument,
   Dish,
 } from '../../lib/graphql/generated/graphql';
@@ -24,6 +25,37 @@ import { useCodegenQuery } from '../utils/queryUtils';
 //   }
 // `;
 
+export const DISH_EFFORT_LEVELS = gql`
+  query dishEffortLevels($mealPosition: Int!) {
+    dishEffortLevels(mealPosition: $mealPosition) {
+      id
+      minutes
+      label
+    }
+  }
+`;
+
+type FetchDishEffortLevelsParams = {
+  mealPosition: number;
+};
+
+export const useFetchDishEffortLevels = (
+  params: FetchDishEffortLevelsParams,
+) => {
+  const { mealPosition } = params;
+  const { data, fetchLoading, fetchError } = useCodegenQuery(
+    useDishEffortLevelsQuery,
+    true,
+    { mealPosition },
+  );
+
+  return {
+    dishEffortLevels: data?.dishEffortLevels || [],
+    fetchDishEffortLevelsLoading: fetchLoading,
+    fetchDishEffortLevelsError: fetchError,
+  };
+};
+
 export const EXISTING_DISHES_FOR_REGISTERING_WITH_MEAL = gql`
   query existingDishesForRegisteringWithMeal(
     $dishIdRegisteredWithMeal: Int
@@ -43,6 +75,7 @@ export const EXISTING_DISHES_FOR_REGISTERING_WITH_MEAL = gql`
       comment
       dishSourceName
       evaluationScore
+      effortLevelMinutes
       mealsCount
       lastCookedDate
     }

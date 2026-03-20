@@ -1,4 +1,11 @@
 class Dish < ApplicationRecord
+  # ソート用デフォルト値（手間未設定の料理をソートする際に使用）
+  EFFORT_DEFAULT_MINUTES_BY_MEAL_POSITION = {
+    1 => 20,  # 主食
+    2 => 20,  # メインディッシュ
+    3 => 10,  # 副菜
+  }.freeze
+
   validates :name, presence: true
   validates :meal_position, presence: true
 
@@ -11,6 +18,8 @@ class Dish < ApplicationRecord
   has_one :dish_evaluation, dependent: :destroy
   has_many :dish_tags, dependent: :destroy
 
+  belongs_to :dish_effort_level, optional: true
+
   scope :for_user, ->(user_id) { where(user_id: user_id) }
 
   scope :with_search_relations, -> {
@@ -21,7 +30,7 @@ class Dish < ApplicationRecord
                                     .group("dish_id")
     joins("LEFT JOIN (#{meals_count_subquery.to_sql}) AS meal_counts ON meal_counts.dish_id = dishes.id")
       .joins("LEFT JOIN (#{last_cooked_date_subquery.to_sql}) AS meal_last_dates ON meal_last_dates.dish_id = dishes.id")
-      .left_joins(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags) # has_manyは重複するけど、あとでdistinctするので問題ない
+      .left_joins(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags, :dish_effort_level) # has_manyは重複するけど、あとでdistinctするので問題ない
       .preload(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags)
   }
 
@@ -32,6 +41,7 @@ class Dish < ApplicationRecord
     select_clauses.push("dish_evaluations.score AS evaluation_score")
     select_clauses.push("COALESCE(dish_evaluations.score, 3.0 - 0.01) AS evaluation_score_for_sort")
     select_clauses.push("COALESCE(meal_counts.meals_count, 0) AS meals_count")
+    select_clauses.push("dish_effort_levels.minutes AS effort_level_minutes")
     select_clauses.push("meal_last_dates.last_cooked_date AS last_cooked_date")
 
     order_clauses = []
@@ -82,6 +92,7 @@ class Dish < ApplicationRecord
         source_id: dish_record.dish_source&.id,
         source_locator: source_locator,
         tags: ::DishTag.build_existing_roots_of_dish(dish_record.id),
+        effort_level_id: dish_record.dish_effort_level_id,
       )
     end
 
@@ -120,6 +131,7 @@ class Dish < ApplicationRecord
     self.normalized_name = food_dish_root.name.normalized
     self.meal_position = food_dish_root.meal_position
     self.comment = food_dish_root.comment
+    self.dish_effort_level_id = food_dish_root.effort_level_id
     save!
 
     if food_dish_root.source_id.present?

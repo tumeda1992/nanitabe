@@ -45,6 +45,31 @@ describe('<DishSearchCard>', () => {
       expect(screen.getByTestId('trailing-slot')).toBeInTheDocument();
     });
 
+    describe('effortLevelMinutes', () => {
+      it('shows effort time when effortLevelMinutes is provided (under 60 min)', () => {
+        const dish = { ...baseDish, effortLevelMinutes: 20 };
+        render(<DishSearchCard dish={dish} />);
+        expect(screen.getByText('🕐 20分')).toBeInTheDocument();
+      });
+
+      it('shows effort time when effortLevelMinutes is 60 min or more', () => {
+        const dish = { ...baseDish, effortLevelMinutes: 90 };
+        render(<DishSearchCard dish={dish} />);
+        expect(screen.getByText('🕐 1時間30分')).toBeInTheDocument();
+      });
+
+      it('does not show effort time when effortLevelMinutes is null', () => {
+        const dish = { ...baseDish, effortLevelMinutes: null };
+        render(<DishSearchCard dish={dish} />);
+        expect(screen.queryByText(/🕐/)).not.toBeInTheDocument();
+      });
+
+      it('does not show effort time when effortLevelMinutes is undefined', () => {
+        render(<DishSearchCard dish={baseDish} />);
+        expect(screen.queryByText(/🕐/)).not.toBeInTheDocument();
+      });
+    });
+
     it('shows last cooked date and meals count when provided', () => {
       const dish = { ...baseDish, mealsCount: 3, lastCookedDate: '2024-03-20' };
       render(<DishSearchCard dish={dish} />);

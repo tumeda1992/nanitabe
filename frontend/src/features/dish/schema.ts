@@ -17,10 +17,13 @@ const buildDishSchema = () => {
 
   const commentSchema = z.string().optional();
 
+  const dishEffortLevelIdSchema = z.number().nullish();
+
   const newDishSchema = z.object({
     name: nameSchema,
     mealPosition: mealPositionSchema,
     comment: commentSchema,
+    dishEffortLevelId: dishEffortLevelIdSchema,
   });
 
   const updateDishSchema = z.object({
@@ -28,6 +31,7 @@ const buildDishSchema = () => {
     name: nameSchema,
     mealPosition: mealPositionSchema,
     comment: commentSchema,
+    dishEffortLevelId: dishEffortLevelIdSchema,
   });
 
   return { newDishSchema, updateDishSchema };
