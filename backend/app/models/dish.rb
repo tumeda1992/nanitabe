@@ -17,7 +17,10 @@ class Dish < ApplicationRecord
     # サブクエリで食事登録回数を計算（GROUP BYを避けるため）
     meals_count_subquery = Meal.select("dish_id, COUNT(*) as meals_count")
                                .group("dish_id")
+    last_cooked_date_subquery = Meal.select("dish_id, MAX(date) as last_cooked_date")
+                                    .group("dish_id")
     joins("LEFT JOIN (#{meals_count_subquery.to_sql}) AS meal_counts ON meal_counts.dish_id = dishes.id")
+      .joins("LEFT JOIN (#{last_cooked_date_subquery.to_sql}) AS meal_last_dates ON meal_last_dates.dish_id = dishes.id")
       .left_joins(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags) # has_manyは重複するけど、あとでdistinctするので問題ない
       .preload(:dish_source, :dish_source_relation, :dish_evaluation, :dish_tags)
   }
@@ -29,6 +32,7 @@ class Dish < ApplicationRecord
     select_clauses.push("dish_evaluations.score AS evaluation_score")
     select_clauses.push("COALESCE(dish_evaluations.score, 3.0 - 0.01) AS evaluation_score_for_sort")
     select_clauses.push("COALESCE(meal_counts.meals_count, 0) AS meals_count")
+    select_clauses.push("meal_last_dates.last_cooked_date AS last_cooked_date")
 
     order_clauses = []
     order_clauses.push("evaluation_score_for_sort DESC")
