@@ -9,7 +9,7 @@ import SelectMealPosition from './SelectMealPosition';
 import SelectEffortLevel from './SelectEffortLevel';
 import { AddOrUpdateDishInput } from './types';
 
-const MEAL_POSITIONS_WITH_EFFORT_LEVEL = [
+const MEAL_POSITIONS_WITH_EFFORT_LEVEL: MealPosition[] = [
   MEAL_POSITION.STAPLE_FOOD,
   MEAL_POSITION.MAIN_DISH,
   MEAL_POSITION.SIDE_DISH,
