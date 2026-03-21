@@ -29,8 +29,8 @@ MealFrame は「パスタ」「魚料理」のようなユーザーが定義す�
 - フロントエンド: `+` ボタン → タイプセレクタ → 枠登録フォーム（`AddMealFrame.tsx`）
 - フロントエンド: `FrameCard.tsx` / `DateCard.tsx` 拡張
 
-子 steering: TBD（着手時に作成）
-ステータス: 未着手
+子 steering: `.steering/2026/20260321-feature-232-add-meal-frame-phase1/`
+ステータス: ✅ 完了（2026-03-21）
 
 ---
 
@@ -41,9 +41,9 @@ MealFrame は「パスタ」「魚料理」のようなユーザーが定義す�
 - `addMeal` 系 mutation に `frame_entry_id` を渡せる
 
 ### タスク概要
-- バックエンド: `AddMealCommand` に `frame_entry_id`(optional) 追加
-- GraphQL: `addMeal` / `addMealWithNewDish` / `addMealWithNewDishAndNewSource` に `frame_entry_id` 追加
-- フロントエンド: FrameCard クリック → `frame_entry_id` 付きで AddMeal フォームを開く
+- バックエンド: `MealFrameEntry::Usecase::FillWithMealCommand` 追加（meal_id をセット）
+- GraphQL: `fillMealFrameEntry` mutation 追加（Meal 作成後に resolver がオーケストレーション）
+- フロントエンド: FrameCard クリック → AddMeal フォームを開き、完了後に fillMealFrameEntry を呼ぶ
 - フロントエンド: DishCard に枠名ラベル表示
 
 子 steering: TBD（フェーズ1完了後に作成）

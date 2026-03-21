@@ -153,8 +153,8 @@ id | user_id | dish_id | date       | meal_type | comment
 | GraphQL query | `mealFrames` 新規（枠一覧取得） |
 | GraphQL query | `mealsForCalendar` → `MealsOfDate` に `frameEntries` フィールド追加 |
 | GraphQL mutation | `addMealFrameEntry` 新規（枠をカレンダーに登録） |
-| GraphQL mutation | `addMeal` / `addMealWithNewDish` / `addMealWithNewDishAndNewSource` → `frame_entry_id`(optional) を追加（枠への料理割り当て） |
-| UseCase | `AddMealCommand` → `frame_entry_id`(optional) を追加。ある場合は Meal 作成後に `MealFrameEntry#fill_with_meal` を呼ぶ |
+| GraphQL mutation | `fillMealFrameEntry` 新規（meal_id を MealFrameEntry にセット。Meal 作成後に resolver がオーケストレーション） |
+| UseCase | `MealFrameEntry::Usecase::FillWithMealCommand` 新規（meal_id をセット）。`AddMealCommand` は変更しない |
 | Frontend | `AddMealIcon.tsx` → 登録タイプセレクタ付きモーダルに変更 |
 | Frontend | `AddMealFrame.tsx` 新規（枠登録フォーム） |
 | Frontend | `FrameCard.tsx` 新規（カレンダー上の枠カード） |

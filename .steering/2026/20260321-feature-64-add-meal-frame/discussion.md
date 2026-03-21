@@ -69,3 +69,18 @@ gateway Command（`RegisterMealCommand`）を作るとした場合、その内�
 - `addMealFromFrameEntry` という独立 GraphQL Mutation も不要
 - Dish 作成は引き続き resolver 側が担う（現状踏襲）
 - `AddMealCommand` の責務拡張は薄い（frame_entry_id がある場合の fill のみ）ため許容範囲
+
+---
+
+## ⚠️ 設計変更（2026-03-21 フェーズ1 steering にて覆った）
+
+**変更内容:** `AddMealCommand` に `frame_entry_id` を追加する設計を撤回。
+
+**理由:** `meals` テーブルは `user_id` / `date` / `meal_type` / `dish_id` すべて必須の心臓部テーブルであり、nullable な `meal_frame_entry_id` を追加するのはモデリングの敗北（オプショナルなカラムがコアテーブルに蓄積する問題）。
+
+**新しい方向:**
+- `meal_frame_entries` を中間テーブルとして扱う
+- `meal_frame_entries.meal_id`（nullable）を持たせ、MealFrameEntry 側が Meal への参照を持つ
+- Meal 作成後に resolver が `MealFrameEntry::UpdateCommand`（meal_id をセット）を呼ぶオーケストレーション構造
+
+**影響ファイル:** `feature-64/roadmap.md`（Phase 2）, `feature-64/design.md`（変更点サマリ・UseCase行）も同様に修正済み。横展開漏れを発見した場合は本 discussion の記載を参照のこと。
