@@ -8,7 +8,7 @@ import AssignDish from '../operationComponents/AssignDish';
 import MoveDish from '../operationComponents/MoveMeal';
 import SwapMeals from '../operationComponents/SwapMeals';
 
-type DateMeal = { date: Date; dayLabel: string; meals: any[] };
+type DateMeal = { date: Date; dayLabel: string; meals: any[]; frameEntries: any[] };
 
 type Props = {
   dateMealsList: DateMeal[];
@@ -70,7 +70,7 @@ export default (props: Props) => {
 
       {/* DateCard を縦に並べる */}
       <div className="flex flex-col gap-1.5 px-2 py-2">
-        {dateMealsList.map(({ date, dayLabel, meals }, dayIndex) => (
+        {dateMealsList.map(({ date, dayLabel, meals, frameEntries }, dayIndex) => (
           <div
             key={`key_${dayIndex}`}
             onClick={() => onDateClick(date)}
@@ -80,6 +80,7 @@ export default (props: Props) => {
               date={date}
               dayLabel={dayLabel}
               meals={meals}
+              frameEntries={frameEntries || []}
               isDisplayCalendarMode={isDisplayCalendarMode}
               calendarModeChangers={calendarModeChangers}
               onChanged={async () => {

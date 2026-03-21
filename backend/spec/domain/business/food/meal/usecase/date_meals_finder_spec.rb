@@ -7,6 +7,7 @@ RSpec.describe Business::Food::Meal::Usecase::DateMealsFinder do
   let!(:dish_record) { find_or_create_dish }
   let!(:dish_record2) { find_or_create_dish }
   let!(:dish_source) { FactoryBot.create(:dish_source, name: "テストレシピ本", type: "RecipeBook", user_id: user_record.id) }
+  let!(:meal_frame) { MealFrame.create!(user: user_record, name: "週末枠") }
 
   let(:evaluation_score) { 4 }
   let(:start_date) { Date.today - 7.days }
@@ -86,6 +87,47 @@ RSpec.describe Business::Food::Meal::Usecase::DateMealsFinder do
 
         expect(user_ids).to contain_exactly(user_record.id)
         expect(user_ids).not_to include(other_user.id)
+      end
+    end
+
+    context "frame_entriesを含む場合" do
+      let!(:frame_entry_record) do
+        MealFrameEntry.create!(
+          user: user_record,
+          meal_frame: meal_frame,
+          date: start_date + 1.day,
+          meal_type: 2,
+        )
+      end
+
+      it "指定された日付範囲内の枠エントリを含む" do
+        result = described_class.call(
+          access_user_id: user_record.id,
+          start_date: start_date,
+          last_date: last_date,
+        )
+
+        date_group = result.find { |item| item[:date] == frame_entry_record.date }
+        expect(date_group).to be_present
+        expect(date_group[:frame_entries]).to be_present
+
+        frame_entry = date_group[:frame_entries].find { |fe| fe[:id] == frame_entry_record.id }
+        expect(frame_entry).to be_present
+        expect(frame_entry[:meal_frame_id]).to eq(meal_frame.id)
+        expect(frame_entry[:meal_frame_name]).to eq(meal_frame.name)
+        expect(frame_entry[:meal_type]).to eq(2)
+      end
+
+      it "枠エントリのない日付はframe_entriesが空配列になる" do
+        result = described_class.call(
+          access_user_id: user_record.id,
+          start_date: start_date,
+          last_date: last_date,
+        )
+
+        date_group = result.find { |item| item[:date] == meal_record_2.date }
+        expect(date_group).to be_present
+        expect(date_group[:frame_entries]).to eq([])
       end
     end
 

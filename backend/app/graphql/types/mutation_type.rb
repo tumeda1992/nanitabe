@@ -25,5 +25,12 @@ module Types
     field :evaluate_dish, mutation: ::Mutations::Dish::Evaluation::EvaluateDish
 
     field :bulk_add_tag_to_dishes, mutation: ::Mutations::Dish::Tag::BulkAddTagToDishes
+
+    field :add_meal_frame, mutation: ::Mutations::Meal::Frame::AddMealFrame
+    field :update_meal_frame, mutation: ::Mutations::Meal::Frame::UpdateMealFrame
+    field :delete_meal_frame, mutation: ::Mutations::Meal::Frame::DeleteMealFrame
+
+    field :add_meal_frame_entry, mutation: ::Mutations::Meal::FrameEntry::AddMealFrameEntry
+    field :remove_meal_frame_entry, mutation: ::Mutations::Meal::FrameEntry::RemoveMealFrameEntry
   end
 end

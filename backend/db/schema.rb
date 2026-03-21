@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_20_034532) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
   create_table "dish_effort_levels", force: :cascade do |t|
     t.integer "meal_position", null: false
     t.integer "minutes", null: false
@@ -106,6 +106,27 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_20_034532) do
     t.index ["user_id"], name: "index_login_users_on_user_id"
   end
 
+  create_table "meal_frame_entries", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "meal_frame_id", null: false
+    t.date "date", null: false
+    t.integer "meal_type", null: false
+    t.integer "meal_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["meal_frame_id"], name: "index_meal_frame_entries_on_meal_frame_id"
+    t.index ["meal_id"], name: "index_meal_frame_entries_on_meal_id"
+    t.index ["user_id"], name: "index_meal_frame_entries_on_user_id"
+  end
+
+  create_table "meal_frames", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_meal_frames_on_user_id"
+  end
+
   create_table "meals", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.date "date", null: false
@@ -145,6 +166,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_20_034532) do
   add_foreign_key "dishes", "dish_effort_levels"
   add_foreign_key "dishes", "users"
   add_foreign_key "login_users", "users"
+  add_foreign_key "meal_frame_entries", "meal_frames"
+  add_foreign_key "meal_frame_entries", "meals"
+  add_foreign_key "meal_frame_entries", "users"
+  add_foreign_key "meal_frames", "users"
   add_foreign_key "meals", "dishes"
   add_foreign_key "meals", "users"
 end

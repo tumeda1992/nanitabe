@@ -22,3 +22,16 @@
 - 永続化
   - RailsのActiveRecordモデルが担当
     - 特別なRepositoryクラスは設けない（ActiveRecordが各DBMSの差分を吸収してくれるRepository層として優秀であるため）
+
+## サブモジュール一覧
+
+| サブモジュール | 役割 |
+|---|---|
+| `Dish` | 料理マスタ |
+| `Meal` | 食事記録（日付 + 料理が確定した記録。`dish_id` は常に必須）。サブモジュールとして `Frame`（枠マスタ）・`FrameEntry`（カレンダー枠エントリ）を持つ |
+
+### Meal と MealFrameEntry の違い
+
+- `Meal` = 日付 + 料理が決まった記録（`dish_id` は常に必須）
+- `MealFrameEntry` = 日付 + 枠が決まった計画（料理未決定の状態を扱う）
+- これらは別エンティティとして設計されており、`meals.dish_id` を nullable にすることは禁止

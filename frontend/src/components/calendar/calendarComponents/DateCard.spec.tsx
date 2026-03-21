@@ -22,10 +22,19 @@ const buildMeal = (overrides = {}) => ({
   ...overrides,
 });
 
+const buildFrameEntry = (overrides = {}) => ({
+  id: 1,
+  mealFrameId: 10,
+  mealFrameName: '週末枠',
+  mealType: 3,
+  ...overrides,
+});
+
 const baseProps = {
   date: new Date(2026, 2, 9), // 2026-03-09 (Monday)
   dayLabel: '月',
   meals: [],
+  frameEntries: [],
   isDisplayCalendarMode: true,
   calendarModeChangers: { startMovingDishMode: jest.fn() },
   onChanged: jest.fn().mockResolvedValue(undefined),
@@ -100,6 +109,21 @@ describe('<DateCard>', () => {
       expect(
         screen.queryByTestId('dateCard-emptyMealArea'),
       ).not.toBeInTheDocument();
+    });
+
+    it('frameEntries が存在するとき枠名が表示されること', () => {
+      const frameEntries = [buildFrameEntry({ mealFrameName: '週末枠' })];
+      renderWithApollo(
+        <DateCard {...baseProps} frameEntries={frameEntries} />,
+      );
+      expect(screen.getByText('週末枠')).toBeInTheDocument();
+    });
+
+    it('frameEntries が空のとき枠カードが表示されないこと', () => {
+      renderWithApollo(
+        <DateCard {...baseProps} frameEntries={[]} />,
+      );
+      expect(screen.queryByTestId('frameCard-1')).not.toBeInTheDocument();
     });
   });
 

@@ -48,6 +48,12 @@ export const MEALS_FOR_CALENDER = gql`
           }
         }
       }
+      frameEntries {
+        id
+        mealFrameId
+        mealFrameName
+        mealType
+      }
     }
   }
 `;

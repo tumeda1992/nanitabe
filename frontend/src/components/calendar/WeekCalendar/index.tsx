@@ -52,18 +52,20 @@ export default (props: Props) => {
     }
   }, [mealsForCalendar]);
 
-  const dateMealsList: { date: Date; dayLabel: string; meals: any[] }[] =
+  const dateMealsList: { date: Date; dayLabel: string; meals: any[]; frameEntries: any[] }[] =
     (() => {
       return daysOfWeek.map((day, dayIndex) => {
         const date = addDays(firstDisplayDate, Number(dayIndex));
-        const meals =
-          (mealsForCalendar || cachedMeals)?.find((mealForCalendar) => {
-            return isSameDay(new Date(mealForCalendar.date), date);
-          })?.meals || [];
+        const calendarEntry = (mealsForCalendar || cachedMeals)?.find((mealForCalendar) => {
+          return isSameDay(new Date(mealForCalendar.date), date);
+        });
+        const meals = calendarEntry?.meals || [];
+        const frameEntries = calendarEntry?.frameEntries || [];
         return {
           date,
           dayLabel: day.label,
           meals,
+          frameEntries,
         };
       });
     })();
