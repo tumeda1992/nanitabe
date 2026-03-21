@@ -31,8 +31,10 @@ npx playwright install chromium
 `tmp/` 配下に `.mjs` を作成して実行する。`lib/base.mjs` の `createLoggedInPage` を使うと
 ブラウザ起動・ログインが共通化できる。認証情報は `tmp/` は gitignore されているのでベタ書きで良い。
 
+**⚠️ 実行はリポジトリルートから行う。スクリーンショットのパスもリポジトリルートからの相対パスで書くこと。**
+
 ```js
-import { createLoggedInPage, BASE_URL } from '../lib/base.mjs';
+import { createLoggedInPage, BASE_URL } from './frontend/inspect/visual/lib/base.mjs';
 
 const { browser, page } = await createLoggedInPage({
   email: 'setsumaru1992@gmail.com',
@@ -40,13 +42,16 @@ const { browser, page } = await createLoggedInPage({
 });
 
 await page.goto(`${BASE_URL}/dishes`);
-await page.screenshot({ path: './tmp/dishes.png' });
+await page.screenshot({ path: 'frontend/inspect/visual/tmp/dishes.png' });
 
 await browser.close();
 ```
 
 ## 実行
 
+**リポジトリルートから実行すること**（`cd frontend/inspect/visual` してから実行すると保存パスがずれる）。
+
 ```bash
+# リポジトリルートで実行
 node frontend/inspect/visual/tmp/your-script.mjs
 ```
