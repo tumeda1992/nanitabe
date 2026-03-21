@@ -151,6 +151,9 @@ const CalendarHeader = ({
                 <DropdownMenuItem asChild>
                   <a href="/dishes">料理検索</a>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/mealframes">食事枠管理</a>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

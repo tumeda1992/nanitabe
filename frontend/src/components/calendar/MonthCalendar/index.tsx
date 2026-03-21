@@ -58,22 +58,24 @@ export default (props: Props) => {
     DAY_OF_FRIDAY,
     DAY_OF_SATURDAY,
   ];
-  const dateMealsList: { date: Date; dayLabel: string; meals: any[] }[] =
+  const dateMealsList: { date: Date; dayLabel: string; meals: any[]; frameEntries: any[] }[] =
     (() => {
       return eachDayOfInterval({
         start: firstDayOfMonth,
         end: lastDayOfMonth,
       }).map((date) => {
-        const meals =
-          mealsForCalendar?.find((mealForCalendar) => {
-            return isSameDay(new Date(mealForCalendar.date), date);
-          })?.meals || [];
+        const calendarEntry = mealsForCalendar?.find((mealForCalendar) => {
+          return isSameDay(new Date(mealForCalendar.date), date);
+        });
+        const meals = calendarEntry?.meals || [];
+        const frameEntries = calendarEntry?.frameEntries || [];
 
         return {
           // なぜか9時間ずらさないとRailsに前日で送られるので暫定的に回避させる
           date: new Date(`${format(date, 'yyyy-MM-dd')}T09:00:00`),
           dayLabel: weekdays[getDay(date)],
           meals,
+          frameEntries,
         };
       });
     })();

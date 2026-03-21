@@ -1,13 +1,15 @@
 import React from 'react';
 import { getDate, getDay, isSameDay } from 'date-fns';
-import { MealForCalender } from '../../../lib/graphql/generated/graphql';
+import { FrameEntryForCalender, MealForCalender } from '../../../lib/graphql/generated/graphql';
 import DishCard from './DishCard';
+import FrameCard from './FrameCard';
 import AddMealIcon from './MealIcon/AddMealIcon';
 
 type DateCardProps = {
   date: Date;
   dayLabel: string;
   meals: MealForCalender[];
+  frameEntries: FrameEntryForCalender[];
   isDisplayCalendarMode: boolean;
   calendarModeChangers: any;
   onChanged: () => Promise<void>;
@@ -19,6 +21,7 @@ export default (props: DateCardProps) => {
     date,
     dayLabel,
     meals,
+    frameEntries,
     isDisplayCalendarMode,
     calendarModeChangers,
     onChanged,
@@ -108,6 +111,18 @@ export default (props: DateCardProps) => {
             data-testid="dateCard-emptyMealArea"
           />
         ) : null}
+
+        {/* 枠エントリ一覧エリア */}
+        {frameEntries && frameEntries.map((frameEntry) => (
+          <React.Fragment key={`frame-${frameEntry.id}`}>
+            <FrameCard
+              frameEntry={frameEntry}
+              onDeleted={async () => {
+                await onChanged();
+              }}
+            />
+          </React.Fragment>
+        ))}
       </div>
     </div>
   );
