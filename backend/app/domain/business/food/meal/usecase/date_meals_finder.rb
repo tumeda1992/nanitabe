@@ -11,7 +11,8 @@ module Business::Food::Meal
       meals = ::Meal.where(user_id: access_user_id)
                     .where(date: start_date..last_date)
                     .left_joins(:dish)
-                    .includes(
+                    .left_joins(meal_frame_entry: :meal_frame)
+                    .eager_load(
                       dish: [
                         :dish_source_relation,
                         :dish_source,
@@ -19,10 +20,16 @@ module Business::Food::Meal
                         :dish_tags,
                       ],
                     )
+                    .select(
+                      "meals.*",
+                      "meal_frame_entries.id AS meal_frame_entry_id",
+                      "meal_frames.name AS meal_frame_name",
+                    )
                     .order("meals.meal_type, dishes.meal_position")
 
       frame_entries = ::MealFrameEntry.where(user_id: access_user_id)
                                       .where(date: start_date..last_date)
+                                      .where(meal_id: nil)
                                       .joins(:meal_frame)
                                       .select(
                                         "meal_frame_entries.id",
@@ -45,6 +52,8 @@ module Business::Food::Meal
       meals_by_date = meals.map do |meal|
         result_meal = meal.attributes
         result_meal[:dish] = meal.dish.to_searched_values
+        result_meal[:meal_frame_entry_id] = meal.meal_frame_entry_id
+        result_meal[:meal_frame_name] = meal.meal_frame_name
 
         result_meal.with_indifferent_access
       end.group_by { |meal| meal[:date] }

@@ -9,7 +9,13 @@
       "READ(/tmp/**)",
       "Edit(/tmp/**)",
       "Edit(/frontend/inspect/visual/tmp/**)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(bash scripts/github/create_pr_from_branch_name.sh)"
     ]
   },
   "hooks": {
@@ -30,6 +36,15 @@
           {
             "type": "command",
             "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/review_response.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cmd=$(jq -r '.tool_input.command // \"\"'); if echo \"$cmd\" | grep -qE 'cat[[:space:]]*<<' && ! echo \"$cmd\" | grep -qE '\\$\\(cat[[:space:]]*<<'; then printf '{\"continue\":false,\"stopReason\":\"cat heredoc によるファイル作成は禁止です。Write ツールを使ってください\"}'; fi"
           }
         ]
       }

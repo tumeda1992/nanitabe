@@ -118,3 +118,14 @@ MUST: ドメインロジックは常にドメイン層に置く。置き場所�
     - リポジトリの役割を担うため、ActiveRecord単体で完結しないで、集約などドメインモデルなどを知っていることを許容
   - ただし、外部API接続などはインフラストラクチャ層に置く
 
+### Root 属性と ActiveRecord カラムの非同期
+
+Root の attribute と ActiveRecord のカラムは自動同期しない。
+Root に属性を追加するときは以下の2箇所も必ず連動して変更すること:
+
+- `build_existing_root_from_id`（DB → Root のマッピング）
+- `persist_from_xxx_root`（Root → DB の保存）
+
+やってしまいがちな失敗: `root.rb` に attribute を追加したが persist を更新し忘れ、属性が保存されない（エラーも出ない）。
+例: `FrameEntry::Root` に `meal_id` attribute を追加する際、`persist_from_food_meal_frame_entry_root` を更新しないと `meal_id` が DB に保存されない。
+

@@ -1,6 +1,7 @@
 class Meal < ApplicationRecord
   belongs_to :user
   belongs_to :dish
+  has_one :meal_frame_entry, dependent: :nullify
 
   class << self
     def build_existing_root_from_id(meal_id)

@@ -24,7 +24,7 @@ const SelectEffortLevel = ({ mealPosition }: Props) => {
 
   return (
     <select
-      {...register('dish.dishEffortLevelId', { valueAsNumber: true })}
+      {...register('dish.dishEffortLevelId', { setValueAs: (v) => (v === '' || v == null) ? null : Number(v) })}
       data-testid="dishEffortLevelSelect"
     >
       <option value="">指定なし</option>

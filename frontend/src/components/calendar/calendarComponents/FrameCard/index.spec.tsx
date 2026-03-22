@@ -4,8 +4,17 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FrameCard from './index';
 import renderWithApollo from '../../../specHelper/renderWithApollo';
-import { registerMutationHandler } from '../../../../lib/graphql/specHelper/mockServer';
-import { RemoveMealFrameEntryDocument } from '../../../../lib/graphql/generated/graphql';
+import {
+  registerMutationHandler,
+  registerQueryHandler,
+} from '../../../../lib/graphql/specHelper/mockServer';
+import {
+  RemoveMealFrameEntryDocument,
+  AddMealDocument,
+  ExistingDishesForRegisteringWithMealDocument,
+  DishSourcesDocument,
+  DishEffortLevelsDocument,
+} from '../../../../lib/graphql/generated/graphql';
 import { MEAL_TYPE } from '../../../../features/meal/const';
 
 const buildFrameEntry = (overrides = {}) => ({
@@ -15,6 +24,8 @@ const buildFrameEntry = (overrides = {}) => ({
   mealType: MEAL_TYPE.DINNER,
   ...overrides,
 });
+
+const TEST_DATE = '2026-03-25';
 
 describe('<FrameCard>', () => {
   describe('表示テスト', () => {
@@ -86,6 +97,97 @@ describe('<FrameCard>', () => {
       await userEvent.click(screen.getByTestId('frameCard-deleteBtn-4'));
 
       expect(mutationCalled).toBe(false);
+    });
+
+    describe('クリックで AddMeal モーダルが開くこと', () => {
+      const existingDishId = 55;
+
+      beforeEach(() => {
+        registerQueryHandler(DishEffortLevelsDocument, {
+          dishEffortLevels: [],
+        });
+        registerQueryHandler(ExistingDishesForRegisteringWithMealDocument, {
+          existingDishesForRegisteringWithMeal: [
+            {
+              __typename: 'Dish',
+              id: existingDishId,
+              name: '生姜焼き',
+              mealPosition: 2,
+              comment: null,
+              dishSourceName: null,
+              evaluationScore: null,
+            },
+          ],
+        });
+        registerQueryHandler(DishSourcesDocument, {
+          dishSources: [],
+        });
+      });
+
+      it('カードのクリックでモーダルが開くこと', async () => {
+        const frameEntry = buildFrameEntry({ id: 5 });
+        const onAddSucceeded = jest.fn();
+        renderWithApollo(
+          <FrameCard
+            frameEntry={frameEntry}
+            onDeleted={jest.fn()}
+            onAddSucceeded={onAddSucceeded}
+            date={TEST_DATE}
+          />,
+        );
+
+        await userEvent.click(screen.getByTestId('frameCard-5'));
+
+        expect(screen.getByTestId('addMealFormModal')).toBeInTheDocument();
+      });
+
+      it('date が AddMeal の日付フィールドに渡されること', async () => {
+        const frameEntry = buildFrameEntry({ id: 7 });
+        renderWithApollo(
+          <FrameCard
+            frameEntry={frameEntry}
+            onDeleted={jest.fn()}
+            date={TEST_DATE}
+          />,
+        );
+
+        await userEvent.click(screen.getByTestId('frameCard-7'));
+
+        const dateInput = screen.getByTestId('mealDate') as HTMLInputElement;
+        expect(dateInput.value).toBe(TEST_DATE);
+      });
+
+      it('登録後に onAddSucceeded コールバックが呼ばれること', async () => {
+        const frameEntry = buildFrameEntry({ id: 6 });
+        const onAddSucceeded = jest.fn();
+        renderWithApollo(
+          <FrameCard
+            frameEntry={frameEntry}
+            onDeleted={jest.fn()}
+            onAddSucceeded={onAddSucceeded}
+          />,
+        );
+
+        const { mutationInterceptor } = registerMutationHandler(
+          AddMealDocument,
+          {
+            addMeal: {
+              mealId: 1,
+            },
+          },
+        );
+
+        await userEvent.click(screen.getByTestId('frameCard-6'));
+        await userEvent.click(
+          screen.getByTestId(`existingDish-${existingDishId}`),
+        );
+        await userEvent.click(screen.getByTestId('submitMealButton'));
+
+        await waitFor(() =>
+          expect(mutationInterceptor).toHaveBeenCalledTimes(1),
+        );
+        await waitFor(() => expect(onAddSucceeded).toHaveBeenCalledTimes(1));
+      });
     });
   });
 });

@@ -25,8 +25,8 @@ import {
 } from '../dish/addDishMutation';
 
 export const ADD_MEAL = gql`
-  mutation addMeal($dishId: Int!, $meal: MealForCreate!) {
-    addMeal(input: { dishId: $dishId, meal: $meal }) {
+  mutation addMeal($dishId: Int!, $meal: MealForCreate!, $frameEntryId: Int) {
+    addMeal(input: { dishId: $dishId, meal: $meal, frameEntryId: $frameEntryId }) {
       mealId
     }
   }
@@ -35,6 +35,7 @@ export const ADD_MEAL = gql`
 const AddMealSchema = z.object({
   dishId: dishIdSchema,
   meal: newMealSchema,
+  frameEntryId: z.number().optional(),
 });
 export type AddMeal = z.infer<typeof AddMealSchema>;
 
@@ -45,6 +46,7 @@ export const ADD_MEAL_WITH_NEW_DISH = gql`
     $dishSourceRelationDetail: DishSourceRelationDetail
     $dishTags: [Tag!]
     $meal: MealForCreate!
+    $frameEntryId: Int
   ) {
     addMealWithNewDish(
       input: {
@@ -53,6 +55,7 @@ export const ADD_MEAL_WITH_NEW_DISH = gql`
         dishSourceRelationDetail: $dishSourceRelationDetail
         dishTags: $dishTags
         meal: $meal
+        frameEntryId: $frameEntryId
       }
     ) {
       mealId
@@ -63,6 +66,7 @@ export const ADD_MEAL_WITH_NEW_DISH = gql`
 
 const AddMealWithNewDishSchema = AddDishSchema.extend({
   meal: newMealSchema,
+  frameEntryId: z.number().optional(),
 });
 export type AddMealWithNewDish = z.infer<typeof AddMealWithNewDishSchema>;
 
@@ -86,6 +90,7 @@ export const ADD_MEAL_WITH_NEW_DISH_AND_NEW_SOURCE = gql`
     $dishSourceRelationDetail: DishSourceRelationDetail
     $dishTags: [Tag!]
     $meal: MealForCreate!
+    $frameEntryId: Int
   ) {
     addMealWithNewDishAndNewSource(
       input: {
@@ -94,6 +99,7 @@ export const ADD_MEAL_WITH_NEW_DISH_AND_NEW_SOURCE = gql`
         dishSourceRelationDetail: $dishSourceRelationDetail
         dishTags: $dishTags
         meal: $meal
+        frameEntryId: $frameEntryId
       }
     ) {
       mealId
@@ -105,6 +111,7 @@ export const ADD_MEAL_WITH_NEW_DISH_AND_NEW_SOURCE = gql`
 
 const AddMealWithNewDishAndNewSourceSchema = AddDishWithNewSourceSchema.extend({
   meal: newMealSchema,
+  frameEntryId: z.number().optional(),
 });
 export type AddMealWithNewDishAndNewSource = z.infer<
   typeof AddMealWithNewDishAndNewSourceSchema

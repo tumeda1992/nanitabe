@@ -87,6 +87,30 @@ describe('<DishCard>', () => {
       ).toBeInTheDocument();
     });
 
+    it('meal.mealFrameName がある場合に枠名ラベルが表示されること', () => {
+      const meal = buildMeal({ mealFrameName: 'パスタ枠' });
+      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+      expect(screen.getByTestId(`dishCard-frameName-${meal.id}`)).toBeInTheDocument();
+      expect(screen.getByTestId(`dishCard-frameName-${meal.id}`)).toHaveTextContent('パスタ枠');
+    });
+
+    it('meal.mealFrameName がある場合に枠名ラベルが料理名の前（上）にあること', () => {
+      const meal = buildMeal({ mealFrameName: 'パスタ枠' });
+      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+      const frameLabel = screen.getByTestId(`dishCard-frameName-${meal.id}`);
+      const dishName = screen.getByText('生姜焼き');
+      // DOMの順序確認: fremeLabel が dishName より前にあること
+      const position = frameLabel.compareDocumentPosition(dishName);
+      // DOCUMENT_POSITION_FOLLOWING = 4 (dishName が frameLabel の後にある)
+      expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+
+    it('meal.mealFrameName がない場合に枠名ラベルが表示されないこと', () => {
+      const meal = buildMeal({ mealFrameName: null });
+      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+      expect(screen.queryByTestId(`dishCard-frameName-${meal.id}`)).not.toBeInTheDocument();
+    });
+
     it('canAnythingExceptDisplayDishName=false のとき MoreHorizontal が表示されないこと', () => {
       const meal = buildMeal();
       renderWithApollo(
@@ -103,6 +127,23 @@ describe('<DishCard>', () => {
   });
 
   describe('機能テスト', () => {
+    it('カード本体クリックでアクションパネルが表示されること', async () => {
+      const meal = buildMeal();
+      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+      await userEvent.click(screen.getByTestId(`dishCard-${meal.id}`));
+      expect(screen.getByText('削除')).toBeInTheDocument();
+    });
+
+    it('カード本体をもう一度クリックしてもアクションパネルが閉じないこと', async () => {
+      const meal = buildMeal();
+      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+      await userEvent.click(screen.getByTestId(`dishCard-${meal.id}`));
+      expect(screen.getByText('削除')).toBeInTheDocument();
+      await userEvent.click(screen.getByTestId(`dishCard-${meal.id}`));
+      // カード本体クリックは開くのみ（閉じない）
+      expect(screen.getByText('削除')).toBeInTheDocument();
+    });
+
     it('MoreHorizontal タップでアクションパネルが表示されること', async () => {
       const meal = buildMeal();
       renderWithApollo(<DishCard {...baseProps} meal={meal} />);

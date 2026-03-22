@@ -4,6 +4,12 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import DateCard from './DateCard';
 import renderWithApollo from '../../specHelper/renderWithApollo';
+import { registerQueryHandler } from '../../../lib/graphql/specHelper/mockServer';
+import {
+  DishEffortLevelsDocument,
+  ExistingDishesForRegisteringWithMealDocument,
+  DishSourcesDocument,
+} from '../../../lib/graphql/generated/graphql';
 
 const buildMeal = (overrides = {}) => ({
   id: 1,
@@ -128,6 +134,22 @@ describe('<DateCard>', () => {
   });
 
   describe('機能テスト', () => {
+    it('空エリアをクリックすると食事登録モーダルが開くこと', async () => {
+      registerQueryHandler(DishEffortLevelsDocument, { dishEffortLevels: [] });
+      registerQueryHandler(ExistingDishesForRegisteringWithMealDocument, {
+        existingDishesForRegisteringWithMeal: [],
+      });
+      registerQueryHandler(DishSourcesDocument, { dishSources: [] });
+
+      renderWithApollo(
+        <DateCard {...baseProps} meals={[]} isDisplayCalendarMode={true} />,
+      );
+
+      await userEvent.click(screen.getByTestId('dateCard-emptyMealArea'));
+
+      expect(screen.getByTestId('dateCard-emptyMealAreaModal')).toBeInTheDocument();
+    });
+
     it('日付ヘッダーをクリックすると startSwappingMealsMode が該当 date を引数に呼ばれること', async () => {
       const startSwappingMealsMode = jest.fn();
       const date = new Date(2026, 2, 9);

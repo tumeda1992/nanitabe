@@ -1,6 +1,6 @@
 import React from 'react';
 import '@testing-library/jest-dom';
-import { screen } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { render } from '@testing-library/react';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
@@ -20,13 +20,16 @@ const createClient = () =>
     cache: new InMemoryCache(),
   });
 
-const renderWithProviders = (component: React.ReactNode) => {
+const renderWithProviders = (component: React.ReactNode, onSubmit?: (data: any) => void) => {
   const Wrapper = () => {
     const methods = useForm({ defaultValues: { dish: { dishEffortLevelId: null } } });
     return (
       <ApolloProvider client={createClient()}>
         <FormProvider {...methods}>
-          {component}
+          <form onSubmit={methods.handleSubmit((data) => { if (onSubmit) onSubmit(data); })}>
+            {component}
+            <button type="submit" data-testid="submitBtn">送信</button>
+          </form>
         </FormProvider>
       </ApolloProvider>
     );
@@ -71,6 +74,26 @@ describe('<SelectEffortLevel>', () => {
       renderWithProviders(<SelectEffortLevel mealPosition={1} />);
 
       expect(await screen.findByText('指定なし')).toBeInTheDocument();
+    });
+  });
+
+  describe('手間未選択で submit できること', () => {
+    it('手間未選択（空文字）のとき dishEffortLevelId が null として送信されること', async () => {
+      registerQueryHandler(DishEffortLevelsDocument, {
+        dishEffortLevels: effortLevels,
+      });
+
+      const onSubmit = jest.fn();
+      renderWithProviders(<SelectEffortLevel mealPosition={1} />, onSubmit);
+
+      await screen.findByText('指定なし');
+
+      // 「指定なし」（空文字）が選択された状態でsubmit
+      fireEvent.change(screen.getByTestId('dishEffortLevelSelect'), { target: { value: '' } });
+      fireEvent.click(screen.getByTestId('submitBtn'));
+
+      await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+      expect(onSubmit.mock.calls[0][0].dish.dishEffortLevelId).toBeNull();
     });
   });
 });

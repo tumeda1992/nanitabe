@@ -1,6 +1,7 @@
 require "rails_helper"
 require_relative "../../../graphql_auth_helper"
 require_relative "../../../../support/factories/user_repository"
+require_relative "../../../../support/factories/dish_repository"
 
 RSpec.describe "mealsForCalender query - frameEntries", type: :request do
   let!(:user_record) { find_or_create_user }
@@ -12,6 +13,27 @@ RSpec.describe "mealsForCalender query - frameEntries", type: :request do
           date
           meals {
             id
+          }
+          frameEntries {
+            id
+            mealFrameId
+            mealFrameName
+            mealType
+          }
+        }
+      }
+    GRAPHQL
+  end
+
+  def build_query_with_frame_fields
+    <<~GRAPHQL
+      query mealsForCalender($startDate: ISO8601Date!, $lastDate: ISO8601Date!) {
+        mealsForCalender(startDate: $startDate, lastDate: $lastDate) {
+          date
+          meals {
+            id
+            mealFrameEntryId
+            mealFrameName
           }
           frameEntries {
             id
@@ -61,6 +83,61 @@ RSpec.describe "mealsForCalender query - frameEntries", type: :request do
       date_results.each do |date_result|
         expect(date_result["frameEntries"]).to eq([])
       end
+    end
+  end
+
+  context "when a meal is assigned to a frame entry" do
+    let!(:meal_frame) { MealFrame.create!(user: user_record, name: "パスタ枠") }
+    let!(:frame_entry) do
+      MealFrameEntry.create!(
+        user: user_record,
+        meal_frame: meal_frame,
+        date: target_date,
+        meal_type: 2,
+      )
+    end
+    let!(:dish) { find_or_create_dish }
+    let!(:meal) do
+      meal_record = Meal.create!(user: user_record, dish: dish, date: target_date, meal_type: 2)
+      frame_entry.update!(meal_id: meal_record.id)
+      meal_record
+    end
+
+    it "returns mealFrameEntryId and mealFrameName on the meal" do
+      data = fetch_mutation_with_auth(build_query_with_frame_fields, variables, user_record.id)
+
+      date_meals = data["mealsForCalender"].find { |d| d["date"] == target_date.iso8601 }
+      meals = date_meals["meals"]
+
+      assigned_meal = meals.find { |m| m["id"] == meal.id }
+      expect(assigned_meal["mealFrameEntryId"]).to eq(frame_entry.id)
+      expect(assigned_meal["mealFrameName"]).to eq("パスタ枠")
+    end
+
+    it "excludes frame entries with meal_id from frameEntries" do
+      data = fetch_mutation_with_auth(build_query_with_frame_fields, variables, user_record.id)
+
+      date_meals = data["mealsForCalender"].find { |d| d["date"] == target_date.iso8601 }
+      frame_entries = date_meals["frameEntries"]
+
+      frame_entry_ids = frame_entries.map { |e| e["id"] }
+      expect(frame_entry_ids).not_to include(frame_entry.id)
+    end
+  end
+
+  context "when meal has no frame entry (normal meal)" do
+    let!(:dish) { find_or_create_dish }
+    let!(:meal) { Meal.create!(user: user_record, dish: dish, date: target_date, meal_type: 1) }
+
+    it "returns nil for mealFrameEntryId and mealFrameName" do
+      data = fetch_mutation_with_auth(build_query_with_frame_fields, variables, user_record.id)
+
+      date_meals = data["mealsForCalender"].find { |d| d["date"] == target_date.iso8601 }
+      meals = date_meals["meals"]
+
+      normal_meal = meals.find { |m| m["id"] == meal.id }
+      expect(normal_meal["mealFrameEntryId"]).to be_nil
+      expect(normal_meal["mealFrameName"]).to be_nil
     end
   end
 end
