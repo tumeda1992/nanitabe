@@ -3,6 +3,25 @@ require_relative "../support/factories/user_repository"
 require_relative "../support/factories/dish_repository"
 
 RSpec.describe Meal, type: :model do
+  describe "associations" do
+    describe "dependent: :nullify on meal_frame_entry" do
+      let(:user_record) { find_or_create_user }
+      let(:dish_record) { find_or_create_dish }
+      let(:meal_record) do
+        FactoryBot.create(:meal, user: user_record, dish: dish_record, date: Date.today, meal_type: 1)
+      end
+      let(:meal_frame_record) { MealFrame.create!(user: user_record, name: "テスト枠") }
+      let!(:meal_frame_entry) do
+        MealFrameEntry.create!(user: user_record, meal_frame: meal_frame_record, date: Date.today, meal_type: 1, meal: meal_record)
+      end
+
+      it "sets meal_frame_entry.meal_id to nil when meal is destroyed" do
+        meal_record.destroy!
+        expect(meal_frame_entry.reload.meal_id).to be_nil
+      end
+    end
+  end
+
   let(:user_record) { find_or_create_user }
   let(:dish_record) { find_or_create_dish }
 
