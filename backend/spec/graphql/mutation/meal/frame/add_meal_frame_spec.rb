@@ -29,6 +29,5 @@ module Mutations::Meal::Frame
         expect(MealFrame.last.name).to eq("週末枠")
       end
     end
-
   end
 end
