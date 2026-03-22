@@ -489,14 +489,18 @@ DishCard 本体クリックでアクションエリアが開き、アクショ�
 
 > ⚠️ 動作確認フェーズが完了するまでコミットを促すことは禁止。急かすことも禁止。
 
-- [ ] コミット（フェーズ単位で分割）
+- [x] コミット（フェーズ単位で分割）
   - フェーズ1: FrameEntry ドメイン + FillWithMealCommand
   - フェーズ2: addMeal 系 mutation 拡張
   - フェーズ3: DateMealsFinder + MealForCalender 拡張
   - フェーズ4: FrameCard クリック連携
   - フェーズ5: DishCard 枠名ラベル
   - フェーズ6: 品質チェック修正分
-- [ ] コミット（フェーズ7-14）
+- [x] コミット（フェーズ7-17）
+
+- [x] push して PR を作成する
+  - `git push -u origin feature-234`
+  - `bash scripts/github/create_pr_from_branch_name.sh`
 
 ---
 
