@@ -190,14 +190,25 @@ const DishCard = ({
 
   return (
     <div
-      className={`rounded-lg overflow-hidden border ${cfg.bg} mb-1`}
+      className={`rounded-lg overflow-hidden border ${cfg.bg} mb-1 cursor-pointer`}
       data-testid={`dishCard-${meal.id}`}
+      onClick={() => setActionsOpen(true)}
     >
       <div className="flex w-full">
         {/* 左端カラーバー */}
         <div className={`w-1 shrink-0 ${cfg.bar}`} />
 
         <div className="flex-1 px-2 py-1.5 min-w-0">
+          {/* 枠名ラベル（料理名の上に薄グレーで表示） */}
+          {meal.mealFrameName && (
+            <div
+              className="text-[10px] text-muted-foreground truncate mb-0.5"
+              data-testid={`dishCard-frameName-${meal.id}`}
+            >
+              {meal.mealFrameName}
+            </div>
+          )}
+
           {/* 1行目: カテゴリ + 料理名 + 昼夜ラベル + クイックアイコン */}
           <div className="flex items-center gap-1">
             <CategoryIcon
