@@ -14,6 +14,7 @@ class MealFrameEntry < ApplicationRecord
         meal_frame_id: record.meal_frame_id,
         date: record.date,
         meal_type: record.meal_type,
+        meal_id: record.meal_id,
       )
     end
 
@@ -32,6 +33,7 @@ class MealFrameEntry < ApplicationRecord
   def persist_from_food_meal_frame_entry_root(root)
     self.date = root.date
     self.meal_type = root.meal_type
+    self.meal_id = root.meal_id
 
     save!
 

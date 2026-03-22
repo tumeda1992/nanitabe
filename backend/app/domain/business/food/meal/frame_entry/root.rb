@@ -14,6 +14,12 @@ module Business::Food::Meal::FrameEntry
     attribute :meal_type, :integer
     validates :meal_type, presence: true
 
+    attribute :meal_id, :integer
+
+    def assign_meal(meal_id)
+      self.meal_id = meal_id
+    end
+
     def set_id(new_id)
       raise "新規作成時以外idを変更できません" if id.present?
 
