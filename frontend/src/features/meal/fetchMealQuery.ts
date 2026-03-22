@@ -27,6 +27,8 @@ export const MEALS_FOR_CALENDER = gql`
         date
         mealType
         comment
+        mealFrameEntryId
+        mealFrameName
         dish {
           id
           name

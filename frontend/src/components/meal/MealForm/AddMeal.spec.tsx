@@ -396,3 +396,65 @@ describe('<AddMeal>', () => {
     });
   });
 });
+
+describe('<AddMeal> with frameEntryId', () => {
+  const newMealWithRequiredParams = {
+    date: new Date(2022, 1, 1),
+    mealType: 3,
+    comment: '',
+  };
+  const existingDishId = 55;
+  const frameEntryId = 7;
+
+  beforeEach(() => {
+    registerQueryHandler(DishEffortLevelsDocument, {
+      dishEffortLevels: [],
+    });
+    registerQueryHandler(ExistingDishesForRegisteringWithMealDocument, {
+      existingDishesForRegisteringWithMeal: [
+        {
+          __typename: 'Dish',
+          id: existingDishId,
+          name: '生姜焼き',
+          mealPosition: 2,
+          comment: null,
+          dishSourceName: null,
+          evaluationScore: null,
+        },
+      ],
+    });
+
+    registerQueryHandler(DishSourcesDocument, {
+      dishSources: [],
+    });
+
+    renderWithApollo(
+      <AddMeal
+        defaultDate={newMealWithRequiredParams.date}
+        frameEntryId={frameEntryId}
+        onSchemaError={(schemaErrors) => {
+          console.log(schemaErrors);
+        }}
+      />,
+    );
+  });
+
+  it('includes frameEntryId in mutation variables', async () => {
+    const { getLatestMutationVariables, mutationInterceptor } =
+      registerMutationHandler(AddMealDocument, {
+        addMeal: {
+          mealId: 1,
+        },
+      });
+
+    await userClick(screen, `existingDish-${existingDishId}`);
+    await userClick(screen, 'submitMealButton');
+
+    await waitFor(() => expect(mutationInterceptor).toHaveBeenCalledTimes(1));
+    expect(getLatestMutationVariables()).toEqual({
+      dishId: existingDishId,
+      meal: buildNewMealGraphQLParams(newMealWithRequiredParams),
+      frameEntryId,
+    });
+  });
+});

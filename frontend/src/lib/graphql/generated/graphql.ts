@@ -90,6 +90,7 @@ export type AddMealInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   dishId: Scalars['Int']['input'];
+  frameEntryId?: InputMaybe<Scalars['Int']['input']>;
   meal: MealForCreate;
 };
 
@@ -109,6 +110,7 @@ export type AddMealWithNewDishAndNewSourceInput = {
   dishSource: SourceForCreate;
   dishSourceRelationDetail?: InputMaybe<DishSourceRelationDetail>;
   dishTags?: InputMaybe<Array<Tag>>;
+  frameEntryId?: InputMaybe<Scalars['Int']['input']>;
   meal: MealForCreate;
 };
 
@@ -130,6 +132,7 @@ export type AddMealWithNewDishInput = {
   dishSource?: InputMaybe<SourceForRead>;
   dishSourceRelationDetail?: InputMaybe<DishSourceRelationDetail>;
   dishTags?: InputMaybe<Array<Tag>>;
+  frameEntryId?: InputMaybe<Scalars['Int']['input']>;
   meal: MealForCreate;
 };
 
@@ -431,6 +434,8 @@ export type MealForCalender = MealFields & {
   date: Scalars['ISO8601Date']['output'];
   dish: Dish;
   id: Scalars['Int']['output'];
+  mealFrameEntryId?: Maybe<Scalars['Int']['output']>;
+  mealFrameName?: Maybe<Scalars['String']['output']>;
   mealType: Scalars['Int']['output'];
 };
 
@@ -1091,6 +1096,7 @@ export type EvaluateDishMutation = { __typename?: 'Mutation', evaluateDish?: { _
 export type AddMealMutationVariables = Exact<{
   dishId: Scalars['Int']['input'];
   meal: MealForCreate;
+  frameEntryId?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
@@ -1102,6 +1108,7 @@ export type AddMealWithNewDishMutationVariables = Exact<{
   dishSourceRelationDetail?: InputMaybe<DishSourceRelationDetail>;
   dishTags?: InputMaybe<Array<Tag> | Tag>;
   meal: MealForCreate;
+  frameEntryId?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
@@ -1113,6 +1120,7 @@ export type AddMealWithNewDishAndNewSourceMutationVariables = Exact<{
   dishSourceRelationDetail?: InputMaybe<DishSourceRelationDetail>;
   dishTags?: InputMaybe<Array<Tag> | Tag>;
   meal: MealForCreate;
+  frameEntryId?: InputMaybe<Scalars['Int']['input']>;
 }>;
 
 
@@ -1124,7 +1132,7 @@ export type MealsForCalenderQueryVariables = Exact<{
 }>;
 
 
-export type MealsForCalenderQuery = { __typename?: 'Query', mealsForCalender: Array<{ __typename?: 'MealsOfDate', date: any, meals: Array<{ __typename?: 'MealForCalender', id: number, date: any, mealType: number, comment?: string | null, dish: { __typename?: 'Dish', id: number, name: string, mealPosition: number, comment?: string | null, evaluationScore?: number | null, dishSourceRelation?: { __typename?: 'DishSourceRelation', type: number, sourceName?: string | null, dishSourceId: number, recipeBookPage?: number | null, recipeWebsiteUrl?: string | null, recipeSourceMemo?: string | null } | null, tags?: Array<{ __typename?: 'DishTag', id: number, dishId: number, content: string }> | null } }>, frameEntries: Array<{ __typename?: 'FrameEntryForCalender', id: number, mealFrameId: number, mealFrameName: string, mealType: number }> }> };
+export type MealsForCalenderQuery = { __typename?: 'Query', mealsForCalender: Array<{ __typename?: 'MealsOfDate', date: any, meals: Array<{ __typename?: 'MealForCalender', id: number, date: any, mealType: number, comment?: string | null, mealFrameEntryId?: number | null, mealFrameName?: string | null, dish: { __typename?: 'Dish', id: number, name: string, mealPosition: number, comment?: string | null, evaluationScore?: number | null, dishSourceRelation?: { __typename?: 'DishSourceRelation', type: number, sourceName?: string | null, dishSourceId: number, recipeBookPage?: number | null, recipeWebsiteUrl?: string | null, recipeSourceMemo?: string | null } | null, tags?: Array<{ __typename?: 'DishTag', id: number, dishId: number, content: string }> | null } }>, frameEntries: Array<{ __typename?: 'FrameEntryForCalender', id: number, mealFrameId: number, mealFrameName: string, mealType: number }> }> };
 
 export type RemoveMealMutationVariables = Exact<{
   mealId: Scalars['Int']['input'];
@@ -1931,8 +1939,8 @@ export type EvaluateDishMutationHookResult = ReturnType<typeof useEvaluateDishMu
 export type EvaluateDishMutationResult = Apollo.MutationResult<EvaluateDishMutation>;
 export type EvaluateDishMutationOptions = Apollo.BaseMutationOptions<EvaluateDishMutation, EvaluateDishMutationVariables>;
 export const AddMealDocument = gql`
-    mutation addMeal($dishId: Int!, $meal: MealForCreate!) {
-  addMeal(input: {dishId: $dishId, meal: $meal}) {
+    mutation addMeal($dishId: Int!, $meal: MealForCreate!, $frameEntryId: Int) {
+  addMeal(input: {dishId: $dishId, meal: $meal, frameEntryId: $frameEntryId}) {
     mealId
   }
 }
@@ -1954,6 +1962,7 @@ export type AddMealMutationFn = Apollo.MutationFunction<AddMealMutation, AddMeal
  *   variables: {
  *      dishId: // value for 'dishId'
  *      meal: // value for 'meal'
+ *      frameEntryId: // value for 'frameEntryId'
  *   },
  * });
  */
@@ -1965,9 +1974,9 @@ export type AddMealMutationHookResult = ReturnType<typeof useAddMealMutation>;
 export type AddMealMutationResult = Apollo.MutationResult<AddMealMutation>;
 export type AddMealMutationOptions = Apollo.BaseMutationOptions<AddMealMutation, AddMealMutationVariables>;
 export const AddMealWithNewDishDocument = gql`
-    mutation addMealWithNewDish($dish: DishForCreate!, $dishSource: SourceForRead, $dishSourceRelationDetail: DishSourceRelationDetail, $dishTags: [Tag!], $meal: MealForCreate!) {
+    mutation addMealWithNewDish($dish: DishForCreate!, $dishSource: SourceForRead, $dishSourceRelationDetail: DishSourceRelationDetail, $dishTags: [Tag!], $meal: MealForCreate!, $frameEntryId: Int) {
   addMealWithNewDish(
-    input: {dish: $dish, dishSource: $dishSource, dishSourceRelationDetail: $dishSourceRelationDetail, dishTags: $dishTags, meal: $meal}
+    input: {dish: $dish, dishSource: $dishSource, dishSourceRelationDetail: $dishSourceRelationDetail, dishTags: $dishTags, meal: $meal, frameEntryId: $frameEntryId}
   ) {
     mealId
     dishId
@@ -1994,6 +2003,7 @@ export type AddMealWithNewDishMutationFn = Apollo.MutationFunction<AddMealWithNe
  *      dishSourceRelationDetail: // value for 'dishSourceRelationDetail'
  *      dishTags: // value for 'dishTags'
  *      meal: // value for 'meal'
+ *      frameEntryId: // value for 'frameEntryId'
  *   },
  * });
  */
@@ -2005,9 +2015,9 @@ export type AddMealWithNewDishMutationHookResult = ReturnType<typeof useAddMealW
 export type AddMealWithNewDishMutationResult = Apollo.MutationResult<AddMealWithNewDishMutation>;
 export type AddMealWithNewDishMutationOptions = Apollo.BaseMutationOptions<AddMealWithNewDishMutation, AddMealWithNewDishMutationVariables>;
 export const AddMealWithNewDishAndNewSourceDocument = gql`
-    mutation addMealWithNewDishAndNewSource($dish: DishForCreate!, $dishSource: SourceForCreate!, $dishSourceRelationDetail: DishSourceRelationDetail, $dishTags: [Tag!], $meal: MealForCreate!) {
+    mutation addMealWithNewDishAndNewSource($dish: DishForCreate!, $dishSource: SourceForCreate!, $dishSourceRelationDetail: DishSourceRelationDetail, $dishTags: [Tag!], $meal: MealForCreate!, $frameEntryId: Int) {
   addMealWithNewDishAndNewSource(
-    input: {dish: $dish, dishSource: $dishSource, dishSourceRelationDetail: $dishSourceRelationDetail, dishTags: $dishTags, meal: $meal}
+    input: {dish: $dish, dishSource: $dishSource, dishSourceRelationDetail: $dishSourceRelationDetail, dishTags: $dishTags, meal: $meal, frameEntryId: $frameEntryId}
   ) {
     mealId
     dishId
@@ -2035,6 +2045,7 @@ export type AddMealWithNewDishAndNewSourceMutationFn = Apollo.MutationFunction<A
  *      dishSourceRelationDetail: // value for 'dishSourceRelationDetail'
  *      dishTags: // value for 'dishTags'
  *      meal: // value for 'meal'
+ *      frameEntryId: // value for 'frameEntryId'
  *   },
  * });
  */
@@ -2054,6 +2065,8 @@ export const MealsForCalenderDocument = gql`
       date
       mealType
       comment
+      mealFrameEntryId
+      mealFrameName
       dish {
         id
         name

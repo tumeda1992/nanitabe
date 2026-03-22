@@ -18,10 +18,16 @@ type Props = {
   defaultDate?: Date;
   onAddSucceeded?: () => void;
   onSchemaError?: any;
+  frameEntryId?: number;
 };
 
 export default (props: Props) => {
-  const { defaultDate: defaultDateArg, onAddSucceeded, onSchemaError } = props;
+  const {
+    defaultDate: defaultDateArg,
+    onAddSucceeded,
+    onSchemaError,
+    frameEntryId,
+  } = props;
   const defaultDate: Date = defaultDateArg || new Date();
 
   const {
@@ -82,7 +88,11 @@ export default (props: Props) => {
 
   const onSubmit: SubmitHandler<AddMealMutationInput> = async (input) => {
     if (!addMealFunc) return;
-    await addMealFunc(input, {
+    const inputWithFrameEntry =
+      frameEntryId !== undefined
+        ? { ...input, frameEntryId }
+        : input;
+    await addMealFunc(inputWithFrameEntry, {
       onCompleted: (_) => {
         if (onAddSucceeded) onAddSucceeded();
         // コンポーネント内にあるから触れなくなっちゃったけど、必要になったらフォーム内のものを動かせるようにする
