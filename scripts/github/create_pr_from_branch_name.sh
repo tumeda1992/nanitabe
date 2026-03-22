@@ -19,10 +19,10 @@ issue_id="$(echo "${info_json}" | python3 -c 'import json,sys; print(json.load(s
 issue_title="$(echo "${info_json}" | python3 -c 'import json,sys; print(json.load(sys.stdin)["issue_title"])')"
 branch="$(echo "${info_json}" | python3 -c 'import json,sys; print(json.load(sys.stdin)["branch"])')"
 
-pr_url="$(gh pr create --title "${issue_title}" --base "main" --head "${branch}" --body "Closes #${issue_id}")"
-
-if [[ -z "${pr_url}" ]]; then
-  pr_url="$(gh pr view --json url --jq .url)"
+if pr_url="$(gh pr view --json url --jq .url 2>/dev/null)" && [[ -n "${pr_url}" ]]; then
+  : # PR がすでに存在するため作成をスキップ
+else
+  pr_url="$(gh pr create --title "${issue_title}" --base "main" --head "${branch}" --body "Closes #${issue_id}")"
 fi
 
 echo "${pr_url}"
