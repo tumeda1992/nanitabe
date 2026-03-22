@@ -45,7 +45,7 @@ EDIT_REVIEW_PROMPT = """あなたは Claude Code の編集品質レビュアー�
 
 {claude_md}
 
-## 直近の会話履歴（最新5件）
+## 直近の会話履歴（最新20件）
 
 {recent_messages}
 
@@ -55,14 +55,47 @@ EDIT_REVIEW_PROMPT = """あなたは Claude Code の編集品質レビュアー�
 
 ## 評価タスク
 
-以下の観点で違反がないか確認してください：
+以下の順序で確認してください：
 
-1. **修正前の方針合意**: この編集について、会話の中でユーザーと合意が取れているか。合意なく突然編集しようとしていないか
-2. **合意の粒度**: 総論の合意だけで、この具体的な編集内容（各論）の合意が取れていないまま進めようとしていないか
+1. **ファイル言及後の合意**: 会話の中で Claude が「{file_path}」または該当ファイルのファイル名を明示した後に、ユーザーが肯定的に応答しているか
+   - ファイル名の言及より前に出た「ok」「良いね」などはそのファイルへの合意とみなさない
+   - Claude がファイル名を言及した後、ユーザーが肯定した流れがあれば合意あり
+2. **合意の粒度**: ファイルへの言及後の合意が「方向性」だけでなく「具体的な内容・文章」への合意になっているか
+
+少しでも疑わしければ違反として報告してください。
 
 違反がなければ「OK」とだけ出力してください。
 違反がある場合は、どの原則に違反しているか・どう修正すべきかを日本語で簡潔に出力してください。「OK」という文字列を含めないでください。
 """
+
+
+def claude_announced_file(transcript_path: str, file_path: str, n: int = 20) -> bool:
+    """直近 n 件の会話で Claude がそのファイル名を言及しているか確認する。"""
+    try:
+        with open(transcript_path, encoding='utf-8') as f:
+            transcript = json.load(f)
+    except Exception:
+        return True  # 読み取れない場合は通過させる
+
+    messages = transcript.get('messages', [])
+    recent = messages[-n:] if len(messages) >= n else messages
+    basename = os.path.basename(file_path)
+
+    for msg in recent:
+        if msg.get('role') != 'assistant':
+            continue
+        content = msg.get('content', '')
+        if isinstance(content, list):
+            parts = [
+                c.get('text', '')
+                for c in content
+                if isinstance(c, dict) and c.get('type') == 'text'
+            ]
+            content = '\n'.join(parts)
+        if file_path in content or (basename and basename in content):
+            return True
+
+    return False
 
 
 def get_last_assistant_text(transcript_path: str) -> str | None:
@@ -115,13 +148,13 @@ def get_recent_messages(transcript_path: str, n: int = 5) -> str:
     return '\n\n'.join(lines)
 
 
-def call_claude(prompt: str) -> str:
+def call_claude(prompt: str, model: str = 'claude-sonnet-4-6') -> str:
     try:
         result = subprocess.run(
-            ['claude', '-p', prompt, '--model', 'claude-haiku-4-5-20251001'],
+            ['claude', '-p', prompt, '--model', model],
             capture_output=True,
             text=True,
-            timeout=30,
+            timeout=60,
         )
         return result.stdout.strip()
     except Exception:
@@ -170,7 +203,16 @@ def handle_edit(data: dict) -> None:
     tool_input = data.get('tool_input', {})
     file_path = tool_input.get('file_path', '（不明）')
 
-    recent_messages = get_recent_messages(transcript_path, n=5)
+    # 機械的な事前チェック: Claude がそのファイルを会話中に言及したか
+    if not claude_announced_file(transcript_path, file_path):
+        print(
+            f"[編集予告なし] '{os.path.basename(file_path)}' への編集予告が直近の会話に見つかりません。\n"
+            f"編集前にファイル名を明示してユーザーと合意してください。",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    recent_messages = get_recent_messages(transcript_path, n=20)
     if not recent_messages:
         sys.exit(0)
 
