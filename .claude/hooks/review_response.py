@@ -52,6 +52,15 @@ How:  EDIT_REVIEW_PROMPT を変更し、(1) Claude が当該ファイルへの�
       どちらか一方でも引用できない場合は違反とする。
       また「ok」「そうだよね」等の短い肯定は、具体的変更内容の提示直後のものとして
       会話履歴から確認できる場合のみ合意とみなす旨を明示する。
+
+### 2026/3/22 第三次強化（チェック分岐）
+What: `.steering/` 配下の議論・作業ログファイルを軽チェック対象として分岐させた。
+Why:  厳格チェックは「合意なき変更を防ぐ」ための機構だが、discussion.md / tasklist.md /
+      implementation_review.md は思考ログ・サブエージェント更新用途のファイルであり、
+      「内容への合意」よりも「記録の継続性」が重要。厳格チェックが記録の妨げになっていた。
+How:  is_light_check_target() で対象ファイルを判定し、
+      .steering/ 配下の上記3ファイルは claude_announced_file チェックのみで通過させる。
+      CLAUDE.md / .claude/skills/** 等は引き続きフル LLM レビューを維持する。
 """
 
 import json
@@ -131,6 +140,22 @@ Claude の会話の勢いに引きずられず、会話全体を外側から監�
 違反がなければ「OK」とだけ出力してください。
 違反がある場合は、どの証拠が確認できなかったか・どう修正すべきかを日本語で簡潔に出力してください。「OK」という文字列を含めないでください。
 """
+
+
+def is_light_check_target(file_path: str) -> bool:
+    """軽チェック（claude_announced_file のみ）対象のファイルか判定する。
+
+    対象:
+    - .steering/**/discussion.md          : 思考ログ（議論の記録）
+    - .steering/**/implementation_review.md: 思考ログ（実装レビュー記録）
+    - .steering/**/tasklist.md            : サブエージェントが更新するため
+    """
+    basename = os.path.basename(file_path)
+    light_check_basenames = {'discussion.md', 'implementation_review.md', 'tasklist.md'}
+    if basename not in light_check_basenames:
+        return False
+    normalized = file_path.replace(os.sep, '/')
+    return '/.steering/' in normalized
 
 
 def claude_announced_file(transcript_path: str, file_path: str, n: int = 20) -> bool:
@@ -275,6 +300,10 @@ def handle_edit(data: dict) -> None:
             file=sys.stderr,
         )
         sys.exit(1)
+
+    # .steering/ 配下の議論・作業ログは軽チェック（claude_announced_file のみ）
+    if is_light_check_target(file_path):
+        sys.exit(0)
 
     recent_messages = get_recent_messages(transcript_path, n=20)
     if not recent_messages:
