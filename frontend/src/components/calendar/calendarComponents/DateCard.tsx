@@ -4,6 +4,9 @@ import { FrameEntryForCalender, MealForCalender } from '../../../lib/graphql/gen
 import DishCard from './DishCard';
 import FrameCard from './FrameCard';
 import AddMealIcon from './MealIcon/AddMealIcon';
+import { buildISODateString } from '../../../features/utils/dateUtils';
+import useFullScreenModal from '../../common/modal/useFullScreenModal';
+import { AddMeal } from '../../meal/MealForm';
 
 type DateCardProps = {
   date: Date;
@@ -42,6 +45,13 @@ export default (props: DateCardProps) => {
   })();
 
   const hasMeals = meals && meals.length > 0;
+
+  const { FullScreenModal, openModal, closeModal } = useFullScreenModal();
+
+  const handleEmptyAreaAddSucceeded = async () => {
+    closeModal();
+    await onChanged();
+  };
 
   return (
     <div
@@ -106,10 +116,14 @@ export default (props: DateCardProps) => {
             </React.Fragment>
           ))
         ) : isDisplayCalendarMode ? (
-          <div
-            className="border border-dashed rounded-lg p-2 text-center text-xs text-muted-foreground"
+          <button
+            type="button"
+            className="w-full border border-dashed rounded-lg p-2 text-center text-xs text-muted-foreground hover:bg-muted/30 transition-colors"
             data-testid="dateCard-emptyMealArea"
-          />
+            onClick={openModal}
+          >
+            +
+          </button>
         ) : null}
 
         {/* 枠エントリ一覧エリア */}
@@ -117,13 +131,26 @@ export default (props: DateCardProps) => {
           <React.Fragment key={`frame-${frameEntry.id}`}>
             <FrameCard
               frameEntry={frameEntry}
+              date={buildISODateString(date)}
               onDeleted={async () => {
+                await onChanged();
+              }}
+              onAddSucceeded={async () => {
                 await onChanged();
               }}
             />
           </React.Fragment>
         ))}
       </div>
+
+      <FullScreenModal title="食事登録">
+        <div data-testid="dateCard-emptyMealAreaModal">
+          <AddMeal
+            defaultDate={date}
+            onAddSucceeded={handleEmptyAreaAddSucceeded}
+          />
+        </div>
+      </FullScreenModal>
     </div>
   );
 };
