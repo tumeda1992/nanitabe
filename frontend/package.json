@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.13.9",
-    "@apollo/server": "^4.10.4",
+    "@apollo/server": "^5.5.0",
     "@hookform/resolvers": "^2.9.11",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-slot": "^1.2.4",
