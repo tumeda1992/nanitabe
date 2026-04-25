@@ -6,7 +6,7 @@
       "args": [
         "@playwright/mcp@latest",
         "--config",
-        ".claude/mcp/playwright/config.json"
+        ".claude/mcp/playwright/config.jsonc"
       ],
       "env": {}
     }
