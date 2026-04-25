@@ -1,7 +1,9 @@
 {
+  // 自動テスト通過済みの前提で画面スクショを確認する用途のため、
+  // ログイン状態を保持できるよう isolated: false + userDataDir を使用する
   "browser": {
     "browserName": "chromium",
-    "isolated": true,
+    "isolated": false,
     "userDataDir": "./frontend/inspect/visual/tmp/profile",
     "launchOptions": {
       "headless": true,
