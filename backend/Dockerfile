@@ -1,9 +1,9 @@
-FROM ruby:3.2.2
+FROM ruby:3.3.8
 
 CMD [ "/bin/bash" ]
 ENV LANG C.UTF-8
 
-RUN gem install bundler -v 2.1.2
+RUN gem install bundler -v 2.4.10
 
 # TODO: ライブラリインストールでなくていいないやつを消す
 
