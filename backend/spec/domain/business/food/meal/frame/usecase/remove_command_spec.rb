@@ -50,6 +50,29 @@ RSpec.describe Business::Food::Meal::Frame::Usecase::RemoveCommand do
       end
     end
 
+    context "when meal frame is referenced by a meal frame pattern entry" do
+      let!(:pattern) { MealFramePattern.create!(user: user_record, name: "参照中パターン") }
+      let!(:pattern_entry) do
+        MealFramePatternEntry.create!(
+          meal_frame_pattern: pattern,
+          meal_frame: meal_frame,
+          day_offset: 1,
+          meal_type: 1,
+        )
+      end
+
+      it "raises error and does not delete meal frame" do
+        expect {
+          described_class.call(
+            user_id: user_record.id,
+            meal_frame_id: meal_frame.id,
+          )
+        }.to raise_error(/パターンのエントリに使用されているため削除できません/)
+
+        expect(MealFrame.find_by(id: meal_frame.id)).to be_present
+      end
+    end
+
     context "validations" do
       context "when meal_frame_id is missing" do
         it "raises validation error" do
