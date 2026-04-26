@@ -9,6 +9,8 @@ import {
   DishEffortLevelsDocument,
   ExistingDishesForRegisteringWithMealDocument,
   DishSourcesDocument,
+  MealFramesDocument,
+  MealFramePatternsDocument,
 } from '../../../lib/graphql/generated/graphql';
 
 const buildMeal = (overrides = {}) => ({
@@ -140,6 +142,8 @@ describe('<DateCard>', () => {
         existingDishesForRegisteringWithMeal: [],
       });
       registerQueryHandler(DishSourcesDocument, { dishSources: [] });
+      registerQueryHandler(MealFramesDocument, { mealFrames: [] });
+      registerQueryHandler(MealFramePatternsDocument, { mealFramePatterns: [] });
 
       renderWithApollo(
         <DateCard {...baseProps} meals={[]} isDisplayCalendarMode={true} />,
@@ -148,6 +152,26 @@ describe('<DateCard>', () => {
       await userEvent.click(screen.getByTestId('dateCard-emptyMealArea'));
 
       expect(screen.getByTestId('dateCard-emptyMealAreaModal')).toBeInTheDocument();
+    });
+
+    it('空エリアをクリックすると3タブ（食事/枠/枠パターン適用）モーダルが開くこと', async () => {
+      registerQueryHandler(DishEffortLevelsDocument, { dishEffortLevels: [] });
+      registerQueryHandler(ExistingDishesForRegisteringWithMealDocument, {
+        existingDishesForRegisteringWithMeal: [],
+      });
+      registerQueryHandler(DishSourcesDocument, { dishSources: [] });
+      registerQueryHandler(MealFramesDocument, { mealFrames: [] });
+      registerQueryHandler(MealFramePatternsDocument, { mealFramePatterns: [] });
+
+      renderWithApollo(
+        <DateCard {...baseProps} meals={[]} isDisplayCalendarMode={true} />,
+      );
+
+      await userEvent.click(screen.getByTestId('dateCard-emptyMealArea'));
+
+      expect(screen.getByTestId('addTypeMeal')).toBeInTheDocument();
+      expect(screen.getByTestId('addTypeFrame')).toBeInTheDocument();
+      expect(screen.getByTestId('addTypePattern')).toBeInTheDocument();
     });
 
     it('日付ヘッダーをクリックすると startSwappingMealsMode が該当 date を引数に呼ばれること', async () => {

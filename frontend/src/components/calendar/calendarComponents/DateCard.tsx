@@ -4,9 +4,9 @@ import { FrameEntryForCalender, MealForCalender } from '../../../lib/graphql/gen
 import DishCard from './DishCard';
 import FrameCard from './FrameCard';
 import AddMealIcon from './MealIcon/AddMealIcon';
+import AddMealTabs from './MealIcon/AddMealTabs';
 import { buildISODateString } from '../../../features/utils/dateUtils';
 import useFullScreenModal from '../../common/modal/useFullScreenModal';
-import { AddMeal } from '../../meal/MealForm';
 
 type DateCardProps = {
   date: Date;
@@ -131,6 +131,7 @@ export default (props: DateCardProps) => {
           <React.Fragment key={`frame-${frameEntry.id}`}>
             <FrameCard
               frameEntry={frameEntry}
+              unlinkedMeals={meals.filter((m) => !m.mealFrameEntryId)}
               date={buildISODateString(date)}
               onDeleted={async () => {
                 await onChanged();
@@ -145,8 +146,8 @@ export default (props: DateCardProps) => {
 
       <FullScreenModal title="食事登録">
         <div data-testid="dateCard-emptyMealAreaModal">
-          <AddMeal
-            defaultDate={date}
+          <AddMealTabs
+            defaultDate={buildISODateString(date)}
             onAddSucceeded={handleEmptyAreaAddSucceeded}
           />
         </div>

@@ -9,10 +9,12 @@ import {
   UtensilsCrossed,
   MoreHorizontal,
   CopyPlus,
+  Unlink,
 } from 'lucide-react';
 import { MealForCalender } from '../../../../lib/graphql/generated/graphql';
 import { MEAL_TYPE } from '../../../../features/meal/const';
 import useMeal from '../../../../features/meal/useMeal';
+import useMealFrame from '../../../../features/meal/frame/useMealFrame';
 import useFullScreenModal from '../../../common/modal/useFullScreenModal';
 import { EditMeal } from '../../../meal/MealForm';
 import EvaluateDish from '../../../dish/EvaluateDish';
@@ -154,6 +156,22 @@ const DishCard = ({
   });
 
   const { removeMeal } = useMeal();
+  const { unassignMealFromFrameEntry } = useMealFrame({ requireFetchedData: false });
+
+  const handleUnassign = async () => {
+    if (!meal.mealFrameEntryId) return;
+    const confirmed = window.confirm('枠との紐付けを解除してもよろしいですか？');
+    if (!confirmed) return;
+    setActionsOpen(false);
+    await unassignMealFromFrameEntry(
+      { frameEntryId: meal.mealFrameEntryId },
+      {
+        onCompleted: () => {
+          onChanged();
+        },
+      },
+    );
+  };
 
   const handleRemove = async () => {
     const confirmed = window.confirm('本当に削除してもよろしいですか？');
@@ -391,6 +409,13 @@ const DishCard = ({
               }}
               disabled
             />
+            {meal.mealFrameEntryId != null && (
+              <ActionBtn
+                icon={<Unlink />}
+                label="枠解除"
+                onClick={handleUnassign}
+              />
+            )}
             <ActionBtn
               icon={<Trash2 />}
               label="削除"

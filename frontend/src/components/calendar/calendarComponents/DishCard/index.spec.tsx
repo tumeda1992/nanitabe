@@ -5,7 +5,10 @@ import userEvent from '@testing-library/user-event';
 import DishCard from './index';
 import renderWithApollo from '../../../specHelper/renderWithApollo';
 import { registerMutationHandler } from '../../../../lib/graphql/specHelper/mockServer';
-import { RemoveMealDocument } from '../../../../lib/graphql/generated/graphql';
+import {
+  RemoveMealDocument,
+  UnassignMealFromFrameEntryDocument,
+} from '../../../../lib/graphql/generated/graphql';
 import { MEAL_TYPE } from '../../../../features/meal/const';
 
 const buildMeal = (overrides = {}) => ({
@@ -211,6 +214,47 @@ describe('<DishCard>', () => {
       await userEvent.click(screen.getByLabelText('その他のアクション'));
       await userEvent.click(screen.getByText('日付交換'));
       expect(startSwappingMealsMode).toHaveBeenCalled();
+    });
+
+    describe('枠解除ボタン', () => {
+      it('mealFrameEntryId がある場合は「枠解除」ボタンが表示されること', async () => {
+        const meal = buildMeal({ mealFrameEntryId: 5 });
+        renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+        await userEvent.click(screen.getByTestId(`dishCard-${meal.id}`));
+        expect(screen.getByText('枠解除')).toBeInTheDocument();
+      });
+
+      it('mealFrameEntryId がない場合は「枠解除」ボタンが表示されないこと', async () => {
+        const meal = buildMeal({ mealFrameEntryId: null });
+        renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+        await userEvent.click(screen.getByTestId(`dishCard-${meal.id}`));
+        expect(screen.queryByText('枠解除')).not.toBeInTheDocument();
+      });
+
+      it('「枠解除」クリック → confirm → unassignMealFromFrameEntry が呼ばれること', async () => {
+        const meal = buildMeal({ mealFrameEntryId: 5 });
+        renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+
+        const { getLatestMutationVariables } = registerMutationHandler(
+          UnassignMealFromFrameEntryDocument,
+          {
+            unassignMealFromFrameEntry: {
+              frameEntryId: meal.mealFrameEntryId,
+            },
+          },
+        );
+
+        window.confirm = jest.fn().mockReturnValue(true);
+
+        await userEvent.click(screen.getByTestId(`dishCard-${meal.id}`));
+        await userEvent.click(screen.getByText('枠解除'));
+
+        await waitFor(() => {
+          expect(getLatestMutationVariables()).toEqual({
+            frameEntryId: meal.mealFrameEntryId,
+          });
+        });
+      });
     });
   });
 });
