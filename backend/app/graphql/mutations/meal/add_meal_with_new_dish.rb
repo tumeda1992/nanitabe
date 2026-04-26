@@ -33,7 +33,7 @@ module Mutations::Meal
         )
 
         if frame_entry_id
-          ::Business::Food::Meal::FrameEntry::Usecase::FillWithMealCommand.call(
+          ::Business::Food::Meal::Frame::Entry::Usecase::FillWithMealCommand.call(
             user_id: context[:current_user_id],
             meal_frame_entry_id: frame_entry_id,
             meal_id: created_meal.id,

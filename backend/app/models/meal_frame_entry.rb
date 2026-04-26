@@ -8,7 +8,7 @@ class MealFrameEntry < ApplicationRecord
       record = find_by(id: meal_frame_entry_id)
       raise ActiveRecord::RecordNotFound, "MealFrameEntry with id #{meal_frame_entry_id} not found" unless record
 
-      Business::Food::Meal::FrameEntry::Root.new(
+      Business::Food::Meal::Frame::Entry::Root.new(
         id: record.id,
         user_id: record.user_id,
         meal_frame_id: record.meal_frame_id,

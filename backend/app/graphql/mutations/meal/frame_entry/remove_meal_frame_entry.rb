@@ -6,7 +6,7 @@ module Mutations::Meal::FrameEntry
 
     def resolve(id:)
       ActiveRecord::Base.transaction do
-        removed_entry_id = ::Business::Food::Meal::FrameEntry::Usecase::RemoveCommand.call(
+        removed_entry_id = ::Business::Food::Meal::Frame::Entry::Usecase::RemoveCommand.call(
           user_id: context[:current_user_id],
           meal_frame_entry_id: id,
         )

@@ -6,7 +6,7 @@ module Mutations::Meal::FrameEntry
 
     def resolve(meal_frame_entry:)
       ActiveRecord::Base.transaction do
-        created_entry = ::Business::Food::Meal::FrameEntry::Usecase::AddCommand.call(
+        created_entry = ::Business::Food::Meal::Frame::Entry::Usecase::AddCommand.call(
           user_id: context[:current_user_id],
           meal_frame_id: meal_frame_entry.meal_frame_id,
           date: meal_frame_entry.date,
