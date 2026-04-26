@@ -24,7 +24,7 @@ RSpec.describe Business::Food::Meal::FrameEntry::Usecase::FillWithMealCommand do
           meal_id: meal.id,
         )
 
-        expect(result).to be_a(Business::Food::Meal::FrameEntry::Root)
+        expect(result).to be_a(Business::Food::Meal::Frame::Entry::Root)
         expect(result.meal_id).to eq(meal.id)
       end
 

@@ -10,8 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
-  create_table "dish_effort_levels", force: :cascade do |t|
+ActiveRecord::Schema[7.2].define(version: 2026_04_25_122541) do
+  create_table "dish_effort_levels", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "meal_position", null: false
     t.integer "minutes", null: false
     t.string "label", null: false
@@ -20,7 +20,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
     t.index ["meal_position"], name: "index_dish_effort_levels_on_meal_position"
   end
 
-  create_table "dish_evaluations", id: false, force: :cascade do |t|
+  create_table "dish_evaluations", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "dish_id", null: false
     t.bigint "user_id", null: false
     t.float "score", null: false
@@ -30,7 +30,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
     t.index ["user_id"], name: "index_dish_evaluations_on_user_id"
   end
 
-  create_table "dish_source_relations", id: false, force: :cascade do |t|
+  create_table "dish_source_relations", id: false, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "dish_id", null: false
     t.bigint "dish_source_id", null: false
     t.integer "recipe_book_page"
@@ -42,7 +42,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
     t.index ["dish_source_id"], name: "index_dish_source_relations_on_dish_source_id"
   end
 
-  create_table "dish_sources", force: :cascade do |t|
+  create_table "dish_sources", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name", null: false
     t.integer "type", null: false
@@ -52,7 +52,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
     t.index ["user_id"], name: "index_dish_sources_on_user_id"
   end
 
-  create_table "dish_tags", force: :cascade do |t|
+  create_table "dish_tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "dish_id", null: false
     t.bigint "user_id", null: false
     t.string "content", null: false
@@ -65,7 +65,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
     t.index ["user_id"], name: "index_dish_tags_on_user_id"
   end
 
-  create_table "dishes", force: :cascade do |t|
+  create_table "dishes", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "name", null: false
     t.integer "meal_position", null: false
@@ -74,10 +74,11 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
     t.datetime "updated_at", null: false
     t.string "normalized_name"
     t.bigint "dish_effort_level_id"
+    t.index ["dish_effort_level_id"], name: "fk_rails_ebef5c1e45"
     t.index ["user_id"], name: "index_dishes_on_user_id"
   end
 
-  create_table "login_users", force: :cascade do |t|
+  create_table "login_users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "provider", default: "email", null: false
     t.string "uid", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -106,12 +107,12 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
     t.index ["user_id"], name: "index_login_users_on_user_id"
   end
 
-  create_table "meal_frame_entries", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "meal_frame_id", null: false
+  create_table "meal_frame_entries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "meal_frame_id", null: false
     t.date "date", null: false
     t.integer "meal_type", null: false
-    t.integer "meal_id"
+    t.bigint "meal_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["meal_frame_id"], name: "index_meal_frame_entries_on_meal_frame_id"
@@ -119,15 +120,34 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
     t.index ["user_id"], name: "index_meal_frame_entries_on_user_id"
   end
 
-  create_table "meal_frames", force: :cascade do |t|
-    t.integer "user_id", null: false
+  create_table "meal_frame_pattern_entries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "meal_frame_pattern_id", null: false
+    t.bigint "meal_frame_id", null: false
+    t.integer "day_offset", null: false
+    t.integer "meal_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["meal_frame_id"], name: "index_meal_frame_pattern_entries_on_meal_frame_id"
+    t.index ["meal_frame_pattern_id"], name: "index_meal_frame_pattern_entries_on_meal_frame_pattern_id"
+  end
+
+  create_table "meal_frame_patterns", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_meal_frame_patterns_on_user_id"
+  end
+
+  create_table "meal_frames", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_meal_frames_on_user_id"
   end
 
-  create_table "meals", force: :cascade do |t|
+  create_table "meals", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.date "date", null: false
     t.integer "meal_type", null: false
@@ -139,7 +159,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
     t.index ["user_id"], name: "index_meals_on_user_id"
   end
 
-  create_table "normalize_words", force: :cascade do |t|
+  create_table "normalize_words", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "entered_source", null: false
     t.string "entered_destination", null: false
     t.string "source", null: false
@@ -149,7 +169,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
     t.index ["source"], name: "index_normalize_words_on_source"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "id_param", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -169,6 +189,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_21_100311) do
   add_foreign_key "meal_frame_entries", "meal_frames"
   add_foreign_key "meal_frame_entries", "meals"
   add_foreign_key "meal_frame_entries", "users"
+  add_foreign_key "meal_frame_pattern_entries", "meal_frame_patterns", on_delete: :cascade
+  add_foreign_key "meal_frame_pattern_entries", "meal_frames"
+  add_foreign_key "meal_frame_patterns", "users"
   add_foreign_key "meal_frames", "users"
   add_foreign_key "meals", "dishes"
   add_foreign_key "meals", "users"

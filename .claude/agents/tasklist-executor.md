@@ -2,6 +2,7 @@
 name: tasklist-executor
 description: 指定されたtasklist.md を上から順に実行し、未完了タスクがなくなるまで実装・テスト・更新を繰り返す
 model: sonnet
+effort: medium
 tools:
   - Read
   - Grep

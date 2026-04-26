@@ -11,6 +11,10 @@ module Business::Food::Meal::Frame
         raise "枠にエントリが登録されているため削除できません。"
       end
 
+      if ::MealFramePatternEntry.exists?(meal_frame_id:)
+        raise "パターンのエントリに使用されているため削除できません。"
+      end
+
       ::MealFrame.find(meal_frame_id).destroy!
 
       meal_frame_id

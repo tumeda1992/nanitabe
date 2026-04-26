@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import useMealFrame from '../../features/mealFrame/useMealFrame';
+import useMealFrame from '../../features/meal/frame/useMealFrame';
 
 const MealFrameList = () => {
   const { mealFrames, deleteMealFrame, refetchMealFrames } = useMealFrame();

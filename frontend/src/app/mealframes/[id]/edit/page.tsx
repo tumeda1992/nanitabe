@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import useMealFrame from '../../../../features/mealFrame/useMealFrame';
+import useMealFrame from '../../../../features/meal/frame/useMealFrame';
 
 const EditMealFramePage = () => {
   const router = useRouter();

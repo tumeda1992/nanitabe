@@ -3,7 +3,7 @@ import { parseISO } from 'date-fns';
 import { Trash2 } from 'lucide-react';
 import { FrameEntryForCalender } from '../../../../lib/graphql/generated/graphql';
 import { MEAL_TYPE } from '../../../../features/meal/const';
-import useMealFrame from '../../../../features/mealFrame/useMealFrame';
+import useMealFrame from '../../../../features/meal/frame/useMealFrame';
 import useFullScreenModal from '../../../common/modal/useFullScreenModal';
 import { AddMeal } from '../../../meal/MealForm';
 

@@ -15,3 +15,19 @@
 - 「やはり分けよう」となったとき、使用箇所を探して剥がす作業が発生する
 
 コードの重複はコストだが、誤った抽出はより高いコストになる。
+
+## features ディレクトリ構造
+
+`features/` の配置はバックエンドのドメインモジュール階層を反映する。
+
+| バックエンド | フロントエンド |
+|---|---|
+| `Meal::*` | `features/meal/` |
+| `Meal::Frame::*` | `features/meal/frame/` |
+| `Meal::Frame::Pattern::*` | `features/meal/frame/pattern/` |
+
+やってしまいがちな失敗: 新しいサブドメイン機能を `features/` 直下にフラットに置く
+（例: `features/mealFramePattern/` をトップに置く）
+→ バックエンドの階層との対応が崩れ、次の機能追加時に置き場所の判断が困難になる
+
+各 features ディレクトリの hook facade パターン（`useDish.ts` など）については `features/dish/README.md` を参照すること。

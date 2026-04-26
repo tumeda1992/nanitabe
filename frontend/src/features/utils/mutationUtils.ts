@@ -10,11 +10,12 @@ export type ExecMutation<Input, Output> = (
 
 type BuildMutationOption<Input> = {
   normalizeInput?: (input: Input) => Input;
+  refetchQueries?: any[];
 };
 
 export const buildMutationExecutor = <Input = any, Output = any>(
   codegenMutationHook: () => any,
-  { normalizeInput }: BuildMutationOption<Input> = {},
+  { normalizeInput, refetchQueries }: BuildMutationOption<Input> = {},
 ) => {
   const [mutation, { mutationLoading, mutationError }] = codegenMutationHook();
   const execMutation = async (
@@ -24,6 +25,7 @@ export const buildMutationExecutor = <Input = any, Output = any>(
     const normalizedInput = normalizeInput ? normalizeInput(input) : input;
     return mutation({
       variables: normalizedInput,
+      refetchQueries,
       onCompleted: (data: Output) => {
         if (onCompleted) onCompleted(data);
       },
