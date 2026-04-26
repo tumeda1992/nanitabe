@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import useMealFramePattern from '../../features/meal/frame/pattern/useMealFramePattern';
-import type { DeleteMealFramePatternFunc } from '../../features/meal/frame/pattern/useMealFramePattern';
+import useMealFramePattern from '../../../../features/meal/frame/pattern/useMealFramePattern';
+import type { DeleteMealFramePatternFunc } from '../../../../features/meal/frame/pattern/useMealFramePattern';
 
 type Props = {
   onEditPattern: (patternId: number) => void;

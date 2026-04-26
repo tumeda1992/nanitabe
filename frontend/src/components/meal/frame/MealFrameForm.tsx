@@ -4,8 +4,8 @@ import React from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
-import useMealFrame from '../../features/meal/frame/useMealFrame';
-import type { AddMealFrameInput } from '../../features/meal/frame/useMealFrame';
+import useMealFrame from '../../../features/meal/frame/useMealFrame';
+import type { AddMealFrameInput } from '../../../features/meal/frame/useMealFrame';
 
 type Props = {
   onSubmitSucceeded: () => void;

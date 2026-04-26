@@ -1,11 +1,11 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { screen } from '@testing-library/react';
-import { registerMutationHandler } from '../../lib/graphql/specHelper/mockServer';
-import { AddMealFrameDocument } from '../../lib/graphql/generated/graphql';
-import renderWithApollo from '../specHelper/renderWithApollo';
+import { registerMutationHandler } from '../../../lib/graphql/specHelper/mockServer';
+import { AddMealFrameDocument } from '../../../lib/graphql/generated/graphql';
+import renderWithApollo from '../../specHelper/renderWithApollo';
 import MealFrameForm from './MealFrameForm';
-import { userClick, userType } from '../specHelper/userEvents';
+import { userClick, userType } from '../../specHelper/userEvents';
 
 describe('<MealFrameForm>', () => {
   describe('バリデーション表示', () => {

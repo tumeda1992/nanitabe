@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import MealFramePatternList from '../../components/mealFramePattern/MealFramePatternList';
+import MealFramePatternList from '../../components/meal/frame/pattern/MealFramePatternList';
 import useMealFramePattern from '../../features/meal/frame/pattern/useMealFramePattern';
 
 const MealFramePatternsPage = () => {

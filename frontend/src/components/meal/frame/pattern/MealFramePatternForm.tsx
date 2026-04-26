@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import useMealFramePattern from '../../features/meal/frame/pattern/useMealFramePattern';
-import useMealFrame from '../../features/meal/frame/useMealFrame';
+import useMealFramePattern from '../../../../features/meal/frame/pattern/useMealFramePattern';
+import useMealFrame from '../../../../features/meal/frame/useMealFrame';
 
 type EntryFormData = {
   dayOffset: number;

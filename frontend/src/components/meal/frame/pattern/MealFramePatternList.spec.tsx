@@ -1,9 +1,9 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { screen } from '@testing-library/react';
-import { registerQueryHandler } from '../../lib/graphql/specHelper/mockServer';
-import { MealFramePatternsDocument } from '../../lib/graphql/generated/graphql';
-import renderWithApollo from '../specHelper/renderWithApollo';
+import { registerQueryHandler } from '../../../../lib/graphql/specHelper/mockServer';
+import { MealFramePatternsDocument } from '../../../../lib/graphql/generated/graphql';
+import renderWithApollo from '../../../specHelper/renderWithApollo';
 import MealFramePatternList from './MealFramePatternList';
 
 const mockPatterns = [

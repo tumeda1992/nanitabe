@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import useMealFrame from '../../features/meal/frame/useMealFrame';
-import type { UpdateMealFramePatternFunc } from '../../features/meal/frame/pattern/useMealFramePattern';
+import useMealFrame from '../../../../features/meal/frame/useMealFrame';
+import type { UpdateMealFramePatternFunc } from '../../../../features/meal/frame/pattern/useMealFramePattern';
 
 type PatternEntry = {
   id?: number;

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import MealFramePatternForm from '../../../components/mealFramePattern/MealFramePatternForm';
+import MealFramePatternForm from '../../../components/meal/frame/pattern/MealFramePatternForm';
 
 const NewMealFramePatternPage = () => {
   const router = useRouter();
