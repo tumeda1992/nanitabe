@@ -20,6 +20,10 @@ module Business::Food::Meal::Frame::Entry
       self.meal_id = meal_id
     end
 
+    def unassign_meal
+      self.meal_id = nil
+    end
+
     def set_id(new_id)
       raise "新規作成時以外idを変更できません" if id.present?
 
