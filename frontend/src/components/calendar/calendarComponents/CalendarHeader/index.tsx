@@ -154,6 +154,9 @@ const CalendarHeader = ({
                 <DropdownMenuItem asChild>
                   <a href="/mealframes">食事枠管理</a>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a href="/mealframepatterns">食事枠パターン管理</a>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

@@ -4,8 +4,9 @@ import style from './AddMealIcon.module.scss';
 import useFullScreenModal from '../../../common/modal/useFullScreenModal';
 import { AddMeal } from '../../../meal/MealForm';
 import AddMealFrame from './AddMealFrame';
+import AddMealPattern from './AddMealPattern';
 
-type AddType = 'meal' | 'frame';
+type AddType = 'meal' | 'frame' | 'pattern';
 
 type Props = {
   dateForAdd: Date;
@@ -51,15 +52,30 @@ export default (props: Props) => {
           >
             枠
           </button>
+          <button
+            type="button"
+            data-testid="addTypePattern"
+            onClick={() => setAddType('pattern')}
+            className={addType === 'pattern' ? 'font-bold underline' : ''}
+          >
+            枠パターン適用
+          </button>
         </div>
 
-        {addType === 'meal' ? (
+        {addType === 'meal' && (
           <AddMeal
             defaultDate={dateForAdd}
             onAddSucceeded={handleAddSucceeded}
           />
-        ) : (
+        )}
+        {addType === 'frame' && (
           <AddMealFrame
+            dateForAdd={dateForAdd}
+            onAddSucceeded={handleAddSucceeded}
+          />
+        )}
+        {addType === 'pattern' && (
+          <AddMealPattern
             dateForAdd={dateForAdd}
             onAddSucceeded={handleAddSucceeded}
           />
