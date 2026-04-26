@@ -1,11 +1,11 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { screen } from '@testing-library/react';
-import { registerMutationHandler, registerQueryHandler } from '../../lib/graphql/specHelper/mockServer';
-import { AddMealFramePatternDocument, MealFramesDocument } from '../../lib/graphql/generated/graphql';
-import renderWithApollo from '../specHelper/renderWithApollo';
+import { registerMutationHandler, registerQueryHandler } from '../../../../lib/graphql/specHelper/mockServer';
+import { AddMealFramePatternDocument, MealFramesDocument } from '../../../../lib/graphql/generated/graphql';
+import renderWithApollo from '../../../specHelper/renderWithApollo';
 import MealFramePatternForm from './MealFramePatternForm';
-import { userClick, userType } from '../specHelper/userEvents';
+import { userClick, userType } from '../../../specHelper/userEvents';
 
 const mockMealFrames = [
   { __typename: 'MealFrameForList' as const, id: 1, name: '朝枠' },

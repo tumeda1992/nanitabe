@@ -34,6 +34,19 @@ meal/frame/
 - MUST: 枠マスタは `meal_frames` で一元管理し、同じ枠を複数日に使い回せる設計を維持する（毎回新規作成しない）
 - パターンは「道具」。適用によって生成された `meal_frame_entries` はパターンと独立して存在する（パターン削除で消えない）
 
+## カレンダークエリの返却構造（`mealsForCalender`）
+
+`mealsForCalender` は2種類のデータを返す。この構造はカレンダーコンポーネントの設計前提になっている。
+
+| フィールド | 内容 | 補足 |
+|---|---|---|
+| `meals` | 食事データ（LEFT JOIN で `mealFrameEntryId` を付与） | `mealFrameEntryId` が non-null なら枠割り当て済み |
+| `frameEntries` | **`meal_id IS NULL` の枠エントリのみ** | 割り当て済み枠はここに含まれない |
+
+- MUST: `frameEntries` から割り当て済み枠エントリを取ることはできない（設計上の契約）
+- 「同日の未割り当て食事リスト」を作るには `meals.filter(m => !m.mealFrameEntryId)` でクライアント側フィルタが正しいアプローチ（新クエリは不要）
+- やってしまいがちな失敗: `frameEntries` に全枠エントリが含まれると思って実装する → 割り当て済み枠が見えなくなる
+
 ## 変更ガイド
 
 ### Meal::Root に属性を追加する

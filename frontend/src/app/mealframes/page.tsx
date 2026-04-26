@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '../../components/ui/button';
 import { ChevronLeft, Plus } from 'lucide-react';
-import MealFrameList from '../../components/mealFrame/MealFrameList';
+import MealFrameList from '../../components/meal/frame/MealFrameList';
 
 const MealFramesPage = () => {
   return (
