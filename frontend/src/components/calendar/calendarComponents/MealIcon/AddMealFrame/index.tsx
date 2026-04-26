@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
-import useMealFrame from '../../../../../features/mealFrame/useMealFrame';
+import useMealFrame from '../../../../../features/meal/frame/useMealFrame';
 import { MEAL_TYPE, MEAL_TYPE_LABELS, MEAL_TYPES } from '../../../../../features/meal/const';
 import { AddMealFrameMutation } from '../../../../../lib/graphql/generated/graphql';
 
