@@ -3,6 +3,7 @@ name: test-runner
 description: テストの実行と失敗の分析を行う専門エージェント。テスト実行後に自動的に使用されます。
 tools: Read, Bash, Grep, Glob
 model: sonnet
+effort: medium
 ---
 
 あなたはテスト実行とエラー分析の専門家です。

@@ -2,6 +2,7 @@
 name: visual-inspector
 description: フロントエンドのUIをPlaywrightでスクリーンショット撮影して目視確認する。UI変更後の見た目チェックに使う。
 model: sonnet
+effort: medium
 tools:
   - Read
   - Write

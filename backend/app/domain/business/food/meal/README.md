@@ -10,14 +10,29 @@
 - 理由: `Meal` は「ある日に、ある料理を食べた記録」として定義されている。料理が未決定の「枠」は `MealFrameEntry` という別モデルで表現する
 - 破ると何が起きるか: `DishCard` は `meal.dish` が常に存在することを前提に書かれており、nullable にすると既存フロントエンドコード全体に null ハンドリングが波及する
 
-### MealFrame（枠マスタ）と MealFrameEntry（カレンダーエントリ）の役割分担
+### Meal::Frame::* モジュール階層（枠・枠エントリ・パターン）
 
-| テーブル | 役割 |
-|---|---|
-| `meal_frames` | 枠のマスタ（例:「パスタ」「魚料理」）。ユーザー別に管理・再利用可能 |
-| `meal_frame_entries` | カレンダー上の「その日の枠」。`meal_frame_id` で枠を参照し、`meal_id` に料理が割り当てられたら確定済みになる |
+枠に関する概念はすべて `Meal::Frame::` 傘下に集約されている。
+
+| モジュール | テーブル | 役割 |
+|---|---|---|
+| `Meal::Frame::Root` | `meal_frames` | 枠マスタ（「パスタ」「魚料理」など）。ユーザー別・再利用可能 |
+| `Meal::Frame::Entry::Root` | `meal_frame_entries` | カレンダー上の枠エントリ。`meal_frame_id` で枠を参照し、`meal_id` に料理が割り当てられたら確定済み |
+| `Meal::Frame::Pattern::Root` | `meal_frame_patterns` | 複数日分の枠配置パターン。ユーザーが登録・管理する |
+| `Meal::Frame::Pattern::Entry::Root` | `meal_frame_pattern_entries` | パターン内の1日1枠定義（`day_offset` + `meal_type` + `meal_frame_id`） |
+
+ディレクトリ対応:
+```
+meal/frame/
+  root.rb        ← Meal::Frame::Root
+  entry/         ← Meal::Frame::Entry::Root
+  pattern/
+    root.rb      ← Meal::Frame::Pattern::Root
+    entry/       ← Meal::Frame::Pattern::Entry::Root
+```
 
 - MUST: 枠マスタは `meal_frames` で一元管理し、同じ枠を複数日に使い回せる設計を維持する（毎回新規作成しない）
+- パターンは「道具」。適用によって生成された `meal_frame_entries` はパターンと独立して存在する（パターン削除で消えない）
 
 ## 変更ガイド
 
