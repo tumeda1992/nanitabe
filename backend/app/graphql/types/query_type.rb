@@ -27,5 +27,7 @@ module Types
     field :dish_effort_levels, resolver: Queries::Dish::EffortLevel::DishEffortLevels
 
     field :meal_frames, resolver: Queries::Meal::Frame::MealFrames
+
+    field :meal_frame_patterns, resolver: Queries::Meal::Frame::Pattern::MealFramePatterns
   end
 end

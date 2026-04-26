@@ -32,5 +32,10 @@ module Types
 
     field :add_meal_frame_entry, mutation: ::Mutations::Meal::FrameEntry::AddMealFrameEntry
     field :remove_meal_frame_entry, mutation: ::Mutations::Meal::FrameEntry::RemoveMealFrameEntry
+
+    field :add_meal_frame_pattern, mutation: ::Mutations::Meal::Frame::Pattern::AddMealFramePattern
+    field :update_meal_frame_pattern, mutation: ::Mutations::Meal::Frame::Pattern::UpdateMealFramePattern
+    field :delete_meal_frame_pattern, mutation: ::Mutations::Meal::Frame::Pattern::DeleteMealFramePattern
+    field :apply_meal_frame_pattern, mutation: ::Mutations::Meal::Frame::Pattern::ApplyMealFramePattern
   end
 end
