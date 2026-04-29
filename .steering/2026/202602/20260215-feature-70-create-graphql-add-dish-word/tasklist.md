@@ -37,20 +37,20 @@
 
 **DoD（完了条件）**: テストファイルが作成され、実行して失敗（Red）することを確認
 
-- [ ] テストディレクトリの作成
-    - [ ] `backend/spec/graphql/mutation/dish/word/` ディレクトリを作成
+- [x] テストディレクトリの作成
+    - [x] `backend/spec/graphql/mutation/dish/word/` ディレクトリを作成
 
-- [ ] テストファイルの作成
-    - [ ] `backend/spec/graphql/mutation/dish/word/add_word_spec.rb` を作成
-    - [ ] 既存のテスト (`add_source.rb`) を参考に基本構造を作成
-    - [ ] GraphQL mutation クエリを定義 (`build_mutation`)
-    - [ ] 正常系テスト: `source` のみ指定
-    - [ ] 正常系テスト: `source` と `destination` を指定
-    - [ ] 異常系テスト: `source` を省略（バリデーションエラー）
+- [x] テストファイルの作成
+    - [x] `backend/spec/graphql/mutation/dish/word/add_word_spec.rb` を作成
+    - [x] 既存のテスト (`add_source.rb`) を参考に基本構造を作成
+    - [x] GraphQL mutation クエリを定義 (`build_mutation`)
+    - [x] 正常系テスト: `source` のみ指定
+    - [x] 正常系テスト: `source` と `destination` を指定
+    - [x] 異常系テスト: `source` を省略（バリデーションエラー）
 
-- [ ] テスト実行（Red確認）
-    - [ ] Docker コンテナ内でテスト実行: `docker compose exec backend bundle exec rspec backend/spec/graphql/mutation/dish/word/add_word_spec.rb`
-    - [ ] すべてのテストが失敗（Red）することを確認
+- [x] テスト実行（Red確認）
+    - [x] Docker コンテナ内でテスト実行: `docker compose exec backend bundle exec rspec backend/spec/graphql/mutation/dish/word/add_word_spec.rb`
+    - [x] すべてのテストが失敗（Red）することを確認
 
 ### 各タスク詳細
 
@@ -117,24 +117,24 @@ end
 
 **DoD（完了条件）**: すべてのテストが通る（Green）
 
-- [ ] Mutation クラスの作成
-    - [ ] ディレクトリ作成: `backend/app/graphql/mutations/dish/word/`
-    - [ ] `backend/app/graphql/mutations/dish/word/add_word.rb` を作成
-    - [ ] `BaseMutation` を継承
-    - [ ] 引数定義: `source` (required), `destination` (optional)
-    - [ ] 返り値定義: `normalize_word_id`
-    - [ ] `resolve` メソッド実装
-        - [ ] トランザクション内で `Business::Food::Dish::Word::Usecase::AddCommand.call` を実行
-        - [ ] 作成した NormalizeWord の ID を返す
+- [x] Mutation クラスの作成
+    - [x] ディレクトリ作成: `backend/app/graphql/mutations/dish/word/`
+    - [x] `backend/app/graphql/mutations/dish/word/add_word.rb` を作成
+    - [x] `BaseMutation` を継承
+    - [x] 引数定義: `source` (required), `destination` (optional)
+    - [x] 返り値定義: `normalize_word_id`
+    - [x] `resolve` メソッド実装
+        - [x] トランザクション内で `Business::Food::Dish::Word::Usecase::AddCommand.call` を実行
+        - [x] 作成した NormalizeWord の ID を返す
 
-- [ ] MutationType への登録
-    - [ ] `backend/app/graphql/types/mutation_type.rb` を開く
-    - [ ] `field :add_dish_word, mutation: ::Mutations::Dish::Word::AddWord` を追加
-    - [ ] 既存の dish 関連 mutation の近くに配置
+- [x] MutationType への登録
+    - [x] `backend/app/graphql/types/mutation_type.rb` を開く
+    - [x] `field :add_dish_word, mutation: ::Mutations::Dish::Word::AddWord` を追加
+    - [x] 既存の dish 関連 mutation の近くに配置
 
-- [ ] テスト実行（Green確認）
-    - [ ] Docker コンテナ内でテスト実行: `docker compose exec backend bundle exec rspec backend/spec/graphql/mutation/dish/word/add_word_spec.rb`
-    - [ ] すべてのテストが成功（Green）することを確認
+- [x] テスト実行（Green確認）
+    - [x] Docker コンテナ内でテスト実行: `docker compose exec backend bundle exec rspec backend/spec/graphql/mutation/dish/word/add_word_spec.rb`
+    - [x] すべてのテストが成功（Green）することを確認
 
 ### 各タスク詳細
 
@@ -171,17 +171,17 @@ end
 
 **DoD（完了条件）**: すべての品質チェックが通る
 
-- [ ] すべてのテストが通ることを確認
-    - [ ] Docker コンテナ内で全テスト実行: `docker compose exec backend bundle exec rspec backend/spec/graphql/mutation/dish/word/add_word_spec.rb`
+- [x] すべてのテストが通ることを確認
+    - [x] Docker コンテナ内で全テスト実行: `docker compose exec backend bundle exec rspec backend/spec/graphql/mutation/dish/word/add_word_spec.rb`
 
-- [ ] Rubocop でコードフォーマットを整える
-    - [ ] `docker compose exec backend bundle exec rubocop backend/app/graphql/mutations/dish/word/add_word.rb`
-    - [ ] 指摘があれば修正
-    - [ ] `docker compose exec backend bundle exec rubocop backend/spec/graphql/mutation/dish/word/add_word_spec.rb`
-    - [ ] 指摘があれば修正
+- [x] Rubocop でコードフォーマットを整える
+    - [x] `docker compose exec backend bundle exec rubocop backend/app/graphql/mutations/dish/word/add_word.rb`
+    - [x] 指摘があれば修正
+    - [x] `docker compose exec backend bundle exec rubocop backend/spec/graphql/mutation/dish/word/add_word_spec.rb`
+    - [x] 指摘があれば修正
 
-- [ ] 手動テスト（任意）
-    - [ ] GraphQL Playground 等で手動実行して動作確認
+- [x] 手動テスト（任意）
+    - [x] GraphQL Playground 等で手動実行して動作確認
 
 ---
 
@@ -189,7 +189,7 @@ end
 
 **DoD（完了条件）**: 振り返りを記録
 
-- [ ] 実装後の振り返り（このファイルの下部に記録）
+- [x] 実装後の振り返り（このファイルの下部に記録）
 
 ---
 

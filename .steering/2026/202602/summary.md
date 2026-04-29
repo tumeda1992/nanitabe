@@ -14,7 +14,7 @@
 **概要:** NormalizeWord の管理画面をバックエンド側（ERB）に作成する
 
 **種別:** タスク
-**ステータス:** 未完了
+**ステータス:** 完了
 
 ---
 
@@ -23,7 +23,7 @@
 **概要:** AddCommand Usecase を呼び出す GraphQL mutation（Mutations::Dish::Word::AddWord）を追加する
 
 **種別:** タスク
-**ステータス:** 未完了
+**ステータス:** 完了
 
 ---
 
