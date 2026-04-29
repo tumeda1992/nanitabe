@@ -45,3 +45,18 @@
 → バックエンドの階層との対応が崩れ、次の機能追加時に置き場所の判断が困難になる
 
 各 features ディレクトリの hook facade パターン（`useDish.ts` など）については `features/dish/README.md` を参照すること。
+
+## components ディレクトリ構造
+
+`components/` の配置も `features/` と同じ階層を反映する。
+
+| バックエンド | フロントエンド（features） | フロントエンド（components） |
+|---|---|---|
+| `Meal::*` | `features/meal/` | `components/meal/` |
+| `Meal::Frame::*` | `features/meal/frame/` | `components/meal/frame/` |
+| `Meal::Frame::Pattern::*` | `features/meal/frame/pattern/` | `components/meal/frame/pattern/` |
+
+やってしまいがちな失敗: 新しいサブドメイン機能のコンポーネントを `components/` 直下にフラットに置く
+（例: `components/mealFramePattern/` をトップに置く）
+→ `features/` との対応が崩れ、次の機能追加時に置き場所の判断が困難になる
+→ 正しい問い: 「このコンポーネントが属するバックエンドモジュールはどのレベルか？」
