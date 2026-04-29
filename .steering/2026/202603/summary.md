@@ -5,16 +5,14 @@
 **概要:** Vercel v0 で作成したデザインをカレンダー画面に適用するロードマップ
 
 **種別:** ロードマップ
-**ステータス:** 未完了
-
-**詳細:** Phase 1〜4・クリーンアップ完了。Bootstrap 削除（remove-bootstrap-migrate-tailwind）は未完了。
+**ステータス:** 完了
 
 **関連（子 steering）:**
 - Phase 1（完了）: `.steering/2026/202603/20260307-feature-201-ph1-setup-tailwind-shadcn-ui/`
 - Phase 2（完了）: `.steering/2026/202603/20260307-feature-201-ph2-redesign-calendar-app-shell/`
 - Phase 3（完了）: `.steering/2026/202603/20260308-feature-201-ph3-implement-calendar-daycolumn-card-view/`
 - Phase 4（完了）: `.steering/2026/202603/20260308-feature-201-ph4-implement-dishcard-meal-display/`
-- Bootstrap削除（未完了）: `.steering/2026/202603/20260307-feature-201-remove-bootstrap-migrate-tailwind/`
+- Bootstrap削除（完了）: `.steering/2026/202603/20260307-feature-201-remove-bootstrap-migrate-tailwind/`
 - クリーンアップ（完了）: `.steering/2026/202603/20260308-feature-201-cleanup-unused-components-and-typo/`
 
 ---
@@ -46,7 +44,7 @@
 **概要:** Bootstrap を削除して Tailwind CSS へ完全移行する
 
 **種別:** タスク
-**ステータス:** 未完了
+**ステータス:** 完了
 
 **関連:** 親ロードマップ: `.steering/2026/202603/20260307-feature-201-apply-v0-calendar-design/`
 

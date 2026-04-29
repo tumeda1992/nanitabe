@@ -123,7 +123,7 @@
     - `RUN yarn install --production=false` の後に追加済み
     - `RUN yarn build` の前に配置
 
-- [ ] `.gitignore` の `tailwind-output.css` を確認
+- [x] `.gitignore` の `tailwind-output.css` を確認
     - Lambda Dockerfile 内で生成するため、ローカルの gitignore 状態に依存しなくなることを確認
 
 - [x] `frontend_next_lambda` コンテナをローカルでビルド
