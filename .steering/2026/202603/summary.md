@@ -171,14 +171,12 @@
 **概要:** 食事の枠（MealFrame）機能 - 段階的追加のロードマップ
 
 **種別:** ロードマップ
-**ステータス:** 未完了
-
-**詳細:** Phase 1 完了。Phase 2・3 は完了。Phase 3（枠解除・既存食事割り当て・+ボタン挙動統一）は進行中。
+**ステータス:** 完了
 
 **関連（子 steering）:**
 - Phase 1（完了）: `.steering/2026/202603/20260321-feature-232-add-meal-frame-phase1/`
 - Phase 2（完了）: `.steering/2026/202604/20260425-feature-233-register-meal-frame-template/`
-- Phase 3（未完了）: `.steering/2026/202604/20260426-feature-252-meal-frame-assign-unlink/`
+- Phase 3（完了）: `.steering/2026/202604/20260426-feature-252-meal-frame-assign-unlink/`
 
 ---
 
