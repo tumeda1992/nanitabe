@@ -54,13 +54,13 @@
 
 ### タスク
 
-- [ ] ルーティング設定
-    - [ ] `config/routes.rb` に admin/food/dish/word/normalize_words リソースルート追加
-    - [ ] `docker compose exec backend bundle exec rails routes | grep normalize_words` で確認
+- [x] ルーティング設定
+    - [x] `config/routes.rb` に admin/food/dish/word/normalize_words リソースルート追加
+    - [x] `docker compose exec backend bundle exec rails routes | grep normalize_words` で確認
 
-- [ ] レイアウトに Bootstrap 5 を追加
-    - [ ] `app/views/layouts/application.html.erb` の `<head>` に Bootstrap CSS 追加
-    - [ ] `<body>` の最後に Bootstrap JS 追加
+- [x] レイアウトに Bootstrap 5 を追加
+    - [x] `app/views/layouts/application.html.erb` の `<head>` に Bootstrap CSS 追加
+    - [x] `<body>` の最後に Bootstrap JS 追加
 
 ---
 
@@ -72,29 +72,29 @@
 
 ### タスク
 
-- [ ] コントローラテスト作成（index）
-    - [ ] `spec/controllers/admin/food/dish/word/normalize_words_controller_spec.rb` 作成
-    - [ ] index アクションのテスト作成（NormalizeWord.all が呼ばれ、index テンプレートがレンダリングされること）
-    - [ ] テスト実行（Red確認）
+- [x] コントローラテスト作成（index）
+    - [x] `spec/controllers/admin/food/dish/word/normalize_words_controller_spec.rb` 作成
+    - [x] index アクションのテスト作成（NormalizeWord.all が呼ばれ、index テンプレートがレンダリングされること）
+    - [x] テスト実行（Red確認）
 
-- [ ] コントローラ実装（index）
-    - [ ] `app/controllers/admin/food/dish/word/normalize_words_controller.rb` 作成
-    - [ ] index アクション実装（`@normalize_words = NormalizeWord.all`）
-    - [ ] テスト実行（Green確認）
+- [x] コントローラ実装（index）
+    - [x] `app/controllers/admin/food/dish/word/normalize_words_controller.rb` 作成
+    - [x] index アクション実装（`@normalize_words = NormalizeWord.all`）
+    - [x] テスト実行（Green確認）
 
-- [ ] システムテスト作成（index）
-    - [ ] `spec/system/admin/food/dish/word/normalize_words_spec.rb` 作成
-    - [ ] 一覧表示のテスト作成（レコードが表示されること、「新規作成」リンクがあること）
-    - [ ] テスト実行（Red確認）
+- [x] システムテスト作成（index）
+    - [x] `spec/system/admin/food/dish/word/normalize_words_spec.rb` 作成
+    - [x] 一覧表示のテスト作成（レコードが表示されること、「新規作成」リンクがあること）
+    - [x] テスト実行（Red確認）
 
-- [ ] ビュー実装（index）
-    - [ ] `app/views/admin/food/dish/word/normalize_words/index.html.erb` 作成
-    - [ ] Bootstrap テーブルで一覧表示、「新規作成」リンク追加
-    - [ ] テスト実行（Green確認）
+- [x] ビュー実装（index）
+    - [x] `app/views/admin/food/dish/word/normalize_words/index.html.erb` 作成
+    - [x] Bootstrap テーブルで一覧表示、「新規作成」リンク追加
+    - [x] テスト実行（Green確認）
 
-- [ ] フェーズ2完了確認
-    - [ ] `docker compose exec backend bundle exec rspec spec/controllers/admin/food/dish/word/normalize_words_controller_spec.rb` → グリーン
-    - [ ] `docker compose exec backend bundle exec rspec spec/system/admin/food/dish/word/normalize_words_spec.rb` → グリーン
+- [x] フェーズ2完了確認
+    - [x] `docker compose exec backend bundle exec rspec spec/controllers/admin/food/dish/word/normalize_words_controller_spec.rb` → グリーン
+    - [x] `docker compose exec backend bundle exec rspec spec/system/admin/food/dish/word/normalize_words_spec.rb` → グリーン
 
 ---
 
@@ -107,43 +107,43 @@
 
 ### タスク
 
-- [ ] コントローラテスト作成（new）
-    - [ ] new アクションのテスト作成（new テンプレートがレンダリングされること）
-    - [ ] テスト実行（Red確認）
+- [x] コントローラテスト作成（new）
+    - [x] new アクションのテスト作成（new テンプレートがレンダリングされること）
+    - [x] テスト実行（Red確認）
 
-- [ ] コントローラ実装（new）
-    - [ ] new アクション実装（`@normalize_word = NormalizeWord.new`）
-    - [ ] テスト実行（Green確認）
+- [x] コントローラ実装（new）
+    - [x] new アクション実装（`@normalize_word = NormalizeWord.new`）
+    - [x] テスト実行（Green確認）
 
-- [ ] コントローラテスト作成（create）
-    - [ ] create アクションのテスト作成
+- [x] コントローラテスト作成（create）
+    - [x] create アクションのテスト作成
         - 正常系: AddCommand.call が呼ばれ、一覧ページにリダイレクト、フラッシュメッセージ設定
         - 異常系: InvalidAttributeError が raise された場合、new テンプレート再表示、エラーメッセージ設定
-    - [ ] テスト実行（Red確認）
+    - [x] テスト実行（Red確認）
 
-- [ ] コントローラ実装（create）
-    - [ ] create アクション実装（AddCommand呼び出し + エラーハンドリング）
-    - [ ] `normalize_word_params` メソッド実装（Strong Parameters）
-    - [ ] テスト実行（Green確認）
+- [x] コントローラ実装（create）
+    - [x] create アクション実装（AddCommand呼び出し + エラーハンドリング）
+    - [x] `normalize_word_params` メソッド実装（Strong Parameters）
+    - [x] テスト実行（Green確認）
 
-- [ ] システムテスト作成（新規作成フロー）
-    - [ ] 新規作成フローのテスト作成（「新規作成」→ 入力 → 作成 → 一覧に表示）
-    - [ ] テスト実行（Red確認）
+- [x] システムテスト作成（新規作成フロー）
+    - [x] 新規作成フローのテスト作成（「新規作成」→ 入力 → 作成 → 一覧に表示）
+    - [x] テスト実行（Red確認）
 
-- [ ] ビュー実装（new）
-    - [ ] `app/views/admin/food/dish/word/normalize_words/new.html.erb` 作成
-    - [ ] `app/views/admin/food/dish/word/normalize_words/_form.html.erb` 作成（共通フォーム partial）
-    - [ ] Bootstrap フォームで source/destination 入力フィールド、作成ボタン
-    - [ ] エラーメッセージ表示
-    - [ ] テスト実行（Green確認）
+- [x] ビュー実装（new）
+    - [x] `app/views/admin/food/dish/word/normalize_words/new.html.erb` 作成
+    - [x] `app/views/admin/food/dish/word/normalize_words/_form.html.erb` 作成（共通フォーム partial）
+    - [x] Bootstrap フォームで source/destination 入力フィールド、作成ボタン
+    - [x] エラーメッセージ表示
+    - [x] テスト実行（Green確認）
 
-- [ ] index.html.erb に「編集」「削除」リンクを追加（次フェーズの準備）
-    - [ ] 各レコードに「編集」「削除」リンク追加
-    - [ ] システムテスト実行（Green確認）
+- [x] index.html.erb に「編集」「削除」リンクを追加（次フェーズの準備）
+    - [x] 各レコードに「編集」「削除」リンク追加
+    - [x] システムテスト実行（Green確認）
 
-- [ ] フェーズ3完了確認
-    - [ ] `docker compose exec backend bundle exec rspec spec/controllers/admin/food/dish/word/normalize_words_controller_spec.rb` → グリーン
-    - [ ] `docker compose exec backend bundle exec rspec spec/system/admin/food/dish/word/normalize_words_spec.rb` → グリーン
+- [x] フェーズ3完了確認
+    - [x] `docker compose exec backend bundle exec rspec spec/controllers/admin/food/dish/word/normalize_words_controller_spec.rb` → グリーン
+    - [x] `docker compose exec backend bundle exec rspec spec/system/admin/food/dish/word/normalize_words_spec.rb` → グリーン
 
 ---
 
@@ -156,37 +156,37 @@
 
 ### タスク
 
-- [ ] コントローラテスト作成（edit）
-    - [ ] edit アクションのテスト作成（指定IDのレコードが取得され、edit テンプレートがレンダリングされること）
-    - [ ] テスト実行（Red確認）
+- [x] コントローラテスト作成（edit）
+    - [x] edit アクションのテスト作成（指定IDのレコードが取得され、edit テンプレートがレンダリングされること）
+    - [x] テスト実行（Red確認）
 
-- [ ] コントローラ実装（edit）
-    - [ ] edit アクション実装（`@normalize_word = NormalizeWord.find(params[:id])`）
-    - [ ] テスト実行（Green確認）
+- [x] コントローラ実装（edit）
+    - [x] edit アクション実装（`@normalize_word = NormalizeWord.find(params[:id])`）
+    - [x] テスト実行（Green確認）
 
-- [ ] コントローラテスト作成（update）
-    - [ ] update アクションのテスト作成
+- [x] コントローラテスト作成（update）
+    - [x] update アクションのテスト作成
         - 正常系: UpdateCommand.call が呼ばれ、一覧ページにリダイレクト、フラッシュメッセージ設定
         - 異常系: InvalidAttributeError が raise された場合、edit テンプレート再表示、エラーメッセージ設定
-    - [ ] テスト実行（Red確認）
+    - [x] テスト実行（Red確認）
 
-- [ ] コントローラ実装（update）
-    - [ ] update アクション実装（UpdateCommand呼び出し + エラーハンドリング）
-    - [ ] テスト実行（Green確認）
+- [x] コントローラ実装（update）
+    - [x] update アクション実装（UpdateCommand呼び出し + エラーハンドリング）
+    - [x] テスト実行（Green確認）
 
-- [ ] システムテスト作成（編集フロー）
-    - [ ] 編集フローのテスト作成（「編集」→ 変更 → 更新 → 一覧に反映）
-    - [ ] テスト実行（Red確認）
+- [x] システムテスト作成（編集フロー）
+    - [x] 編集フローのテスト作成（「編集」→ 変更 → 更新 → 一覧に反映）
+    - [x] テスト実行（Red確認）
 
-- [ ] ビュー実装（edit）
-    - [ ] `app/views/admin/food/dish/word/normalize_words/edit.html.erb` 作成
-    - [ ] _form.html.erb を更新（new/edit 両対応）
-    - [ ] エラーメッセージ表示
-    - [ ] テスト実行（Green確認）
+- [x] ビュー実装（edit）
+    - [x] `app/views/admin/food/dish/word/normalize_words/edit.html.erb` 作成
+    - [x] _form.html.erb を更新（new/edit 両対応）
+    - [x] エラーメッセージ表示
+    - [x] テスト実行（Green確認）
 
-- [ ] フェーズ4完了確認
-    - [ ] `docker compose exec backend bundle exec rspec spec/controllers/admin/food/dish/word/normalize_words_controller_spec.rb` → グリーン
-    - [ ] `docker compose exec backend bundle exec rspec spec/system/admin/food/dish/word/normalize_words_spec.rb` → グリーン
+- [x] フェーズ4完了確認
+    - [x] `docker compose exec backend bundle exec rspec spec/controllers/admin/food/dish/word/normalize_words_controller_spec.rb` → グリーン
+    - [x] `docker compose exec backend bundle exec rspec spec/system/admin/food/dish/word/normalize_words_spec.rb` → グリーン
 
 ---
 
@@ -198,21 +198,21 @@
 
 ### タスク
 
-- [ ] コントローラテスト作成（destroy）
-    - [ ] destroy アクションのテスト作成（RemoveCommand.call が呼ばれ、一覧ページにリダイレクト、フラッシュメッセージ設定）
-    - [ ] テスト実行（Red確認）
+- [x] コントローラテスト作成（destroy）
+    - [x] destroy アクションのテスト作成（RemoveCommand.call が呼ばれ、一覧ページにリダイレクト、フラッシュメッセージ設定）
+    - [x] テスト実行（Red確認）
 
-- [ ] コントローラ実装（destroy）
-    - [ ] destroy アクション実装（RemoveCommand呼び出し）
-    - [ ] テスト実行（Green確認）
+- [x] コントローラ実装（destroy）
+    - [x] destroy アクション実装（RemoveCommand呼び出し）
+    - [x] テスト実行（Green確認）
 
-- [ ] システムテスト作成（削除フロー）
-    - [ ] 削除フローのテスト作成（「削除」→ 確認 → 一覧から削除）
-    - [ ] テスト実行（Red確認、既にGreenなら確認のみ）
+- [x] システムテスト作成（削除フロー）
+    - [x] 削除フローのテスト作成（「削除」→ 確認 → 一覧から削除）
+    - [x] テスト実行（Red確認、既にGreenなら確認のみ）
 
-- [ ] フェーズ5完了確認
-    - [ ] `docker compose exec backend bundle exec rspec spec/controllers/admin/food/dish/word/normalize_words_controller_spec.rb` → グリーン
-    - [ ] `docker compose exec backend bundle exec rspec spec/system/admin/food/dish/word/normalize_words_spec.rb` → グリーン
+- [x] フェーズ5完了確認
+    - [x] `docker compose exec backend bundle exec rspec spec/controllers/admin/food/dish/word/normalize_words_controller_spec.rb` → グリーン
+    - [x] `docker compose exec backend bundle exec rspec spec/system/admin/food/dish/word/normalize_words_spec.rb` → グリーン
 
 ---
 
@@ -224,16 +224,16 @@
 
 ### タスク
 
-- [ ] 全テスト実行
-    - [ ] `docker compose exec backend bundle exec rspec spec/controllers/admin/food/dish/word/normalize_words_controller_spec.rb`
-    - [ ] `docker compose exec backend bundle exec rspec spec/system/admin/food/dish/word/normalize_words_spec.rb`
-    - [ ] すべてグリーン確認
+- [x] 全テスト実行
+    - [x] `docker compose exec backend bundle exec rspec spec/controllers/admin/food/dish/word/normalize_words_controller_spec.rb`
+    - [x] `docker compose exec backend bundle exec rspec spec/system/admin/food/dish/word/normalize_words_spec.rb`
+    - [x] すべてグリーン確認
 
-- [ ] Rubocop実行
-    - [ ] `docker compose exec backend bundle exec rubocop app/controllers/admin/food/dish/word/normalize_words_controller.rb`
-    - [ ] `docker compose exec backend bundle exec rubocop app/views/admin/food/dish/word/normalize_words/`
-    - [ ] エラーがあれば修正して再実行
-    - [ ] エラーゼロ確認
+- [x] Rubocop実行
+    - [x] `docker compose exec backend bundle exec rubocop app/controllers/admin/food/dish/word/normalize_words_controller.rb`
+    - [x] `docker compose exec backend bundle exec rubocop app/views/admin/food/dish/word/normalize_words/`
+    - [x] エラーがあれば修正して再実行
+    - [x] エラーゼロ確認
 
 ---
 
@@ -245,14 +245,14 @@
 
 ### タスク
 
-- [ ] doc-enricher による README 更新提案
-    - [ ] steering スキル終了時に doc-enricher が自動実行される
-    - [ ] 提案内容を確認し、必要に応じて適用
+- [x] doc-enricher による README 更新提案
+    - [x] steering スキル終了時に doc-enricher が自動実行される
+    - [x] 提案内容を確認し、必要に応じて適用
 
-- [ ] 実装後の振り返り
-    - [ ] このファイルの「実装後の振り返り」セクションに記録
-    - [ ] 計画と実績の差分を記録
-    - [ ] 新たに必要になったタスクを記録
+- [x] 実装後の振り返り
+    - [x] このファイルの「実装後の振り返り」セクションに記録
+    - [x] 計画と実績の差分を記録
+    - [x] 新たに必要になったタスクを記録
 
 ---
 
