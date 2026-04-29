@@ -24,7 +24,7 @@ effort: high
 
 ## 命名規則（固定）
 ディレクトリ名:
-- `.steering/[YYYY]/[YYYYMMDD]-[branch]-[slug]/`
+- `.steering/[YYYY]/[YYYYMM]/[YYYYMMDD]-[branch]-[slug]/`
 
 ### YYYYMMDD
 - 実行日
@@ -157,9 +157,16 @@ effort: high
 ## フロー（順序固定）
 
 ### 1) steering ディレクトリ作成
-1. `[YYYYMMDD]`, `[branch]`, `[slug]` を決める
-2. `.steering/[YYYY]/[YYYYMMDD]-[branch]-[slug]/` を作成
-3. `.claude/skills/steering/templates/design.md`を元に`design.md` を作成
+1. `[YYYYMMDD]`, `[YYYYMM]`, `[branch]`, `[slug]` を決める
+2. `.steering/[YYYY]/[YYYYMM]/` ディレクトリが存在しなければ作成する
+   - 例: `.steering/2026/202604/`
+3. `.steering/[YYYY]/[YYYYMM]/[YYYYMMDD]-[branch]-[slug]/` を作成する
+4. `.claude/skills/steering/templates/summary_entry.md` を参照して、対応する月の `summary.md` にエントリを追記する
+   - `summary.md` が存在しなければ `# [YYYY]年[MM]月 Steering サマリー` のヘッダで新規作成する
+   - タスク steering: タスクバリアントで追記。**ステータス: 未完了**
+   - ロードマップ steering: ロードマップバリアントで追記。**ステータス: 未完了**
+   - 親ロードマップがある場合は「**関連:** 親ロードマップ: ...」を記載する
+5. `.claude/skills/steering/templates/design.md` を元に `design.md` を作成する
 
 > この時点では tasklist は作らない
 
@@ -370,6 +377,11 @@ design.md の構成（順序固定）:
 - 各子 steering は独立して実施し、完了時に親の roadmap.md の対応箇所を更新する
 - **`tasklist.md` という名前にしない**（tasklist-executor が誤って拾わないよう）
 - 例: `.steering/2026/20260307-feature-201-apply-v0-calendar-design/tasklist.md`（過去実績）
+- **ロードマップ steering 作成時（MUST）**: Step 1 の summary.md 追記をロードマップバリアントで行う
+  - 「**関連（子 steering）:**」セクションは空欄（子 steering 作成時に追記）
+- **子 steering 作成時（MUST）**: 以下を行う
+  - 子 steering のエントリを対応月の summary.md にタスクバリアントで追加する（**ステータス: 未完了**、**関連:** に親ロードマップパスを記載）
+  - 親ロードマップの summary.md エントリ内「**関連（子 steering）:**」セクションに子 steering のパスを追記する
 
 #### パターンB: 調査結果によって方針が変わる場合（investigation + tasklist）
 - 調査しないと実装方針が決まらない場合
