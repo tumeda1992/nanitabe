@@ -1,0 +1,15 @@
+{
+  "name": "nanitabe-plugins",
+  "interface": { "displayName": "Nanitabe" },
+  "plugins": [
+    {
+      "name": "tumeda-dev",
+      "source": {
+        "source": "local",
+        "path": "./.agents/plugins/local_plugin_sym_links/ai_agent_dev_skill_plugin/"
+      },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Productivity"
+    }
+  ]
+}
