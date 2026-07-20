@@ -1,0 +1,11 @@
+prefix_rule(
+    pattern = ["git", "status"],
+    decision = "allow",
+    justification = "状態確認は常に許可する",
+)
+
+prefix_rule(
+    pattern = ["npm", "test"],
+    decision = "allow",
+    justification = "テスト実行は常に許可する",
+)

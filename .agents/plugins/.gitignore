@@ -1,0 +1,2 @@
+local_plugin_sym_links/*
+!local_plugin_sym_links/.gitignore

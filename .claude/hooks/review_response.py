@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """
-Stop / PreToolUse(Edit) hook: CLAUDE.md の原則に照らしてレビューする。
+Stop / PreToolUse(Edit) hook: AGENTS.md の原則に照らしてレビューする。
 違反が見つかった場合は non-zero で終了し、Claude に再考を促す。
 
 ---
 
 ## このスクリプトの役割
 
-CLAUDE.md には「ファイルの変更・作成・削除を行う前に、修正方針をユーザーと合意すること」が
+AGENTS.md には「ファイルの変更・作成・削除を行う前に、修正方針をユーザーと合意すること」が
 明記されている。しかしメインで動く Claude がその原則を自力では守れないため、
 それを機械的に阻止する番人として作成した。
 
-主な対象ファイルは CLAUDE.md と .claude/skills/ 配下の SKILL.md・テンプレート群と 各ディレクトリのREADME.md。
+主な対象ファイルは AGENTS.md、repository固有context、各ディレクトリのREADME.md。
 プロジェクトのふるまいルールそのものを記述したファイルであり、
 無断変更されると「ルールが書き換わったことにユーザーが気づかない」という最悪の状態になる。
 
@@ -24,9 +24,9 @@ Claude の会話の勢いに引きずられず、外側から会話全体を監�
 ## 変遷
 
 ### 2026/3/15 初版作成
-What: CLAUDE.md の「修正前の方針合意」原則を機械的に強制する Hook を実装した。
-Why:  CLAUDE.md に明記されているにもかかわらず、Claude が .claude/skills/steering/SKILL.md
-      や design.md テンプレート等を無断変更し続けた。CLAUDE.md への記述だけでは自律的に
+What: AGENTS.md の「修正前の方針合意」原則を機械的に強制する Hook を実装した。
+Why:  AGENTS.md に明記されているにもかかわらず、Claude が task workflow
+      や design template等を無断変更し続けた。AGENTS.md への記述だけでは自律的に
       守ることができないと判断し、Hook による外部強制が必要になった。
 How:  PreToolUse(Edit) で発火し LLM がレビュー。Stop でも発火してレスポンス全体をレビュー。
 
@@ -60,7 +60,7 @@ Why:  厳格チェックは「合意なき変更を防ぐ」ための機構だ�
       「内容への合意」よりも「記録の継続性」が重要。厳格チェックが記録の妨げになっていた。
 How:  is_light_check_target() で対象ファイルを判定し、
       .steering/ 配下の上記3ファイルは claude_announced_file チェックのみで通過させる。
-      CLAUDE.md / .claude/skills/** 等は引き続きフル LLM レビューを維持する。
+      AGENTS.md / .agents/skills/** 等は引き続きフル LLM レビューを維持する。
 """
 
 import json
@@ -69,14 +69,14 @@ import subprocess
 import os
 
 
-CLAUDE_MD_PATH = os.path.join(
-    os.path.dirname(__file__), '..', '..', 'CLAUDE.md'
+AGENTS_MD_PATH = os.path.join(
+    os.path.dirname(__file__), '..', '..', 'AGENTS.md'
 )
 
 STOP_REVIEW_PROMPT = """あなたは Claude Code の回答品質レビュアーです。
 以下の「行動原則」に照らして、「レビュー対象の回答」を評価してください。
 
-## 行動原則（CLAUDE.md より）
+## 行動原則（AGENTS.md より）
 
 {claude_md}
 
@@ -103,7 +103,7 @@ Claude の会話の勢いに引きずられず、会話全体を外側から監�
 
 以下の「行動原則」と「直近の会話履歴」に照らして、「実行しようとしている編集」が適切かを評価してください。
 
-## 行動原則（CLAUDE.md より）
+## 行動原則（AGENTS.md より）
 
 {claude_md}
 
@@ -263,7 +263,7 @@ def handle_stop(data: dict) -> None:
         sys.exit(0)
 
     try:
-        with open(CLAUDE_MD_PATH, encoding='utf-8') as f:
+        with open(AGENTS_MD_PATH, encoding='utf-8') as f:
             claude_md = f.read()
     except Exception:
         sys.exit(0)
@@ -278,7 +278,7 @@ def handle_stop(data: dict) -> None:
         sys.exit(0)
 
     print(
-        f"[CLAUDE.md レビュー] 以下の原則違反が検出されました。回答を見直してください:\n\n{review_output}",
+        f"[AGENTS.md レビュー] 以下の原則違反が検出されました。回答を見直してください:\n\n{review_output}",
         file=sys.stderr,
     )
     sys.exit(1)
@@ -310,7 +310,7 @@ def handle_edit(data: dict) -> None:
         sys.exit(0)
 
     try:
-        with open(CLAUDE_MD_PATH, encoding='utf-8') as f:
+        with open(AGENTS_MD_PATH, encoding='utf-8') as f:
             claude_md = f.read()
     except Exception:
         sys.exit(0)
@@ -326,7 +326,7 @@ def handle_edit(data: dict) -> None:
         sys.exit(0)
 
     print(
-        f"[CLAUDE.md レビュー / Edit] 以下の原則違反が検出されました。編集前に確認してください:\n\n{review_output}",
+        f"[AGENTS.md レビュー / Edit] 以下の原則違反が検出されました。編集前に確認してください:\n\n{review_output}",
         file=sys.stderr,
     )
     sys.exit(1)

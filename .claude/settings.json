@@ -3,9 +3,9 @@
     "allow": [
       "Edit(/frontend/**)",
       "Edit(/backend/**)",
-      "Skill(steering)",
+      "Skill(tumeda-dev:steering)",
       "Edit(/.steering/**)",
-      "Skill(doc-enricher)",
+      "Skill(tumeda-dev:doc-enricher)",
       "READ(/tmp/**)",
       "Edit(/tmp/**)",
       "Edit(/frontend/inspect/visual/tmp/**)",
@@ -19,6 +19,26 @@
     ]
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/think_through_session_start.sh"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/think_through_user_prompt.sh"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "hooks": [
