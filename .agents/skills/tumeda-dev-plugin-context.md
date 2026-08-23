@@ -22,7 +22,11 @@
 
 ### GitHub
 
-- `origin` は GitHub の `setsumaru1992/nanitabe` を指す。
+- `origin` は GitHub の `tumeda1992/nanitabe` を指す。
+
+### Branch / issue 契約
+
+- `feature-<issue番号>` branch は、同じ番号の GitHub Issue に対応する。
 
 ## visual-inspector
 
