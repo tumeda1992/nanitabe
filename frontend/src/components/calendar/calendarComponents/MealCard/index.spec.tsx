@@ -280,6 +280,39 @@ describe('<MealCard>', () => {
         expect(screen.queryByText('名前コピー')).not.toBeInTheDocument();
       });
 
+      it('親の無関係な再render後も選択スコアが保持されること', async () => {
+        const user = userEvent.setup();
+        const meal = buildMeal();
+
+        const Parent = () => {
+          const [tick, setTick] = React.useState(0);
+          return (
+            <div>
+              <button
+                type="button"
+                data-testid="forceRerender"
+                onClick={() => setTick(tick + 1)}
+              >
+                {`rerender-${tick}`}
+              </button>
+              <MealCard {...baseProps} meal={meal} />
+            </div>
+          );
+        };
+
+        renderWithApollo(<Parent />);
+
+        await user.click(screen.getByLabelText('評価'));
+        const targets = document.querySelectorAll(
+          '.star-floating-half-click-target',
+        );
+        await user.click(targets[7] as Element);
+        expect(document.querySelectorAll('i.fa-star.fas').length).toBe(4);
+
+        await user.click(screen.getByTestId('forceRerender'));
+
+        expect(document.querySelectorAll('i.fa-star.fas').length).toBe(4);
+      });
     });
 
   });
