@@ -1,5 +1,0 @@
-# local checkoutを参照する場合のmarketplace.jsonのpath:
-# ./.agents/plugins/local_plugin_sym_links/ai_agent_dev_skill_plugin/
-
-**/*
-!.gitignore

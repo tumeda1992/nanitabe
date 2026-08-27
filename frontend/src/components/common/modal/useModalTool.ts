@@ -5,31 +5,38 @@ const useModalVisiblity = (initialVisibility, onClose) => {
     initialVisibility || false,
   );
 
-  const openModal = () => {
-    setModalVisible(true);
-  };
-  const closeModal = () => {
-    setModalVisible(false);
-    if (onClose) onClose();
-  };
-  const toggleModal = () => {
-    setModalVisible((prevState) => !prevState);
-  };
+  const onCloseRef = React.useRef(onClose);
+  // render中のref書き込みは禁止されているため、commit後のeffectで最新値へ更新する。
+  // closeModalはevent handlerからのみ呼ばれるため、1render遅れの問題は起きない。
+  React.useEffect(() => {
+    onCloseRef.current = onClose;
+  });
 
-  const openModalOnClick = (e) => {
+  const openModal = React.useCallback(() => {
+    setModalVisible(true);
+  }, []);
+  const closeModal = React.useCallback(() => {
+    setModalVisible(false);
+    if (onCloseRef.current) onCloseRef.current();
+  }, []);
+  const toggleModal = React.useCallback(() => {
+    setModalVisible((prevState) => !prevState);
+  }, []);
+
+  const openModalOnClick = React.useCallback((e) => {
     e.preventDefault();
     openModal();
-  };
+  }, [openModal]);
 
-  const closeModalOnClick = (e) => {
+  const closeModalOnClick = React.useCallback((e) => {
     e.preventDefault();
     closeModal();
-  };
+  }, [closeModal]);
 
-  const toggleModalOnClick = (e) => {
+  const toggleModalOnClick = React.useCallback((e) => {
     e.preventDefault();
     toggleModal();
-  };
+  }, [toggleModal]);
 
   return {
     modalVisible,

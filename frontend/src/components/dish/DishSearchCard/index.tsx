@@ -1,6 +1,6 @@
 import React from 'react';
 import { CalendarDays, ChefHat } from 'lucide-react';
-import CategoryIcon from '../../calendar/calendarComponents/DishCard/CategoryIcon';
+import CategoryIcon from '../../calendar/calendarComponents/MealCard/CategoryIcon';
 
 export type DishForSearchCard = {
   id: number;
