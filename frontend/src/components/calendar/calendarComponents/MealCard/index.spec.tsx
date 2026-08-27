@@ -256,5 +256,31 @@ describe('<MealCard>', () => {
         });
       });
     });
+
+    describe('評価モーダルの★タップ', () => {
+      it('★4右半分を1回タップすると塗られた星が4になること', async () => {
+        const meal = buildMeal();
+        renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+        await userEvent.click(screen.getByLabelText('評価'));
+        const targets = document.querySelectorAll(
+          '.star-floating-half-click-target',
+        );
+        await userEvent.click(targets[7] as Element);
+        expect(document.querySelectorAll('i.fa-star.fas').length).toBe(4);
+      });
+
+      it('同じタップでアクション展開エリアが開かないこと', async () => {
+        const meal = buildMeal();
+        renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+        await userEvent.click(screen.getByLabelText('評価'));
+        const targets = document.querySelectorAll(
+          '.star-floating-half-click-target',
+        );
+        await userEvent.click(targets[7] as Element);
+        expect(screen.queryByText('名前コピー')).not.toBeInTheDocument();
+      });
+
+    });
+
   });
 });

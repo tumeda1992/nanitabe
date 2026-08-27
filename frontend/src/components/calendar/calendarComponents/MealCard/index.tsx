@@ -207,11 +207,12 @@ const MealCard = ({
   })();
 
   return (
-    <div
-      className={`rounded-lg overflow-hidden border ${cfg.bg} mb-1 cursor-pointer`}
-      data-testid={`mealCard-${meal.id}`}
-      onClick={() => setActionsOpen(true)}
-    >
+    <>
+      <div
+        className={`rounded-lg overflow-hidden border ${cfg.bg} mb-1 cursor-pointer`}
+        data-testid={`mealCard-${meal.id}`}
+        onClick={() => setActionsOpen(true)}
+      >
       <div className="flex w-full">
         {/* 左端カラーバー */}
         <div className={`w-1 shrink-0 ${cfg.bar}`} />
@@ -313,36 +314,6 @@ const MealCard = ({
         </div>
       </div>
 
-      {/* フルスクリーンモーダル（常時レンダリング、表示制御は内部） */}
-      <EditMealModal.FullScreenModal title="食事修正">
-        <EditMeal
-          meal={meal}
-          onEditSucceeded={() => {
-            EditMealModal.closeModal();
-            onChanged();
-          }}
-        />
-      </EditMealModal.FullScreenModal>
-      <EvaluateDishModal.FullScreenModal title="食事評価">
-        <EvaluateDish
-          dishId={dish.id}
-          score={dish.evaluationScore}
-          onEditSucceeded={() => {
-            EvaluateDishModal.closeModal();
-            onChanged();
-          }}
-        />
-      </EvaluateDishModal.FullScreenModal>
-      <EditDishModal.FullScreenModal title="料理修正">
-        <EditDish
-          dish={dish}
-          onEditSucceeded={() => {
-            EditDishModal.closeModal();
-            onChanged();
-          }}
-        />
-      </EditDishModal.FullScreenModal>
-
       {/* アクション展開エリア */}
       {actionsOpen && (
         <div className="border-t border-border/30 bg-background/60 px-2 py-1.5">
@@ -426,7 +397,38 @@ const MealCard = ({
           </div>
         </div>
       )}
-    </div>
+      </div>
+
+      {/* フルスクリーンモーダル（常時レンダリング、表示制御は内部） */}
+      <EditMealModal.FullScreenModal title="食事修正">
+        <EditMeal
+          meal={meal}
+          onEditSucceeded={() => {
+            EditMealModal.closeModal();
+            onChanged();
+          }}
+        />
+      </EditMealModal.FullScreenModal>
+      <EvaluateDishModal.FullScreenModal title="食事評価">
+        <EvaluateDish
+          dishId={dish.id}
+          score={dish.evaluationScore}
+          onEditSucceeded={() => {
+            EvaluateDishModal.closeModal();
+            onChanged();
+          }}
+        />
+      </EvaluateDishModal.FullScreenModal>
+      <EditDishModal.FullScreenModal title="料理修正">
+        <EditDish
+          dish={dish}
+          onEditSucceeded={() => {
+            EditDishModal.closeModal();
+            onChanged();
+          }}
+        />
+      </EditDishModal.FullScreenModal>
+    </>
   );
 };
 
