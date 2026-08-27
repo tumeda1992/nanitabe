@@ -8,7 +8,7 @@ import useMealFrame from '../../../../features/meal/frame/useMealFrame';
 type EntryFormData = {
   dayOffset: number;
   mealType: number;
-  mealFrameId: number;
+  mealFrameId: number | null;
 };
 
 type DaySlot = {
@@ -33,6 +33,7 @@ export default ({ onSubmitSucceeded, defaultName = '', defaultDaySlots = [] }: P
 
   const [name, setName] = useState(defaultName);
   const [nameError, setNameError] = useState('');
+  const [entryError, setEntryError] = useState('');
   const [daySlots, setDaySlots] = useState<DaySlot[]>(defaultDaySlots);
 
   const addDaySlot = () => {
@@ -46,15 +47,14 @@ export default ({ onSubmitSucceeded, defaultName = '', defaultDaySlots = [] }: P
   const addEntryToDay = (dayIndex: number) => {
     const updated = daySlots.map((slot, i) => {
       if (i !== dayIndex) return slot;
-      const firstMealFrame = mealFrames[0];
       return {
         ...slot,
         entries: [
           ...slot.entries,
           {
             dayOffset: dayIndex + 1,
-            mealType: MEAL_TYPES[0].value,
-            mealFrameId: firstMealFrame?.id ?? 0,
+            mealType: MEAL_TYPES[2].value,
+            mealFrameId: null,
           },
         ],
       };
@@ -96,13 +96,32 @@ export default ({ onSubmitSucceeded, defaultName = '', defaultDaySlots = [] }: P
     }
     setNameError('');
 
-    const entries = daySlots.flatMap((slot, dayIndex) =>
-      slot.entries.map((entry) => ({
-        dayOffset: dayIndex + 1,
-        mealType: entry.mealType,
-        mealFrameId: entry.mealFrameId,
-      })),
-    );
+    const entries: {
+      dayOffset: number;
+      mealType: number;
+      mealFrameId: number;
+    }[] = [];
+    let hasUnselectedMealFrame = false;
+
+    daySlots.forEach((slot, dayIndex) => {
+      slot.entries.forEach((entry) => {
+        if (entry.mealFrameId == null) {
+          hasUnselectedMealFrame = true;
+          return;
+        }
+        entries.push({
+          dayOffset: dayIndex + 1,
+          mealType: entry.mealType,
+          mealFrameId: entry.mealFrameId,
+        });
+      });
+    });
+
+    if (hasUnselectedMealFrame) {
+      setEntryError('枠が選択されていない行があります。');
+      return;
+    }
+    setEntryError('');
 
     await addMealFramePattern(
       { mealFramePattern: { name, entries } },
@@ -123,6 +142,7 @@ export default ({ onSubmitSucceeded, defaultName = '', defaultDaySlots = [] }: P
           data-testid="mealFramePatternName"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          size={40}
         />
         {nameError && <p>{nameError}</p>}
       </div>
@@ -158,9 +178,10 @@ export default ({ onSubmitSucceeded, defaultName = '', defaultDaySlots = [] }: P
 
                   <select
                     data-testid={`mealFrame-${dayIndex}-${entryIndex}`}
-                    value={entry.mealFrameId}
+                    value={entry.mealFrameId || undefined}
                     onChange={(e) => updateEntry(dayIndex, entryIndex, 'mealFrameId', Number(e.target.value))}
                   >
+                      <option key={null} value={undefined}>--</option>
                     {mealFrames.map((frame) => (
                       <option key={frame.id} value={frame.id}>
                         {frame.name}
@@ -197,6 +218,8 @@ export default ({ onSubmitSucceeded, defaultName = '', defaultDaySlots = [] }: P
       >
         + 日を追加
       </button>
+
+      {entryError && <p data-testid="mealFramePatternEntryError">{entryError}</p>}
 
       <Button type="submit" data-testid="submitMealFramePatternButton">
         作成する
