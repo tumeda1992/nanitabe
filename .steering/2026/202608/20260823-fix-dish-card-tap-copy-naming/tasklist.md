@@ -315,9 +315,9 @@ hookが返すobjectの形は変えない。呼び出し側4箇所は無変更で
   - [x] レシピ元がある料理で「名前コピー」の内容が正しい
     - `navigator.clipboard.readText()`の実測値が`"りゅうじの山形のだし"`。`${sourceName}の${dish.name}`と一致
   - [x] ~~ユーザーへ動作確認を依頼する~~（取消: agentが先に確認して報告する順序のため、依頼という形を取らない。ユーザー確認gate自体は廃止せず、報告を受けたユーザーが進行を述べた時点で満たす。詳細は`implementation_review.md`論点4）
-- [ ] feedbackがあれば、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用し、decisionをcallerへ返す
-  - [ ] designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す
-  - [ ] feedbackがなければ`[x] ~~feedback収集~~（feedbackなし）`の形式で完了扱いにする
+- [x] feedbackがあれば、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用し、decisionをcallerへ返す（4件を論点1〜4として記録し、すべて決定）
+  - [x] ~~designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す~~（該当なし: 4件とも記述の訂正とdocsへの一般則反映で完結し、完成後の姿・要件・公開APIは変わらなかった）
+  - [x] ~~feedbackがなければ完了扱いにする~~（該当なし: feedbackが4件あった）
 
 ---
 
@@ -325,17 +325,18 @@ hookが返すobjectの形は変えない。呼び出し側4箇所は無変更で
 
 > ⚠️ 動作確認phaseが完了するまでcommit、push、PRを促したり実行したりしない。急かすことも禁止する。
 
-- [ ] commit（phase単位かつ意味単位で分割）
+- [x] commit（phase単位かつ意味単位で分割。7commitへ分割した）
   - MUST: まとめて一commitにしない
   - Phase 1（bubbling修正）、Phase 2（identity安定化）、Phase 3（コピー文字列）、Phase 4（改名）を別commitにする
   - Phase 4の改名commitへ挙動変更を混ぜない
+  - 実際の順序: 改名commitをPhase 1〜3の挙動変更より前へ置いた。`data-testid`の改名と、モーダルをroot外へ出す構造変更が同一行に重なっており、Phase順のままでは存在しなかった中間状態を捏造しなければ分割できなかったためである。粒度と内容は合意どおり
   - steering成果物のうち`design.md`と`task-design-discussion.md`は、対応する変更commitより前に置く
   - `tasklist.md`のcheckbox確定は、対応する変更commitより後に置く
   - ユーザーが一部だけ承認した場合は承認範囲だけをcommitし、残りは待つ
   - ユーザーが不要と回答した場合は`[x] ~~commit~~（ユーザーが不要と回答）`の形式で完了扱いにする
 
-- [ ] current branchをpushしてPRを作成する
-  - [ ] commit taskの結果としてlocal commitが実際に一件以上あることを確認する。一件もなければpush・PRを実行しない
+- [x] current branchをpushしてPRを作成する（PR #272）
+  - [x] commit taskの結果としてlocal commitが実際に一件以上あることを確認する。一件もなければpush・PRを実行しない
   - [ ] current branchが公開可能なnon-default branchであることを確認する
   - [ ] `git push -u origin <current-branch>`を実行する
   - [ ] `tasklist-executor/scripts/github/create_or_get_pr.sh`を使い、既存PRがあれば再利用する
