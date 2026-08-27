@@ -1,7 +1,7 @@
 import React from 'react';
 import { getDate, getDay, isSameDay } from 'date-fns';
 import { FrameEntryForCalender, MealForCalender } from '../../../lib/graphql/generated/graphql';
-import DishCard from './DishCard';
+import MealCard from './MealCard';
 import FrameCard from './FrameCard';
 import AddMealIcon from './MealIcon/AddMealIcon';
 import AddMealTabs from './MealIcon/AddMealTabs';
@@ -104,7 +104,7 @@ export default (props: DateCardProps) => {
         {hasMeals ? (
           meals.map((meal) => (
             <React.Fragment key={meal.id}>
-              <DishCard
+              <MealCard
                 meal={meal}
                 onChanged={async () => {
                   await onChanged();

@@ -2,7 +2,7 @@ import React from 'react';
 import '@testing-library/jest-dom';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import DishCard from './index';
+import MealCard from './index';
 import renderWithApollo from '../../../specHelper/renderWithApollo';
 import { registerMutationHandler } from '../../../../lib/graphql/specHelper/mockServer';
 import {
@@ -35,27 +35,27 @@ const baseProps = {
   startSwappingMealsMode: jest.fn(),
 };
 
-describe('<DishCard>', () => {
+describe('<MealCard>', () => {
   describe('表示テスト', () => {
     it('昼食の場合 bg-lunch-bg クラスが適用されること', () => {
       const meal = buildMeal({ mealType: MEAL_TYPE.LUNCH });
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
-      expect(screen.getByTestId(`dishCard-${meal.id}`)).toHaveClass(
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      expect(screen.getByTestId(`mealCard-${meal.id}`)).toHaveClass(
         'bg-lunch-bg',
       );
     });
 
     it('夕食の場合 bg-dinner-bg クラスが適用されること', () => {
       const meal = buildMeal({ mealType: MEAL_TYPE.DINNER });
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
-      expect(screen.getByTestId(`dishCard-${meal.id}`)).toHaveClass(
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      expect(screen.getByTestId(`mealCard-${meal.id}`)).toHaveClass(
         'bg-dinner-bg',
       );
     });
 
     it('料理名が表示されること', () => {
       const meal = buildMeal();
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
       expect(screen.getByText('生姜焼き')).toBeInTheDocument();
     });
 
@@ -63,11 +63,11 @@ describe('<DishCard>', () => {
       const meal = buildMeal({
         dish: { ...buildMeal().dish, evaluationScore: 4 },
       });
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
       expect(
-        screen.getByTestId(`dishCard-evaluation-${meal.id}`),
+        screen.getByTestId(`mealCard-evaluation-${meal.id}`),
       ).toBeInTheDocument();
-      expect(screen.getByTestId(`dishCard-evaluation-${meal.id}`)).toHaveTextContent('4');
+      expect(screen.getByTestId(`mealCard-evaluation-${meal.id}`)).toHaveTextContent('4');
     });
 
     it('dish.dishSourceRelation.sourceName がある場合にレシピ元が表示されること', () => {
@@ -84,23 +84,23 @@ describe('<DishCard>', () => {
           },
         },
       });
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
       expect(
-        screen.getByTestId(`dishCard-source-${meal.id}`),
+        screen.getByTestId(`mealCard-source-${meal.id}`),
       ).toBeInTheDocument();
     });
 
     it('meal.mealFrameName がある場合に枠名ラベルが表示されること', () => {
       const meal = buildMeal({ mealFrameName: 'パスタ枠' });
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
-      expect(screen.getByTestId(`dishCard-frameName-${meal.id}`)).toBeInTheDocument();
-      expect(screen.getByTestId(`dishCard-frameName-${meal.id}`)).toHaveTextContent('パスタ枠');
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      expect(screen.getByTestId(`mealCard-frameName-${meal.id}`)).toBeInTheDocument();
+      expect(screen.getByTestId(`mealCard-frameName-${meal.id}`)).toHaveTextContent('パスタ枠');
     });
 
     it('meal.mealFrameName がある場合に枠名ラベルが料理名の前（上）にあること', () => {
       const meal = buildMeal({ mealFrameName: 'パスタ枠' });
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
-      const frameLabel = screen.getByTestId(`dishCard-frameName-${meal.id}`);
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      const frameLabel = screen.getByTestId(`mealCard-frameName-${meal.id}`);
       const dishName = screen.getByText('生姜焼き');
       // DOMの順序確認: fremeLabel が dishName より前にあること
       const position = frameLabel.compareDocumentPosition(dishName);
@@ -110,14 +110,14 @@ describe('<DishCard>', () => {
 
     it('meal.mealFrameName がない場合に枠名ラベルが表示されないこと', () => {
       const meal = buildMeal({ mealFrameName: null });
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
-      expect(screen.queryByTestId(`dishCard-frameName-${meal.id}`)).not.toBeInTheDocument();
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      expect(screen.queryByTestId(`mealCard-frameName-${meal.id}`)).not.toBeInTheDocument();
     });
 
     it('canAnythingExceptDisplayDishName=false のとき MoreHorizontal が表示されないこと', () => {
       const meal = buildMeal();
       renderWithApollo(
-        <DishCard
+        <MealCard
           {...baseProps}
           meal={meal}
           canAnythingExceptDisplayDishName={false}
@@ -132,31 +132,31 @@ describe('<DishCard>', () => {
   describe('機能テスト', () => {
     it('カード本体クリックでアクションパネルが表示されること', async () => {
       const meal = buildMeal();
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
-      await userEvent.click(screen.getByTestId(`dishCard-${meal.id}`));
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      await userEvent.click(screen.getByTestId(`mealCard-${meal.id}`));
       expect(screen.getByText('削除')).toBeInTheDocument();
     });
 
     it('カード本体をもう一度クリックしてもアクションパネルが閉じないこと', async () => {
       const meal = buildMeal();
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
-      await userEvent.click(screen.getByTestId(`dishCard-${meal.id}`));
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      await userEvent.click(screen.getByTestId(`mealCard-${meal.id}`));
       expect(screen.getByText('削除')).toBeInTheDocument();
-      await userEvent.click(screen.getByTestId(`dishCard-${meal.id}`));
+      await userEvent.click(screen.getByTestId(`mealCard-${meal.id}`));
       // カード本体クリックは開くのみ（閉じない）
       expect(screen.getByText('削除')).toBeInTheDocument();
     });
 
     it('MoreHorizontal タップでアクションパネルが表示されること', async () => {
       const meal = buildMeal();
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
       await userEvent.click(screen.getByLabelText('その他のアクション'));
       expect(screen.getByText('削除')).toBeInTheDocument();
     });
 
     it('もう一度タップでアクションパネルが閉じること', async () => {
       const meal = buildMeal();
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
       await userEvent.click(screen.getByLabelText('その他のアクション'));
       expect(screen.getByText('削除')).toBeInTheDocument();
       await userEvent.click(screen.getByLabelText('その他のアクション'));
@@ -165,7 +165,7 @@ describe('<DishCard>', () => {
 
     it('削除ボタンタップで removeMeal mutation が呼ばれること', async () => {
       const meal = buildMeal();
-      renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
 
       const { getLatestMutationVariables } = registerMutationHandler(
         RemoveMealDocument,
@@ -190,7 +190,7 @@ describe('<DishCard>', () => {
       const startMovingDishMode = jest.fn();
       const meal = buildMeal();
       renderWithApollo(
-        <DishCard
+        <MealCard
           {...baseProps}
           meal={meal}
           calendarModeChangers={{ startMovingDishMode }}
@@ -205,7 +205,7 @@ describe('<DishCard>', () => {
       const startSwappingMealsMode = jest.fn();
       const meal = buildMeal();
       renderWithApollo(
-        <DishCard
+        <MealCard
           {...baseProps}
           meal={meal}
           startSwappingMealsMode={startSwappingMealsMode}
@@ -219,21 +219,21 @@ describe('<DishCard>', () => {
     describe('枠解除ボタン', () => {
       it('mealFrameEntryId がある場合は「枠解除」ボタンが表示されること', async () => {
         const meal = buildMeal({ mealFrameEntryId: 5 });
-        renderWithApollo(<DishCard {...baseProps} meal={meal} />);
-        await userEvent.click(screen.getByTestId(`dishCard-${meal.id}`));
+        renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+        await userEvent.click(screen.getByTestId(`mealCard-${meal.id}`));
         expect(screen.getByText('枠解除')).toBeInTheDocument();
       });
 
       it('mealFrameEntryId がない場合は「枠解除」ボタンが表示されないこと', async () => {
         const meal = buildMeal({ mealFrameEntryId: null });
-        renderWithApollo(<DishCard {...baseProps} meal={meal} />);
-        await userEvent.click(screen.getByTestId(`dishCard-${meal.id}`));
+        renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+        await userEvent.click(screen.getByTestId(`mealCard-${meal.id}`));
         expect(screen.queryByText('枠解除')).not.toBeInTheDocument();
       });
 
       it('「枠解除」クリック → confirm → unassignMealFromFrameEntry が呼ばれること', async () => {
         const meal = buildMeal({ mealFrameEntryId: 5 });
-        renderWithApollo(<DishCard {...baseProps} meal={meal} />);
+        renderWithApollo(<MealCard {...baseProps} meal={meal} />);
 
         const { getLatestMutationVariables } = registerMutationHandler(
           UnassignMealFromFrameEntryDocument,
@@ -246,7 +246,7 @@ describe('<DishCard>', () => {
 
         window.confirm = jest.fn().mockReturnValue(true);
 
-        await userEvent.click(screen.getByTestId(`dishCard-${meal.id}`));
+        await userEvent.click(screen.getByTestId(`mealCard-${meal.id}`));
         await userEvent.click(screen.getByText('枠解除'));
 
         await waitFor(() => {

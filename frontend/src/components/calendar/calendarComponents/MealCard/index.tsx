@@ -21,7 +21,7 @@ import EvaluateDish from '../../../dish/EvaluateDish';
 import { EditDish } from '../../../dish/DishForm';
 import CategoryIcon from './CategoryIcon';
 
-type DishCardProps = {
+type MealCardProps = {
   meal: MealForCalender;
   onChanged: () => Promise<void>;
   canAnythingExceptDisplayDishName: boolean;
@@ -128,13 +128,13 @@ const ActionBtn = ({
   );
 };
 
-const DishCard = ({
+const MealCard = ({
   meal,
   onChanged,
   canAnythingExceptDisplayDishName,
   calendarModeChangers,
   startSwappingMealsMode,
-}: DishCardProps) => {
+}: MealCardProps) => {
   const { dish } = meal;
   const cfg = mealConfig[meal.mealType] ?? defaultMealConfig;
   const [actionsOpen, setActionsOpen] = useState(false);
@@ -209,7 +209,7 @@ const DishCard = ({
   return (
     <div
       className={`rounded-lg overflow-hidden border ${cfg.bg} mb-1 cursor-pointer`}
-      data-testid={`dishCard-${meal.id}`}
+      data-testid={`mealCard-${meal.id}`}
       onClick={() => setActionsOpen(true)}
     >
       <div className="flex w-full">
@@ -221,7 +221,7 @@ const DishCard = ({
           {meal.mealFrameName && (
             <div
               className="text-[10px] text-muted-foreground truncate mb-0.5"
-              data-testid={`dishCard-frameName-${meal.id}`}
+              data-testid={`mealCard-frameName-${meal.id}`}
             >
               {meal.mealFrameName}
             </div>
@@ -268,7 +268,7 @@ const DishCard = ({
                   label="その他のアクション"
                   onClick={() => setActionsOpen((v) => !v)}
                   active={actionsOpen}
-                  data-testid={`dishCard-moreBtn-${meal.id}`}
+                  data-testid={`mealCard-moreBtn-${meal.id}`}
                 />
               )}
             </div>
@@ -280,7 +280,7 @@ const DishCard = ({
               {hasEvaluation && (
                 <span
                   className="inline-flex items-center gap-0.5 text-amber-500 shrink-0"
-                  data-testid={`dishCard-evaluation-${meal.id}`}
+                  data-testid={`mealCard-evaluation-${meal.id}`}
                 >
                   <Star className="size-3 fill-current" />
                   {dish.evaluationScore}
@@ -289,7 +289,7 @@ const DishCard = ({
               {hasSource && (
                 <span
                   className="truncate"
-                  data-testid={`dishCard-source-${meal.id}`}
+                  data-testid={`mealCard-source-${meal.id}`}
                 >
                   {sourceText}
                 </span>
@@ -390,7 +390,7 @@ const DishCard = ({
                 setActionsOpen(false);
                 calendarModeChangers.startMovingDishMode(meal);
               }}
-              data-testid={`dishCard-moveBtn-${meal.id}`}
+              data-testid={`mealCard-moveBtn-${meal.id}`}
             />
             <ActionBtn
               icon={<ArrowLeftRight />}
@@ -399,7 +399,7 @@ const DishCard = ({
                 setActionsOpen(false);
                 startSwappingMealsMode(new Date(meal.date));
               }}
-              data-testid={`dishCard-swapBtn-${meal.id}`}
+              data-testid={`mealCard-swapBtn-${meal.id}`}
             />
             <ActionBtn
               icon={<CopyPlus />}
@@ -421,7 +421,7 @@ const DishCard = ({
               label="削除"
               onClick={handleRemove}
               danger
-              data-testid={`dishCard-deleteBtn-${meal.id}`}
+              data-testid={`mealCard-deleteBtn-${meal.id}`}
             />
           </div>
         </div>
@@ -430,4 +430,4 @@ const DishCard = ({
   );
 };
 
-export default DishCard;
+export default MealCard;
