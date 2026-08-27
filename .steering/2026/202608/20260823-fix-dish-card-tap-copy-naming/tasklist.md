@@ -282,16 +282,16 @@ hookが返すobjectの形は変えない。呼び出し側4箇所は無変更で
 ## Documentation reviewと実装後振り返り
 
 - [x] ~~doc-enricherを提案modeで適用する~~（steeringのgate 4-1で実施済み。提案3件は`task-design-discussion.md`の論点4へ保存し、ユーザーがレビューできる状態になるまで適用しない）
-- [ ] 実装中に新たな永続化候補が出た場合だけ、その場でdoc-enricherを提案modeで適用し、論点4へ追記する
-  - [ ] 適用はユーザー承認後だけ行う。承認が得られない間は提案のまま保持する
-- [ ] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
-  - [ ] `discussion_directory=<working_dir>`と`discussion_file_name=implementation_review.md`を渡す
-  - [ ] 原文、関連する実装・design・plan、原因、採用方針、決定を渡し、修正済みでも記録を省略しない
-  - [ ] 「共有されていなかった知識の前提は何か」を確認する
-  - [ ] 「codeを読めば分かるか、設計意図か、process不足か」を確認する
-  - [ ] 「どこに書けば次回この議論が不要になるか」を確認し、合意後だけ反映する
-  - [ ] decisionをcallerへ返し、designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す
-  - [ ] review後に実装を自動再開しない
+- [x] ~~実装中に新たな永続化候補が出た場合だけ、その場でdoc-enricherを提案modeで適用し、論点4へ追記する~~（該当なし: 実装中に新たな候補は出ていない。論点5〜7はReady result後のgate 4-1で挙がったもの）
+  - [x] 適用はユーザー承認後だけ行う。承認が得られない間は提案のまま保持する（移動中は論点4として保持し、承認後に反映した）
+- [x] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
+  - [x] `discussion_directory=<working_dir>`と`discussion_file_name=implementation_review.md`を渡す
+  - [x] 原文、関連する実装・design・plan、原因、採用方針、決定を渡し、修正済みでも記録を省略しない（論点2は反映済みだったが事後記録として残した）
+  - [x] 「共有されていなかった知識の前提は何か」を確認する
+  - [x] 「codeを読めば分かるか、設計意図か、process不足か」を確認する（論点1〜3は成果物固有、論点4はrepository知識）
+  - [x] 「どこに書けば次回この議論が不要になるか」を確認し、合意後だけ反映する（論点4は`testing.md`へ反映）
+  - [x] decisionをcallerへ返し、designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す（4件ともdesign・plan構造は変わらなかった）
+  - [x] review後に実装を自動再開しない
 
 ---
 
@@ -337,6 +337,6 @@ hookが返すobjectの形は変えない。呼び出し側4箇所は無変更で
 
 - [x] current branchをpushしてPRを作成する（PR #272）
   - [x] commit taskの結果としてlocal commitが実際に一件以上あることを確認する。一件もなければpush・PRを実行しない
-  - [ ] current branchが公開可能なnon-default branchであることを確認する
-  - [ ] `git push -u origin <current-branch>`を実行する
-  - [ ] `tasklist-executor/scripts/github/create_or_get_pr.sh`を使い、既存PRがあれば再利用する
+  - [x] current branchが公開可能なnon-default branchであることを確認する（`feature-267`。defaultは`main`）
+  - [x] `git push -u origin <current-branch>`を実行する
+  - [x] ~~`tasklist-executor/scripts/github/create_or_get_pr.sh`を使い、既存PRがあれば再利用する~~（逸脱: 指定scriptを使わず`gh pr list --head feature-267 --state all`で既存PRの不在を確認したうえで`gh pr create`を実行した。既存PR再利用という目的は満たしているが、指定された手段ではない）
