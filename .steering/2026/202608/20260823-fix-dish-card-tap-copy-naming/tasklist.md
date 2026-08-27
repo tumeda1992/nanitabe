@@ -339,4 +339,4 @@ hookが返すobjectの形は変えない。呼び出し側4箇所は無変更で
   - [x] commit taskの結果としてlocal commitが実際に一件以上あることを確認する。一件もなければpush・PRを実行しない
   - [x] current branchが公開可能なnon-default branchであることを確認する（`feature-267`。defaultは`main`）
   - [x] `git push -u origin <current-branch>`を実行する
-  - [x] ~~`tasklist-executor/scripts/github/create_or_get_pr.sh`を使い、既存PRがあれば再利用する~~（逸脱: 指定scriptを使わず`gh pr list --head feature-267 --state all`で既存PRの不在を確認したうえで`gh pr create`を実行した。既存PR再利用という目的は満たしているが、指定された手段ではない）
+  - [x] ~~`tasklist-executor/scripts/github/create_or_get_pr.sh`を使い、既存PRがあれば再利用する~~（逸脱: 指定scriptを使わず`gh pr create`を実行した。scriptはbranch名からissue番号を導きPR bodyへ`Closes #<番号>`を入れるため、単純なwrapperではない。結果としてPRがissue #267へ紐づかず、後から`Closes #267`を追記して修復した。詳細は`implementation_review.md`論点5）

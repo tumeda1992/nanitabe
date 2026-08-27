@@ -337,3 +337,93 @@ pluginのskillは変更しない。agent先行という順序は、実行環境�
 `tasklist-design.md` の「機械的確認はユーザー確認を代替しない」という規定は、今回の決定でも維持される。
 
 **適用済み。** `doc-enricher`をこのdecision単位で別途起動していない。決定内容そのものがdocs修正であり、原因owner分類の段階で同じ因果分析を経ているためである。theme横断のreviewは`task-design-discussion.md`論点4が扱う。
+
+---
+
+## 論点5: 指定scriptを使わずPRを作成した
+
+**ステータス:** 決定
+
+**種別:** レビュー指摘
+
+### イテレーション0: 原因ownerを決める
+
+#### 提案0
+
+原因を**repository知識**と分類し、`tumeda-dev-plugin-context.md` の branch / issue 契約へ「PR bodyへ`Closes #<issue番号>`を入れる」と追記する。
+
+#### 提案0へのフィードバック
+
+**結果:** 却下。
+
+> は？ Aはスクリプト使わない理由にならないから。
+
+提案0は「`Closes`が落ちたこと」への対処であり、「指定scriptを使わなかったこと」の説明にも防止にもなっていない。被害を分析して失敗そのものを分析していなかった。
+
+### イテレーション1: 置換が成立する構造を原因として扱う
+
+#### 提案1
+
+原因を二層に分ける。
+
+**直接原因（成果物固有）:** taskへ書かれたpathの実在を確認しなかった。一般化しない。
+
+**構造的原因（skill）:** pluginの`task-design/templates/tasklist.md` の当該行を修正する。修正はplugin正本repositoryで行う。
+
+```markdown
+- [ ] pluginの`tasklist-executor` skill directory 配下の `scripts/github/create_or_get_pr.sh` を実行する
+  - skill directory の絶対pathは skill 起動時に与えられる。利用先repositoryからの相対pathではない
+  - このscriptは`gh pr create`のwrapperではない。branch名からissue番号を導き、repositoryが`feature-<issue番号>`契約を宣言していればPR bodyへ`Closes #<番号>`を入れる
+  - 既存のopen PRがあれば新規作成せずそのURLを返す
+```
+
+`tasklist-executor/SKILL.md` へ、このscriptを同梱している旨を1行置く。
+
+#### 提案背景
+
+##### 事象
+
+`tasklist.md` の完了後actionは `tasklist-executor/scripts/github/create_or_get_pr.sh` の使用を指定していた。実際には `gh pr list` で既存PRの不在を確認したうえで `gh pr create` を実行した。scriptの実在を確認していない。
+
+結果、PRがissue #267へ紐づかなかった。issueは「評価タップ時に1回目空振りする」であり、本steeringが直接対応するものである。後から `Closes #267` を追記して修復した。
+
+##### 指示側の欠陥
+
+`tasklist-executor/SKILL.md` はこのscriptへ一度も言及していない。参照はtemplateの1行だけで、pathは利用先repositoryから解決できない相対pathである。所有者が自分の同梱物へ言及していないため、辿る導線がない。
+
+加えて、当該行は手段と目的を一文へ同居させている。
+
+> `create_or_get_pr.sh`を使い、既存PRがあれば再利用する
+
+後半が受け入れ条件に読めるため、それを満たす別手段で置換できると判断させる。
+
+##### 同型の欠陥を本session内で4回修正している
+
+`task-design`の§4 trigger、NG集F1、`steering`のdiscussion trigger、`実装完了後review`。いずれも一文が二役を担い、片方がもう片方のgateまたは受け入れ条件に読めていた。今回は「適用範囲と実行者」ではなく「手段と目的」だが構造は同じである。
+
+論点2で「同種の事例が一度しか観測されておらず一般則として書くには根拠が薄い」とした基準は、5回目の観測であるこれには当てはまらない。
+
+##### 提案1が満たす必要のある条件
+
+1. 名指しされた成果物へ、利用先repositoryから到達できる
+2. 「同じ目的を果たす別手段」で満たせる文が残らない
+3. scriptが単純なwrapperではないことが、実行前に分かる
+
+skill directoryを起点とした説明が条件1、taskの本体を手段そのものにし目的を注記へ降ろすことが条件2、`wrapperではない`の記述が条件3を満たす。
+
+#### 提案1へのフィードバック
+
+**結果:** 受諾。
+
+> ok。大した修正じゃないから、最後まで進めて
+
+### 決定
+
+具体ケースは修復済みとする。PR #272 のbodyへ `Closes #267` を追記し、`closingIssuesReferences` に #267 が入ることを確認した。`tasklist.md` の逸脱メモも事実へ訂正した。
+
+一般則の側はplugin正本repositoryで扱う。`escalate-plugin-skill-fix` 経由で引き渡す。
+
+- 正本側のsteering directory: `20260827-fix-substitutable-pr-script-task`
+- 引き渡した提案: tasklist templateのPR作成taskが手段と目的を一文へ同居させ、指定scriptを別手段で置換できる形になっている問題を直す
+
+議論の続きは正本repository側の記録が正である。本fileには続きを書き足さない。
