@@ -315,5 +315,54 @@ describe('<MealCard>', () => {
       });
     });
 
+    describe('名前コピー', () => {
+      const setupClipboardMock = () => {
+        const writeText = jest.fn();
+        Object.defineProperty(navigator, 'clipboard', {
+          value: { writeText },
+          configurable: true,
+        });
+        return writeText;
+      };
+
+      it('レシピ元がある場合、「{sourceName}の{dish.name}」がコピーされること', async () => {
+        const writeText = setupClipboardMock();
+        const meal = buildMeal({
+          dish: {
+            ...buildMeal().dish,
+            name: '肉じゃが',
+            dishSourceRelation: {
+              type: 1,
+              sourceName: 'オレンジページ2024年5月号',
+              dishSourceId: 1,
+              recipeBookPage: 12,
+              recipeWebsiteUrl: null,
+              recipeSourceMemo: null,
+            },
+          },
+        });
+        renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+        await userEvent.click(screen.getByTestId(`mealCard-${meal.id}`));
+        await userEvent.click(screen.getByText('名前コピー'));
+        expect(writeText).toHaveBeenCalledWith(
+          'オレンジページ2024年5月号の肉じゃが',
+        );
+      });
+
+      it('レシピ元がない場合、「{dish.name}」がコピーされること', async () => {
+        const writeText = setupClipboardMock();
+        const meal = buildMeal({
+          dish: {
+            ...buildMeal().dish,
+            name: 'カレー',
+            dishSourceRelation: null,
+          },
+        });
+        renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+        await userEvent.click(screen.getByTestId(`mealCard-${meal.id}`));
+        await userEvent.click(screen.getByText('名前コピー'));
+        expect(writeText).toHaveBeenCalledWith('カレー');
+      });
+    });
   });
 });

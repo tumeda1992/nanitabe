@@ -188,7 +188,9 @@ const MealCard = ({
   };
 
   const handleCopyName = () => {
-    navigator.clipboard.writeText(dish.name);
+    const sourceName = dish?.dishSourceRelation?.sourceName;
+    const copyText = sourceName ? `${sourceName}の${dish.name}` : dish.name;
+    navigator.clipboard.writeText(copyText);
     setActionsOpen(false);
   };
 
