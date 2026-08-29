@@ -33,6 +33,7 @@ meal/frame/
 
 - MUST: 枠マスタは `meal_frames` で一元管理し、同じ枠を複数日に使い回せる設計を維持する（毎回新規作成しない）
 - パターンは「道具」。適用によって生成された `meal_frame_entries` はパターンと独立して存在する（パターン削除で消えない）
+- 食事を削除すると `meal_frame_entries.meal_id` は `NULL` へ戻り、**枠はその日に残って未割り当てになる**（`Meal` の `has_one :meal_frame_entry, dependent: :nullify`）。枠は日付と時間帯に対する計画であり、そこへ入る食事とは独立しているため、枠エントリごと消さない
 
 ## カレンダークエリの返却構造（`mealsForCalender`）
 
