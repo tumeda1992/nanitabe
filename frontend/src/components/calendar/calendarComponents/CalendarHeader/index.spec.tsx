@@ -1,6 +1,7 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import CalendarHeader from './index';
 import renderWithApollo from '../../../specHelper/renderWithApollo';
 
@@ -13,6 +14,7 @@ describe('<CalendarHeader>', () => {
     refreshToNext: jest.fn(),
     isDisplayCalendarMode: true,
     onStartAssigningDish: jest.fn(),
+    onStartPostponedMeal: jest.fn(),
   };
 
   describe('when viewType is week', () => {
@@ -71,6 +73,21 @@ describe('<CalendarHeader>', () => {
       );
       // ドロップダウンは開いていないので食事割当てテキストは表示されない
       expect(screen.queryByText('食事割当て')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('延期した食事メニュー', () => {
+    it('メニューを開くと「延期した食事」が表示され、タップで onStartPostponedMeal が呼ばれること', async () => {
+      const onStartPostponedMeal = jest.fn();
+      renderWithApollo(
+        <CalendarHeader {...baseProps} onStartPostponedMeal={onStartPostponedMeal} />,
+      );
+
+      await userEvent.click(screen.getByLabelText('メニュー'));
+      const menuItem = await screen.findByText('延期した食事');
+      await userEvent.click(menuItem);
+
+      expect(onStartPostponedMeal).toHaveBeenCalled();
     });
   });
 });

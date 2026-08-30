@@ -90,7 +90,7 @@ export default (props: Props) => {
       refreshToPrev={updateToPreviousMonth}
       refreshToNext={updateToNextMonth}
     >
-      {({ isDisplayCalendarMode, useAssignDishModeResult, refreshToPrev, refreshToNext }) => (
+      {({ isDisplayCalendarMode, useAssignDishModeResult, usePostponedMealModeResult, refreshToPrev, refreshToNext }) => (
         <CalendarHeader
           viewType="month"
           displayLabel={displayLabel}
@@ -99,6 +99,7 @@ export default (props: Props) => {
           refreshToNext={refreshToNext}
           isDisplayCalendarMode={isDisplayCalendarMode}
           onStartAssigningDish={useAssignDishModeResult.startAssigningDishMode}
+          onStartPostponedMeal={usePostponedMealModeResult.startPostponedMealMode}
         />
       )}
     </Calendar>
