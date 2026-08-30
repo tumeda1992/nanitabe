@@ -8,6 +8,7 @@ import { registerMutationHandler } from '../../../../lib/graphql/specHelper/mock
 import {
   RemoveMealDocument,
   UnassignMealFromFrameEntryDocument,
+  PostponeMealDocument,
 } from '../../../../lib/graphql/generated/graphql';
 import { MEAL_TYPE } from '../../../../features/meal/const';
 
@@ -184,6 +185,53 @@ describe('<MealCard>', () => {
       await waitFor(() => {
         expect(getLatestMutationVariables()).toEqual({ mealId: meal.id });
       });
+    });
+
+    it('アクションパネルに「延期」ボタンが表示されること', async () => {
+      const meal = buildMeal();
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      await userEvent.click(screen.getByTestId(`mealCard-${meal.id}`));
+      expect(screen.getByText('延期')).toBeInTheDocument();
+    });
+
+    it('延期ボタンタップで確認ダイアログなしに postponeMeal mutation が呼ばれること', async () => {
+      const meal = buildMeal();
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+
+      const { getLatestMutationVariables } = registerMutationHandler(
+        PostponeMealDocument,
+        {
+          postponeMeal: {
+            postponedMealId: 999,
+          },
+        },
+      );
+
+      const confirmSpy = jest.spyOn(window, 'confirm');
+
+      await userEvent.click(screen.getByLabelText('その他のアクション'));
+      await userEvent.click(screen.getByText('延期'));
+
+      expect(confirmSpy).not.toHaveBeenCalled();
+      await waitFor(() => {
+        expect(getLatestMutationVariables()).toEqual({ mealId: meal.id });
+      });
+    });
+
+    it('延期ボタンタップでアクションパネルが閉じること', async () => {
+      const meal = buildMeal();
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+
+      registerMutationHandler(PostponeMealDocument, {
+        postponeMeal: {
+          postponedMealId: 999,
+        },
+      });
+
+      await userEvent.click(screen.getByLabelText('その他のアクション'));
+      await userEvent.click(screen.getByText('延期'));
+
+      expect(screen.queryByText('延期')).not.toBeInTheDocument();
     });
 
     it('「他の日へ移動」タップで startMovingDishMode が呼ばれること', async () => {

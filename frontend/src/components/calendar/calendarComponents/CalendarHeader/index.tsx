@@ -9,6 +9,7 @@ import {
   CalendarDays,
   EllipsisVertical,
   Utensils,
+  CalendarClock,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,6 +35,7 @@ type CalendarHeaderProps = {
   refreshToNext: () => void;
   isDisplayCalendarMode: boolean;
   onStartAssigningDish: () => void;
+  onStartPostponedMeal: () => void;
 };
 
 const CalendarHeader = ({
@@ -44,6 +46,7 @@ const CalendarHeader = ({
   refreshToNext,
   isDisplayCalendarMode,
   onStartAssigningDish,
+  onStartPostponedMeal,
 }: CalendarHeaderProps) => {
   const isWeek = viewType === 'week';
 
@@ -137,6 +140,15 @@ const CalendarHeader = ({
                   >
                     <Utensils className="size-4" />
                     食事割当て
+                  </DropdownMenuItem>
+                )}
+                {isDisplayCalendarMode && (
+                  <DropdownMenuItem
+                    onClick={onStartPostponedMeal}
+                    data-testid="calendarMenu-postponedMeal"
+                  >
+                    <CalendarClock className="size-4" />
+                    延期した食事
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem asChild>

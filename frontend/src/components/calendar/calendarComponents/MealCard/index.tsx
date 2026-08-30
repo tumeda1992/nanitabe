@@ -6,6 +6,7 @@ import {
   Star,
   ArrowLeftRight,
   CalendarArrowUp,
+  CalendarClock,
   UtensilsCrossed,
   MoreHorizontal,
   CopyPlus,
@@ -15,6 +16,7 @@ import { MealForCalender } from '../../../../lib/graphql/generated/graphql';
 import { MEAL_TYPE } from '../../../../features/meal/const';
 import useMeal from '../../../../features/meal/useMeal';
 import useMealFrame from '../../../../features/meal/frame/useMealFrame';
+import usePostponedMeal from '../../../../features/meal/postponed/usePostponedMeal';
 import useFullScreenModal from '../../../common/modal/useFullScreenModal';
 import { EditMeal } from '../../../meal/MealForm';
 import EvaluateDish from '../../../dish/EvaluateDish';
@@ -157,6 +159,7 @@ const MealCard = ({
 
   const { removeMeal } = useMeal();
   const { unassignMealFromFrameEntry } = useMealFrame({ requireFetchedData: false });
+  const { postponeMeal } = usePostponedMeal({ requireFetchedData: false });
 
   const handleUnassign = async () => {
     if (!meal.mealFrameEntryId) return;
@@ -178,6 +181,18 @@ const MealCard = ({
     if (!confirmed) return;
     setActionsOpen(false);
     await removeMeal(
+      { mealId: meal.id },
+      {
+        onCompleted: () => {
+          onChanged();
+        },
+      },
+    );
+  };
+
+  const handlePostpone = async () => {
+    setActionsOpen(false);
+    await postponeMeal(
       { mealId: meal.id },
       {
         onCompleted: () => {
@@ -389,6 +404,12 @@ const MealCard = ({
                 onClick={handleUnassign}
               />
             )}
+            <ActionBtn
+              icon={<CalendarClock />}
+              label="延期"
+              onClick={handlePostpone}
+              data-testid={`mealCard-postponeBtn-${meal.id}`}
+            />
             <ActionBtn
               icon={<Trash2 />}
               label="削除"

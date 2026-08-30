@@ -29,5 +29,7 @@ module Types
     field :meal_frames, resolver: Queries::Meal::Frame::MealFrames
 
     field :meal_frame_patterns, resolver: Queries::Meal::Frame::Pattern::MealFramePatterns
+
+    field :postponed_meals, resolver: Queries::Meal::Postponed::PostponedMeals
   end
 end
