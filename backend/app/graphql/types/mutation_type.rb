@@ -35,6 +35,9 @@ module Types
     field :unassign_meal_from_frame_entry, mutation: ::Mutations::Meal::FrameEntry::UnassignMealFromFrameEntry
     field :fill_meal_frame_entry, mutation: ::Mutations::Meal::FrameEntry::FillMealFrameEntry
 
+    field :postpone_meal, mutation: ::Mutations::Meal::Postponed::PostponeMeal
+    field :schedule_postponed_meal, mutation: ::Mutations::Meal::Postponed::SchedulePostponedMeal
+
     field :add_meal_frame_pattern, mutation: ::Mutations::Meal::Frame::Pattern::AddMealFramePattern
     field :update_meal_frame_pattern, mutation: ::Mutations::Meal::Frame::Pattern::UpdateMealFramePattern
     field :delete_meal_frame_pattern, mutation: ::Mutations::Meal::Frame::Pattern::DeleteMealFramePattern
