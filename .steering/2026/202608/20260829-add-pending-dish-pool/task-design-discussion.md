@@ -1473,7 +1473,7 @@ READMEへはこの経路をMUSTとして明記する。
 
 ## 論点10: DB migration のたびに commit・push の要否を確認する
 
-**ステータス:** 決定（適用先は未確定。下記「再開条件」参照）
+**ステータス:** 決定
 
 **種別:** TBDヒアリング
 
@@ -1509,16 +1509,210 @@ commit・push の要否をユーザーへ確認する。確認には commit 計�
 
 **適用範囲の終了条件:** 開発者ごとにDBを分離するなど、DBが共有リソースでなくなった時点でこの規則は不要になる。
 
-### 再開条件
+### イテレーション1: 差し込み点として一般化し、固有事情はcontext instanceへ置く
 
-この規則をどこへ書くかが未確定である。候補は次の3つで、判断には論点9で確立した問い
-（「この規則は、他のリポジトリでもそのまま成立するか」）を適用する必要がある。
+#### 提案1
 
-- 利用先repositoryの `backend/docs/ai_guideline/development_standard/` — 共有DBという構成は
-  このrepository固有の事情である
-- `tumeda-dev` plugin の `tasklist-design.md` — 同fileは既に「migration phaseの最後にユーザー確認を置く」
-  というMUSTを持つ。今回の規則はその確認項目を拡張するものであり、共有リソース一般へ抽象化できる可能性がある
-- 両方（一般則をplugin、共有DBという固有事情を利用先）
+**推奨:** plugin 側に差し込み点（hook）を作り、利用先固有の内容は
+`.agents/skills/tumeda-dev-plugin-context.md` が宣言する。
 
-ユーザーは「対応は後で行う」と述べており、この判断は保留されている。
-再開するのは、ユーザーが適用先の検討を指示した時点である。それまで適用先を推測で決めない。
+##### 分担
+
+| 側 | 持つもの |
+| --- | --- |
+| plugin（`task-design` / `tasklist-design.md`） | **差し込み点そのもの。**後方互換性を壊す可能性のあるactionを含むphaseについて、repository contextが宣言した追加actionをtasklistへ差し込む。宣言がなければ何もせず、他の作業と同列に扱う |
+| 利用先（`.agents/skills/tumeda-dev-plugin-context.md`） | **差し込む内容。**DB migration に対して、tasklist初稿へ既定の中断taskを書くこと。およびその背景（開発用の共有DB） |
+
+Ruby の `yield` と同じ構造である。呼び出し側が枠を用意し、block を渡された時だけそこが実行される。
+
+##### plugin 側に書く内容（`tasklist-design.md`）
+
+既存の「migration phaseの原則」を、migration に限定しない形へ広げる。
+
+- 後方互換性を壊す可能性のあるaction（DB migration、公開contractの破壊的変更、データ移行等）を含むphaseでは、
+  `maintenance-plugin-context` へ consumer=`task-design` として**差し込み宣言**を要求する
+- 宣言が返れば、その内容をそのphaseのtaskとしてtasklistへ差し込む
+- 宣言が返らなければ何も差し込まない。そのactionを他の作業と同列に扱う
+- 差し込み宣言の内容をplugin側が推測して補完しない
+
+migration を単独phaseとして切り出すMUSTと、migration結果をユーザーへ確認するMUSTは維持する。
+今回加えるのは、その確認で**何を問うか**を利用先が宣言できる余地である。
+
+##### 利用先が宣言する内容（`.agents/skills/tumeda-dev-plugin-context.md` の `## task-design`）
+
+```markdown
+### 破壊的actionへの差し込み
+
+対象: DB migration
+
+tasklist初稿では、migrationを含むphaseの末尾へ既定で中断taskを置く。中断時にユーザーへ問うのは次の2点。
+
+1. migrationの内容が意図どおりか
+2. 後続処理をそのまま継続するか、そこまでのcommit計画を立ててpushまで行うか
+
+背景: 開発環境のDBを複数人で共有している。migrationを適用すると共有リソースの状態が変わるが、
+変更の記録がローカルにしか無いと、他の参照者はスキーマが変わった理由も内容も辿れない。
+共有リソースの状態変化と記録の所在を一致させるため、動作確認phaseの完了を待たずに
+commit・pushする選択肢をこの時点で提示する。
+
+開発者ごとにDBを分離した時点でこの差し込みは不要になる。
+```
+
+##### version bump への影響
+
+差し込み点の追加は、利用先が新たに宣言できるものが増える変更である。
+`maintenance-plugin-context` の規約（consumerが新たに呼べるものが増えたか）に照らすと **MINOR** に当たる。
+
+#### 提案背景
+
+##### 再開条件が満たされた
+
+イテレーション0で「この規則をどこへ書くかが未確定」として再開条件を置いていた。
+ユーザーから適用方法の指示を受けたため再開する。
+
+> plugin側のtask-designではtasklist作成時に、migrationが入る場合には、rubyのyieldのように対応差し込み
+> できるようにする方向で。migrationに限らず、破壊的な変更で後方互換性がない可能性があるアクションの前後で
+> 影響力のでかいアクションに今後はいるかもしれない。特に差し込みがなければ、他の作業と同列に扱う。
+> 本リポジトリにおいては、.agents/skills/tumeda-dev-plugin-context.mdにて差し込みを行う。（略）
+> tumeda-dev-plugin-contextには、この記載の背景として、開発用共有DBの旨を書いておく
+
+##### 3候補のうち「両方」でもなかった
+
+イテレーション0は適用先を「利用先docs / plugin / 両方」の3候補で考えていた。
+指示はそのいずれとも違い、**plugin が枠を持ち、利用先が中身を持つ**という分担だった。
+
+この分担なら、共有DBという固有事情をpluginへ持ち込まずに済み、かつ他のrepositoryが別の事情
+（例: 破壊的なAPI変更時の周知）で同じ枠を使える。論点9で確立した問い「この規則は、他のリポジトリでも
+そのまま成立するか」に対して、枠は成立し、中身は成立しない。その境界で切っている。
+
+##### 読み取りが一意でない箇所
+
+指示の「初稿作成完了をユーザに聞く際に、migration内容確認後に、後続処理を継続するか、
+そこまでのコミット計画を立ててpushまで行うかどうかを問う」について、2つの読みがある。
+
+- **読みA（提案1が採用）**: tasklist初稿へ書く中断taskの内容が「migration内容の確認」と
+  「継続 or commit計画+push」の2点を問うものになる。実際に問うのは実行時
+- 読みB: tasklist初稿をユーザーへreviewしてもらう時点で、この2点を問う
+
+提案1は読みAを採った。migrationはtasklist作成時点ではまだ実行されておらず、
+「migration内容確認後に」という条件はreview時点では満たせないためである。
+読みBが意図であれば修正する。
+
+#### 提案1へのフィードバック
+
+**結果:** 読みBを採用。問うタイミングは実行時ではなくtasklist初稿のreview時
+
+> 読みBで
+
+提案1は「実際に問うのは実行時」としたが、これは誤り。tasklist初稿のreviewをユーザーへ求める時点で、
+中断時に何をするかを**あらかじめ**決める。
+
+### イテレーション2: 中断時の動作を初稿review時に先決めする
+
+#### 提案2
+
+分担（plugin が枠、利用先が中身）は提案1のまま維持する。変えるのは**問うタイミングと、その帰結**である。
+
+##### 完成後のworkflow
+
+| 時点 | 行うこと | owner |
+| --- | --- | --- |
+| tasklist初稿作成 | migrationを含むphaseの末尾へ、既定で中断taskを書く | task-design |
+| **tasklist初稿のreview依頼** | **中断時に「内容確認だけで後続処理を継続する」か「そこまでのcommit計画を立ててpushまで行う」かをユーザーへ併せて問う** | task-design |
+| review後 | ユーザーの選択をtasklistの中断taskへ書き込む。executorが実行時に迷わない形にする | task-design |
+| 実行時（中断） | migrationの内容を提示し、**記録済みの選択に従う**。改めて問い直さない | tasklist-executor |
+
+##### 提案1から変わる点
+
+提案1は中断taskへ「継続するかcommit計画+pushかを問う」と書き、実行時にユーザーへ問う形だった。
+提案2では、その選択を**初稿review時に済ませ**、tasklistには決まった動作だけを書く。
+
+実行時に残るのは「migrationの内容が意図どおりか」の確認だけになる。内容が意図と違えば、
+その時点で通常のfeedback経路（`implementation_review.md`）へ入る。
+
+##### 利用先が宣言する内容（`.agents/skills/tumeda-dev-plugin-context.md` の `## task-design`）
+
+```markdown
+### 破壊的actionへの差し込み
+
+対象: DB migration
+
+- tasklist初稿では、migrationを含むphaseの末尾へ既定で中断taskを置く
+- tasklist初稿のreviewをユーザーへ求める際、中断時の動作を併せて問う。選択肢は次の2つ
+  1. migrationの内容を確認するだけで、後続処理を継続する
+  2. migrationの内容を確認し、そこまでのcommit計画を立ててpushまで行ってから継続する
+- ユーザーの選択をtasklistの中断taskへ書き込む。実行時に問い直さない
+
+背景: 開発環境のDBを複数人で共有している。migrationを適用すると共有リソースの状態が変わるが、
+変更の記録がローカルにしか無いと、他の参照者はスキーマが変わった理由も内容も辿れない。
+共有リソースの状態変化と記録の所在を一致させるため、動作確認phaseの完了を待たずに
+commit・pushする選択肢を用意する。
+
+開発者ごとにDBを分離した時点でこの差し込みは不要になる。
+```
+
+#### 提案背景
+
+##### 読みBが解く問題
+
+提案1（読みA）では、実行中に executor が停止してユーザーへ問い、ユーザーの回答を待って再開する。
+設計段階で決められる判断を実行時まで持ち越しており、実行が止まる回数が増える。
+
+読みBでは、tasklistがreviewされる時点で判断が確定する。実行時の停止は「内容が意図どおりか」の
+確認だけになり、動作は既に決まっている。task-design の目的である「実装中に新しい判断が生まれない状態を作る」
+にも合致する。
+
+##### 「migration内容確認後に」の位置づけ
+
+この句は、選択肢が発動する条件を示している。ユーザーは初稿review時に「内容を確認したうえで
+commit・pushまで行う」という**動作**を選ぶのであって、内容そのものを事前に確認するわけではない。
+内容の確認は実行時に行われ、そこで意図と違えば通常のfeedback経路へ入る。
+
+#### 提案2へのフィードバック
+
+**結果:** 提案2を受諾
+
+> ok
+
+### 決定
+
+**規則（イテレーション0で確定済み、変更なし）:** 開発環境のDBが共有されている間は、DB migration を含む
+phase の完了時に、commit・push の要否をユーザーへ確認する。確認には commit 計画の提示を含む。
+
+**適用方法:** plugin が差し込み点を持ち、利用先の context instance が差し込む内容を宣言する。
+Ruby の `yield` と同じ構造であり、呼び出し側が枠を用意し、block を渡された時だけそこが実行される。
+
+| 側 | 持つもの |
+| --- | --- |
+| plugin（`task-design` / `tasklist-design.md`） | 差し込み点。後方互換性を壊す可能性のあるaction（DB migration、公開contractの破壊的変更、データ移行等）を含むphaseについて、`maintenance-plugin-context` へ consumer=`task-design` として差し込み宣言を要求する。宣言が返ればtasklistへ差し込み、返らなければ何も差し込まず他の作業と同列に扱う。宣言内容をplugin側が推測して補完しない |
+| 利用先（`.agents/skills/tumeda-dev-plugin-context.md` の `## task-design`） | 差し込む内容。DB migration に対する既定の中断taskと、その背景（開発用の共有DB） |
+
+migration を単独phaseとして切り出すMUSTと、migration結果をユーザーへ確認するMUSTは維持する。
+今回加えるのは、その確認で何を問い、何を行うかを利用先が宣言できる余地である。
+
+**問うタイミングと実行時の動作:**
+
+| 時点 | 行うこと | owner |
+| --- | --- | --- |
+| tasklist初稿作成 | migrationを含むphaseの末尾へ既定の中断taskを書く | task-design |
+| tasklist初稿のreview依頼 | 中断時に「内容確認だけで後続処理を継続する」か「そこまでのcommit計画を立ててpushまで行う」かをユーザーへ併せて問う | task-design |
+| review後 | ユーザーの選択をtasklistの中断taskへ書き込む | task-design |
+| 実行時（中断） | migrationの内容を提示し、記録済みの選択に従う。問い直さない | tasklist-executor |
+
+実行時に残るのは「migrationの内容が意図どおりか」の確認だけである。内容が意図と違えば、
+その時点で通常のfeedback経路（`implementation_review.md`）へ入る。
+
+**この形を選んだ理由:** 設計段階で決められる判断を実行時まで持ち越さないため。
+実行中に問うと executor の停止回数が増え、task-design の目的である
+「実装中に新しい判断が生まれない状態を作る」からも外れる。
+
+**適用先を「利用先docs / plugin / 両方」の3択で考えていた当初案を採らない理由:**
+共有DBという固有事情をpluginへ持ち込まず、かつ他のrepositoryが別の事情（例: 破壊的なAPI変更時の周知）で
+同じ枠を使えるようにするため。論点9の問い「この規則は、他のリポジトリでもそのまま成立するか」に対し、
+枠は成立し、中身は成立しない。その境界で切る。
+
+**version bump への影響:** 差し込み点の追加は利用先が新たに宣言できるものが増える変更であり、
+`maintenance-plugin-context` の判定軸（consumerが新たに呼べるものが増えたか）に照らすと MINOR に当たる。
+
+**適用時期:** nanitabe の実装完了後、`escalate-plugin-skill-fix` で正本repositoryへ引き渡す。
+利用先の context instance への宣言追加は `maintenance-plugin-context` が行う。
