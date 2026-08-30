@@ -68,7 +68,8 @@
 ### MUST（必達）
 
 - カレンダー上の食事を延期できる。このとき元の `meals` の行は削除され、`postponed_meals` の行が1件作られる。
-- 延期された食事は料理と時間帯（朝/昼/夜）を保持し、日付は保持しない。日付が未決であることが延期の定義であるため。
+- 延期された食事は、元の食事から `dish_id` / `meal_type` / `comment` を引き継ぐ。落とすのは `date` だけであり、
+  日付が未決であることが延期の定義であるため。退避エンティティは保存を既定とし、落とす項目に理由を要求する。
 - 同じ料理を重複して延期できる。延期するたびに1件作られ、片方を戻しても他方は残る。
 - 延期された食事の一覧を見られる。
 - 延期された食事に**日付を指定するだけで**食事として登録できる。時間帯は延期された食事が持つ値を使い、選択を求めない。
@@ -95,11 +96,12 @@
   料理の削除自体が稀で、そのうち延期リストにだけ存在する料理を消したいケースはさらに稀なエッジケースであるため
   今回は扱わない。この制約は code コメントと `meal/README.md` へ残す。
 - 延期された食事の件数をカレンダー上へ表示すること。
-- 食事コメントを延期された食事へ引き継ぐこと。
+- 延期された食事のコメントを、延期中に編集すること。引き継ぎと復元のみを扱う。
 
 ### 受け入れ基準
 
-- 食事カードのアクションから延期でき、確認ダイアログを経て `meals` の行が消え `postponed_meals` へ1件増える。
+- 食事カードのアクションから延期でき、確認ダイアログなしで `meals` の行が消え `postponed_meals` へ1件増える。
+- 食事コメントを書いた食事を延期すると、一覧にそのコメントが表示され、日付を与えて戻すと食事コメントが復元される。
 - 枠に紐付いた食事を延期すると、枠がその日に未割り当てとして残る。
 - ケバブメニューの「延期した食事」から一覧が開き、`created_at` 降順で料理名と時間帯が並ぶ。
 - 一覧から1件選び日付をタップすると、時間帯を訊かれずに食事が登録され、一覧から消える。
@@ -121,12 +123,11 @@
 **ケース: 食べられなかった食事を延期する**
 
 1. ユーザーがカレンダー上の食事カードをタップし、アクション展開エリアの「延期」をタップする
-2. `window.confirm('この食事を延期しますか？（食事コメントは失われます）')` が出る。キャンセルなら何も起きない
-3. frontendが `postponeMeal({ mealId })` を1回呼ぶ
-4. serverがGraphQL resolverで1トランザクションを開き、`PostponedMeal` の作成と `Meal` の削除を順に行う
-5. `postponed_meals` に `user_id` / `dish_id` / `meal_type` を引き継いだ行が1件増える
-6. `meals` の該当行が削除され、紐付いていた `meal_frame_entries.meal_id` が `NULL` へ戻る
-7. カレンダーが再取得され、その日からカードが消える。枠が紐付いていた場合は未割り当ての枠として残る
+2. frontendが `postponeMeal({ mealId })` を1回呼ぶ。確認ダイアログは出さない
+3. serverがGraphQL resolverで1トランザクションを開き、`PostponedMeal` の作成と `Meal` の削除を順に行う
+4. `postponed_meals` に `user_id` / `dish_id` / `meal_type` / `comment` を引き継いだ行が1件増える
+5. `meals` の該当行が削除され、紐付いていた `meal_frame_entries.meal_id` が `NULL` へ戻る
+6. カレンダーが再取得され、その日からカードが消える。枠が紐付いていた場合は未割り当ての枠として残る
 
 **ケース: 延期された食事を日付へ戻す**
 
@@ -137,7 +138,7 @@
 5. ユーザーが日付カードを1回タップする
 6. frontendが `resumePostponedMeal({ postponedMealId, date })` を1回呼ぶ
 7. serverがGraphQL resolverで1トランザクションを開き、`Meal` の作成と `PostponedMeal` の削除を順に行う
-8. `meals` に行が1件増える。`meal_type` は延期された食事が持つ値、`comment` は `NULL`
+8. `meals` に行が1件増える。`meal_type` と `comment` は延期された食事が持つ値
 9. `postponed_meals` の該当行が削除される
 10. カレンダーが再取得され、指定日に食事が現れる。パネルは閉じる
 
@@ -145,7 +146,7 @@
 
 | case | success flowからの分岐 | call・stateへの影響 | actorの観測と次の操作 | 参照 |
 | --- | --- | --- | --- | --- |
-| 確認ダイアログでキャンセル | step 2 で停止 | mutation未呼出、data不変 | カードのアクション展開エリアが開いたまま。再度選べる | 操作フロー |
+| コメントなしの食事を延期 | 分岐しない（success flow内） | `postponed_meals.comment` が `NULL` になる | 一覧にコメント行が出ない。行の高さは伸びない | データモデル |
 | 延期一覧が空 | step 2 の後 | query呼出済み、data不変 | パネルに空状態が出る。`×` で閉じるしかない | 画面イメージ |
 | 戻す対象が他端末で既に戻されていた | step 7 でresolverが対象行を見つけられない | トランザクションがrollbackし、`Meal` も作られない | error表示。一覧を再取得すると当該行が消えている | callerが依存するcontract |
 | 枠に紐付いた食事を延期 | 分岐しない（success flow内） | `meal_frame_entries.meal_id` が `NULL` になる | 枠だけがその日に残り、未割り当て表示になる | データモデル |
@@ -177,14 +178,19 @@
 │ 延期した食事                      ×  │  ← ヘッダー（高さ401px = viewport約47%）
 ├────────────────────────────────────┤
 │ 豚の角煮                        夜  │
+│   多めに作る                        │  ← コメントがある行だけ2行目が出る
 │ レバニラ炒め                     夜  │
 │ カオマンガイ                     昼  │
 │ 豚の角煮                        夜  │  ← 重複は許されるため同名が並ぶ
 └────────────────────────────────────┘
 ```
 
-配置意図: 料理名を左の判断起点に置き、時間帯を右端へ寄せる。実測した「食事登録」パネルの
-「時間帯」ラジオはここに置かない。延期された食事が時間帯を持つため選択が不要である。
+配置意図: 料理名を左の判断起点に置き、時間帯を右端へ寄せる。コメントは料理名の下へ小さめのイタリックで置き、
+`MealCard` の食事コメントと同じ扱いにする。コメントがない行では2行目を出さず、行の高さを揃える。
+引き継いだコメントが見えないと、引き継がれたことをユーザーが確認できない。
+
+実測した「食事登録」パネルの「時間帯」ラジオはここに置かない。延期された食事が時間帯を持つため
+選択が不要である。
 
 **今回変わる状態別の見え方:**
 
@@ -212,14 +218,26 @@ postponed_meals
   user_id      NOT NULL
   dish_id      NOT NULL
   meal_type    NOT NULL
+  comment      NULL可
   created_at   NOT NULL
   updated_at   NOT NULL
 ```
 
 一意制約は張らない。同じ料理を重複して延期できる。
 
-持たせないもの: 元の食事の `date`（未決であることが延期の定義）、元の食事の `comment`（その日その回についての記述であり、
-次に食べるときへ引き継ぐ意味を持たない）、延期固有のメモ、並び順（`created_at` 降順で足りる）。
+`PostponedMeal` は退避エンティティ（新しいデータを作って元データを削除する）であるため、保存を既定とし、
+落とす項目に理由を要求する。`meals` の全項目を分類した結果は次のとおりで、未分類はない。
+
+| `meals` の項目 | 扱い | 理由 |
+| --- | --- | --- |
+| `id` | 引き継がない | 行の識別子であり元データの内容ではない |
+| `user_id` / `dish_id` / `meal_type` | 引き継ぐ | — |
+| `date` | 落とす | 日付が未決であることが延期の定義そのもの。落とす唯一の項目 |
+| `comment` | 引き継ぐ | 落とす理由を書けない |
+| `created_at` / `updated_at` | 引き継がない | ライフサイクルmetadataであり元データの内容ではない |
+
+`comment` を NOT NULL にしないのは、コメントなしの食事が存在するためである（`meals.comment` も nullable）。
+延期固有のメモと並び順は持たない（`created_at` 降順で足りる）。
 
 既存モデルとの対称性:
 
@@ -232,14 +250,15 @@ postponed_meals
 
 **具体的なrow例:**
 
-| id | user_id | dish_id | meal_type | created_at |
-| --- | --- | --- | --- | --- |
-| 1 | 1 | 42（豚の角煮） | 3（夕食） | 2026-08-29 20:10 |
-| 2 | 1 | 42（豚の角煮） | 3（夕食） | 2026-08-30 20:05 |
-| 3 | 1 | 17（カオマンガイ） | 2（昼食） | 2026-08-30 12:00 |
+| id | user_id | dish_id | meal_type | comment | created_at |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 1 | 42（豚の角煮） | 3（夕食） | 多めに作る | 2026-08-29 20:10 |
+| 2 | 1 | 42（豚の角煮） | 3（夕食） | `NULL` | 2026-08-30 20:05 |
+| 3 | 1 | 17（カオマンガイ） | 2（昼食） | `NULL` | 2026-08-30 12:00 |
 
 典型case:
-- 同じ料理を2回延期: id 1 と 2。完全に同じ値の行が2件並ぶ。区別は `id` と `created_at` だけ
+- 同じ料理を2回延期: id 1 と 2。`comment` の有無だけが異なる。両方 `NULL` なら区別は `id` と `created_at` だけ
+- コメントなしで延期: id 2・3。`comment` は `NULL`。一覧では2行目を出さない
 - 時間帯違い: id 3 は `meal_type` が異なる
 - 空: 行なし。一覧は空状態を表示する
 
@@ -247,13 +266,14 @@ postponed_meals
 
 | operation | 操作前 | 操作後 | relation・cascade・保持値 |
 | --- | --- | --- | --- |
-| 食事を延期する | `meals` に `{date: 2026-08-29, meal_type: 3, dish_id: 42, comment: "急遽外食"}` | `meals` の行は削除。`postponed_meals` に `{dish_id: 42, meal_type: 3}` が1件 | `comment` は引き継がれず失われる。紐付いていた `meal_frame_entries.meal_id` は `NULL` へ |
-| 延期された食事を戻す | `postponed_meals` id=1 | `postponed_meals` id=1 は削除。`meals` に `{date: 指定日, meal_type: 3, dish_id: 42, comment: NULL}` が1件 | id=2 は残る。同じ料理の別の意思であるため |
+| 食事を延期する | `meals` に `{date: 2026-08-29, meal_type: 3, dish_id: 42, comment: "多めに作る"}` | `meals` の行は削除。`postponed_meals` に `{dish_id: 42, meal_type: 3, comment: "多めに作る"}` が1件 | `comment` はそのまま引き継がれる。落ちるのは `date` だけ。紐付いていた `meal_frame_entries.meal_id` は `NULL` へ |
+| 延期された食事を戻す | `postponed_meals` id=1（`comment: "多めに作る"`） | `postponed_meals` id=1 は削除。`meals` に `{date: 指定日, meal_type: 3, dish_id: 42, comment: "多めに作る"}` が1件 | id=2 は残る。同じ料理の別の意思であるため |
 | 料理を削除する | `dishes` id=42、`postponed_meals` に id 1・2 | 削除は拒否され、すべての行が不変 | `Dish::Usecase::RemoveCommand` が `postponed_meals` の存在を検査して `raise` する |
 
 **不変条件:**
 
 - `postponed_meals` の行は必ず `dish_id` と `meal_type` を持つ。日付は持たない
+- 延期と復元を1往復しても、`dish_id` / `meal_type` / `comment` は元の食事と一致する。落ちるのは `date` だけ
 - 同じ `(user_id, dish_id, meal_type)` の行が複数存在してよい。重複は「複数回食べたい」という意思を表す
 - `postponed_meals` の行が増減しても `meals` の他の行、`meal_frames`、`meal_frame_patterns` は変化しない
 
@@ -269,9 +289,9 @@ postponedMeals: [PostponedMealForList!]!
 
 | contract | caller | input contract | 成功時のresult | 成功時のside effect |
 | --- | --- | --- | --- | --- |
-| `postponeMeal` | 食事カードのアクション展開エリア | `mealId` は current user の食事 | `postponedMealId` | `meals` の行を削除し `postponed_meals` へ1件作成。紐付く `meal_frame_entries.meal_id` は `NULL` へ戻る |
-| `schedulePostponedMeal` | 延期一覧の確定パネル | `postponedMealId` は current user のもの、`date` 必須 | `mealId` | `postponed_meals` の行を削除し `meals` へ1件作成。`meal_type` は延期された食事の値、`comment` は `NULL` |
-| `postponedMeals` | 延期一覧パネル | なし | `id` / `dishId` / `dishName` / `mealType` / `createdAt` を `createdAt` 降順で | なし |
+| `postponeMeal` | 食事カードのアクション展開エリア | `mealId` は current user の食事 | `postponedMealId` | `meals` の行を削除し `postponed_meals` へ `dish_id` / `meal_type` / `comment` を引き継いで1件作成。紐付く `meal_frame_entries.meal_id` は `NULL` へ戻る |
+| `schedulePostponedMeal` | 延期一覧の確定パネル | `postponedMealId` は current user のもの、`date` 必須 | `mealId` | `postponed_meals` の行を削除し `meals` へ1件作成。`meal_type` と `comment` は延期された食事の値 |
+| `postponedMeals` | 延期一覧パネル | なし | `id` / `dishId` / `dishName` / `mealType` / `comment` / `createdAt` を `createdAt` 降順で | なし |
 
 命名根拠: 戻す操作を `schedule` としたのは、この操作で起きるのが「日付が未決だった食事に日付を与えて
 確定させる」ことだからである。`re` を付けないのは、元の日付へ復すのではなく新しい日付を決めるため。
@@ -362,15 +382,17 @@ backend / frontend とも test-first、container 内実行（`backend/docs/ai_gu
 - `PostponedMeal` model: `build_existing_root_from_id` と `persist_from_...` の往復で属性が失われないこと
 - `mutations/meal/postponed/postpone_meal`: `meals` の削除と `postponed_meals` の作成が1トランザクションで
   起きること、紐付く `meal_frame_entries.meal_id` が `NULL` になること
-- `mutations/meal/postponed/schedule_postponed_meal`: `meal_type` が引き継がれること、`comment` が `NULL` で
-  あること、対象が存在しない場合にrollbackして `Meal` が作られないこと
+- `mutations/meal/postponed/schedule_postponed_meal`: `meal_type` と `comment` が引き継がれること、
+  対象が存在しない場合にrollbackして `Meal` が作られないこと
+- 延期と復元の1往復で `dish_id` / `meal_type` / `comment` が元の食事と一致すること（退避の全量保存の回帰）
 - `Dish::Usecase::RemoveCommand`: 延期された食事がある料理の削除が拒否されること
 
 **frontend（Jest、`docker compose exec frontend yarn test`）**
 
 - 一覧パネル: `created_at` 降順で並ぶこと、同名の行が重複して並べること、空状態
 - 確定パネル: 時間帯の選択UIが存在しないこと（論点2の決定が守られていることの回帰）
-- 食事カード: 「延期」が表示され、確認ダイアログでキャンセルすると mutation が呼ばれないこと
+- 食事カード: 「延期」が表示され、タップすると確認ダイアログなしで mutation が呼ばれること
+- 一覧パネル: コメントがある行だけ2行目が出ること
 
 **UI動作確認**
 

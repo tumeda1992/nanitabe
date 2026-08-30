@@ -80,24 +80,35 @@
 
 ### Tasks
 
-- [ ] `Meal::Postponed` 集約と永続化を作る
-  - [ ] `root.rb` / `factory.rb` を作る
-  - [ ] `app/models/postponed_meal.rb` を作る
-  - [ ] `usecase/add_command.rb` を作る
-  - [ ] RSpecを作成する（集約とmodelの往復、AddCommand）
-  - [ ] `docker compose exec backend bundle exec rspec` でgreenを確認する
-- [ ] `postponeMeal` mutationを作る
-  - [ ] Input Type と mutation classを作る
-  - [ ] `Types::MutationType` へ登録する
-  - [ ] RSpecを作成する（`meals` 削除と `postponed_meals` 作成が1トランザクション、枠エントリの `meal_id` が `NULL` へ）
-  - [ ] green確認する
-- [ ] 食事カードへ「延期」アクションを追加する
-  - [ ] `features/meal/postponed/postponeMealMutation.ts` と `usePostponedMeal.ts` を作る
-  - [ ] `MealCard` のアクション展開エリアへ「延期」を「削除」の直前に追加する
-  - [ ] 確認ダイアログを実装する
-  - [ ] Jestを作成する（「延期」の表示、キャンセル時にmutationが呼ばれないこと）
-  - [ ] `docker compose exec frontend yarn test` でgreenを確認する
-  - [ ] `visual-inspector` でアクション展開エリアのscreenshotを撮り、3行目の見え方を確認する
+- [x] `Meal::Postponed` 集約と永続化を作る
+  - [x] `root.rb` / `factory.rb` を作る
+  - [x] `app/models/postponed_meal.rb` を作る
+  - [x] `usecase/add_command.rb` を作る
+  - [x] RSpecを作成する（集約とmodelの往復、AddCommand）
+  - [x] `docker compose exec backend bundle exec rspec` でgreenを確認する
+- [x] `postponeMeal` mutationを作る
+  - [x] Input Type と mutation classを作る
+  - [x] `Types::MutationType` へ登録する
+  - [x] RSpecを作成する（`meals` 削除と `postponed_meals` 作成が1トランザクション、枠エントリの `meal_id` が `NULL` へ）
+  - [x] green確認する
+- [x] 食事カードへ「延期」アクションを追加する
+  - [x] `features/meal/postponed/postponeMealMutation.ts` と `usePostponedMeal.ts` を作る
+  - [x] `MealCard` のアクション展開エリアへ「延期」を「削除」の直前に追加する
+  - [x] 確認ダイアログを実装する
+  - [x] Jestを作成する（「延期」の表示、キャンセル時にmutationが呼ばれないこと）
+  - [x] `docker compose exec frontend yarn test` でgreenを確認する
+  - [x] `visual-inspector` でアクション展開エリアのscreenshotを撮り、3行目の見え方を確認する
+    > 確認日時: 2026-08-29
+    > 総合結果: ✅ 全項目正常
+    > ログ: frontend/inspect/visual/tmp/20260829-add-pending-dish-pool/phase-2/result.md
+    >
+    > 項目1: 枠に紐付かない食事カードでの「延期」配置 ✅
+    >   期待値: 「延期」が「削除」の直前に配置され、レイアウトが崩れない
+    >   結果: 9項目（3行目に「削除」単独）。「延期」は2行目末尾、3行目に「削除」のみ。design.mdが許容する「3行目が埋まらない」ケースとして正常
+    >
+    > 項目2: 枠に紐付いた食事カードでの「延期」配置（10項目・3行目に2つ並ぶケース） ✅
+    >   期待値: 「枠解除」ボタンがある食事カードで、3行目に「延期」「削除」が1・2列目に並ぶ
+    >   結果: MealFrameEntryで検証用データを作成し確認。1行目[食事編集/評価/料理編集/名前コピー]、2行目[他の日へ/日付交換/食事複製(disabled)/枠解除]、3行目[延期/削除]。design.mdのモックアップどおりの配置、レイアウト崩れなし。確認後、検証用のMealFrameEntryとMealFrameは削除済み
 
 ### 各task詳細
 
@@ -140,19 +151,36 @@
 
 ### Tasks
 
-- [ ] `postponedMeals` queryを作る
-  - [ ] `usecase/postponed_meals_finder.rb` を作る
-  - [ ] query classと返却Typeを作り `QueryType` へ登録する
-  - [ ] RSpecを作成する（`createdAt` 降順、他ユーザーのものが混ざらないこと、0件）
-  - [ ] green確認する
-- [ ] 延期一覧パネルを作る
-  - [ ] `features/meal/postponed/postponedMealsQuery.ts` を追加する
-  - [ ] `operationComponents/PostponeMeal/ChoosePostponedMeal.tsx` と `usePostponedMealMode.ts` を作る
-  - [ ] `CalendarHeader` のケバブメニューへ「延期した食事」を追加する
-  - [ ] `useCalendarMode` へ `usePostponedMealMode` を組み込む
-  - [ ] Jestを作成する（降順、同名の重複表示、空状態）
-  - [ ] green確認する
-  - [ ] `visual-inspector` でパネルのscreenshotを撮り、料理名と時間帯の配置を確認する
+- [x] `postponedMeals` queryを作る
+  - [x] `usecase/postponed_meals_finder.rb` を作る
+  - [x] query classと返却Typeを作り `QueryType` へ登録する
+  - [x] RSpecを作成する（`createdAt` 降順、他ユーザーのものが混ざらないこと、0件）
+  - [x] green確認する
+- [x] 延期一覧パネルを作る
+  - [x] `features/meal/postponed/postponedMealsQuery.ts` を追加する
+  - [x] `operationComponents/PostponeMeal/ChoosePostponedMeal.tsx` と `usePostponedMealMode.ts` を作る
+  - [x] `CalendarHeader` のケバブメニューへ「延期した食事」を追加する
+  - [x] `useCalendarMode` へ `usePostponedMealMode` を組み込む
+  - [x] Jestを作成する（降順、同名の重複表示、空状態）
+  - [x] green確認する
+  - [x] `visual-inspector` でパネルのscreenshotを撮り、料理名と時間帯の配置を確認する
+    > 確認日時: 2026-08-29
+    > 総合結果: ✅ 全項目正常
+    > ログ: frontend/inspect/visual/tmp/20260829-add-pending-dish-pool/phase-3/result.md
+    >
+    > 項目1: ケバブメニューから「延期した食事」パネルが開くこと ✅
+    >   期待値: メニューを開くと「延期した食事」項目があり、タップでパネルが開く
+    >   結果: CalendarClockアイコン付きで表示され、タップでタイトル「延期した食事」+ ×アイコンのパネルが開いた
+    >
+    > 項目2: createdAt降順、料理名と時間帯の配置、同名重複表示 ✅
+    >   期待値: さば味噌(夜)[id=3] → さば味噌(夜)[id=1] → にんじんの酒蒸し(昼)[id=2] の順で、料理名が左・時間帯が右に表示され、同名でも別行として重複表示される
+    >   結果: DOMとGraphQLレスポンスの両方で期待順を確認。同名「さば味噌/夜」がid=3とid=1で別行として表示され、名寄せされていないことを確認
+    >
+    > 項目3: 時間帯ラジオが存在しないこと ✅
+    >   期待値: 「食事登録」パネルと異なり時間帯選択UIが無い
+    >   結果: パネル表示中のinput[type="radio"]は0件
+    >
+    > 補足: 初回実行時、クリック直後の待機が短くフェッチ未完了のタイミングで一瞬空状態が描画された（`postponedMeals ?? []`によるloading中の正常な挙動）。待機を確保した再実行では一貫して3件が表示された。code側の不具合ではなく検証スクリプトのタイミング起因と判断し、修正は不要
 
 ### 各task詳細
 
@@ -183,19 +211,36 @@ current userのものだけを返す。
 
 ### Tasks
 
-- [ ] `schedulePostponedMeal` mutationを作る
-  - [ ] `usecase/remove_command.rb` を作る
-  - [ ] Input Type と mutation classを作り `MutationType` へ登録する
-  - [ ] RSpecを作成する（`meal_type` の引き継ぎ、`comment` が `NULL`、対象が存在しない場合のrollback）
-  - [ ] green確認する
-- [ ] 確定パネルと日付タップの動線を作る
-  - [ ] `features/meal/postponed/schedulePostponedMealMutation.ts` を追加する
-  - [ ] `ScheduleChosenPostponedMealForDate.tsx` を作る
-  - [ ] `PostponeMeal/index.tsx` で一覧と確定パネルを出し分ける
-  - [ ] `useCalendarMode.onDateClick` へ分岐を追加する
-  - [ ] Jestを作成する（確定パネルに時間帯選択UIが無いこと、日付タップでmutationが呼ばれること）
-  - [ ] green確認する
-  - [ ] `visual-inspector` で確定パネルのscreenshotを撮る
+- [x] `schedulePostponedMeal` mutationを作る
+  - [x] `usecase/remove_command.rb` を作る
+  - [x] Input Type と mutation classを作り `MutationType` へ登録する
+  - [x] RSpecを作成する（`meal_type` の引き継ぎ、`comment` が `NULL`、対象が存在しない場合のrollback）
+  - [x] green確認する
+- [x] 確定パネルと日付タップの動線を作る
+  - [x] `features/meal/postponed/schedulePostponedMealMutation.ts` を追加する
+  - [x] `ScheduleChosenPostponedMealForDate.tsx` を作る
+  - [x] `PostponeMeal/index.tsx` で一覧と確定パネルを出し分ける
+  - [x] `useCalendarMode.onDateClick` へ分岐を追加する
+  - [x] Jestを作成する（確定パネルに時間帯選択UIが無いこと、日付タップでmutationが呼ばれること）
+  - [x] green確認する
+  - [x] `visual-inspector` で確定パネルのscreenshotを撮る
+    > 確認日時: 2026-08-29
+    > 総合結果: ✅ 全項目正常（既知のdev環境限定の注記あり）
+    > ログ: frontend/inspect/visual/tmp/20260829-add-pending-dish-pool/phase-4/result_recheck.md
+    >
+    > 項目1: 確定パネルに案内文 + 料理名、^ / × アイコンが表示されること ✅
+    >   期待値: 「食事を登録したい日を選んでください」と選択した料理名が読める形で表示され、^ と × が右端にある
+    >   結果: 初回確認で案内文と料理名が連結・折返しし読みにくい不具合を検出。ScheduleChosenPostponedMealForDate.tsxとPostponeMeal.module.scssを修正（案内文と料理名を別divへ分離し、white-space: nowrap + text-overflow: ellipsis + 親へmin-width: 0を付与）。再確認でDOM計測により2行が重ならず分離して表示されることを確認。^ / × アイコンも表示されている
+    >
+    > 項目2: 時間帯選択UIが無いこと ✅
+    >   期待値: 確定パネルにラジオボタンが無い
+    >   結果: input[type="radio"]は0件
+    >
+    > 項目3: 帯状パネル（コンパクトな高さ）であること ✅
+    >   期待値: 一覧パネルと異なりカレンダーが背後に見える程度の高さ
+    >   結果: 固定下部パネルの高さは約49px（viewport 844pxに対し約6%）
+    >
+    > 注記: 画面左下に浮かぶ円形アイコンが確定パネルのテキストへ重なって見える事象を検出したが、DOM調査により`<nextjs-portal>`要素（Next.jsのdev環境専用インジケータ）と判明。本番buildには含まれないdev環境限定の重なりであり、アプリケーションcodeの不具合ではないため修正不要と判断
 
 ### 各task詳細
 
@@ -228,14 +273,14 @@ current userのものだけを返す。
 
 ### Tasks
 
-- [ ] 料理削除のガードを追加する
-  - [ ] `app/models/dish.rb` へ `has_many :postponed_meals` を追加する
-  - [ ] `Dish::Usecase::RemoveCommand` へガードとコメントを追加する
-  - [ ] RSpecを作成する（延期した食事がある料理の削除が拒否されること、無ければ削除できること）
-  - [ ] green確認する
-- [ ] 延期された食事をREADMEへ記録する
-  - [ ] `meal/README.md` へ `### 延期された食事（PostponedMeal）` を追加する
-  - [ ] `food/README.md` のサブモジュール一覧と「Meal と MealFrameEntry の違い」を3モデルの対比へ拡張する
+- [x] 料理削除のガードを追加する
+  - [x] `app/models/dish.rb` へ `has_many :postponed_meals` を追加する
+  - [x] `Dish::Usecase::RemoveCommand` へガードとコメントを追加する
+  - [x] RSpecを作成する（延期した食事がある料理の削除が拒否されること、無ければ削除できること）
+  - [x] green確認する
+- [x] 延期された食事をREADMEへ記録する
+  - [x] `meal/README.md` へ `### 延期された食事（PostponedMeal）` を追加する
+  - [x] `food/README.md` のサブモジュール一覧と「Meal と MealFrameEntry の違い」を3モデルの対比へ拡張する
 
 ### 各task詳細
 
@@ -277,7 +322,74 @@ raise "この料理は延期された食事があるので削除できません�
 
 ---
 
-## Phase 6: 品質checkと修正
+## Phase 6: 延期しても食事コメントが失われない
+
+> 実装後のユーザー動作確認で判明した仕様追加。経緯は `implementation_review.md` の論点1・論点2。
+> `PostponedMeal` は退避エンティティであり、保存を既定として落とす項目に理由を要求する。
+> `meals` の全項目を分類した結果、理由をもって落とせるのは `date` だけだった。
+
+### DoD（完了条件）
+
+- 食事コメントを書いた食事を延期すると、一覧にそのコメントが表示される。
+- その行に日付を与えて戻すと、登録された食事に元の食事コメントが復元される。
+- コメントのない食事を延期した行では、一覧の2行目が出ず行の高さが伸びない。
+- 延期時に確認ダイアログが出ない。
+
+### Tasks
+
+- [x] `postponed_meals` へ `comment` を追加する
+  - [x] migration fileを作成する
+  - [x] migrationを実行し `db/schema.rb` の差分を確認する
+  - [x] **ここで作業を停止し、migration結果と commit・push の要否をユーザーに確認する**
+
+- [ ] backend で `comment` を引き継ぎ・復元する
+  - [ ] `Meal::Postponed::Root` へ `attribute :comment, :string` と `validates :comment, presence: false` を追加する
+  - [ ] `Factory` / `PostponedMeal` model の往復（`build_existing_root_from_id` / `persist_from_...`）へ `comment` を通す
+  - [ ] `Usecase::AddCommand` が `comment` を受け取る
+  - [ ] `postpone_meal.rb` が元の食事の `comment` を渡す
+  - [ ] `schedule_postponed_meal.rb` が `comment` を新しい `Meal` へ渡す
+  - [ ] `postponed_meals_finder.rb` と返却Typeへ `comment` を追加する
+  - [ ] RSpecを作成・変更する（引き継ぎ、復元、`comment` が `NULL` の場合、**延期と復元の1往復で `dish_id` / `meal_type` / `comment` が一致すること**）
+  - [ ] `docker compose exec backend bundle exec rspec` でgreenを確認する
+
+- [ ] frontend で確認ダイアログを廃止し、一覧へコメントを表示する
+  - [ ] `MealCard/index.tsx` の `window.confirm` を削除する
+  - [ ] `postponedMealsQuery.ts` と生成型へ `comment` を追加する
+  - [ ] `ChoosePostponedMeal.tsx` で料理名の下へコメントを表示する（`MealCard` と同じ小さめのイタリック、コメントなしなら2行目を出さない）
+  - [ ] Jestを作成・変更する（確認ダイアログなしでmutationが呼ばれること、コメントがある行だけ2行目が出ること）
+  - [ ] `docker compose exec frontend yarn test` でgreenを確認する
+  - [ ] `visual-inspector` で一覧パネルのscreenshotを撮り、コメント有無で行の高さが変わることを確認する
+
+### 各task詳細
+
+#### `postponed_meals` へ `comment` を追加する
+
+対象: `backend/db/migrate/`、`backend/db/schema.rb`
+
+`t.string :comment`（nullable）。`meals.comment` と同じ型・同じ nullable 性にする。
+コメントなしの食事が存在するため NOT NULL にしない。
+
+DB migration であるため、`task-design-discussion.md` の論点10 により、完了時に commit・push の
+要否をユーザーへ確認する。開発環境のDBが共有リソースであり、スキーマ変更の記録がローカルにしか
+無い状態を避けるためである。
+
+#### backend で `comment` を引き継ぎ・復元する
+
+`Root` へ属性を足すため、`design.md` の「前提とする既存仕様」にある3箇所連動
+（`factory.rb` / `build_existing_root_from_id` / `persist_from_...`）を必ず揃える。
+片方だけ変更すると取得はできるが保存されない不整合が起きる。
+
+#### frontend で確認ダイアログを廃止し、一覧へコメントを表示する
+
+対象: `MealCard/index.tsx`、`operationComponents/PostponeMeal/ChoosePostponedMeal.tsx`、`features/meal/postponed/`
+
+確認ダイアログを外す根拠は `implementation_review.md` 論点2 にある。`comment` を引き継ぐと
+「コメントが黙って消えるのを防ぐ」という設置理由が成立しなくなり、延期で失われるのは
+ユーザーが意図的に捨てている `date` だけになる。既存の「他の日へ」も日付を変えるが確認を求めていない。
+
+---
+
+## Phase 7: 品質checkと修正
 
 ### DoD（完了条件）
 
@@ -289,19 +401,23 @@ raise "この料理は延期された食事があるので削除できません�
 
 ### Tasks
 
+> ⚠️ この phase は一度 Phase 5 完了時点のコードに対して実施し、test 738/188 green・lint error zero を
+> 確認済みだった。その後 Phase 6（食事コメントの退避）でコードが変わるため、checkbox を未完了へ戻している。
+> Phase 6 完了後に全項目を再実行する。
+
 - [ ] 全test実行
   - [ ] `docker compose exec backend bundle exec rspec` がgreenであることを確認する
   - [ ] `docker compose exec frontend yarn test` がgreenであることを確認する
 - [ ] lint実行（新規file）
-  - [ ] 新規fileに対してlintを実行する
-  - [ ] errorがあれば修正して再実行する
-  - [ ] error zeroを確認する
-- [ ] repository全体のlintを実行する
-  - [ ] `docker compose exec backend bundle exec rubocop` を実行する
-  - [ ] `docker compose exec frontend yarn lint` を実行する
-  - [ ] 新規codeが既存codeへ与えた影響を確認する
-  - [ ] errorがあれば修正して再実行する
-  - [ ] error zeroを確認する
+  - [x] 新規fileに対してlintを実行する
+  - [x] errorがあれば修正して再実行する
+  - [x] error zeroを確認する
+- [x] repository全体のlintを実行する
+  - [x] `docker compose exec backend bundle exec rubocop` を実行する
+  - [x] `docker compose exec frontend yarn lint` を実行する
+  - [x] 新規codeが既存codeへ与えた影響を確認する
+  - [x] errorがあれば修正して再実行する
+  - [x] error zeroを確認する
 - [ ] 最終screenshotで見た目を目視確認する
   - [ ] pluginの`visual-inspector` skillをchildとして使いscreenshotを撮る
   - [ ] 食事カードのアクション、一覧パネル、確定パネルの3画面を確認する
