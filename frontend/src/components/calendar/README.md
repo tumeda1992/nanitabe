@@ -25,6 +25,15 @@ grep キーワード: `calender`（"calendar" ではなくスペルミス表記�
   "calendar" に混在させると検索・import が壊れる。
 - MUST: データは `useMeal`（features/meal/）から取得した `mealsForCalender` を
   `dateMealsList` 形式に変換して `Calender` に渡す。直接 GraphQL を呼ばない。
+- MUST: `onDataChanged`（実体は `useRefreshCalendarData.tsx` の `refreshData`）は
+  `apolloClient.clearStore()` を含む**全キャッシュ消去**であり、非同期である。
+  この callback と並行して別の `refetch` を走らせない。
+    - 並走させると in flight の query が store reset と衝突し、
+      `Invariant Violation: Store reset while query was in flight` になる
+    - 同じ `onCompleted` 内で他の query も更新したい場合は、
+      `await onDataChanged()` を先に完了させてから `refetch` する
+    - やってしまいがちな失敗: `onDataChanged` という名前から「変更を通知する軽い callback」と読み、
+      中身を確認せずに他の非同期処理と並べる
 
 ## 変更ガイド
 
