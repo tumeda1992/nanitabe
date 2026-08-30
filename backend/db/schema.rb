@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_08_29_132653) do
+ActiveRecord::Schema[7.2].define(version: 2026_08_30_110413) do
   create_table "dish_effort_levels", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "meal_position", null: false
     t.integer "minutes", null: false
@@ -175,6 +175,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_08_29_132653) do
     t.integer "meal_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "comment"
     t.index ["dish_id"], name: "index_postponed_meals_on_dish_id"
     t.index ["user_id"], name: "index_postponed_meals_on_user_id"
   end
