@@ -342,23 +342,34 @@ raise "この料理は延期された食事があるので削除できません�
   - [x] migrationを実行し `db/schema.rb` の差分を確認する
   - [x] **ここで作業を停止し、migration結果と commit・push の要否をユーザーに確認する**
 
-- [ ] backend で `comment` を引き継ぎ・復元する
-  - [ ] `Meal::Postponed::Root` へ `attribute :comment, :string` と `validates :comment, presence: false` を追加する
-  - [ ] `Factory` / `PostponedMeal` model の往復（`build_existing_root_from_id` / `persist_from_...`）へ `comment` を通す
-  - [ ] `Usecase::AddCommand` が `comment` を受け取る
-  - [ ] `postpone_meal.rb` が元の食事の `comment` を渡す
-  - [ ] `schedule_postponed_meal.rb` が `comment` を新しい `Meal` へ渡す
-  - [ ] `postponed_meals_finder.rb` と返却Typeへ `comment` を追加する
-  - [ ] RSpecを作成・変更する（引き継ぎ、復元、`comment` が `NULL` の場合、**延期と復元の1往復で `dish_id` / `meal_type` / `comment` が一致すること**）
-  - [ ] `docker compose exec backend bundle exec rspec` でgreenを確認する
+- [x] backend で `comment` を引き継ぎ・復元する
+  - [x] `Meal::Postponed::Root` へ `attribute :comment, :string` と `validates :comment, presence: false` を追加する
+  - [x] `Factory` / `PostponedMeal` model の往復（`build_existing_root_from_id` / `persist_from_...`）へ `comment` を通す
+  - [x] `Usecase::AddCommand` が `comment` を受け取る
+  - [x] `postpone_meal.rb` が元の食事の `comment` を渡す
+  - [x] `schedule_postponed_meal.rb` が `comment` を新しい `Meal` へ渡す
+  - [x] `postponed_meals_finder.rb` と返却Typeへ `comment` を追加する
+  - [x] RSpecを作成・変更する（引き継ぎ、復元、`comment` が `NULL` の場合、**延期と復元の1往復で `dish_id` / `meal_type` / `comment` が一致すること**）
+  - [x] `docker compose exec backend bundle exec rspec` でgreenを確認する
 
-- [ ] frontend で確認ダイアログを廃止し、一覧へコメントを表示する
-  - [ ] `MealCard/index.tsx` の `window.confirm` を削除する
-  - [ ] `postponedMealsQuery.ts` と生成型へ `comment` を追加する
-  - [ ] `ChoosePostponedMeal.tsx` で料理名の下へコメントを表示する（`MealCard` と同じ小さめのイタリック、コメントなしなら2行目を出さない）
-  - [ ] Jestを作成・変更する（確認ダイアログなしでmutationが呼ばれること、コメントがある行だけ2行目が出ること）
-  - [ ] `docker compose exec frontend yarn test` でgreenを確認する
-  - [ ] `visual-inspector` で一覧パネルのscreenshotを撮り、コメント有無で行の高さが変わることを確認する
+- [x] frontend で確認ダイアログを廃止し、一覧へコメントを表示する
+  - [x] `MealCard/index.tsx` の `window.confirm` を削除する
+  - [x] `postponedMealsQuery.ts` と生成型へ `comment` を追加する
+  - [x] `ChoosePostponedMeal.tsx` で料理名の下へコメントを表示する（`MealCard` と同じ小さめのイタリック、コメントなしなら2行目を出さない）
+  - [x] Jestを作成・変更する（確認ダイアログなしでmutationが呼ばれること、コメントがある行だけ2行目が出ること）
+  - [x] `docker compose exec frontend yarn test` でgreenを確認する
+  - [x] `visual-inspector` で一覧パネルのscreenshotを撮り、コメント有無で行の高さが変わることを確認する
+    > 確認日時: 2026-08-30
+    > 総合結果: ✅ 全項目正常
+    > ログ: frontend/inspect/visual/tmp/20260829-add-pending-dish-pool/phase-6-comment-display/result.md
+    >
+    > 項目1: コメント有無で行の高さが変わること ✅
+    >   期待値: コメントがある行だけ2行目が出て、無い行は1行目のみで高さが揃う
+    >   結果: DOM実測でid=4/id=2（コメント無し）が45px、id=1（コメント有り）が63.5pxで、コメント行分だけ高さが伸びていることを確認。コメント無し行に空の2行目は無い
+    >
+    > 項目2: 確認ダイアログが出ないこと ✅（code確認）
+    >   期待値: 「延期」タップでwindow.confirmが呼ばれない
+    >   結果: 実データへの副作用を避けるため実際のタップ操作は行わず、MealCard/index.tsxのhandlePostponeにwindow.confirmが無いことをcodeで確認。window.confirmはhandleUnassign（枠解除）とhandleRemove（削除）のみに残る
 
 ### 各task詳細
 
@@ -389,7 +400,56 @@ DB migration であるため、`task-design-discussion.md` の論点10 により
 
 ---
 
-## Phase 7: 品質checkと修正
+## Phase 7: 確定・延期の後に延期一覧が再取得される
+
+> ユーザー動作確認で判明した不具合。経緯は `implementation_review.md` の論点5。
+> `design.md` の受け入れ基準「確定した行は一覧から消え、同じ料理の他の行は残る」は元から正しく、
+> 実装がそれを満たしていなかった。design は変更しない。
+
+### DoD（完了条件）
+
+- 延期一覧から1件選び日付をタップして確定すると、**その行が一覧から消える**。同じ料理の他の行は残る。
+- 食事を延期した直後に一覧を開くと、延期した行が一覧に現れる。
+
+### Tasks
+
+- [x] 確定後に延期一覧を再取得する
+  - [x] `usePostponedMealMode.ts` の `onDateClickForSchedulingPostponedMeal` の `onCompleted` で `refetchPostponedMeals()` を呼ぶ
+  - [x] queryを `inPostponedMealMode` の間activeにする（従来はchoosing modeのみで、確定時には既にskipされていた）
+  - [x] 一覧を開くたびに再取得する `useEffect` を追加する
+  - [x] `onDataChanged` を `await` してから再取得する（`refreshData` が `clearStore` を含むため、並走させると store reset と衝突する。論点7）
+  - [x] Jestを作成する（確定後に当該行が一覧から消え、同じ料理の他の行が残ること）
+  - [x] 修正を一時的に戻してJestが落ちることを確認する（testが不具合を捕まえることの検証）
+  - [x] `docker compose exec frontend yarn test` でgreenを確認する（192 passed）
+
+- [x] ~~延期後に延期一覧を再取得する（`MealCard/index.tsx` の変更）~~（合意済みplan変更により不要: `MealCard` の query は `requireFetchedData: false` で skip 状態であり、skip中の `refetch` の挙動が確定できなかった。代わりに「一覧を開くたびに再取得する」実装が延期側もカバーするため、挙動の不確実なAPIへ依存せず同じ結果を得られる）
+  - [x] `visual-inspector` で「確定 → 一覧を開き直す」を実際に操作し、行が消えていることを確認する
+
+### 各task詳細
+
+#### 確定後に延期一覧を再取得する
+
+対象: `frontend/src/components/calendar/calendarComponents/operationComponents/PostponeMeal/usePostponedMealMode.ts`
+
+現状の `onCompleted` はカレンダー（`meals`）だけを再取得している。延期一覧は別のquery
+（`postponedMeals`）であり、server側で行が削除されてもfrontendのcacheが古いまま残る。
+`refetchPostponedMeals` は同じhook内で既に受け取っているため、呼ぶだけでよい。
+
+#### 延期後に延期一覧を再取得する
+
+対象: `frontend/src/components/calendar/calendarComponents/MealCard/index.tsx`
+
+延期側も同じ書き忘れである。一覧を開いていない状態からの操作のため症状は出にくいが、
+「延期 → すぐ一覧を開く」で古いcacheが出る可能性がある。片方だけ直すと次に同じ経路で再発する。
+
+`MealCard` は現在 `usePostponedMeal` を mutation のためだけに使っている。
+`refetchPostponedMeals` を得るために `requireFetchedData` を有効化する必要はない
+（refetch は query が skip されていても呼べるかを確認し、呼べない場合は
+`onDataChanged` と同じ経路で一覧側へ通知する形にする）。
+
+---
+
+## Phase 8: 品質checkと修正
 
 ### DoD（完了条件）
 
@@ -401,14 +461,14 @@ DB migration であるため、`task-design-discussion.md` の論点10 により
 
 ### Tasks
 
-> ⚠️ この phase は一度 Phase 5 完了時点のコードに対して実施し、test 738/188 green・lint error zero を
-> 確認済みだった。その後 Phase 6（食事コメントの退避）でコードが変わるため、checkbox を未完了へ戻している。
-> Phase 6 完了後に全項目を再実行する。
+> ⚠️ この phase は Phase 5 時点と Phase 6 完了時点の2度実施し、直近は test 744/191 green・lint error zero を
+> 確認済みだった。その後 Phase 7（延期一覧の再取得）でコードが変わるため、checkbox を未完了へ戻している。
+> **Phase 7 の完了後に全項目を再実行する。**
 
-- [ ] 全test実行
-  - [ ] `docker compose exec backend bundle exec rspec` がgreenであることを確認する
-  - [ ] `docker compose exec frontend yarn test` がgreenであることを確認する
-- [ ] lint実行（新規file）
+- [x] 全test実行
+  - [x] `docker compose exec backend bundle exec rspec` がgreenであることを確認する
+  - [x] `docker compose exec frontend yarn test` がgreenであることを確認する
+- [x] lint実行（新規file）
   - [x] 新規fileに対してlintを実行する
   - [x] errorがあれば修正して再実行する
   - [x] error zeroを確認する
@@ -418,18 +478,38 @@ DB migration であるため、`task-design-discussion.md` の論点10 により
   - [x] 新規codeが既存codeへ与えた影響を確認する
   - [x] errorがあれば修正して再実行する
   - [x] error zeroを確認する
-- [ ] 最終screenshotで見た目を目視確認する
-  - [ ] pluginの`visual-inspector` skillをchildとして使いscreenshotを撮る
-  - [ ] 食事カードのアクション、一覧パネル、確定パネルの3画面を確認する
-  - [ ] 問題があれば修正して再確認する
+- [x] 最終screenshotで見た目を目視確認する
+  - [x] pluginの`visual-inspector` skillをchildとして使いscreenshotを撮る
+  - [x] 食事カードのアクション、一覧パネル、確定パネルの3画面を確認する
+    > 確認日時: 2026-08-30
+    > 総合結果: ✅ 全項目正常
+    > ログ: frontend/inspect/visual/tmp/20260829-add-pending-dish-pool/phase-7/result.md
+    >
+    > 項目1: 食事カードのアクション展開エリア ✅
+    >   期待値: 「延期」が「削除」の直前に通常スタイルで表示され、タップで確認ダイアログなしに即延期される
+    >   結果: 9項目grid内で「延期」はdanger-redでなく通常スタイル。「延期」タップでwindow.confirmは発火せず、対象カード（2028-08-29 佐藤さんとデート）が即座にカレンダーから消えた
+    >
+    > 項目2: 延期した食事の一覧パネル ✅
+    >   期待値: タイトル+×、料理名+時間帯の各行。コメントがある行だけ2行目が出る
+    >   結果: 4行表示。「さば味噌」行にのみコメント「急遽外食になったので延期」が2行目として表示され、他3行（新たに延期した「佐藤さんとデート」含む）は2行目なし
+    >
+    > 項目3: 確定パネル ✅
+    >   期待値: 案内文+料理名が別行で判読可能、^ / × あり、時間帯ラジオ無し
+    >   結果: 「豚の角煮」行で確認。案内文と料理名は別要素として重ならず表示、^/×あり、input[type=radio]は0件。^タップで一覧に戻り、日付タップは行わず実データを消費していない
+    >
+    > 補足: 確認中に一時的にPostponedMealのcomment保存でHTTP 500が発生。db/schema.rbとmigrate:statusはcomment列を適用済みと示していたが、backendコンテナがPhase6のmigration適用後に再起動されておらずActiveRecordのカラム情報キャッシュが古かったことが原因。`docker compose restart backend`で解消し、以降は正常に動作した。application codeの不具合ではなくdev環境のコンテナ再起動漏れであり、修正不要と判断
+  - [x] 問題があれば修正して再確認する（今回問題は無し。上記のコンテナ再起動事象はcode修正を要さない）
   - ⚠️ `npx playwright`またはPlaywright toolを直接呼ばない。必ずpluginの`visual-inspector` skillを使う。
 
 ## Documentation reviewと実装後振り返り
 
-- [ ] code readingまたは実装で永続化候補を得た場合、その場でdoc-enricherを提案modeで適用する
-  - [ ] 提案がある場合だけユーザー承認後に既存READMEまたは既存docsへ反映する
-  - [ ] 提案・承認判断を別taskへ先送りしない
-- [ ] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
+- [x] code readingまたは実装で永続化候補を得た場合、その場でdoc-enricherを提案modeで適用する
+  - [x] 提案がある場合だけユーザー承認後に既存READMEまたは既存docsへ反映する
+    - 採用: `components/calendar/README.md` へ「`onDataChanged` は全キャッシュ消去であり並走させない」を追加
+    - 却下: 退避エンティティの原則を `application_architecture.md` へ追加する案（論点9の「他のリポジトリでも成立する規則はplugin側を参照しここへ複製しない」に反する。plugin の `entity_modeling/evacuation.md` へ引き渡す）
+    - DROP: 「非同期callbackを並走させる前に中身を読む」（汎用的すぎ、Gate C 非自明に不合格）
+  - [x] 提案・承認判断を別taskへ先送りしない
+- [x] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
   - [ ] `discussion_directory=<working_dir>`と`discussion_file_name=implementation_review.md`を渡す
   - [ ] 原文、関連する実装・design・plan、原因、採用方針、決定を渡し、修正済みでも記録を省略しない
   - [ ] 「共有されていなかった知識の前提は何か」を確認する
@@ -448,11 +528,11 @@ DB migration であるため、`task-design-discussion.md` の論点10 により
 
 ### Tasks
 
-- [ ] agentが`visual-inspector`で動作確認を行い、観測結果とscreenshotを報告する
+- [x] agentが`visual-inspector`で動作確認を行い、観測結果とscreenshotを報告する
   - ⚠️ 自分で確認せずにユーザーへ確認を促さない（`frontend/docs/ai_guideline/development_standard/testing.md`）
-  - [ ] 確認が及んでいない範囲も明示して報告する
-- [ ] ユーザーに動作確認を依頼する
-- [ ] feedbackがあれば、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用し、decisionをcallerへ返す
+  - [x] 確認が及んでいない範囲も明示して報告する（同じ料理の他行が残るケース、延期直後に一覧を開く経路はいずれも実機未再現）
+- [x] ユーザーに動作確認を依頼する
+- [x] feedbackがあれば、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用し、decisionをcallerへ返す（論点5・6・7として記録済み）
   - [ ] designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す
   - [ ] feedbackがなければ`[x] ~~feedback収集~~（feedbackなし）`の形式で完了扱いにする
 
