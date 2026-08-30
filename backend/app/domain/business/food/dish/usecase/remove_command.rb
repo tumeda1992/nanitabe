@@ -13,6 +13,11 @@ module Business::Food::Dish
       # ユースケースがはっきり定まっていないので、定まるまで安全に倒す
       raise "この料理は登録されている食事があるので削除できません。" if dish_record.meals.present?
 
+      # 延期された食事は単体で削除する操作を持たないため、このガードに掛かった料理は
+      # 「日付を与えて確定 → その食事を削除」という迂回でしか消せない。
+      # 料理の削除が稀な操作であるため、迂回を許容してガード側を優先している。
+      raise "この料理は延期された食事があるので削除できません。" if dish_record.postponed_meals.present?
+
       dish_record.destroy!
     end
   end

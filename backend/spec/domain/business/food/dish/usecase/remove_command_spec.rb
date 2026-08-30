@@ -96,6 +96,27 @@ RSpec.describe Business::Food::Dish::Usecase::RemoveCommand do
       end
     end
 
+    context "with postponed meals" do
+      let(:dish) { existing_dish_record }
+      let(:user_id) { existing_dish_record.user_id }
+
+      let!(:postponed_meal_record) do
+        PostponedMeal.create!(user_id: user_id, dish_id: dish.id, meal_type: 1)
+      end
+
+      it "raises an error and does not remove the dish" do
+        expect {
+          described_class.call(
+            user_id: user_id,
+            dish_id: dish.id,
+          )
+        }.to raise_error("この料理は延期された食事があるので削除できません。")
+
+        expect(::Dish.find_by(id: dish.id)).not_to be_nil
+        expect(::PostponedMeal.exists?(postponed_meal_record.id)).to be(true)
+      end
+    end
+
     context "when dish does not exist" do
       it "raises error" do
         expect {
