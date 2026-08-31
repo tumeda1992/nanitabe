@@ -1,0 +1,4 @@
+# subagent の実行レポートは各 steering ディレクトリのローカル記録として扱い、追跡しない。
+# 不測の事態が起きたときの調査ログであり、design / tasklist / discussion のような
+# 合意の正本ではないため。
+*/*/*/subagent_report/

@@ -14,7 +14,20 @@
 
 ## task-design
 
-参照する共通項目: [プロジェクト指示](#プロジェクト指示)、[アーキテクチャ文書](#アーキテクチャ文書)、[開発規約](#開発規約)、[テスト方針](#テスト方針)
+参照する共通項目: [プロジェクト指示](#プロジェクト指示)、[アーキテクチャ文書](#アーキテクチャ文書)、[開発規約](#開発規約)、[テスト方針](#テスト方針)、[全体 test command](#全体-test-command)、[全体 lint command](#全体-lint-command)
+
+### UI 確認環境
+
+- 対象アプリ: `http://localhost:18100`
+- UI の目視確認は `visual-inspector` skill を child として使う。`npx playwright` と Playwright tool の直接呼び出しは `frontend/docs/ai_guideline/forbidden-actions.md` で禁止されている。
+
+### Git / GitHub 公開条件
+
+- remote: `origin` は `git@github.com:setsumaru1992/nanitabe.git`（GitHub の `setsumaru1992/nanitabe`）。
+- default branch: `main`。commit と push を default branch へ直接行わない。
+- 公開可能な branch: `feature-<issue番号>` 形式の non-default branch。
+- PR: `feature-<issue番号>` から `main` へ作成する。branch 名の番号は同じ番号の GitHub Issue に対応する。
+- merge 後の main の commit title には `(#PR番号)` が付く（squash merge 運用）。
 
 ## steering
 
