@@ -23,7 +23,7 @@
 
 ### Git / GitHub 公開条件
 
-- remote: `origin` は `git@github.com:setsumaru1992/nanitabe.git`（GitHub の `setsumaru1992/nanitabe`）。
+- remote: `origin` の URL は `git@github.com:setsumaru1992/nanitabe.git` だが、GitHub 側の実体は `tumeda1992/nanitabe` である（リダイレクトされる）。push や PR の出力に現れるのは `tumeda1992/nanitabe` 側。`git remote -v` の値だけを見て repository を判断しない。
 - default branch: `main`。commit と push を default branch へ直接行わない。
 - 公開可能な branch: `feature-<issue番号>` 形式の non-default branch。
 - PR: `feature-<issue番号>` から `main` へ作成する。branch 名の番号は同じ番号の GitHub Issue に対応する。
