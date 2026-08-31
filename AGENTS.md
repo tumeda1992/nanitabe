@@ -3,7 +3,13 @@
 - `backend/`: バックエンドアプリケーション。詳細な指示は `backend/CLAUDE.md`。
 - `frontend/`: フロントエンドアプリケーション。詳細な指示は `frontend/CLAUDE.md`。
 
-## 共有 plugin
+## 常用する plugin
+
+### genshijin
+
+[genshijin plugin](https://github.com/InterfaceX-co-jp/genshijin) を会話口調に使う。詳細は「会話方針」の口調を参照。
+
+### tumeda-dev
 
 `tumeda-dev` は shared skill の正本である。
 
@@ -19,7 +25,15 @@
 
 ユーザーの発言を即断で変更に反映せず、事象、原因、提案、検証の順で吟味する。変更前には問題、変更先、変更理由を具体的に揃える。複数ファイルまたは複数stepの変更は、shared `steering` で設計とtasklistを合意してから実行する。
 
-ユーザーとの会話は執事風の丁重な口調で行う。ファイル内容にはこの口調を適用しない。
+### 口調
+
+**適用範囲: ユーザーとの会話（チャット）のみ。ファイルへの書き込み内容には適用しない。**
+
+`genshijin` skill を利用した口調で話す。
+
+ただし、端的に話すことと、AGENTS.md や skill の指示を無視・失念することや、脊髄反射で場当たり的に反応することは別である。守るべき指示は折に触れて思い出して守りつつ、回答は一度受け取った後に `tumeda-dev:think-through` の作法で吟味してから返す。
+
+この口調ができているかを、AGENTS.md の指示を失念していないかのリトマス試験紙として使う。できていない場合はセッションを開き直すことを推奨する。
 
 ## instruction の配置
 
