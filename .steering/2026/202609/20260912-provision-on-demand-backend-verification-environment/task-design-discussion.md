@@ -1,5 +1,8 @@
 # 議論記録
 
+> **表記について**: 実際の domain 名は `<hosted zone>` と表記し、既存 AWS resource の識別子は実値を伏せる。ユーザー発言や実行 log の引用内も同じ置き換えを行っている。domain の実値は `.env` の `ROUTE53_HOSTZONE_NAME` が持つ。
+
+
 ## 論点1: この環境で何が確認できれば「動作確認」になるか
 
 **ステータス:** 分解済み
@@ -179,7 +182,7 @@ database の作成は DB サーバ側の操作であり、今回の Terraform �
 
 ##### b. public IP を、起動時に Route53 の A レコードへ書き込む
 
-`kibotsu.com` の hosted zone へ、動作確認環境用の host 名（例: `verify-backend.nanitabe.kibotsu.com`）で A レコードを作る。起動処理が、その時の public IP でレコードを更新する。
+`<hosted zone>` の hosted zone へ、動作確認環境用の host 名（例: `verify-backend.nanitabe.<hosted zone>`）で A レコードを作る。起動処理が、その時の public IP でレコードを更新する。
 
 - 到達先が固定 host 名になり、スマホ側に URL を保存できる。
 - 常時課金は増えない。hosted zone は既に存在し、他用途でも使っている。
@@ -206,8 +209,8 @@ database の作成は DB サーバ側の操作であり、今回の Terraform �
 **調査で判明した前提**
 
 - VPC は default の 1 つだけで、subnet は 3 つとも public。private subnet も NAT Gateway も無いため、Fargate task を public subnet に public IP 付きで置く形が、追加の network resource を作らずに済む唯一の形になる。
-- DB 側の security group は接続元を IP で絞っていない。したがって task の public IP が起動ごとに変わっても DB へ到達でき、DB 到達性はこの論点の判断材料から外れる。
-- Route53 の hosted zone `kibotsu.com` が既に存在する。A レコードを足すことによる常時課金の増加は無い。
+- task の public IP が起動ごとに変わっても DB へ到達でき、DB 到達性はこの論点の判断材料から外れる。
+- Route53 の hosted zone `<hosted zone>` が既に存在する。A レコードを足すことによる常時課金の増加は無い。
 
 **HTTPS の要否がこの論点を分けること**
 
@@ -229,9 +232,9 @@ a と b は HTTP のみ、c と d は HTTPS を持つ。どちらが要るかは
 
 #### 提案1
 
-**host 名:** `verify-backend.nanitabe.kibotsu.com`
+**host 名:** `verify-backend.nanitabe.<hosted zone>`
 
-既存の frontend 本番が `nanitabe.kibotsu.com` を使っているため、その下へ用途を表す label を足す。将来 frontend 側の確認環境を作るときに `verify-front.nanitabe.kibotsu.com` と並べられる。
+既存の frontend 本番が `nanitabe.<hosted zone>` を使っているため、その下へ用途を表す label を足す。将来 frontend 側の確認環境を作るときに `verify-front.nanitabe.<hosted zone>` と並べられる。
 
 **停止中の A レコード:** 停止処理で削除する。
 
@@ -259,7 +262,7 @@ Elastic IP を割り当てれば host 名と IP の対応が固定され、レ�
 
 **結果:** host 名を修正。`verify` という語の選択自体が誤りだと指摘された。停止時に A レコードを削除する点と Elastic IP を採らない点は受諾。
 
-> ElasticIPを使わない件は承知。細かい話で、host名は review-backend-nanitabe.kibotsu.com(フロントはreview-nanitabe.kibotsu.com)がいい。多分subsubドメインのホストゾーン取っていないため。そして、terraformの単体テストではverify-infraを使っていたけど、それは意味通り、通るかをどうかを検証するための名前だった。今回の名前はreviewをすること
+> ElasticIPを使わない件は承知。細かい話で、host名は review-backend-nanitabe.<hosted zone>(フロントはreview-nanitabe.<hosted zone>)がいい。多分subsubドメインのホストゾーン取っていないため。そして、terraformの単体テストではverify-infraを使っていたけど、それは意味通り、通るかをどうかを検証するための名前だった。今回の名前はreviewをすること
 
 `verify` は既に別の意味で使われている語だった。`nanitabe-front-verify-infra` と `DEPLOY_ENV: verify-infra` は「Terraform の構成が通るかどうかを検証する」用途の名前であり、今回の「変更内容をレビューする環境」とは意味が違う。提案1はこの既存用法を確認せずに `verify` を選んでいた。
 
@@ -267,16 +270,16 @@ Elastic IP を割り当てれば host 名と IP の対応が固定され、レ�
 
 #### 提案2
 
-**host 名:** `review-backend-nanitabe.kibotsu.com`
+**host 名:** `review-backend-nanitabe.<hosted zone>`
 
-frontend 側の確認環境を作るときは `review-nanitabe.kibotsu.com` を使う。今回は backend だけを作るため、frontend 側のレコードは作らない。
+frontend 側の確認環境を作るときは `review-nanitabe.<hosted zone>` を使う。今回は backend だけを作るため、frontend 側のレコードは作らない。
 
 **`review` と `verify` の使い分け:**
 
 | 語 | 意味 | 既存の使用例 |
 | --- | --- | --- |
-| `review` | 変更内容をレビューするための環境 | `review-x-favorites.kibotsu.com`（参照元 steering） |
-| `verify` | 構成が通るかどうかを検証するための単体テスト | `nanitabe-front-verify-infra.kibotsu.com`、`DEPLOY_ENV: verify-infra` |
+| `review` | 変更内容をレビューするための環境 | `review-<参照元 repository>.<hosted zone>`（参照元 steering） |
+| `verify` | 構成が通るかどうかを検証するための単体テスト | `nanitabe-front-verify-infra.<hosted zone>`、`DEPLOY_ENV: verify-infra` |
 
 この区別は host 名だけでなく、ECR repository 名、Terraform の stage 名、環境変数の値など、今回作るもの全体で一貫させる。今回作るのはレビュー環境なので `review` を使う。
 
@@ -286,17 +289,17 @@ frontend 側の確認環境を作るときは `review-nanitabe.kibotsu.com` を�
 
 **host 名をフラットな 1 ラベルにする理由**
 
-feedback では「sub-sub ドメインの hosted zone を取っていないため」が理由として挙がったが、Route53 の動作としてはこれは制約にならない。`kibotsu.com` の hosted zone は配下の名前空間全体を管理し、`nanitabe.kibotsu.com` へ NS 委譲した子 zone は存在しない。したがって `kibotsu.com` の zone へ `a.b.kibotsu.com` 形式の A レコードを直接置いても解決する。HTTPS を使わないため、ワイルドカード証明書が 1 ラベルしかカバーしないという制約も今回は効かない。
+feedback では「sub-sub ドメインの hosted zone を取っていないため」が理由として挙がったが、Route53 の動作としてはこれは制約にならない。`<hosted zone>` の hosted zone は配下の名前空間全体を管理し、`nanitabe.<hosted zone>` へ NS 委譲した子 zone は存在しない。したがって `<hosted zone>` の zone へ `a.b.<hosted zone>` 形式の A レコードを直接置いても解決する。HTTPS を使わないため、ワイルドカード証明書が 1 ラベルしかカバーしないという制約も今回は効かない。
 
-それでもフラットな 1 ラベルを採るのは、既存レコードが例外なくその形だからである。zone 内の A / CNAME レコードは `nanitabe`、`nanitabe_back`、`nanitabe-front-verify-infra`、`review-x-favorites`、`todolist-frontend-cdn-by-terraform` のように、用途と対象を 1 ラベル内でハイフン連結しており、sub-sub ドメインは 1 件も存在しない。ここだけ階層を掘ると、レコード一覧を読む人が「なぜこれだけ形が違うのか」を毎回考えることになる。
+それでもフラットな 1 ラベルを採るのは、既存レコードが例外なくその形だからである。zone 内の A / CNAME レコードは、用途と対象を 1 ラベル内でハイフン連結する形で統一されており、sub-sub ドメインは 1 件も存在しない。ここだけ階層を掘ると、レコード一覧を読む人が「なぜこれだけ形が違うのか」を毎回考えることになる。
 
 **frontend と backend の非対称について**
 
-`review-nanitabe`（frontend、component を表す label なし）と `review-backend-nanitabe`（backend、`backend` あり）は非対称に見えるが、既存の本番レコードが `nanitabe.kibotsu.com`（frontend）と `nanitabe_back.kibotsu.com`（backend）という同じ非対称を持つ。既存慣習の踏襲として扱う。
+`review-nanitabe`（frontend、component を表す label なし）と `review-backend-nanitabe`（backend、`backend` あり）は非対称に見えるが、既存の本番レコードが frontend と backend で同じ非対称を持つ。既存慣習の踏襲として扱う。
 
 #### 提案2へのフィードバック
 
-**結果:** host 名（`review-backend-nanitabe.kibotsu.com`）と `review` / `verify` の使い分けは受諾。一方で、提案0で確定したはずの「HTTPS 不要」へ差し戻しがかかった。
+**結果:** host 名（`review-backend-nanitabe.<hosted zone>`）と `review` / `verify` の使い分けは受諾。一方で、提案0で確定したはずの「HTTPS 不要」へ差し戻しがかかった。
 
 > 提案3についてはok。ただ提案0について戻って考えたい。この後frontendがスマホとかで触るから、httpsは必要なんじゃないの？
 
@@ -312,7 +315,7 @@ feedback では「sub-sub ドメインの hosted zone を取っていないた�
 
 ##### a. 今回は HTTP のままにし、c へ進むときに HTTPS 終端を足す
 
-提案2の構成を維持する。`review-backend-nanitabe.kibotsu.com` の A レコードを起動時に実 IP で更新し、停止時に削除する。
+提案2の構成を維持する。`review-backend-nanitabe.<hosted zone>` の A レコードを起動時に実 IP で更新し、停止時に削除する。
 
 c へ進む段階で HTTPS 終端を前に置き、その時点で Route53 を直接更新する仕組みは捨てる。今回の構成は最も軽いが、c で作り直しになる部分を含むことが確定している。
 
@@ -321,7 +324,7 @@ c へ進む段階で HTTPS 終端を前に置き、その時点で Route53 を�
 | 構成要素 | 役割 | 停止中の課金 |
 | --- | --- | --- |
 | `aws_apigatewayv2_api`（HTTP API） | HTTPS 終端。`$default` route で全 request を通す | なし（request 従量のみ） |
-| `aws_apigatewayv2_domain_name` + ACM 証明書 | `review-backend-nanitabe.kibotsu.com` を API Gateway へ割り当てる | なし（ACM 証明書は無料） |
+| `aws_apigatewayv2_domain_name` + ACM 証明書 | `review-backend-nanitabe.<hosted zone>` を API Gateway へ割り当てる | なし（ACM 証明書は無料） |
 | Route53 A（alias） | 上記 domain を指す。API Gateway 側の DNS 名は固定なので、このレコードは常設で更新不要 | なし |
 | `aws_apigatewayv2_integration`（`HTTP_PROXY`） | ECS task の public IP へ転送する。起動時にこの URI を更新する | なし |
 
@@ -367,7 +370,7 @@ b で受け入れるのは、API Gateway から task への転送が VPC 外を�
 
 **結果:** 一度 a（HTTP のまま）へ寄せたが、その過程で ACM 証明書を ECS task へ付けられない事実が共有され、最終的に b を選ぶ方向になった。
 
-> え、大げさなものばかりあがってるけど、https://review-backend-nanitabe.kibotsu.com にroute53でECSを割り当てれば良いんじゃないの？
+> え、大げさなものばかりあがってるけど、https://review-backend-nanitabe.<hosted zone> にroute53でECSを割り当てれば良いんじゃないの？
 
 この案は成立しない。Route53 は名前から IP を答えるだけで、TLS 終端を提供しない。`https://` で到達するには、接続先が該当 host 名の証明書を提示する必要がある。また Route53 の alias が指せるのは ALB / CloudFront / API Gateway / S3 等であり、ECS task は対象外のため、A レコードへ public IP を書く形しか取れない。
 
@@ -386,14 +389,14 @@ a へ戻した後、frontend の browser から見える位置に `http://` の 
 ```text
   スマホ / browser
        |
-       |  https://review-backend-nanitabe.kibotsu.com/graphql
+       |  https://review-backend-nanitabe.<hosted zone>/graphql
        v
   Route53 A（alias、常設）
        |
        v
   API Gateway HTTP API（HTTPS 終端、ACM 証明書）
        |
-       |  http、Host ヘッダを review-backend-nanitabe.kibotsu.com へ上書き
+       |  http、Host ヘッダを review-backend-nanitabe.<hosted zone> へ上書き
        v
   ECS Fargate task（public subnet、public IP）
        |
@@ -405,7 +408,7 @@ a へ戻した後、frontend の browser から見える位置に `http://` の 
 
 | 要素 | 内容 | 起動・停止で変わるか |
 | --- | --- | --- |
-| `aws_acm_certificate` | `review-backend-nanitabe.kibotsu.com` の証明書。`ap-northeast-1` で発行し、DNS 検証する | 変わらない |
+| `aws_acm_certificate` | `review-backend-nanitabe.<hosted zone>` の証明書。`ap-northeast-1` で発行し、DNS 検証する | 変わらない |
 | `aws_apigatewayv2_api` | HTTP API。`$default` route と auto_deploy stage | 変わらない |
 | `aws_apigatewayv2_domain_name` + `aws_apigatewayv2_api_mapping` | host 名を API Gateway へ割り当てる | 変わらない |
 | `aws_route53_record`（A、alias） | API Gateway の regional domain を指す。常設 | 変わらない |
@@ -443,19 +446,19 @@ API Gateway で ECS task を直接プロキシする形は、ALB を挟む一般
 
 ### 決定
 
-動作確認環境へは `https://review-backend-nanitabe.kibotsu.com` で到達する。経路は次のとおり。
+動作確認環境へは `https://review-backend-nanitabe.<hosted zone>` で到達する。経路は次のとおり。
 
 ```text
   スマホ / browser
        |
-       |  https://review-backend-nanitabe.kibotsu.com/graphql
+       |  https://review-backend-nanitabe.<hosted zone>/graphql
        v
   Route53 A（alias、常設）
        |
        v
   API Gateway HTTP API（HTTPS 終端、ACM 証明書）
        |
-       |  http、Host ヘッダを review-backend-nanitabe.kibotsu.com へ上書き
+       |  http、Host ヘッダを review-backend-nanitabe.<hosted zone> へ上書き
        v
   ECS Fargate task（public subnet、public IP）
 ```
@@ -464,7 +467,7 @@ API Gateway で ECS task を直接プロキシする形は、ALB を挟む一般
 - public IP を直接叩かれることは、integration で Host ヘッダを host 名へ上書きし、Rails の `config.hosts` にその host 名だけを許可することで塞ぐ。IP 直アクセスは Host が IP になるため `Blocked hosts` で弾かれる。
 - API Gateway から task への転送が HTTP であり VPC の外を通る点は、弱点として受け入れる。これを消すには ALB が要り、ALB は停止中も課金されるため、停止中課金ゼロの要件（論点1）を優先する。
 - ALB / CloudFront / task 自身での TLS 終端はいずれも採らない。ALB は停止中課金、CloudFront はオリジン更新の反映が数分から十数分かかり 30 分で落ちる環境に合わず、task 自身での終端は Let's Encrypt の証明書取得と永続化が必要になり API Gateway より重い。
-- `review` と `verify` を使い分ける。`review` は変更内容をレビューする環境（`review-x-favorites.kibotsu.com` が先例）、`verify` は構成が通るかを検証する単体テスト（`nanitabe-front-verify-infra`、`DEPLOY_ENV: verify-infra` が先例）。今回作るものは host 名、ECR repository 名、Terraform の stage 名、環境変数の値まで一貫して `review` を使う。
+- `review` と `verify` を使い分ける。`review` は変更内容をレビューする環境（`review-<参照元 repository>.<hosted zone>` が先例）、`verify` は構成が通るかを検証する単体テスト（`nanitabe-front-verify-infra`、`DEPLOY_ENV: verify-infra` が先例）。今回作るものは host 名、ECR repository 名、Terraform の stage 名、環境変数の値まで一貫して `review` を使う。
 
 ## 論点4: 動作確認環境へ何を載せ、どこで image を build するか
 
@@ -615,7 +618,7 @@ exec bundle exec puma -b "tcp://0.0.0.0:${PORT}"
 | `RAILS_ENV` | `production` | 専用環境を新設せず既存の設定を使う。`config/environments/` と `database.yml` へ新しい環境を足す必要がない |
 | `RAILS_LOG_TO_STDOUT` | `1` | 未設定だと log が file 出力のみになり CloudWatch Logs へ出ない |
 | `PORT` | `18101` | 開発環境と同じ port にする。API Gateway の integration URI に port を書くため、外部からは見えない |
-| `BACKEND_PROD_HOST` | `review-backend-nanitabe.kibotsu.com` | `config.hosts` の許可 host。API Gateway が Host ヘッダをこの値へ上書きする（論点3） |
+| `BACKEND_PROD_HOST` | `review-backend-nanitabe.<hosted zone>` | `config.hosts` の許可 host。API Gateway が Host ヘッダをこの値へ上書きする（論点3） |
 | `DB_*`、`RAILS_MASTER_KEY` | 既存の開発環境と同じ値 | 値の渡し方は別論点 |
 
 **CPU architecture**
@@ -658,7 +661,7 @@ ECS で動かす image と起動処理を次のとおりにする。
 - `backend/buildOnEcs/Dockerfile` を新設し、既存の `backend/Dockerfile` は変更しない。新しい Dockerfile は application code を COPY し、`bundle install` を build 時に済ませる。frontend が `frontend/buildOnLambda/Dockerfile` を別に持つのと同じ形を採る。
 - 起動処理は、`set -e` のうえで `bundle exec rails db:migrate` を実行し、`exec bundle exec puma -b "tcp://0.0.0.0:${PORT}"` で puma をプロセス 1 に置き換える。`set -e` は migration 失敗時に到達可能な状態を作らないため、`exec` は ECS の SIGTERM が puma へ届くために必要である。
 - 開発用 `entrypoint.sh` が行う `bundle install`、test 用 DB の migrate、`tail -f log/development.log` による常駐は ECS では行わない。
-- 環境変数は `RAILS_ENV=production`、`RAILS_LOG_TO_STDOUT=1`、`PORT=18101`、`BACKEND_PROD_HOST=review-backend-nanitabe.kibotsu.com` とする。`DB_*` と `RAILS_MASTER_KEY` は開発環境と同じ値を使い、渡し方は別論点で決める。
+- 環境変数は `RAILS_ENV=production`、`RAILS_LOG_TO_STDOUT=1`、`PORT=18101`、`BACKEND_PROD_HOST=review-backend-nanitabe.<hosted zone>` とする。`DB_*` と `RAILS_MASTER_KEY` は開発環境と同じ値を使い、渡し方は別論点で決める。
 - CPU architecture は `ARM64` とする。Fargate の ARM64 は X86_64 より約 20% 安く、開発機も aarch64 であるため native 拡張を持つ gem の挙動が揃う。CodeBuild も ARM の build 環境を使う。
 - `assets:precompile` は行わない。その結果 `admin/` 配下の管理画面はこの image では開けない。動作確認の対象が GraphQL API であるため制約として受け入れる。
 - `RAILS_ENV` に `review` 専用の Rails 環境を新設しない。`config/environments/` と `database.yml` を三分岐させず、差分を環境変数で表現する。
@@ -915,7 +918,7 @@ backend/terraform/          # 新設
 
 **ECS cluster について（三案に共通ではない。b を選んだ場合の前提）**
 
-既存の `sample_todo_list_cluster` は別プロジェクトのものであり、流用しない。`nanitabe-back-review` の cluster を新設する。Fargate だけを使う cluster に固定費は発生しないため、分けることによる課金の増加はない。
+既存の cluster は別プロジェクトのものであり、流用しない。`nanitabe-back-review` の cluster を新設する。Fargate だけを使う cluster に固定費は発生しないため、分けることによる課金の増加はない。
 
 #### 提案背景
 
@@ -964,7 +967,7 @@ backend/terraform/          # 新設
 - prod と review を別 state にする。論点7で `terraform apply` が停止側へ倒れる挙動を受け入れたため、同じ state に prod が同居していると、prod 側の変更のための apply が起動中の review 環境を落とす。二つの独立した作業が state を介して干渉する構造を避ける。
 - root は `infrastructure/terraform/envs/*` に置き、各アプリの `terraform/envs/*` を module として呼ぶ既存構造を維持する。`frontend/terraform/envs/review/`（現在 `.gitkeep` だけの空 directory）を将来同じ root から呼べる。
 - init と apply の script は既存 prod と同型のものを `envs/review/` へ置く。`init_terraform.sh` の `TF_ENV` を `review` にする。
-- ECS cluster は `nanitabe-back-review` を新設する。既存の `sample_todo_list_cluster` は別プロジェクトのものであり流用しない。Fargate だけを使う cluster に固定費は発生しない。
+- ECS cluster は `nanitabe-back-review` を新設する。既存の cluster は別プロジェクトのものであり流用しない。Fargate だけを使う cluster に固定費は発生しない。
 
 ## 論点9: DB 接続情報と `RAILS_MASTER_KEY` を task へどう渡すか
 
@@ -1300,7 +1303,7 @@ URL を知る第三者が GraphQL endpoint へ到達できる点について、B
 | 検証すること | 手段 |
 | --- | --- |
 | 構成に時間課金の resource が無い | `terraform plan` の出力に ALB / RDS / NAT Gateway / Elastic IP / Secrets Manager が現れないことを確認する |
-| 起動 script で到達できるようになる | 起動 script を実行し、`https://review-backend-nanitabe.kibotsu.com/graphql` へ `POST` して応答を得る |
+| 起動 script で到達できるようになる | 起動 script を実行し、`https://review-backend-nanitabe.<hosted zone>/graphql` へ `POST` して応答を得る |
 | PC 以外の端末から到達できる | スマホから同じ URL を叩く。これが今回の主目的であり、代替手段で確認したことにしない |
 | IP 直アクセスが弾かれる | task の public IP へ直接 `POST` し、403 が返ることを確認する |
 | 停止 script で到達できなくなる | 停止 script を実行し、同じ URL が応答しなくなることを確認する |
@@ -1524,7 +1527,7 @@ URL を知る第三者が GraphQL endpoint へ到達できる点について、B
 | 検証すること | 手段 |
 | --- | --- |
 | 構成に時間課金の resource が無い | `terraform plan` の出力に ALB / RDS / NAT Gateway / Elastic IP / Secrets Manager が現れないことを確認する |
-| 起動 script で到達できるようになる | 起動 script を実行し、`https://review-backend-nanitabe.kibotsu.com/graphql` へ `POST` して応答を得る |
+| 起動 script で到達できるようになる | 起動 script を実行し、`https://review-backend-nanitabe.<hosted zone>/graphql` へ `POST` して応答を得る |
 | PC 以外の端末から到達できる | スマホから同じ URL を叩く。これが今回の主目的であり、代替手段で確認したことにしない |
 | IP 直アクセスが弾かれる | task の public IP へ直接 `POST` し、403 が返ることを確認する |
 | 停止 script で到達できなくなる | 停止 script を実行し、同じ URL が応答しなくなることを確認する |

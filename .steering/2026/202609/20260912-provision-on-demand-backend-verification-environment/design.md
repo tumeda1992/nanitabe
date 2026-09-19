@@ -57,7 +57,7 @@ integration URI も両方が書き込むが、扱いを逆にする。Terraform 
   integration URI を実 IP へ更新 + 30 分後の停止 schedule を 2 つ作成
      |
      v
-  到達可能（https://review-backend-nanitabe.kibotsu.com が応答）
+  到達可能（https://review-backend-nanitabe.<hosted zone> が応答）
      |
      +----- 動作を確認（開発者） ----->  確認完了
      |
@@ -80,7 +80,7 @@ integration URI も両方が書き込むが、扱いを逆にする。Terraform 
 2. 開発者が `git push -f origin <確認対象>:review` を実行する。`review` branch に何が載っているかは保証されないため、開く前に必ず自分の確認対象を載せる。
 3. push を契機に CodePipeline が起動し、CodeBuild が image を作って ECR へ push する。開発者は build の成否を確認してから次へ進む。
 4. 開発者が起動 script を実行する。script は `desired_count` を 1 にし、task が RUNNING になるまで待ち、ENI から public IP を取得し、integration URI を更新し、停止 schedule を 2 つ作り、到達 URL と自動停止の予定時刻を出力する。schedule の作成に失敗した場合は、`desired_count` と integration URI を停止側へ戻してエラー終了する。自動停止の保証がない状態で起動したままにしない。
-5. 開発者が PC 以外の端末から `https://review-backend-nanitabe.kibotsu.com/graphql` を叩いて確認する。
+5. 開発者が PC 以外の端末から `https://review-backend-nanitabe.<hosted zone>/graphql` を叩いて確認する。
 6. 確認が終わったら停止 script を実行する。実行しなくても起動から 30 分で Scheduler が同じ状態へ戻す。
 7. 確認後の後始末（`review` branch を戻す等）は行わない。次に確認する人の force push で上書きされる。
 
@@ -105,7 +105,7 @@ integration URI も両方が書き込むが、扱いを逆にする。Terraform 
 | `RAILS_ENV` | 確認環境の task definition。値は `production` | なし | `config/environments/production.rb` が適用される。`/graphiql` は mount されず、`POST /graphql` だけが入口になる |
 | `DB_NAME` / `DB_HOST` / `DB_PORT` / `DB_USER` / `DB_PASS` | SSM Parameter Store の SecureString。値は開発環境と同じ（既存 DB サーバの同じ database）。`apply_terraform.sh` が `.env` から `TF_VAR_*` 経由で渡し、Terraform が parameter を作る | なし | 未設定なら起動時に DB 接続失敗。開発環境と同一 database のため、この環境の migration と mutation が開発 DB へ直接届く |
 | `RAILS_MASTER_KEY` | 同上（SSM Parameter Store の SecureString） | なし | credentials 復号。未設定なら production boot が失敗する |
-| `BACKEND_PROD_HOST` | `review-backend-nanitabe.kibotsu.com` | 空文字 | `config.hosts` 許可 host。API Gateway が Host ヘッダをこの値へ上書きするため、経由した request だけが通る。public IP を直接叩いた request は Host が IP になり `Blocked hosts` で弾かれる |
+| `BACKEND_PROD_HOST` | `review-backend-nanitabe.<hosted zone>` | 空文字 | `config.hosts` 許可 host。API Gateway が Host ヘッダをこの値へ上書きするため、経由した request だけが通る。public IP を直接叩いた request は Host が IP になり `Blocked hosts` で弾かれる |
 | `FRONTEND_PROD_HOST` | 設定しない。frontend を繋がないため（[非目標](#非目標)） | 空文字 | 未設定でも `config.hosts` へ空文字が足されるだけで、到達可否は `BACKEND_PROD_HOST` が決める |
 | `RAILS_LOG_TO_STDOUT` | 確認環境の task definition。値は `1` | 未設定 | 未設定だと log が file 出力のみになり CloudWatch Logs へ出ない |
 | `PORT` | task definition。値は `18101` | `3000` | puma の listen port。API Gateway の integration URI がこの port を指す。外部からは見えない |
@@ -122,7 +122,7 @@ integration URI も両方が書き込むが、扱いを逆にする。Terraform 
 | --- | --- | --- |
 | development（既存） | `docker compose up`、`backend/entrypoint.sh` | `localhost:18101` で Rails が応答し `/graphiql` が開ける |
 | production（既存） | git pull 起点の deploy（[前提とする既存仕様](#付録前提とする既存仕様)） | 本番 backend host が応答する |
-| 動作確認（新規） | ECS 上。起動操作があるときだけ稼働する。DB は持たず既存 DB サーバへ接続する | 開発者の PC 以外の端末から `https://review-backend-nanitabe.kibotsu.com/graphql` が応答する。停止中は同じ URL が HTTP 500 を返す |
+| 動作確認（新規） | ECS 上。起動操作があるときだけ稼働する。DB は持たず既存 DB サーバへ接続する | 開発者の PC 以外の端末から `https://review-backend-nanitabe.<hosted zone>/graphql` が応答する。停止中は同じ URL が HTTP 500 を返す |
 
 **IAM role:**
 
@@ -199,7 +199,7 @@ scripts/review_backend/     # 新設
 
 - prod と review を別 state にする。`terraform apply` が停止側へ倒れる挙動（`desired_count = 0` が定義の正）を、prod 側の作業へ波及させないため。
 - root を `infrastructure/terraform/envs/*` に置き、各アプリの `terraform/envs/*` を module として呼ぶ既存構造を維持する。`frontend/terraform/envs/review/`（現在 `.gitkeep` だけの空 directory）を将来同じ root から呼べる。
-- ECS cluster は `nanitabe-back-review` を新設する。既存の `sample_todo_list_cluster` は別プロジェクトのものであり流用しない。Fargate だけを使う cluster に固定費は発生しない。
+- ECS cluster は `nanitabe-back-review` を新設する。既存の cluster は別プロジェクトのものであり流用しない。Fargate だけを使う cluster に固定費は発生しない。
 - 参照する既存 pattern: `frontend/terraform/envs/prod/main.tf`（`stage` を local で持ち、module へ配る）
 - `backend/buildOnEcs/Dockerfile`（新規）: ECS 用の image を作る。application code を COPY し、`bundle install` を build 時に済ませる。既存の `backend/Dockerfile` は開発用（volume mount 前提）のまま変更しない。
 - `backend/buildOnEcs/entrypoint.sh`（新規）: `set -e` のもとで `rails db:migrate` を実行し、`exec bundle exec puma -b "tcp://0.0.0.0:${PORT}"` で puma をプロセス 1 に置き換える。
@@ -348,7 +348,7 @@ repository へ commit する document には、次を書かない。
 | 検証すること | 手段 |
 | --- | --- |
 | 構成に時間課金の resource が無い | `terraform plan` の出力に ALB / RDS / NAT Gateway / Elastic IP / Secrets Manager が現れないことを確認する |
-| 起動 script で到達できるようになる | 起動 script を実行し、`https://review-backend-nanitabe.kibotsu.com/graphql` へ `POST` して応答を得る |
+| 起動 script で到達できるようになる | 起動 script を実行し、`https://review-backend-nanitabe.<hosted zone>/graphql` へ `POST` して応答を得る |
 | PC 以外の端末から到達できる | スマホから同じ URL を叩く。これが今回の主目的であり、代替手段で確認したことにしない |
 | IP 直アクセスが弾かれる | task の public IP へ直接 `POST` し、403 が返ることを確認する |
 | 停止 script で到達できなくなる | 停止 script を実行し、同じ URL が HTTP 500 を返すようになることを確認する。integration URI が到達しない値へ戻るため、API Gateway が転送先へ届かず 500 になる |
@@ -368,10 +368,10 @@ repository へ commit する document には、次を書かない。
 - **開発 DB の到達性**: ローカルの `docker compose` は container 内に DB を持たず、`env_file` で渡される接続情報で外部の MySQL へ接続している（`docker-compose.yml` に DB service は無い）。開発マシンからその接続先へ到達できることを確認した。ECS から同じ接続先へ到達できることが、この環境が DB を持たない前提になる。
 - **backend の AWS 資産のうち Terraform 管理下にあるもの**: 存在しない。`infrastructure/terraform/envs/prod/main.tf` が呼ぶ module は `state_in_s3` と `frontend` だけ。repository 全体で `ECS` / `Fargate` への言及は 0 件（`*.md` / `*.tf` / `*.yml` を対象に確認）。
 - **AWS account の既存構成**（`ap-northeast-1`、AWS CLI で実測）:
-  - VPC は default の `vpc-d69c93b1`（`172.31.0.0/16`）only。subnet は 3 つ（`ap-northeast-1a` / `1c` / `1d`）で、いずれも `MapPublicIpOnLaunch=true` の public subnet。private subnet と NAT Gateway は存在しない。
-  - DB 側の security group は接続元を IP で絞っていない。したがって Fargate task の public IP が起動ごとに変わっても DB へ到達でき、接続元の登録を起動のたびに行う必要がない。
-  - ECS cluster は `sample_todo_list_cluster` が別プロジェクト用に存在する。nanitabe 用の cluster は無い。
-  - ECR repository は `nanitabe-front/next-js-on-lambda/{prod,verify-infra}` があり、backend 用は無い。
+  - VPC は default の 1 つだけ。subnet は 3 つとも public（`MapPublicIpOnLaunch=true`）で、private subnet と NAT Gateway は存在しない。Fargate task を public subnet へ public IP 付きで置く形が、追加の network resource を作らずに済む唯一の形になる。
+  - Fargate task の public IP が起動ごとに変わっても DB へ到達でき、接続元の登録を起動のたびに行う必要がない。
+  - backend 用の ECS cluster は無い。新規に作る。
+  - backend 用の ECR repository は無い。新規に作る。
   - Route53 hosted zone は 1 つだけで、frontend の custom domain がこの zone に属する。
 - **frontend の AWS 構成**: `frontend/terraform/envs/prod/main.tf`。`ecr` → `lambda`（container image）→ `api_gateway` → `cloudfront`（custom domain `nanitabe.${route53_name}`）、assets 用 `s3`、`cicd`（CodePipeline / CodeBuild、`branch` 変数で対象 branch を指定）。`stage = "prod"` を local で持ち各 module へ渡す。
 - **Terraform の構成**: `infrastructure/terraform/envs/prod/main.tf` が root。`terraform` backend は S3 + DynamoDB lock で、`init_terraform.sh` が `-backend-config` で bucket / key（`prod/terraform.tfstate`）を渡す。`apply_terraform.sh` は `/etc/opt/app_setting_files/nanitabe/.env` を読んで `TF_VAR_*` へ export してから `terraform apply` する。secret は repository に無い。

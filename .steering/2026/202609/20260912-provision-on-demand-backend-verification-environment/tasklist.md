@@ -1,3 +1,5 @@
+> **表記について**: 実際の domain 名は `<hosted zone>` と表記し、AWS account ID を含む ARN は実値を伏せる。ユーザー発言や実行 log の引用内も同じ置き換えを行っている。domain の実値は `.env` の `ROUTE53_HOSTZONE_NAME` が持つ。
+
 ## Phase 1: `review` branch への push で ECS 用 image が ECR にできる
 
 > ⚠️ この phase は AWS resource の作成と GitHub への push を含む。どちらもこの作業を破棄しても残る。
@@ -134,9 +136,9 @@ AWS 上に ECR repository、CodeBuild project、CodePipeline が作られたこ�
 
 ### DoD（完了条件）
 
-- 起動 script を実行すると `https://review-backend-nanitabe.kibotsu.com/graphql` へ `POST` して応答が返る。
+- 起動 script を実行すると `https://review-backend-nanitabe.<hosted zone>/graphql` へ `POST` して応答が返る。
 - task の public IP へ直接 `POST` すると 403 が返る。
-- 停止 script を実行すると `https://review-backend-nanitabe.kibotsu.com/graphql` が応答しなくなる。
+- 停止 script を実行すると `https://review-backend-nanitabe.<hosted zone>/graphql` が応答しなくなる。
 
 ### Tasks
 
@@ -151,11 +153,11 @@ AWS 上に ECR repository、CodeBuild project、CodePipeline が作られたこ�
 - [x] `terraform apply` を実行する
   > `infrastructure/terraform/envs/review/apply_terraform.sh` で実行。1回目、`aws_security_group.task`の`description`に日本語（非ASCII）が含まれ`InvalidParameterValue`で失敗（AWS SGのdescriptionはASCIIのみ）。`backend/terraform/modules/ecs/main.tf`のdescriptionを英語へ修正し、コメントとして元の説明はソース上に残した。2回目のapplyで残り4resource（security group、ECS service、scheduler_roleのpolicy、alarm）を含め全46resourceが作成完了（`terraform state list`で確認）。destroyは0件のまま。
 - [x] SNS topic の email 購読を確認する
-  > `aws sns list-subscriptions-by-topic`で確認。当初`SubscriptionArn: "PendingConfirmation"`だったためユーザーへ確認を依頼して停止。ユーザーが確認メールのlinkを開いた後、`SubscriptionArn: "arn:aws:sns:ap-northeast-1:241875560804:nanitabe-back_review_alarm:f2c74ef5-fb42-40ed-b1e0-d9e9c1f1f946"`（`PendingConfirmation`ではない）を独立に確認済み。
+  > `aws sns list-subscriptions-by-topic`で確認。当初`SubscriptionArn: "PendingConfirmation"`だったためユーザーへ確認を依頼して停止。ユーザーが確認メールのlinkを開いた後、`SubscriptionArn`が`PendingConfirmation`ではない値（実際の subscription ARN）へ変わっていることを独立に確認済み。
 - [x] `scripts/review_backend/start.sh` と `scripts/review_backend/stop.sh` を新規作成する
   > jqでEventBridge Schedulerのtarget JSONを組み立て、`REVIEW_BACKEND_AUTO_STOP_MINUTES`（既定30）で自動停止時刻を上書き可能にした。schedule作成失敗時はdesired_countとintegration URIを停止側へ戻すrollback関数を実装。
 - [x] 起動 script を実行し、URL が応答することを確認する
-  > `start.sh`実行 → `https://review-backend-nanitabe.kibotsu.com/graphql`へ`{"query":"{ __typename }"}`をPOSTし、`AUTHENTICATION_ERROR`のJSON（HTTP 200）を確認。GraphQL層まで到達。
+  > `start.sh`実行 → `https://review-backend-nanitabe.<hosted zone>/graphql`へ`{"query":"{ __typename }"}`をPOSTし、`AUTHENTICATION_ERROR`のJSON（HTTP 200）を確認。GraphQL層まで到達。
   > CloudWatch Logsで`[entrypoint] rails db:migrate を開始します`/`が完了しました`を確認（`backend/buildOnEcs/entrypoint.sh`にログ出力を追加して可視化。migrationが無い場合`rails db:migrate`が無出力になるため、rebuildして再検証した）。
 - [x] public IP への直接アクセスが 403 になることを確認する
   > taskのENIから public IP を取得し`http://<public IP>:18101/graphql`へPOST。HTTP 403を確認。
@@ -174,7 +176,7 @@ ECS cluster `nanitabe-back-review`、task definition、service を定義する�
 
 - cluster は Fargate だけを使う。Container Insights は有効にしない（`design.md` の要件）。
 - task definition は `runtime_platform` に `ARM64` を指定し、`cpu = 256`、`memory = 512` とする。
-- 環境変数は `RAILS_ENV=production`、`RAILS_LOG_TO_STDOUT=1`、`PORT=18101`、`BACKEND_PROD_HOST=review-backend-nanitabe.kibotsu.com` を `environment` に平文で置く。
+- 環境変数は `RAILS_ENV=production`、`RAILS_LOG_TO_STDOUT=1`、`PORT=18101`、`BACKEND_PROD_HOST=review-backend-nanitabe.<hosted zone>` を `environment` に平文で置く。
 - `DB_NAME` / `DB_HOST` / `DB_PORT` / `DB_USER` / `DB_PASS` / `RAILS_MASTER_KEY` は `secrets` で SSM parameter の ARN を参照する。
 - log driver は `awslogs` とし、log group を Terraform で作る。`retention_in_days` は設定しない（無期限保持）。
 - service は `desired_count = 0` とする。`lifecycle { ignore_changes = [desired_count] }` は付けない。`terraform apply` が停止側へ倒れる挙動を意図しているため。
@@ -191,10 +193,10 @@ task execution role には ECR pull、CloudWatch Logs 書き込み、`ssm:GetPar
 - `aws_apigatewayv2_api` を `protocol_type = "HTTP"` で作る。
 - route は `ANY /{proxy+}` とする。path をそのまま転送するため。
 - `aws_apigatewayv2_integration` は `integration_type = "HTTP_PROXY"`、`integration_uri` の初期値を `http://192.0.2.1:18101/{proxy}` とする。起動 script がこの URI を書き換える。
-- `request_parameters` に `"overwrite:header.Host" = "review-backend-nanitabe.kibotsu.com"` を設定する。これにより API Gateway 経由の request だけが Rails の `config.hosts` を通る。
+- `request_parameters` に `"overwrite:header.Host" = "review-backend-nanitabe.<hosted zone>"` を設定する。これにより API Gateway 経由の request だけが Rails の `config.hosts` を通る。
 - `aws_acm_certificate` を `ap-northeast-1` で発行し、DNS 検証する。検証用の CNAME レコードを Route53 へ作る。
-- `aws_apigatewayv2_domain_name` と `aws_apigatewayv2_api_mapping` で `review-backend-nanitabe.kibotsu.com` を割り当てる。
-- Route53 の A レコード（alias）を、API Gateway の regional domain name と hosted zone id を指す形で作る。hosted zone は既存の `kibotsu.com`。
+- `aws_apigatewayv2_domain_name` と `aws_apigatewayv2_api_mapping` で `review-backend-nanitabe.<hosted zone>` を割り当てる。
+- Route53 の A レコード（alias）を、API Gateway の regional domain name と hosted zone id を指す形で作る。hosted zone は既存の `<hosted zone>`。
 - stage は `$default` で `auto_deploy = true`。access log を CloudWatch Logs へ出し、log group の `retention_in_days` は設定しない。
 
 `integration_uri` は起動・停止 script が実行時に書き換えるため、Terraform 側で `lifecycle { ignore_changes = [integration_uri] }` を設定する。これがないと `terraform apply` のたびに起動中の環境の転送先が停止側の値へ戻る。`desired_count` と扱いが違うのは、`desired_count` は apply が停止側へ倒れることを意図しているのに対し、`integration_uri` は task の実体と対応する値であり、apply が実体と食い違う値を書き込むと「service は動いているが到達できない」という中途半端な状態になるため。
@@ -431,13 +433,13 @@ UI 変更が無いため screenshot 確認は行わない。
 
 ### DoD
 
-ユーザーが実際にスマホ実機から `https://review-backend-nanitabe.kibotsu.com/graphql` を叩き、意図どおりであることを確認した。
+ユーザーが実際にスマホ実機から `https://review-backend-nanitabe.<hosted zone>/graphql` を叩き、意図どおりであることを確認した。
 
 ### Tasks
 
 - [x] ユーザーに動作確認を依頼する
   - [x] 起動 script を実行し、URL をユーザーへ伝える
-    > `./scripts/review_backend/start.sh`実行。URL: `https://review-backend-nanitabe.kibotsu.com/graphql`。自動停止予定: 2026-09-19T02:40:41 UTC。`POST /graphql`でHTTP 200（AUTHENTICATION_ERROR）を確認し、到達可能であることを確認済み。
+    > `./scripts/review_backend/start.sh`実行。URL: `https://review-backend-nanitabe.<hosted zone>/graphql`。自動停止予定: 2026-09-19T02:40:41 UTC。`POST /graphql`でHTTP 200（AUTHENTICATION_ERROR）を確認し、到達可能であることを確認済み。
   - [x] ユーザーがスマホ実機から叩けることを確認する。これが今回の主目的であり、PC からの確認で代替しない
     - スマホ実機の browser から `https://review-backend-nanitabe.<hosted zone>` を開き、Rails の 404 ページが返った。DNS 解決、TLS ハンドシェイク（ACM 証明書を端末の OS が検証）、API Gateway の受理、task への転送、Rails の処理までが通っている。`config.hosts` を通過していることも意味する（Host ヘッダ上書きが効いていなければ 403 になる）
     - 確認時の接続は Wi-Fi であり、モバイル回線での実測は取っていない。今回の構成は接続元 IP を絞っていないため結果は変わらない

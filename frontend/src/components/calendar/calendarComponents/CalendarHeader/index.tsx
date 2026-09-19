@@ -25,6 +25,7 @@ import {
   MONTH_CALENDAR_PAGE_PATH_OF_THIS_MONTH,
   monthCalendarPagePathOf,
 } from '@/app/calendar/month/[date]/consts';
+import generateApiOrigin from '@/lib/generateApiOrigin';
 
 type CalendarHeaderProps = {
   viewType: 'week' | 'month';
@@ -141,7 +142,7 @@ const CalendarHeader = ({
                 )}
                 <DropdownMenuItem asChild>
                   <a
-                    href="https://nanitabe_back.kibotsu.com/admin/food/dish/word/normalize_words"
+                    href={`${generateApiOrigin()}/admin/food/dish/word/normalize_words`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

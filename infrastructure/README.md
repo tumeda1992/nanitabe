@@ -83,6 +83,9 @@ integration URI については、Terraform 側で `lifecycle { ignore_changes =
 Container Insights は構成に含めていない。
 構成を変えるときは、この前提を崩さないか確認する。
 
+resource を構成へ含めるかを金額で判断する基準は [`cost_judgment.md`](./cost_judgment.md) にある。
+課金モデルの見分け方、損益分岐の出し方、サービス別の要点を扱う。
+
 ## 構成上の前提
 
 新しい resource を足すときに、既に成立している前提。崩す場合は影響を確認する。
@@ -94,6 +97,8 @@ Container Insights は構成に含めていない。
   `.github/workflows/` は test と lint だけを行う。
 - **CPU architecture**: container の build と実行を ARM で統一する。
   CodeBuild は `ARM_CONTAINER`、Fargate は `ARM64`。
+- **課金**: resource を足すかどうかを金額で判断するときは [`cost_judgment.md`](./cost_judgment.md) を見る。
+  時間課金と保存・件数課金を分けて考え、防ぐ対象の損失と固定費を並べて比べる。
 - **host 名**: hosted zone へ置くレコードはフラットな 1 ラベルにする。sub-sub ドメインを掘らない。
   domain 名は `.env` の `ROUTE53_HOSTZONE_NAME` から渡し、terraform の定義にも document にも直接書かない。
 - **API Gateway v2 の管理 API 権限**: EventBridge Scheduler 等の AWS SDK 統合から apigatewayv2 の操作
