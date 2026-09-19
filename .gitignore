@@ -76,6 +76,7 @@ yarn-debug.log*
 **/.terraform.lock.hcl
 **/*.tfstate
 **/*.tfstate.*
+**/tfplan*
 
 .playwright-mcp/
 
