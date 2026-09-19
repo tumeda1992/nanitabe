@@ -455,7 +455,7 @@ UI 変更が無いため screenshot 確認は行わない。
 > `review` branch への force push は対象外である。あれは動作確認の手段そのものであり、成果物を `main` へ届ける操作ではない。
 > 各 phase 内の local commit も対象外である。commit を実装の進行に合わせて刻むのは、どの変更がどの合意に基づくかを後から辿れるようにするためであり、最後に一括する形はその性質を失わせる。
 
-- [ ] 残りの成果物を commit する
+- [x] 残りの成果物を commit する
   - 各 phase の成果物は、その phase 内の commit task で確定済みである
   - ここで commit するのは、実装が終わってから確定した次の 2 つ
     - `tasklist.md` の checkbox
@@ -463,11 +463,11 @@ UI 変更が無いため screenshot 確認は行わない。
   - MUST: 上記 2 つを、対応する実装 commit より後に置く
   - ユーザーが一部だけ承認した場合は承認範囲だけをcommitし、残りは待つ
 
-- [ ] current branchをpushしてPRを作成する
-  - [ ] commit taskの結果としてlocal commitが実際に一件以上あることを確認する。一件もなければpush・PRを実行しない
-  - [ ] current branch が `feature-278` であり、公開可能なnon-default branchであることを確認する
-  - [ ] `git push -u origin feature-278` を実行する
-  - [ ] pluginのskills directory配下にある `scripts/github/create_or_get_pr.sh` を実行する
+- [x] current branchをpushしてPRを作成する
+  - [x] commit taskの結果としてlocal commitが実際に一件以上あることを確認する。一件もなければpush・PRを実行しない（14 commit）
+  - [x] current branch が `feature-278` であり、公開可能なnon-default branchであることを確認する
+  - [x] `git push -u origin feature-278` を実行する
+  - [x] pluginのskills directory配下にある `scripts/github/create_or_get_pr.sh` を実行する（PR #281）
     - pathの起点はpluginのskills directoryである。利用先repositoryからの相対pathではない
     - branch 名から issue 番号を導き、PR body へ `Closes #278` が入る
 
