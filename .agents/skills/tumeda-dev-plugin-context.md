@@ -10,11 +10,11 @@
 
 ## doc-enricher
 
-参照する共通項目: [プロジェクト指示](#プロジェクト指示)、[アーキテクチャ文書](#アーキテクチャ文書)
+参照する共通項目: [プロジェクト指示](#プロジェクト指示)、[アーキテクチャ文書](#アーキテクチャ文書)、[公開範囲](#公開範囲)
 
 ## task-design
 
-参照する共通項目: [プロジェクト指示](#プロジェクト指示)、[アーキテクチャ文書](#アーキテクチャ文書)、[開発規約](#開発規約)、[テスト方針](#テスト方針)、[全体 test command](#全体-test-command)、[全体 lint command](#全体-lint-command)
+参照する共通項目: [プロジェクト指示](#プロジェクト指示)、[アーキテクチャ文書](#アーキテクチャ文書)、[開発規約](#開発規約)、[テスト方針](#テスト方針)、[全体 test command](#全体-test-command)、[全体 lint command](#全体-lint-command)、[公開範囲](#公開範囲)
 
 ### UI 確認環境
 
@@ -28,10 +28,11 @@
 - 公開可能な branch: `feature-<issue番号>` 形式の non-default branch。
 - PR: `feature-<issue番号>` から `main` へ作成する。branch 名の番号は同じ番号の GitHub Issue に対応する。
 - merge 後の main の commit title には `(#PR番号)` が付く（squash merge 運用）。
+- 公開範囲の制約は [公開範囲](#公開範囲) を参照する。
 
 ## steering
 
-参照する共通項目: [プロジェクト指示](#プロジェクト指示)、[アーキテクチャ文書](#アーキテクチャ文書)、[開発規約](#開発規約)、[テスト方針](#テスト方針)、[全体 test command](#全体-test-command)、[全体 lint command](#全体-lint-command)
+参照する共通項目: [プロジェクト指示](#プロジェクト指示)、[アーキテクチャ文書](#アーキテクチャ文書)、[開発規約](#開発規約)、[テスト方針](#テスト方針)、[全体 test command](#全体-test-command)、[全体 lint command](#全体-lint-command)、[公開範囲](#公開範囲)
 
 ### GitHub
 
@@ -56,7 +57,7 @@
 
 ## tasklist-executor
 
-参照する共通項目: [プロジェクト指示](#プロジェクト指示)、[アーキテクチャ文書](#アーキテクチャ文書)、[開発規約](#開発規約)、[テスト方針](#テスト方針)、[全体 test command](#全体-test-command)、[全体 lint command](#全体-lint-command)
+参照する共通項目: [プロジェクト指示](#プロジェクト指示)、[アーキテクチャ文書](#アーキテクチャ文書)、[開発規約](#開発規約)、[テスト方針](#テスト方針)、[全体 test command](#全体-test-command)、[全体 lint command](#全体-lint-command)、[公開範囲](#公開範囲)
 
 ## test-runner
 
@@ -69,6 +70,12 @@
 - `AGENTS.md`: repository全体の入口、会話方針、shared pluginの利用規則。
 - `backend/CLAUDE.md` と `frontend/CLAUDE.md`: 各アプリケーション固有の指示。
 - `backend/docs/ai_guideline/README.md` と `frontend/docs/ai_guideline/README.md`: 開発ガイドラインの入口。
+
+### 公開範囲
+
+- この repository は public である。`.steering/` 配下も tracked であり、design / tasklist / discussion がそのまま公開される。
+- repository へ commit する document には、実際の domain 名を書かない。`frontend/terraform/envs/prod/main.tf` が `custom_domain = "nanitabe.${var.route53_name}"` と変数化しているのと同じ扱いにし、document では `<hosted zone>` と表記して `.env` の `ROUTE53_HOSTZONE_NAME` を参照する形にする。
+- 本番環境と DB が動いている場所、および開発環境がそれを共有しているかは、repository へ commit する document へ書かない。判断に迷う構成情報はユーザーへ確認する。
 
 ### アーキテクチャ文書
 
