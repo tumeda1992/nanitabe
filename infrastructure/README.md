@@ -96,6 +96,11 @@ Container Insights は構成に含めていない。
   CodeBuild は `ARM_CONTAINER`、Fargate は `ARM64`。
 - **host 名**: hosted zone へ置くレコードはフラットな 1 ラベルにする。sub-sub ドメインを掘らない。
   domain 名は `.env` の `ROUTE53_HOSTZONE_NAME` から渡し、terraform の定義にも document にも直接書かない。
+- **API Gateway v2 の管理 API 権限**: EventBridge Scheduler 等の AWS SDK 統合から apigatewayv2 の操作
+  （`UpdateIntegration` 等）を呼ぶ場合、IAM policy は HTTP verb ベースの action（`apigateway:PATCH` 等）で与える。
+  `apigatewayv2:UpdateIntegration` のような friendly な action 名は評価されず、`AccessDenied` になる。
+- **EC2 系 resource の `description` は ASCII のみ**: `aws_security_group` 等の `description` 属性へ
+  日本語を書くと `InvalidParameterValue` で失敗する。設計意図は属性値ではなく HCL コメント（`#`）へ書く。
 
 ## 環境の使い方
 
