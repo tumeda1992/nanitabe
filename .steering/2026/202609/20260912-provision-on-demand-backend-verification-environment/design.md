@@ -130,7 +130,7 @@ integration URI も両方が書き込むが、扱いを逆にする。Terraform 
 | --- | --- | --- |
 | task execution role | ECR からの image pull、CloudWatch Logs への書き込み、`ssm:GetParameters`、`kms:Decrypt` | image を取得し、log を出し、SecureString の parameter を復号して task へ渡すため |
 | task role | なし（付与しない） | backend の application は AWS API を呼ばない。DB へは通常の MySQL 接続で到達する |
-| EventBridge Scheduler role | `ecs:UpdateService`、`apigatewayv2:UpdateIntegration` | 自動停止の 2 つの schedule が AWS API を直接呼ぶため |
+| EventBridge Scheduler role | `ecs:UpdateService`、`apigateway:PATCH`、`apigateway:GET` | 自動停止の 2 つの schedule が AWS API を直接呼ぶため。API Gateway v2 の管理 API は HTTP verb ベースの IAM action で認可され、`apigatewayv2:UpdateIntegration` という action 名は評価されない |
 | CodeBuild role | ECR への push、CloudWatch Logs への書き込み、artifact 用 S3 bucket への読み書き | image を作って push し、build log を残すため |
 | CodePipeline role | CodeBuild の起動、artifact 用 S3 bucket への読み書き、CodeStarConnection の使用 | Source から Build へ artifact を渡すため |
 | SNS topic policy | CloudWatch（`cloudwatch.amazonaws.com`）からの `sns:Publish` | alarm が topic へ通知を送るため。role ではなく topic 側の resource policy として与える |
