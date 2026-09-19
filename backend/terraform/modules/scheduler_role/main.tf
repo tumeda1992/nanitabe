@@ -41,8 +41,11 @@ resource "aws_iam_role_policy" "scheduler" {
         Resource = "arn:aws:ecs:ap-northeast-1:${data.aws_caller_identity.current.account_id}:service/${var.ecs_cluster_name}/${var.ecs_service_name}"
       },
       {
+        # API Gateway v2 の管理APIはHTTP verb単位のIAM actionで認可される。
+        # apigatewayv2:UpdateIntegration という action 名は実際には評価されず、
+        # apigateway:PATCH が要求される（CloudTrailのAccessDeniedで実測して判明）。
         Effect   = "Allow"
-        Action   = ["apigatewayv2:UpdateIntegration", "apigatewayv2:GetIntegration"]
+        Action   = ["apigateway:PATCH", "apigateway:GET"]
         Resource = "arn:aws:apigateway:ap-northeast-1::/apis/${var.api_id}/integrations/*"
       }
     ]
