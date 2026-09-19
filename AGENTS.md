@@ -2,6 +2,7 @@
 
 - `backend/`: バックエンドアプリケーション。詳細な指示は `backend/CLAUDE.md`。
 - `frontend/`: フロントエンドアプリケーション。詳細な指示は `frontend/CLAUDE.md`。
+- `infrastructure/`: AWS インフラの Terraform 定義。詳細な指示は `infrastructure/README.md`。
 
 ## 常用する plugin
 

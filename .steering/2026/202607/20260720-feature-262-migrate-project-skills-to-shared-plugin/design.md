@@ -1,8 +1,10 @@
 # Design: nanitabe の project skill を共有 plugin へ移行する
 
+> **表記について**: 参照元の private repository 名は「先行 repository」と表記する。依頼内容の引用内も同じ置き換えを行っている。
+
 ## 元の依頼内容
 
-~/src/github.com/tumeda1992/x_favorites について、元々ClaudeCodeをメインで使っていたのを、Codexも使えるように設定し .steering/2026/202607/20260720-feature-16-migrate-project-skills-to-shared-plugin ではskill群をリポジトリで定義するのではなく ~/src/github.com/tumeda1992/ai_agent_dev_skill_plugin のプラグインをローカルで参照するようにした。同じことをしたい。x_favorites のskillsは nanitabeのskillsをコピーした後に進化させたから互換性があるはず
+先行 repository について、元々ClaudeCodeをメインで使っていたのを、Codexも使えるように設定し .steering/2026/202607/20260720-feature-16-migrate-project-skills-to-shared-plugin ではskill群をリポジトリで定義するのではなく ~/src/github.com/tumeda1992/ai_agent_dev_skill_plugin のプラグインをローカルで参照するようにした。同じことをしたい。先行 repository のskillsは nanitabeのskillsをコピーした後に進化させたから互換性があるはず
 
 ## 1. TL;DR
 
@@ -74,7 +76,7 @@ nanitabe 内の Claude Code 専用 skill / agent 定義を、共有 plugin `tume
 
 ## 4. 設計判断
 
-- shared手順をpluginだけに置く。local copyを残すとx_favorites由来の進化とnanitabe旧版が再び乖離する。
+- shared手順をpluginだけに置く。local copyを残すと先行 repository由来の進化とnanitabe旧版が再び乖離する。
 - Codexのrepository instructionは`AGENTS.md`を正本にし、Claude Codeにはsymlinkで同じ内容を提供する。
 - marketplace名をrepositoryごとに分ける。同一sourceを使っても接続設定を独立させ、別環境での再現性を確保する。
 - context instanceには現存する文書と設定で確認した値だけを書く。
@@ -82,7 +84,7 @@ nanitabe 内の Claude Code 専用 skill / agent 定義を、共有 plugin `tume
 ### 代替案と棄却理由
 
 - **旧 `.claude/skills` とagentを残す**: 正本が不明になりshared plugin改善を取り込めない。
-- **x_favorites の個人marketplaceだけを使う**: nanitabe単独の導入経路にならない。
+- **先行 repository の個人marketplaceだけを使う**: nanitabe単独の導入経路にならない。
 - **repository固有値をplugin本文へ書く**: 他repositoryのURL・command・文書を誤参照する。
 
 ## 5. リスクと対策
@@ -90,7 +92,7 @@ nanitabe 内の Claude Code 専用 skill / agent 定義を、共有 plugin `tume
 | リスク | 対策 |
 | --- | --- |
 | local symlinkがない環境でsourceを解決できない | remote source sampleとlocal symlink手順を残す |
-| Codexがx_favoritesのcacheを使う | nanitabe marketplaceから再導入しCLI一覧のpathを確認する |
+| Codexが先行 repositoryのcacheを使う | nanitabe marketplaceから再導入しCLI一覧のpathを確認する |
 | 常時作法が消える | hookをplugin名に更新し、削除前に旧path参照を検索する |
 | 既存の利用者変更を巻き込む | `.codex/rules/default.rules`とfrontend変更は編集しない |
 

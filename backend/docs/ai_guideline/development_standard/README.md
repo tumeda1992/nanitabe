@@ -4,3 +4,4 @@
 - 自動テスト・テストファースト方針 @testing.md
 - dockerコマンド実行方針 @docker.md
 - コードフォーマット方針 @formatting.md
+- 動作確認環境（review 環境）の使い方 @review_environment.md
