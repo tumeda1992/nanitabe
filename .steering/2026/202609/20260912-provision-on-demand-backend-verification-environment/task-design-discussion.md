@@ -129,9 +129,8 @@ database の作成は DB サーバ側の操作であり、今回の Terraform �
 
 **調査で判明した接続先の実体**
 
-- `DB_HOST` は `ap-northeast-1` の EC2 の public DNS 名で、`DB_PORT` は 33307。開発マシンからこの port へ TCP 接続できることを確認済み。
-- `BACKEND_PROD_HOST` が同じ EC2 を指す。本番 backend と開発 DB は同一 EC2 上にある。
-- したがって「本番 backend は AWS 上に無い」という提案0の記述は誤りだった。正しくは、本番 backend は AWS の EC2 上で動いており、Terraform の管理下にないだけである。この訂正は design.md の付録へも反映する。
+- 開発 DB は container 内ではなく外部の server 上にあり、開発マシンから到達できることを確認済み。
+- したがって「本番 backend は AWS 上に無い」という提案0の記述は誤りだった。正しくは Terraform の管理下にないだけである。この訂正は design.md の付録へも反映する。
 
 **推奨を a にする理由と、そこで受け入れてもらう必要があるもの**
 
@@ -207,7 +206,7 @@ database の作成は DB サーバ側の操作であり、今回の Terraform �
 **調査で判明した前提**
 
 - VPC は default の 1 つだけで、subnet は 3 つとも public。private subnet も NAT Gateway も無いため、Fargate task を public subnet に public IP 付きで置く形が、追加の network resource を作らずに済む唯一の形になる。
-- DB 側の security group は `33307/tcp` を `0.0.0.0/0` へ開放している。したがって task の public IP が起動ごとに変わっても DB へ到達でき、DB 到達性はこの論点の判断材料から外れる。
+- DB 側の security group は接続元を IP で絞っていない。したがって task の public IP が起動ごとに変わっても DB へ到達でき、DB 到達性はこの論点の判断材料から外れる。
 - Route53 の hosted zone `kibotsu.com` が既に存在する。A レコードを足すことによる常時課金の増加は無い。
 
 **HTTPS の要否がこの論点を分けること**
@@ -399,7 +398,7 @@ a へ戻した後、frontend の browser から見える位置に `http://` の 
   ECS Fargate task（public subnet、public IP）
        |
        v
-  EC2 上の MySQL（33307）
+  既存の DB サーバ（MySQL）
 ```
 
 **構成要素:**
@@ -1089,7 +1088,7 @@ review 環境は infrastructure の話であるという整理。ただし b と
 
 review 環境に閉じる操作を、次のいずれにも影響が及ばない操作と定義する。
 
-- 本番 backend（EC2 上）とその host
+- 本番 backend とその host
 - 開発 DB のスキーマとデータ
 - prod の Terraform state と、そこにある resource
 - `.env` の内容と SSM parameter の値
@@ -1234,7 +1233,7 @@ backend/docs/ai_guideline/development_standard/
 
 review 環境に閉じる操作を、次のいずれにも影響が及ばない操作と定義する。
 
-- 本番 backend（EC2 上）とその host
+- 本番 backend とその host
 - 開発 DB のスキーマとデータ
 - prod の Terraform state と、そこにある resource
 - `.env` の内容と SSM parameter の値

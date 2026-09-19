@@ -121,7 +121,7 @@ integration URI も両方が書き込むが、扱いを逆にする。Terraform 
 | environment | 配置・起動条件 | 観測可能な結果 |
 | --- | --- | --- |
 | development（既存） | `docker compose up`、`backend/entrypoint.sh` | `localhost:18101` で Rails が応答し `/graphiql` が開ける |
-| production（既存） | `ap-northeast-1` の EC2 上で git pull 起点の deploy（[前提とする既存仕様](#付録前提とする既存仕様)） | 本番 backend host が応答する |
+| production（既存） | git pull 起点の deploy（[前提とする既存仕様](#付録前提とする既存仕様)） | 本番 backend host が応答する |
 | 動作確認（新規） | ECS 上。起動操作があるときだけ稼働する。DB は持たず既存 DB サーバへ接続する | 開発者の PC 以外の端末から `https://review-backend-nanitabe.kibotsu.com/graphql` が応答する。停止中は同じ URL が API Gateway 経由で到達不能になる |
 
 **IAM role:**
@@ -129,7 +129,7 @@ integration URI も両方が書き込むが、扱いを逆にする。Terraform 
 | role | 付与する権限 | 必要な理由 |
 | --- | --- | --- |
 | task execution role | ECR からの image pull、CloudWatch Logs への書き込み、`ssm:GetParameters`、`kms:Decrypt` | image を取得し、log を出し、SecureString の parameter を復号して task へ渡すため |
-| task role | なし（付与しない） | backend の application は AWS API を呼ばない。DB は EC2 上の MySQL へ通常の接続で到達する |
+| task role | なし（付与しない） | backend の application は AWS API を呼ばない。DB へは通常の MySQL 接続で到達する |
 | EventBridge Scheduler role | `ecs:UpdateService`、`apigatewayv2:UpdateIntegration` | 自動停止の 2 つの schedule が AWS API を直接呼ぶため |
 | CodeBuild role | ECR への push、CloudWatch Logs への書き込み、artifact 用 S3 bucket への読み書き | image を作って push し、build log を残すため |
 | CodePipeline role | CodeBuild の起動、artifact 用 S3 bucket への読み書き、CodeStarConnection の使用 | Source から Build へ artifact を渡すため |
@@ -364,16 +364,15 @@ repository へ commit する document には、次を書かない。
 
 ## （付録）前提とする既存仕様
 
-- **backend の本番 deploy**: `.github/workflows/backend-deploy.yml`。`main` への PR merge 時に n8n の webhook を叩くだけで、CI から直接 deploy する経路は存在しない。コメントに「ciサーバに設定をめちゃめちゃ書き込ませたくないから、git pull だけやらせる」とあり、実体は server 上での git pull 運用である。
-- **本番 backend と開発 DB の実体**: どちらも `ap-northeast-1` の同一 EC2 上にある。`BACKEND_PROD_HOST` と `DB_HOST` が同じ host へ解決されることを確認した。`DB_PORT` は 33307 で、開発マシンからこの port へ TCP 接続できる。つまり本番 backend は AWS 上で動いており、Terraform の管理下にないだけである。ローカルの `docker compose` の backend も、この EC2 上の MySQL へ接続している（`docker-compose.yml` に DB service は無く、`env_file` で接続情報を渡している）。
-- **backend の AWS 資産のうち Terraform 管理下にあるもの**: 存在しない。`infrastructure/terraform/envs/prod/main.tf` が呼ぶ module は `state_in_s3` と `frontend` だけ。repository 全体で `ECS` / `Fargate` への言及は 0 件（`*.md` / `*.tf` / `*.yml` を対象に確認）。上記 EC2 は Terraform の管理外で稼働している。
+- **backend の本番 deploy**: `.github/workflows/backend-deploy.yml`。`main` への PR merge 時に n8n の webhook を叩くだけで、CI から直接 deploy する経路は存在しない。コメントに「ciサーバに設定をめちゃめちゃ書き込ませたくないから、git pull だけやらせる」とある。
+- **開発 DB の到達性**: ローカルの `docker compose` は container 内に DB を持たず、`env_file` で渡される接続情報で外部の MySQL へ接続している（`docker-compose.yml` に DB service は無い）。開発マシンからその接続先へ到達できることを確認した。ECS から同じ接続先へ到達できることが、この環境が DB を持たない前提になる。
+- **backend の AWS 資産のうち Terraform 管理下にあるもの**: 存在しない。`infrastructure/terraform/envs/prod/main.tf` が呼ぶ module は `state_in_s3` と `frontend` だけ。repository 全体で `ECS` / `Fargate` への言及は 0 件（`*.md` / `*.tf` / `*.yml` を対象に確認）。
 - **AWS account の既存構成**（`ap-northeast-1`、AWS CLI で実測）:
   - VPC は default の `vpc-d69c93b1`（`172.31.0.0/16`）only。subnet は 3 つ（`ap-northeast-1a` / `1c` / `1d`）で、いずれも `MapPublicIpOnLaunch=true` の public subnet。private subnet と NAT Gateway は存在しない。
-  - EC2 は `various_function_machine`（`t2.small`、`ap-northeast-1a`）が 1 台稼働。これが本番 backend と MySQL を兼ねる。
-  - security group `mysql` は `33307/tcp` の inbound を `0.0.0.0/0` へ開放している。したがって接続元 IP が起動ごとに変わっても DB へ到達できる。同一 VPC 内から `DB_HOST` の public DNS 名を解決した場合は private IP が返るため、経路は VPC 内に閉じる。
+  - DB 側の security group は接続元を IP で絞っていない。したがって Fargate task の public IP が起動ごとに変わっても DB へ到達でき、接続元の登録を起動のたびに行う必要がない。
   - ECS cluster は `sample_todo_list_cluster` が別プロジェクト用に存在する。nanitabe 用の cluster は無い。
   - ECR repository は `nanitabe-front/next-js-on-lambda/{prod,verify-infra}` があり、backend 用は無い。
-  - Route53 hosted zone は `kibotsu.com` のみ。frontend の custom domain `nanitabe.kibotsu.com` がこの zone に属する。
+  - Route53 hosted zone は 1 つだけで、frontend の custom domain がこの zone に属する。
 - **frontend の AWS 構成**: `frontend/terraform/envs/prod/main.tf`。`ecr` → `lambda`（container image）→ `api_gateway` → `cloudfront`（custom domain `nanitabe.${route53_name}`）、assets 用 `s3`、`cicd`（CodePipeline / CodeBuild、`branch` 変数で対象 branch を指定）。`stage = "prod"` を local で持ち各 module へ渡す。
 - **Terraform の構成**: `infrastructure/terraform/envs/prod/main.tf` が root。`terraform` backend は S3 + DynamoDB lock で、`init_terraform.sh` が `-backend-config` で bucket / key（`prod/terraform.tfstate`）を渡す。`apply_terraform.sh` は `/etc/opt/app_setting_files/nanitabe/.env` を読んで `TF_VAR_*` へ export してから `terraform apply` する。secret は repository に無い。
 - **`frontend/terraform/envs/review/`**: `.gitkeep` だけの空 directory が存在する。review 環境の器が意図として置かれている。
