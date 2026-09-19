@@ -122,7 +122,7 @@ integration URI も両方が書き込むが、扱いを逆にする。Terraform 
 | --- | --- | --- |
 | development（既存） | `docker compose up`、`backend/entrypoint.sh` | `localhost:18101` で Rails が応答し `/graphiql` が開ける |
 | production（既存） | git pull 起点の deploy（[前提とする既存仕様](#付録前提とする既存仕様)） | 本番 backend host が応答する |
-| 動作確認（新規） | ECS 上。起動操作があるときだけ稼働する。DB は持たず既存 DB サーバへ接続する | 開発者の PC 以外の端末から `https://review-backend-nanitabe.kibotsu.com/graphql` が応答する。停止中は同じ URL が API Gateway 経由で到達不能になる |
+| 動作確認（新規） | ECS 上。起動操作があるときだけ稼働する。DB は持たず既存 DB サーバへ接続する | 開発者の PC 以外の端末から `https://review-backend-nanitabe.kibotsu.com/graphql` が応答する。停止中は同じ URL が HTTP 500 を返す |
 
 **IAM role:**
 
@@ -321,8 +321,8 @@ repository へ commit する document には、次を書かない。
 ### 受け入れ基準
 
 - 起動操作の後、開発者の PC 以外の端末から `POST /graphql` を叩いて期待する response が返る。
-- 明示的な停止操作の後、同じ endpoint へ到達できなくなる。
-- 停止操作をしなくても、schedule の発火によって同じ endpoint へ到達できなくなり、`desired_count` が 0 になる。発火までの時間が既定で 30 分であることは、作られた schedule の実行予定時刻で確認する。
+- 明示的な停止操作の後、同じ endpoint が HTTP 500 を返し、backend へ到達しなくなる。API Gateway は常設なので応答自体は返る。停止中に 500 が返ることが正常な状態である。
+- 停止操作をしなくても、schedule の発火によって同じ endpoint が HTTP 500 を返すようになり、`desired_count` が 0 になる。発火までの時間が既定で 30 分であることは、作られた schedule の実行予定時刻で確認する。
 - 停止状態で発生する課金が、image と log の保存料および alarm に限られる。`terraform plan` と `terraform state list` の出力に ALB / RDS / NAT Gateway / Elastic IP / Secrets Manager が現れないことで確認する。Cost Explorer は反映が翌日以降になり完了判定に使えないため用いない。
 - 自動停止が働かずに task が動き続けた場合に、alarm から通知が届く。通知までの時間が 45 分であることは alarm の定義値で確認する。
 - 記載された運用 document の手順だけを入力として、起動から確認、停止までの一連の操作が通る。
@@ -351,8 +351,8 @@ repository へ commit する document には、次を書かない。
 | 起動 script で到達できるようになる | 起動 script を実行し、`https://review-backend-nanitabe.kibotsu.com/graphql` へ `POST` して応答を得る |
 | PC 以外の端末から到達できる | スマホから同じ URL を叩く。これが今回の主目的であり、代替手段で確認したことにしない |
 | IP 直アクセスが弾かれる | task の public IP へ直接 `POST` し、403 が返ることを確認する |
-| 停止 script で到達できなくなる | 停止 script を実行し、同じ URL が応答しなくなることを確認する |
-| 自動停止の発火と停止処理 | `REVIEW_BACKEND_AUTO_STOP_MINUTES=1` で起動し、schedule の発火によって `desired_count` が 0 になり integration URI が停止側へ戻ることを確認する |
+| 停止 script で到達できなくなる | 停止 script を実行し、同じ URL が HTTP 500 を返すようになることを確認する。integration URI が到達しない値へ戻るため、API Gateway が転送先へ届かず 500 になる |
+| 自動停止の発火と停止処理 | `REVIEW_BACKEND_AUTO_STOP_MINUTES=1` で起動し、schedule の発火によって `desired_count` が 0 になり integration URI が停止側へ戻ることを確認する。URL は HTTP 500 を返すようになる |
 | 自動停止までの時間が 30 分である | `REVIEW_BACKEND_AUTO_STOP_MINUTES` を既定のまま起動し、作られた schedule の実行予定時刻が起動時刻の 30 分後であることを確認する。発火を待つ必要はない |
 | migration が流れる | 起動時の log に migration の実行が現れることを CloudWatch Logs で確認する |
 | 止め忘れ時に通知が届く | alarm の `evaluation_periods` を一時的に 1 へ変えて apply し、停止 schedule を作らずに `desired_count` を 1 にして、alarm が `ALARM` になり email が届くことを確認する。確認後に定義値へ戻して apply する |
