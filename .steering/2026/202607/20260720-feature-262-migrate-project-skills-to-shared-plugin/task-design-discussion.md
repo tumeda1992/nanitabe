@@ -2,12 +2,12 @@
 
 **ステータス:** 決定
 
-**提起の背景:** nanitabeはx_favoritesより前のlocal skill / agent定義を持つ。一方で、x_favoritesから移植・進化したshared pluginが存在するため、旧定義を残すと更新・実行の正本が揺れる。
+**提起の背景:** nanitabeは先行 repositoryより前のlocal skill / agent定義を持つ。一方で、先行 repositoryから移植・進化したshared pluginが存在するため、旧定義を残すと更新・実行の正本が揺れる。
 
 ### 議論の変遷
 
 #### 事象の記述
-- ユーザーはx_favoritesと同じく、repository内でskill群を定義せず`ai_agent_dev_skill_plugin`をlocal参照したいと依頼した。
+- ユーザーは先行 repositoryと同じく、repository内でskill群を定義せず`ai_agent_dev_skill_plugin`をlocal参照したいと依頼した。
 - nanitabeには`.claude/skills`と`.claude/agents`が残り、Codexのproject-local marketplaceがない。
 
 #### 原因の追跡
@@ -26,7 +26,7 @@
 #### イテレーション1
 
 ##### 検証
-- **観点**: x_favoritesのmarketplaceは既に同じshared checkoutを参照するが、nanitabe単独の導入経路にはならない。
+- **観点**: 先行 repositoryのmarketplaceは既に同じshared checkoutを参照するが、nanitabe単独の導入経路にはならない。
 - **弱点**: 個人の`x-favorite-plugins` marketplaceに依存すると、別環境でnanitabeを使う時にplugin接続が再現できない。
 
 ##### 修正先の判断

@@ -13,9 +13,7 @@ import { onError } from '@apollo/client/link/error';
 import merge from 'deepmerge';
 import isEqual from 'lodash/isEqual';
 import fetch from 'isomorphic-unfetch';
-import judgeExecInClientOrServer, {
-  ExecSituation,
-} from '../judgeExecInClientOrServer';
+import generateApiOrigin from '../generateApiOrigin';
 import {
   getAccessToken,
   setAccessToken,
@@ -77,22 +75,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (networkError) console.log(`[Network error]: ${networkError}`);
 });
 
-const generateURL: () => string = () => {
-  const apiOrigin: string = (() => {
-    if (process.env.NEXT_PUBLIC_ENVIRONMENT !== 'development') {
-      return process.env.NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN as string;
-    }
-    switch (judgeExecInClientOrServer) {
-      case ExecSituation.ExecInServerSide:
-        return 'http://nanitabe_back:18101';
-      case ExecSituation.ExecInClientSide:
-        return 'http://localhost:18101';
-      default:
-        return '';
-    }
-  })();
-  return `${apiOrigin}/graphql`;
-};
+const generateURL: () => string = () => `${generateApiOrigin()}/graphql`;
 
 const httpLink = new HttpLink({
   uri: generateURL(),

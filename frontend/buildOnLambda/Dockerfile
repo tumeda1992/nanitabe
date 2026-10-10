@@ -37,7 +37,6 @@ COPY . .
 
 # なぜかテストのコードもビルドしようとするので、一旦テスト用ライブラリをいれる
 RUN yarn install --production=false
-RUN node_modules/.bin/tailwindcss -i src/app/globals.css -o src/app/tailwind-output.css
 RUN yarn build
 
 RUN aws s3 sync .next/static s3://nanitabe-front-${DEPLOY_ENV}-static-files/_next/static --delete

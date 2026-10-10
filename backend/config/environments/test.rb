@@ -62,6 +62,12 @@ Rails.application.configure do
 
   config.factory_bot.definition_file_paths = ["spec/support/factories"]
 
+  # NOTE: test環境のDBはsqlite3であり、migrate後にschemaをdumpさせるとschema.rbが
+  # sqliteの構造で上書きされ、MySQL固有のcharset/collation指定が落ちる。
+  # entrypoint.shがコンテナ起動のたびに`db:migrate RAILS_ENV=test`を実行するため、
+  # dumpを止めないとschema.rbが毎回汚れる。production.rbと同じ設定にする。
+  config.active_record.dump_schema_after_migration = false
+
   config.after_initialize do
     Bullet.enable = true
     Bullet.bullet_logger = true

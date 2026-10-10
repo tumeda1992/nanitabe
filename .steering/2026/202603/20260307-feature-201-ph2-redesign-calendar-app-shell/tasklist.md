@@ -48,7 +48,7 @@
         ```
     - DropdownMenu の内容:
         - `isDisplayCalenderMode` が true のとき: 「食事割当て」（onStartAssigningDish を呼ぶ）
-        - 常時: 「(admin)ワード正規化」（`https://nanitabe_back.kibotsu.com/admin/food/dish/word/normalize_words` への外部リンク）
+        - 常時: 「(admin)ワード正規化」（backend の管理画面への外部リンク）
     - 週月切替ボタン・今週/今月ボタン: `<Link>`（next/link）
     - 前後ナビ: `onClick={refreshToPrev}` / `onClick={refreshToNext}`
 
