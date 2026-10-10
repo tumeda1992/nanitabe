@@ -33,6 +33,7 @@ meal/frame/
 
 - MUST: 枠マスタは `meal_frames` で一元管理し、同じ枠を複数日に使い回せる設計を維持する（毎回新規作成しない）
 - パターンは「道具」。適用によって生成された `meal_frame_entries` はパターンと独立して存在する（パターン削除で消えない）
+- 食事を削除すると `meal_frame_entries.meal_id` は `NULL` へ戻り、**枠はその日に残って未割り当てになる**（`Meal` の `has_one :meal_frame_entry, dependent: :nullify`）。枠は日付と時間帯に対する計画であり、そこへ入る食事とは独立しているため、枠エントリごと消さない
 
 ## カレンダークエリの返却構造（`mealsForCalender`）
 
@@ -46,6 +47,14 @@ meal/frame/
 - MUST: `frameEntries` から割り当て済み枠エントリを取ることはできない（設計上の契約）
 - 「同日の未割り当て食事リスト」を作るには `meals.filter(m => !m.mealFrameEntryId)` でクライアント側フィルタが正しいアプローチ（新クエリは不要）
 - やってしまいがちな失敗: `frameEntries` に全枠エントリが含まれると思って実装する → 割り当て済み枠が見えなくなる
+
+### 延期された食事（PostponedMeal）
+
+`Meal::Postponed::Root`（`postponed_meals`）は「この料理を、この時間帯に、いつか食べたい」という意思を表す。日付だけが未決である点で `MealFrameEntry`（料理が未決）と対称的。
+
+- `PostponedMeal` は単体で削除する操作を持たない。一覧から取り除く手段は日付を与えて確定させることだけである
+- あるべき姿は延期単体の削除アクションを用意すること。エッジケースであるため見送っている
+- この制約により、延期された食事がある料理は `Dish::Usecase::RemoveCommand` で削除を拒否される
 
 ## 変更ガイド
 

@@ -8,6 +8,9 @@ import useMoveMealMode, {
 import useSwapMealsMode, {
   SwappingMealMode,
 } from './operationComponents/SwapMeals/useSwapMealsMode';
+import usePostponedMealMode, {
+  PostponedMealMode,
+} from './operationComponents/PostponeMeal/usePostponedMealMode';
 import {
   isMonthPath,
   monthCalendarPagePathOf,
@@ -21,7 +24,8 @@ export type CalendarMode =
   | typeof DISPLAY_CALENDAR_MODE
   | AssigningDishMode
   | SwappingMealMode
-  | MovingMealMode;
+  | MovingMealMode
+  | PostponedMealMode;
 
 export default ({ onDataChanged }) => {
   const [calendarMode, setCalendarMode] = useState(DISPLAY_CALENDAR_MODE);
@@ -56,6 +60,13 @@ export default ({ onDataChanged }) => {
     onDataChanged,
   });
 
+  const usePostponedMealModeResult = usePostponedMealMode({
+    calendarMode,
+    updateCalendarMode,
+    changeCalendarModeToDisplayCalendarMode,
+    onDataChanged,
+  });
+
   const calendarModeChangers = {
     startMovingDishMode: useMoveMealModeResult.startMovingMealMode,
   };
@@ -73,6 +84,10 @@ export default ({ onDataChanged }) => {
       useSwapMealsModeResult.onDateClickForSwappingMeals(date);
       // return;
     }
+    if (usePostponedMealModeResult.isSchedulingPostponedMealMode) {
+      usePostponedMealModeResult.onDateClickForSchedulingPostponedMeal(date);
+      return;
+    }
   };
 
   useEffect(() => {
@@ -89,7 +104,8 @@ export default ({ onDataChanged }) => {
   const requireDisplayingBottomBar =
     useAssignDishModeResult.inAssigningDishMode ||
     useMoveMealModeResult.isMovingMealMode ||
-    useSwapMealsModeResult.isSwappingMealMode;
+    useSwapMealsModeResult.isSwappingMealMode ||
+    usePostponedMealModeResult.inPostponedMealMode;
 
   return {
     isDisplayCalendarMode,
@@ -98,6 +114,7 @@ export default ({ onDataChanged }) => {
     useAssignDishModeResult,
     useMoveMealModeResult,
     useSwapMealsModeResult,
+    usePostponedMealModeResult,
     requireDisplayingBottomBar,
     onDateClick,
   };

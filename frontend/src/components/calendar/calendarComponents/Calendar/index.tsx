@@ -7,6 +7,7 @@ import DateCard from '../DateCard';
 import AssignDish from '../operationComponents/AssignDish';
 import MoveDish from '../operationComponents/MoveMeal';
 import SwapMeals from '../operationComponents/SwapMeals';
+import PostponeMeal from '../operationComponents/PostponeMeal';
 
 type DateMeal = { date: Date; dayLabel: string; meals: any[]; frameEntries: any[] };
 
@@ -37,6 +38,7 @@ export default (props: Props) => {
     calendarModeChangers,
     useMoveMealModeResult,
     useSwapMealsModeResult,
+    usePostponedMealModeResult,
     requireDisplayingBottomBar,
     onDateClick,
   } = useCalendarMode({
@@ -64,6 +66,7 @@ export default (props: Props) => {
       {children({
         isDisplayCalendarMode,
         useAssignDishModeResult,
+        usePostponedMealModeResult,
         refreshToPrev,
         refreshToNext,
       })}
@@ -110,6 +113,11 @@ export default (props: Props) => {
               )}
               {useSwapMealsModeResult.isSwappingMealMode && (
                 <SwapMeals useSwapMealsModeResult={useSwapMealsModeResult} />
+              )}
+              {usePostponedMealModeResult.inPostponedMealMode && (
+                <PostponeMeal
+                  usePostponedMealModeResult={usePostponedMealModeResult}
+                />
               )}
             </div>
           </div>

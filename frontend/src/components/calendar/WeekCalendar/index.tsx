@@ -81,7 +81,7 @@ export default (props: Props) => {
       refreshToPrev={updateFirstDateToPreviousWeekFirstDate}
       refreshToNext={updateFirstDateToNextWeekFirstDate}
     >
-      {({ isDisplayCalendarMode, useAssignDishModeResult, refreshToPrev, refreshToNext }) => (
+      {({ isDisplayCalendarMode, useAssignDishModeResult, usePostponedMealModeResult, refreshToPrev, refreshToNext }) => (
         <CalendarHeader
           viewType="week"
           displayLabel={displayLabel}
@@ -90,6 +90,7 @@ export default (props: Props) => {
           refreshToNext={refreshToNext}
           isDisplayCalendarMode={isDisplayCalendarMode}
           onStartAssigningDish={useAssignDishModeResult.startAssigningDishMode}
+          onStartPostponedMeal={usePostponedMealModeResult.startPostponedMealMode}
         />
       )}
     </Calendar>
