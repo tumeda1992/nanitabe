@@ -23,22 +23,3 @@ services:
       - ./backend:/root/nanitabe_back
     environment:
       RAILS_ENV: ${ENV:-development}
-
-  frontend_next_lambda:
-    container_name: frontend_next_lambda
-    #    command: "yarn docker-compose-command" # デバッグ
-    build:
-      context: ./frontend
-      dockerfile: ./buildOnLambda/Dockerfile
-      args: # 参照するのはdocker compose 実行時のターミナルの環境変数
-        # AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID} # どうせdocker-compose時は空
-        # AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY} # どうせdocker-compose時は空
-        AWS_DEFAULT_REGION: ap-northeast-1
-        NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN: http://localhost:18101
-        # NEXT_PUBLIC_ASSET_ORIGIN: ${NEXT_PUBLIC_ASSET_ORIGIN} # どうせdocker-compose時は空
-        DEPLOY_ENV: verify-infra
-    volumes:
-      - ./frontend:/var/task
-    env_file: /etc/opt/app_setting_files/nanitabe/.env
-    ports:
-      - "8080:8080"
