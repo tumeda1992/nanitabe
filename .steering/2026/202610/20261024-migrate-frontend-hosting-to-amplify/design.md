@@ -38,7 +38,7 @@
 
 - Amplify は監視 branch の remote の内容を build する。(1-a) の前に、Phase 1 の変更を commit して `feature-258` を push する。この push は (1-a) の前提であり、利用者の確認を経て行う。
 - 各 apply は `infrastructure/terraform/envs/prod` で `./init_terraform.sh` の後に `./apply_terraform.sh` を実行し、`terraform apply` が表示する plan を確認してから承認する。
-- 旧構成の撤去を含む作業の Terraform 定義は `feature-258` 上にあり、apply はその working copy から行う。phase 完了時に `main` と state を一致させるため、`feature-258` を `main` へ merge する。この merge は roadmap の後段 phase が残るため issue #258 の完了ではなく、PR に `Closes` を付けない（plugin の `development_flow/branch_pr_issue.md` の経路 2）。
+- 旧構成の撤去を含む作業の Terraform 定義は `feature-258` 上にあり、apply はその working copy から行う。phase 完了時に `main` と state を一致させるため、`feature-258` の内容を `main` へ merge する。この merge は roadmap の後段 phase が残るため issue #258 の完了ではなく、PR に `Closes` を付けない（plugin の `development_flow/branch_pr_issue.md` の経路 2）。経路 2 の PR は本線 `feature-258` からではなく、派生 branch `feature-258-amplify-migration` から出す。本線は issue #258 の完了まで使い続け、merge 済みの branch 名を再利用しないためである。merge 後は `main` を `feature-258` へ取り込む。
 
 ---
 

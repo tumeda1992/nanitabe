@@ -182,3 +182,31 @@ tasklist-executor が tasklist 外で行った `docker-compose.yml` からの `f
 ### 再開条件（論点6）
 
 phase `amplify-migration` の完了報告の後、反映先と内容を利用者と決める。`terraform-on-github-actions` phase で `infrastructure/README.md` を書き換える際の入力にもなる。
+
+## 論点7: phase 完了時の途中 merge を本線 branch から出していた
+
+**ステータス:** 決定
+
+**種別:** レビュー指摘、認識齟齬
+
+### イテレーション0（論点7）: 途中 merge の branch
+
+#### 提案0（論点7）
+
+PR #283（head は本線 `feature-258`）を merge せずに閉じ、派生 branch `feature-258-amplify-migration` を同じ commit から作って、そこから `Closes` を持たない PR #288 を出す。本線 `feature-258` は issue #258 の完了まで使い続け、#288 の merge 後に `main` を取り込む。design の該当記述をこの形へ直す。
+
+#### 検討記録（論点7・イテレーション0）
+
+design は「phase 完了時に `feature-258` を `main` へ merge する。経路 2 なので `Closes` を付けない」とし、tasklist も PR #283（本線 `feature-258` から `main`）の本文から `Closes` を外す形にしていた。これを merge すると、roadmap の後段 phase を続ける branch が無くなる。`feature-258` を使い続ければ merge 済みの branch 名の再利用になり、別 branch で続ければ issue を閉じる本線が無くなる。
+
+plugin の `development_flow/branch_pr_issue.md` は、検証のための merge を「同じ issue に属する派生 branch で立てる」とし、「merge 済みの branch 名を再利用しない」としている。この標準は設計前調査で読んでおり、(1-b) の途中 merge では派生 branch を使っていた。それなのに phase 完了時の merge には当てはめなかった。知識の不足ではなく、同じ判断を二か所で行う設計で片方にだけ標準を当てた process の不足である。利用者の指摘のとおり、roadmap で issue を一つにすると決めた時点で分かることだった。
+
+#### 提案0へのフィードバック（論点7）
+
+**結果:** 合意（案 b）
+
+> bだし、こんなのこの段になって聞くなよ。最初からわかることだろ
+
+### 決定（論点7）
+
+PR #283 は merge せずに閉じた。派生 branch `feature-258-amplify-migration` から PR #288（`Closes` なし、#258 を参照）を出した。本線 `feature-258` は issue #258 の完了まで使い続け、#288 の merge 後に `main` を取り込む。子 design の該当記述を更新した。
