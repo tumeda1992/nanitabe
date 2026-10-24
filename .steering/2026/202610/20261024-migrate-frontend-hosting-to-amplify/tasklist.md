@@ -351,18 +351,25 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
 - [x] 旧 module のコードを、削除 commit（`5ab7f0d`）の直前の版から scratchpad へ復元し、手元の各 `test/` の state と `.terraform` をそこへ複製する
   > 結果: `git archive 5ab7f0d^ frontend/terraform` を scratchpad の `verify-infra-old/` へ展開し、手元 `test/` の `terraform.tfstate*`、`.terraform`、lock を複製した（cloudfront/test、apigateway/test、lambda/test、s3/for_assets/test、cicd/test、ecr/test。cert/test と dns/test の state は resource 0 件）。
   - [x] 手元の旧 directory は、撤去を確認するまで消さない（state が唯一の管理手段であるため）
-- [ ] 中身を持つ resource を先に空にする: `verify-infra` の ECR repository の image と、static asset 用 S3 bucket の全 version・delete marker。削除は利用者が `!` で実行する script を scratchpad に用意して止まる
+- [x] 中身を持つ resource を先に空にする: `verify-infra` の ECR repository の image と、static asset 用 S3 bucket の全 version・delete marker。削除は利用者が `!` で実行する script を scratchpad に用意して止まる
+  > 利用者が実行。実際は s3 を空にする前に apply したため bucket だけ `BucketNotEmpty` で失敗（policy・versioning・OAI は削除済み）。その後 script で S3（484 件）と ECR（8 件）を空にした。
   > 用意済み（実行は利用者）: scratchpad の `empty_verify_infra_storage.sh`（S3 は現在 402 version + 82 delete marker、ECR は 8 image）。
-- [ ] 各 `test/` の state について `terraform plan -destroy -out=<scratchpad>/verify-infra-<module>.tfplan` を作る
+- [x] 各 `test/` の state について `terraform plan -destroy -out=<scratchpad>/verify-infra-<module>.tfplan` を作る
+  > 結果: 利用者が apply。cloudfront 7、apigateway 8、lambda 4 destroyed。s3 は上記の失敗後に `terraform destroy` で bucket 1 件を destroy。cicd 9、ecr 2 destroyed。
   > plan 作成済み（`verify-infra-{cloudfront,apigateway,lambda,s3,cicd,ecr}.tfplan`）: cloudfront 7、apigateway 8、lambda 4、s3 4、cicd 9、ecr 2 の計 34 destroy。対象は stage `verify-infra` の resource だけで、prod・Amplify・state 用 resource は含まない。
-  - [ ] 依存の向きに合わせ、cloudfront（cert、dns を含む）→ apigateway → lambda → s3 → cicd → ecr の順で destroy する
-  - [ ] 各 plan の destroy が `verify-infra` の resource だけで、prod・Amplify・state 用 resource を含まないことを確認する
-  - [ ] apply は利用者が `!` で実行する。plan の要約と、各 plan file を順に apply するコマンドを添えて止まる
-  - [ ] CloudFront から外した証明書が `ResourceInUseException` で消えない場合は、反映を待って plan を作り直す
-- [ ] 撤去後、AWS CLI で `verify-infra` の resource が残っていないことを確認する（log group は対象外）
-- [ ] 手元の `frontend/terraform/modules/` から `amplify` 以外の directory を削除する
-- [ ] `frontend/terraform/modules/amplify/README.md` から、移行期間中の兄弟 module についての記述を削除する
-- [ ] 本番の custom domain が応答することを確認する
+  - [x] 依存の向きに合わせ、cloudfront（cert、dns を含む）→ apigateway → lambda → s3 → cicd → ecr の順で destroy する
+  - [x] 各 plan の destroy が `verify-infra` の resource だけで、prod・Amplify・state 用 resource を含まないことを確認する
+  - [x] apply は利用者が `!` で実行する。plan の要約と、各 plan file を順に apply するコマンドを添えて止まる
+  - [x] CloudFront から外した証明書が `ResourceInUseException` で消えない場合は、反映を待って plan を作り直す
+    > 該当せず（証明書は distribution と一緒に削除された）。
+- [x] 撤去後、AWS CLI で `verify-infra` の resource が残っていないことを確認する（log group は対象外）
+  > 結果: Lambda、CloudFront、API Gateway（v1 / v2）、ECR、CodePipeline、CodeBuild、S3、IAM role（`nanitabe-front` を含む名前）、us-east-1 の ACM 証明書（`verify-infra` を含む domain）、Route53 の `verify-infra` を含む record のいずれも残っていない（log group は対象外）。
+- [x] 手元の `frontend/terraform/modules/` から `amplify` 以外の directory を削除する
+  > 結果: `frontend/terraform/modules/` は `amplify` のみ。scratchpad の `verify-infra-old/` は参照用に残し、session 終了で消えるのに任せる。
+- [x] `frontend/terraform/modules/amplify/README.md` から、移行期間中の兄弟 module についての記述を削除する
+  > 結果: 「旧構成は兄弟 module が持つ」の行と、旧 CloudFront の alias に関する切替順序の段落を削除した。
+- [x] 本番の custom domain が応答することを確認する
+  > 結果: redirect の後 HTTP 200。
 - [ ] 変更を commit し、`feature-258` と `feature-258-amplify-migration` へ push する
 - [ ] ここで作業を停止し、撤去の結果を利用者に確認する
 
