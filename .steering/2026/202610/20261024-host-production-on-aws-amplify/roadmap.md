@@ -82,6 +82,7 @@ frontend の本番配信を Amplify Hosting へ移し、旧構成（Lambda、API
 - state の lock の扱い
 - `infrastructure/README.md`「構成上の前提」の GitHub と AWS の関係の書き換えと、適用手順の記述の更新
 - branch protection の扱い
+- module をローカル実行で Terraform が動くか確かめる用途（旧構成では各 module の `test/` から local state で立てる spike 的な環境 `verify-infra` が担っていた）を、新しい構成でどう持つか。「値を必要とする Terraform は Actions だけで実行する」方針と両立させる
 
 ### Scope外
 
@@ -99,7 +100,7 @@ frontend の本番配信を Amplify Hosting へ移し、旧構成（Lambda、API
 ### 依存
 
 - 依存phase: amplify-migration
-- dependency results: phase `amplify-migration` 完了時点の `infrastructure/terraform/envs/prod` が持つ resource と variable の一覧、`apply_terraform.sh` が読む `.env` の key の一覧、実施中に `implementation_review.md` へ記録された逸脱
+- dependency results: phase `amplify-migration` 完了時点の `infrastructure/terraform/envs/prod` が持つ resource と variable の一覧、`apply_terraform.sh` が読む `.env` の key の一覧、実施中に `implementation_review.md` へ記録された逸脱、旧構成の `verify-infra` 環境を撤去した結果（新しい構成にはローカル実行で module を確かめる手段がまだ無い）
 - 子designで解消する制約: apply role と plan role に与える権限の範囲、GitHub secrets へ移す値の一覧、`envs/review` の destroy 拒否判定と agent の実行権限の扱い。dependency results の resource や variable が親 design の想定（Amplify と state 用 resource だけ）を超えている場合は、親 task-design へ戻る。
 
 ### 親DoDとの対応

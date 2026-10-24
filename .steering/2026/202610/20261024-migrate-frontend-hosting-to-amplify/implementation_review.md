@@ -210,3 +210,48 @@ plugin の `development_flow/branch_pr_issue.md` は、検証のための merge 
 ### 決定（論点7）
 
 PR #283 は merge せずに閉じた。派生 branch `feature-258-amplify-migration` から PR #288（`Closes` なし、#258 を参照）を出した。本線 `feature-258` は issue #258 の完了まで使い続け、#288 の merge 後に `main` を取り込む。子 design の該当記述を更新した。
+
+## 論点8: 旧 module 用の spike 環境 `verify-infra` と、手元に残った旧 module directory
+
+**ステータス:** 決定
+
+**種別:** レビュー指摘、認識齟齬
+
+### イテレーション0（論点8）: 撤去範囲の洗い出し漏れ
+
+#### 提案0（論点8）
+
+旧 module 用の `verify-infra` 環境の撤去と、手元の旧 module directory の削除を、この phase の Phase 9 として行う。module をローカル実行で確かめる用途は残し、新しい構成での持ち方を roadmap の phase `terraform-on-github-actions` の scope と dependency results に加える。
+
+#### 検討記録（論点8・イテレーション0）
+
+Phase 7 の完了後、利用者から「旧来の構成を消したと言っていたが、これが消した状態か」と指摘を受けた。確認すると、git が追跡する旧 module の file は削除されていたが、手元の `frontend/terraform/modules/{apigateway,cicd,cloudfront,ecr,lambda,s3}` は、ignore されている `test/terraform.tfstate` と `.terraform/` を残して存在していた。その state が AWS 上の `verify-infra` 環境（Lambda、API Gateway、CloudFront と証明書・record、ECR、CodeBuild・CodePipeline、S3）を管理していた。
+
+steering は最初、`verify-infra` を「旧構成の複製」と決めつけて撤去を提案し、利用者から「なぜ消せると思っているのか」と指摘された。利用者によると、`verify-infra` はローカル実行経由で Terraform が動くかを確かめる spike 的な環境である（issue #146 で `deploy-test` から改名）。steering は続けて「試す対象の module を消したので用途も無くなった」と述べ、利用者から「この用途は今後存在しないと思っているのか」と指摘された。用途は新しい module（`modules/amplify`）にも当てはまり、残る。撤去してよいのは旧 module 用の実体だけである。
+
+共有されていなかった前提と原因:
+
+1. 撤去の範囲を決めた時、git が追跡する file と prod の state だけを見て、旧 module を prod 以外の誰が使っているか（ignore された local state とそれが管理する環境）を洗い出していなかった。
+2. 環境の実体と、その環境が担う用途を区別していなかった。実体を消すときに、用途の受け皿が新しい構成にあるかを問わなかった。
+
+2 は repository を問わず起きる判断の誤りで、撤去を設計する時の問い（「この実体が担っている用途は何か。撤去後にその用途の受け皿はあるか」）にあたる。保存先は roadmap 全体の完了時の再発防止 review で決める。
+
+#### 提案0へのフィードバック（論点8）
+
+**結果:** 合意
+
+> ok
+
+利用者の指摘の原文:
+
+> 旧来の構成を消したって言ってたけど、これが消した状態なの？
+
+> なんでverify-infraを消せると思ってるの？ 今回はlambdaによるビルドを消しただけでしょ。 2が残っていて終わったとできる理由がわからない
+
+> ちげぇよ。ローカル実行経由でterraformが動くか確かめるspike的な扱いの環境だよ。
+
+> は？じゃあこの用途は今後存在しないって思ってるってこと？
+
+### 決定（論点8）
+
+旧 module 用の `verify-infra` 環境を撤去し、手元の旧 module directory を削除する作業を tasklist の Phase 9 として追加した。module をローカル実行で確かめる用途は残し、新しい構成での持ち方を roadmap の phase `terraform-on-github-actions` の scope と dependency results へ追加した。PR #288 は Phase 9 の完了後に merge する。
