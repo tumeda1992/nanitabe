@@ -470,3 +470,45 @@ custom domain の関連付けは x_favorites と同じく、親 domain と branc
 
 親 domain と prefix で関連付けるのは、後から review branch を足すときに prefix を一組増やすだけでフラットな 1 ラベルの名前を作れるためである。同じ account の別の Amplify app が同じ親 domain を関連付け済みで、共有が通るかは未実測のため手順 3 の apply で確かめる。拒否された場合は手順 2 を戻して旧構成へ戻し、design へ戻る。
 
+## 論点7: 動作確認環境を本番の resource と共用するか、別の実体として作るか
+
+**ステータス:** 決定
+
+**種別:** 認識齟齬
+
+### イテレーション0（論点7）: 共用型と別実体型の比較
+
+> 事後記録: この論点は子 steering `20261024-apply-terraform-from-github-actions` の設計中に、x_favorites が動作確認環境を Terraform でどう持っていたかという利用者の質問から始まった。提案は chat で提示し、合意後にここへ保存した。
+
+#### 提案0（論点7）
+
+動作確認環境（review）は、本番の resource の中に review 用の変種（Amplify の branch、Lambda の alias、API Gateway の stage 等）を作って共用せず、同じ module を `stage = "review"` で呼んで別の実体として作る。
+
+#### 検討記録（論点7・イテレーション0）
+
+利用者から、x_favorites の踏襲を外してゼロベースで、Amplify を共用するか別に立てるか、Amplify 以外の resource も立てる場合を含めて考えるよう求められた。
+
+- Amplify は app 単位で platform、GitHub 接続、IAM role、build image、domain association が決まり、branch 単位で環境変数、Basic authentication、auto build を上書きできる。app 単位の設定変更を本番の前に試すには、app を分けるしかない。
+- Amplify 以外の resource を含めると、review 用の変種を作る仕組みは resource の種類ごとに違い、ECS service、RDS、ALB、SQS 等には無い。共用型で進めると review 環境は「共用できるものは本番の中、できないものは別実体」の継ぎはぎになり、review の定義が prod root と review root にまたがる。nanitabe の backend の review はすでに `envs/review` が backend の module を stage 付きで呼ぶ別実体型である。
+- x_favorites が共用型を選んだ理由（`20260906-deploy-amplify-with-terraform/implementation_review.md` 論点16）は、(1) console で手作業で作ったサンドボックスの app で build 設定と環境変数が `amplify.yml` とずれた、(2) app と secret を一つに保ちたい、(3) Basic authentication が app 単位で review も同じ認証で守られる、の三つだった。(1) のずれの原因は「console 手作業かつ Terraform 管理外」であり、同じ module から両方の app を作る場合は当てはまらない。(2) は review が別の backend を向くため値がもともと違う。(3) は nanitabe には application のログインがあり Basic authentication を使っていない。x_favorites は app 一つで完結し Amplify 以外の resource が無いため、共用型が破綻する状況になかった。
+
+steering は当初、別実体型を採っても「今回は作らない、作るときは別実体」と将来の方針にとどめ、論点1の制約（「後から review branch を足す作業を list への追加で済ませるため」）と論点6の理由は「引き続き成り立つ」と述べた。利用者から整合しないと指摘された。
+
+> ん？整合性が合うように見えない。「nanitabe にはその前提がないので、別実体型が合う」「今回の phase での扱いは「frontend の review は今回作らないが、作るときは」
+
+Amplify 移行で作った module と記述は共用型を前提にしており、別実体型を採るならその設計理由と README の記述を直す必要がある。
+
+#### 提案0へのフィードバック（論点7）
+
+**結果:** 合意（別実体型。例外の条件を利用者が定めた）
+
+> 別実態型。どうしても共用しなければいけない制約があるもののみ例外的に共用する
+
+### 決定（論点7）
+
+動作確認環境（review）は、同じ module を `stage` 違いで呼び、resource を環境ごとに別の実体として持つ。本番の resource の中に review 用の変種を作って共用しない。どうしても共用しなければならない制約があるものだけを例外として共用し、その制約を記録する。frontend の動作確認環境を作るときは、本番の Amplify app に branch を足さず、review root から `modules/amplify` を `stage = "review"` で呼んで別の app を作る（作ること自体は引き続き範囲外）。
+
+これに合わせて、論点1の制約の理由を「監視 branch を追加してから外す順で切り替えるため」へ、論点6の親 domain と prefix の理由を「名前をフラットな 1 ラベルにし、本番と動作確認環境の app で親 domain を共有するため」へ改め、design の該当箇所を更新した。`infrastructure/README.md`「構成上の前提」に「環境の分け方」を、`frontend/terraform/modules/amplify/README.md` に動作確認環境の作り方を追記した。
+
+backend の review 環境が開発 DB を共用している点（`backend/docs/ai_guideline/development_standard/review_environment.md`「開発 DB を共有している」）は、この原則の例外に当たるかを判断していない。記録されている理由は「実データのまま確認できること」であり、「どうしても共用しなければならない制約」かは別途判断する。
+
