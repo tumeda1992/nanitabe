@@ -227,6 +227,7 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
 
 - [ ] 利用者と切替の開始時刻を合わせる（利用しない時間帯）
 - [ ] (2) `module "cloudfront"` の `enable_custom_domain` を false にして apply する
+  > plan 作成済み（apply は利用者が実行、開始時刻は利用者が決める）: `Plan: 0 to add, 1 to change, 5 to destroy.`。変更は distribution の update in-place（aliases 削除、証明書を CloudFront 既定へ）、destroy は cert 3 件（acm 証明書、検証、検証 record）と dns 2 件（A、AAAA）。`enable_custom_domain = false` は commit・push 済み。
   - [ ] plan の変更が distribution の alias・証明書設定の update、cert と dns の destroy だけであることを確認してから承認する
 - [ ] (3) `module "amplify"` の `custom_domain` を `var.route53_name` にして apply する
   - [ ] plan の追加が `aws_amplify_domain_association` だけであることを確認してから承認する
