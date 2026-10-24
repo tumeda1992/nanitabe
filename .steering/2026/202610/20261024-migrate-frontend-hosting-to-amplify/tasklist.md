@@ -370,8 +370,10 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
   > 結果: 「旧構成は兄弟 module が持つ」の行と、旧 CloudFront の alias に関する切替順序の段落を削除した。
 - [x] 本番の custom domain が応答することを確認する
   > 結果: redirect の後 HTTP 200。
-- [ ] 変更を commit し、`feature-258` と `feature-258-amplify-migration` へ push する
-- [ ] ここで作業を停止し、撤去の結果を利用者に確認する
+- [x] 変更を commit し、`feature-258` と `feature-258-amplify-migration` へ push する
+  > 結果: README の記述削除と tasklist の記録を意味単位で commit。`feature-258` へ push し、`feature-258-amplify-migration`（PR #288 の head、`feature-258` の祖先）は同じ commit へ fast-forward した。
+- [x] ここで作業を停止し、撤去の結果を利用者に確認する
+  > PR #288 の merge を利用者に依頼する段階。
 
 ## Documentation reviewと実装後振り返り
 
