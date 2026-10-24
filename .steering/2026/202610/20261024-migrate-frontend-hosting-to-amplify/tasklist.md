@@ -324,20 +324,23 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
 
 ### Tasks
 
-- [ ] 全 test を実行する
-  - [ ] `docker compose exec backend bundle exec rspec`
-  - [ ] `docker compose exec frontend yarn test`
-- [ ] repository 全体の lint を実行する
-  - [ ] `docker compose exec backend bundle exec rubocop`
-  - [ ] `docker compose exec frontend yarn lint`
-  - [ ] error があれば修正して再実行し、error zero を確認する
-- [ ] `terraform fmt -check` を、このtasklistで新規作成した Terraform file（`frontend/terraform/modules/amplify/main.tf`）に対して実行する。既存 file は元から fmt に適合しておらず対象外とする（`implementation_review.md` 論点2）
+- [x] 全 test を実行する
+  > 結果: backend rspec 744 examples 0 failures、frontend jest 35 suites / 192 tests green。
+  - [x] `docker compose exec backend bundle exec rspec`
+  - [x] `docker compose exec frontend yarn test`
+- [x] repository 全体の lint を実行する
+  - [x] `docker compose exec backend bundle exec rubocop`
+  - [x] `docker compose exec frontend yarn lint`
+  - [x] error があれば修正して再実行し、error zero を確認する
+    > 結果: rubocop 451 files no offenses、`yarn lint` error 0。
+- [x] `terraform fmt -check` を、このtasklistで新規作成した Terraform file（`frontend/terraform/modules/amplify/main.tf`）に対して実行する。既存 file は元から fmt に適合しておらず対象外とする（`implementation_review.md` 論点2）
 
 ## Documentation reviewと実装後振り返り
 
-- [ ] code readingまたは実装で永続化候補を得た場合、その場でdoc-enricherを提案modeで適用する
-  - [ ] 提案がある場合だけユーザー承認後に既存READMEまたは既存docsへ反映する
-  - [ ] 提案・承認判断を別taskへ先送りしない
+- [x] code readingまたは実装で永続化候補を得た場合、その場でdoc-enricherを提案modeで適用する
+  - [x] 提案がある場合だけユーザー承認後に既存READMEまたは既存docsへ反映する
+  - [x] 提案・承認判断を別taskへ先送りしない
+  > 結果: 追加の永続化候補なし（移行の知識は amplify module README と各 docs に反映済み）。提案なし。
 - [ ] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
   - [ ] `discussion_directory=<working_dir>`と`discussion_file_name=implementation_review.md`を渡す
   - [ ] 原文、関連する実装・design・plan、原因、採用方針、決定を渡し、修正済みでも記録を省略しない
