@@ -186,11 +186,13 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
 ### Tasks
 
 - [x] `feature-258` を `origin/main` へ追従させる（`git merge origin/main`）
-- [ ] `frontend/terraform/envs/prod/main.tf` の `branch_names` を `["feature-258", "main"]` にして apply する
+- [x] `frontend/terraform/envs/prod/main.tf` の `branch_names` を `["feature-258", "main"]` にして apply する
+  > 利用者が apply を実行: `Apply complete! Resources: 1 added, 0 changed, 0 destroyed.`（`aws_amplify_branch.this["main"]`）。
   > plan 作成済み（apply は利用者が実行）: `Plan: 1 to add, 0 to change, 0 to destroy.`、追加は `aws_amplify_branch.this["main"]` のみ。`branch_names` の変更は commit・push 済み。
-  - [ ] plan の変更が `aws_amplify_branch`（`main`）の追加だけであることを確認してから承認する
-- [ ] `main` の build を確認する
-  - [ ] branch resource の作成は push event ではないため build が自動で起動しない場合がある。`list-jobs` に job が無ければ `aws amplify start-job --job-type RELEASE` で起動する
+  - [x] plan の変更が `aws_amplify_branch`（`main`）の追加だけであることを確認してから承認する
+- [x] `main` の build を確認する
+  > `list-jobs` が空だったため `start-job --job-type RELEASE` で起動（job 1）。BUILD/DEPLOY/VERIFY が SUCCEED。log は `main` を clone し、`amplify.yml` 由来の `nvm install 24`（`node -v` = v24.22.1）が走った。`amplify.yml` は PR #286 の merge commit にのみ存在するため、merge commit 以降を build している（job の commitId は `HEAD` 表示、origin/main の先頭は 52e79c5）。
+  - [x] branch resource の作成は push event ではないため build が自動で起動しない場合がある。`list-jobs` に job が無ければ `aws amplify start-job --job-type RELEASE` で起動する
 - [ ] `main` の default domain でログインとカレンダー画面の表示を利用者に確認してもらう
 - [ ] ここで作業を停止し、(1-c) の結果を利用者に確認する。次 phase へは進まない
 
