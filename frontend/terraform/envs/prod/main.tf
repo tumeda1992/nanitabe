@@ -93,7 +93,7 @@ module "amplify" {
 
   branch_names = ["main"]
 
-  custom_domain = null
+  custom_domain = var.route53_name
   custom_domain_sub_domains = [
     { branch_name = "main", prefix = "nanitabe" }
   ]
