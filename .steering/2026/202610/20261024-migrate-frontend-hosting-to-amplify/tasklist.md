@@ -285,6 +285,8 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
   > plan 作成済み（apply は利用者が実行）: `Plan: 0 to add, 0 to change, 30 to destroy.`。destroy は旧構成の API Gateway、CloudFront、ECR、Lambda、S3、CodeBuild、CodePipeline 関連のみで、Amplify と state 用 resource の変更は無い。注意: static asset 用 S3 bucket は versioning 有効で非空（現行 53 object、delete marker 多数）、`force_destroy` は無いため bucket の destroy は失敗する見込み。bucket を空にする操作は利用者の確認が要る。
   - [ ] plan の destroy が旧構成の resource だけで、Amplify と state 用 resource に変更が無いことを確認してから承認する
   - [ ] static asset 用 S3 bucket が空でないため destroy に失敗した場合は、利用者の確認を得て bucket を空にしてから再実行する
+    > 経緯: 利用者が amplify-5 を apply し、ECR repository（image 10 件残存で `RepositoryNotEmptyException`）と S3 bucket（`BucketNotEmpty`）の 2 件だけ失敗、他 28 件は destroy 済み。利用者が S3 の全 version・delete marker（3,557 件）と ECR の image 10 件を削除して空にした。state が変わったため amplify-6 を作成。
+    > plan 作成済み（apply は利用者が実行）: `Plan: 0 to add, 0 to change, 2 to destroy.`（`ecr.aws_ecr_repository.repo` と `s3_for_assets.aws_s3_bucket.static_files_bucket` のみ。Amplify と state 用 resource の変更なし）。
 - [ ] apply 後に `terraform plan` が `No changes` であることを確認する
 - [ ] 旧 resource が残っていないことを AWS CLI で確認する
 - [ ] custom domain が応答することを確認する
