@@ -11,7 +11,7 @@ tree-shake、反映の遅延、メモリ膨張の性質）はマシンに依存�
 ## Tailwind watcher でコンテナが壊れたとき
 
 開発コンテナでは `entrypoint.sh` が `yarn dev` を起動し、その中で `watch:css` が
-tailwindcss の watcher プロセスを常駐させる。CI と Lambda イメージビルドでは
+tailwindcss の watcher プロセスを常駐させる。CI と Amplify の build では
 `yarn build` を一度実行するだけなので watcher は存在しない。
 したがってこの節はローカル開発コンテナだけに当てはまる。
 
