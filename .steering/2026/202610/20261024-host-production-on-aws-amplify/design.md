@@ -187,7 +187,7 @@ frontend/buildOnLambda/                         手順 (5) で削除
 | `infrastructure/README.md` の構成表 | `prod` env の中身を「Terraform state 用の S3 と DynamoDB、frontend の Amplify app」にする |
 | `infrastructure/README.md`「構成上の前提」の GitHub と AWS の関係 | frontend の deploy は Amplify が personal access token で GitHub を見る形であることを書き足す。OIDC と credentials の前提の書き換えは「Terraform の Actions 移行」で行う |
 | `frontend/README.md`「インフラ」 | 本番は Amplify Hosting（`WEB_COMPUTE`）で配信し、build 設定は repository 直下の `amplify.yml`、定義は `frontend/terraform/modules/amplify/` にあること |
-| `frontend/terraform/modules/amplify/README.md`（新設） | この module が持つもの・持たないもの（build 設定は `amplify.yml`、Route53 の record は Amplify が作る）、`build_spec` を書かない理由、branch を「追加してから外す」順序と git branch を先に作る必要、custom domain を親 domain と prefix で持つ理由、`NEXT_PUBLIC_` 以外の値を実行時に渡す場合は build 時に `.env.production` へ書き出す必要があること |
+| `frontend/terraform/modules/amplify/README.md`（新設） | この module が持つもの・持たないもの（build 設定は `amplify.yml`、Route53 の record は Amplify が作る）、`build_spec` を書かない理由、branch を「追加してから外す」順序と git branch を先に作る必要、custom domain を親 domain と prefix で持つ理由、`NEXT_PUBLIC_` 以外の値を実行時に渡す場合は build 時に `.env.production` へ書き出す必要があること、`NEXT_PUBLIC_` の値は build 時に埋め込まれるため Amplify app の環境変数を apply で変えても再 build（`main` への push か Amplify の再実行）まで配信中の内容は変わらないこと |
 | `frontend/docs/ai_guideline/development_standard/docker.local.md` | 「CI と Lambda イメージビルドでは」を「CI と Amplify の build では」にする |
 | `frontend/entrypoint.sh` のコメント | 「Lambdaに載せるイメージのビルド」を「Amplify の build」にする |
 

@@ -10,7 +10,7 @@
 
 #### 認識合わせ0（論点1）
 
-nanitabe の frontend は、すでに AWS 上で本番稼働する構成を持っています（Lambda、API Gateway、CloudFront、S3、ECR、CodePipeline、CodeBuild）。そのため今回の作業は「AWS に本番を新しく作る」ではなく、「既存の frontend 本番構成を x_favorites の形へ置き換える」になります。
+nanitabe okの frontend は、すでに AWS 上で本番稼働する構成を持っています（Lambda、API Gateway、CloudFront、S3、ECR、CodePipeline、CodeBuild）。そのため今回の作業は「AWS に本番を新しく作る」ではなく、「既存の frontend 本番構成を x_favorites の形へ置き換える」になります。
 
 x_favorites から取り込める要素は次の三つです。
 
@@ -187,6 +187,8 @@ Actions 移行の詳細を後段の子 design へ回すのは、task-design の�
 **実行の構造:** execution plan は roadmap とし、phase「Amplify 移行」→ phase「Terraform の Actions 移行」の二つに分ける。「Amplify 移行」phase は、この design で合意した内容を子 task-design の上位制約として渡し、子 design で再設計しない。「Terraform の Actions 移行」phase は、この design で目的、scope、scope外、完了条件までを確定し、適用対象 root の扱い、apply role の権限、secret の移動、state の lock、`infrastructure/README.md` の前提の書き換えを、「Amplify 移行」phase の結果（Amplify 構成と variable の実物）を入力にして子 task-design で設計する。issue は #258 一つとし、roadmap 全体の完了で閉じる。
 
 **制約:** 今回の Amplify 構成は branch を list で持ち、custom domain を branch ごとの sub domain の集合で持つ。後から review branch を足す作業を list への追加で済ませるためである。review branch を含めないのは、frontend の review がどの backend を指すかという本番移行と無関係な設計判断を持ち込むためである。旧構成の撤去を含めるのは、残すと保守対象が減らず目的を満たさないためである。roadmap にするのは、Actions 移行の設計完了まで Amplify 移行の実行（本番 build 停止の解消）を待たせず、かつ Actions 移行をこのテーマの完了条件に残すためである。別 steering にすると Actions 移行を行う義務がこのテーマから消える。
+
+skill 改善の保留メモ: [pending-escalations/001-compare-staging-before-splitting-scope.md](pending-escalations/001-compare-staging-before-splitting-scope.md)（提案3へのフィードバックを起点とする plugin skill の修正。保留中・未引渡し）
 
 ## 論点2: Amplify 移行と Terraform の Actions 移行の順序
 
