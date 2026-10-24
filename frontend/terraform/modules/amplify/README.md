@@ -51,6 +51,8 @@ branch resource の作成は push event ではないため、build が自動で�
 `aws_amplify_domain_association` は 1 つにまとめ、branch ごとに `sub_domain` を割り当てる。
 `custom_domain` が `null` のあいだは association を作らず、default domain だけで公開できる。
 
+親 domain と prefix で持つのは、hosted zone へ置く名前をフラットな 1 ラベル（`nanitabe.<hosted zone>`、`review-nanitabe.<hosted zone>` 等）にするためである。同じ account の別の Amplify app も同じ親 domain を関連付けられる（実測済み）。動作確認環境を作るときは、この app へ branch を足すのではなく、review root からこの module を `stage = "review"` で呼んで別の app を作る（`infrastructure/README.md`「構成上の前提」の環境の分け方）。
+
 `wait_for_verification = false` にしている。証明書の DNS 検証は Route53 への record 登録が要り、Amplify が作るまでに時間差がある。`true` だと apply がそこで待ち続けるため、apply 後に `aws amplify get-domain-association` の `domainStatus` が `AVAILABLE` になるのを確認する。
 
 ### GitHub personal access token
