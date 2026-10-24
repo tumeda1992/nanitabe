@@ -101,6 +101,11 @@ resource を構成へ含めるかを金額で判断する基準は [`cost_judgme
   CodeBuild は `ARM_CONTAINER`、Fargate は `ARM64`。
 - **課金**: resource を足すかどうかを金額で判断するときは [`cost_judgment.md`](./cost_judgment.md) を見る。
   時間課金と保存・件数課金を分けて考え、防ぐ対象の損失と固定費を並べて比べる。
+- **ログの lifecycle**: application が出すログ（Next.js の SSR、Rails の request log など）は、
+  それを実行する AWS resource より長く残る前提で置く。application のログを入れる log group は、
+  実行基盤の resource と同じ destroy の単位に入れない。resource 固有のログ（API Gateway の
+  access log など、その resource の振る舞いだけを記録するもの）は、resource と同じ lifecycle でよい。
+  判断の問い: 「この resource を作り直した後や撤去した後にも、このログを見返したいか」
 - **host 名**: hosted zone へ置くレコードはフラットな 1 ラベルにする。sub-sub ドメインを掘らない。
   domain 名は `.env` の `ROUTE53_HOSTZONE_NAME` から渡し、terraform の定義にも document にも直接書かない。
 - **API Gateway v2 の管理 API 権限**: EventBridge Scheduler 等の AWS SDK 統合から apigatewayv2 の操作
