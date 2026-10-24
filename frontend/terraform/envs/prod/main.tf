@@ -52,7 +52,7 @@ module "cloudfront" {
   }
 
   stage = local.stage
-  enable_custom_domain = true
+  enable_custom_domain = false
 
   custom_domain = "nanitabe.${var.route53_name}"
   route53_zone_id = var.route53_zone_id

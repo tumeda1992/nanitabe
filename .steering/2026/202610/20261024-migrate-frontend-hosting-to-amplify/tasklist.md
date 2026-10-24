@@ -206,11 +206,14 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
 
 ### Tasks
 
-- [ ] `branch_names` を `["main"]` にして apply する
+- [x] `branch_names` を `["main"]` にして apply する
   > plan 作成済み（apply は利用者が実行）: `Plan: 0 to add, 0 to change, 1 to destroy.`、destroy は `aws_amplify_branch.this["feature-258"]` のみ。`branch_names` の変更は commit・push 済み。
-  - [ ] plan の変更が `aws_amplify_branch`（`feature-258`）の destroy だけであることを確認してから承認する
-- [ ] `main` の default domain が応答することを確認する
-- [ ] ここで作業を停止し、(1-d) の結果を利用者に確認する。次 phase へは進まない
+  - [x] plan の変更が `aws_amplify_branch`（`feature-258`）の destroy だけであることを確認してから承認する
+    > 利用者が apply を実行: `Apply complete! Resources: 0 added, 0 changed, 1 destroyed.`
+- [x] `main` の default domain が応答することを確認する
+  > 結果: `aws amplify list-branches` は `["main"]` のみ。`https://main.d20nu0a9ujey4d.amplifyapp.com/` は HTTP 308（アプリ内 redirect）で応答。
+- [x] ここで作業を停止し、(1-d) の結果を利用者に確認する。次 phase へは進まない
+  > 利用者が apply 成功を報告済み。
 
 ## Phase 6: custom domain を Amplify へ切り替える（親 design (2)〜(4)）
 
