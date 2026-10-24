@@ -100,3 +100,54 @@ x_favorites から取り込める要素は三つに分かれる。
 - 判断対象: Amplify へ移した後、Lambda、API Gateway、CloudFront、static asset 用 S3、ECR、CodePipeline、CodeBuild と、それを定義する `frontend/terraform/` 配下・`frontend/buildOnLambda/` を撤去するか。
 - 材料: 動機は保守の手間を減らすことである。旧構成を残すと、保守対象は Amplify の分だけ増え、減らない。
 - 推奨: 撤去を範囲へ含める。撤去の順序（domain の切替を先に確認してから旧 resource を消すか等）は、この論点ではなく後続の論点で決める。
+
+<a id="iteration-3"></a>
+
+## イテレーション3: Actions 移行を別 steering へ分けるか
+
+論点2〜6で Amplify 移行の設計が埋まった。次に Actions 移行の設計へ入る前に、Actions 移行が持つ設計判断の量と、本番 build が止まっているという緊急性（イテレーション2）を照らし、同じ steering で扱い続けるかを見直す。イテレーション2の時点では範囲を変えないとしたが、その後の調査で Actions 移行側の論点の量が分かったため再開する。
+
+<a id="iteration-3-record-1"></a>
+
+### 調査: Actions 移行で決める必要がある事項
+
+- 適用対象の root: nanitabe には `envs/prod` と `envs/review` の二つの root がある。x_favorites は一つだった。`envs/review` の `apply_terraform.sh` は agent が permission を持って実行する前提で、destroy を含む plan を拒否する判定を script 自身が持つ（`infrastructure/README.md`）。Actions へ移すなら、この判定と agent の実行権限の扱いを決め直す。
+- apply role の権限: Amplify 移行後の `envs/prod` は Amplify と state 用 resource だけで済む（論点2）。`envs/review` は ACM、API Gateway v2、CloudWatch、ECR、ECS、IAM role、Route53、security group、SNS、SSM、CodePipeline、CodeBuild、Scheduler を持つ（`backend/terraform/modules/` の resource 種別）。IAM role を作れる権限を Actions の role へ渡すかは独立した判断になる。
+- secret の移動: `envs/review` は DB の接続情報と `RAILS_MASTER_KEY` を variable で受ける。Actions へ移すと、これらを GitHub secrets へ置くことになる。
+- その他: state の lock を DynamoDB のまま使うか、`infrastructure/README.md` の「GitHub 側に AWS の credentials も OIDC の信頼設定も置かない」前提をどう書き換えるか、public repository で使える branch protection を使うか。
+
+<a id="iteration-3-record-2"></a>
+
+### 判断: 分けるか
+
+- 評価軸: 本番 build の停止を早く解消する。Actions 移行を Amplify 移行の実測結果の上で設計する。
+- 推奨: Actions 移行をこの steering から外し、Amplify 移行の完了後に別 steering で設計・実行する。論点2の決定により Actions 移行は Amplify 移行の後にしか始まらないため、同じ steering に入れても並行して進む部分は無い。分ければ、この steering は Amplify 移行だけで完了でき、本番 build の停止を設計の残りを待たずに解消できる。
+- 代償: issue #258 を閉じる時期が、二つ目の steering の完了まで延びるか、Actions 移行に別 issue を立てるかの選択が生じる。
+
+<a id="iteration-4"></a>
+
+## イテレーション4: 分ける理由の再検討と、同じテーマ内で段階化する方法
+
+提案3へのフィードバックで、「決める事項が多い」は分ける根拠にならないこと、別 steering は同じテーマの外へ追い出しているだけに見えること、roadmap 等と比較していないことが指摘された。
+
+<a id="iteration-4-record-1"></a>
+
+### 診断: 提案3の根拠がどこで外れたか
+
+- 期待: 分ける判断は、分けないと何が困るかで決まる。
+- 実際: 提案3は Actions 移行側の事項の多さを並べた。事項の多さは、x_favorites をほぼ踏襲できるなら負担にならない。
+- 原因: 「範囲から外す」と「同じテーマ内で後段へ回す」を区別せず、最初に思いついた別 steering だけを案にした。分けないと困ることの本体は、Actions 移行の設計完了まで Amplify 移行の実行（本番 build 停止の解消）が待たされることである。
+- この原因は成果物固有ではなく、範囲を外す提案を作るときの process の問いの不足でもある。skill 改善の候補として、Step 4 の再発防止 review で扱う。
+
+<a id="iteration-4-record-2"></a>
+
+### 判断: 別 steering と roadmap の比較
+
+| 観点 | 別 steering | roadmap の二 phase |
+| --- | --- | --- |
+| Amplify 移行を先に実行できるか | できる | できる。依存の先頭 phase として実行する |
+| Actions 移行がこのテーマの完了条件に残るか | 残らない | 残る |
+| Actions 移行の設計を Amplify 移行の実物を見て行えるか | できる | できる。子 task-design へ dependency results として渡す |
+| issue | 分ける必要が出る | #258 一つで足りる |
+
+推奨は roadmap の二 phase。roadmap-design の条件（二つ以上の子 scope、各子が親より strictly narrower、依存が DAG、各 phase 完了時点で app が正常に使える）も満たす。「Amplify 移行」完了時点で本番は Amplify で動き、Terraform は手元 apply のまま正常に運用できる。
