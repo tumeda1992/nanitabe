@@ -193,8 +193,10 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
 - [x] `main` の build を確認する
   > `list-jobs` が空だったため `start-job --job-type RELEASE` で起動（job 1）。BUILD/DEPLOY/VERIFY が SUCCEED。log は `main` を clone し、`amplify.yml` 由来の `nvm install 24`（`node -v` = v24.22.1）が走った。`amplify.yml` は PR #286 の merge commit にのみ存在するため、merge commit 以降を build している（job の commitId は `HEAD` 表示、origin/main の先頭は 52e79c5）。
   - [x] branch resource の作成は push event ではないため build が自動で起動しない場合がある。`list-jobs` に job が無ければ `aws amplify start-job --job-type RELEASE` で起動する
-- [ ] `main` の default domain でログインとカレンダー画面の表示を利用者に確認してもらう
-- [ ] ここで作業を停止し、(1-c) の結果を利用者に確認する。次 phase へは進まない
+- [x] `main` の default domain でログインとカレンダー画面の表示を利用者に確認してもらう
+  > 結果: 利用者が `https://main.d20nu0a9ujey4d.amplifyapp.com` でログインできたことを確認。
+- [x] ここで作業を停止し、(1-c) の結果を利用者に確認する。次 phase へは進まない
+  > 利用者が確認済み。Phase 5 へ進む。
 
 ## Phase 5: `feature-258` を監視対象から外す（親 design (1-d)）
 
