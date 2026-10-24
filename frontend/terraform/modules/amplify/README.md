@@ -14,7 +14,6 @@ nanitabe frontend の本番配信先である AWS Amplify Hosting の app、bran
 
 - **build 設定**: repository 直下の `amplify.yml` を使う。`build_spec` を指定すると repository の file より優先されてしまうため、この module では書かない
 - **Route53 の record**: custom domain が同一 account の hosted zone を指す場合、Amplify が ALIAS record と ACM 検証用 CNAME を自動で作る。Terraform 側で作らない
-- **旧構成（CloudFront、API Gateway 等）**: 移行期間中は兄弟 module が持つ。この module は関与しない
 
 ## クイックマップ
 
@@ -53,8 +52,6 @@ branch resource の作成は push event ではないため、build が自動で�
 `custom_domain` が `null` のあいだは association を作らず、default domain だけで公開できる。
 
 `wait_for_verification = false` にしている。証明書の DNS 検証は Route53 への record 登録が要り、Amplify が作るまでに時間差がある。`true` だと apply がそこで待ち続けるため、apply 後に `aws amplify get-domain-association` の `domainStatus` が `AVAILABLE` になるのを確認する。
-
-同じ domain を旧構成の CloudFront が alias として持っているあいだは association を作れない。切替の順序は「参照」の移行 design の「移行の手順」(2)〜(4) を参照する。
 
 ### GitHub personal access token
 
