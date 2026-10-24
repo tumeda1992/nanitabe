@@ -272,14 +272,17 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
 
 ### Tasks
 
-- [ ] 旧構成の定義を削除する
-  - [ ] `frontend/terraform/modules/` の apigateway、cicd、cloudfront、ecr、lambda、s3 を `test/` ごと削除する
-  - [ ] `frontend/buildOnLambda/` を削除する
-  - [ ] `frontend/terraform/envs/prod/main.tf` から旧 module の呼び出しと旧 variable を削除する
-  - [ ] prod root から旧 variable と us-east-1 の provider を削除し、`apply_terraform.sh` の対応する export を削除する
-  - [ ] repository 内に削除した module・variable への参照が残っていないことを `grep` で確認する
-- [ ] `terraform validate` を Phase 1 と同じ方法（scratchpad へ複製、`init -backend=false`）で通す。この phase は新規 Terraform file を作らないため `terraform fmt` は適用しない
+- [x] 旧構成の定義を削除する
+  - [x] `frontend/terraform/modules/` の apigateway、cicd、cloudfront、ecr、lambda、s3 を `test/` ごと削除する
+  - [x] `frontend/buildOnLambda/` を削除する
+  - [x] `frontend/terraform/envs/prod/main.tf` から旧 module の呼び出しと旧 variable を削除する
+  - [x] prod root から旧 variable と us-east-1 の provider を削除し、`apply_terraform.sh` の対応する export を削除する
+  - [x] repository 内に削除した module・variable への参照が残っていないことを `grep` で確認する
+    > 結果: frontend の旧 module への参照は無い。`docker-compose.yml` の `frontend_next_lambda` service が `buildOnLambda/Dockerfile` を参照していたため service ごと削除した（tasklist 外だが削除した定義への参照の解消。`docker compose config` は成功）。残る `codebuild_artifact_s3_bucket` 等の grep ヒットは backend / review 自前の module で対象外。
+- [x] `terraform validate` を Phase 1 と同じ方法（scratchpad へ複製、`init -backend=false`）で通す。この phase は新規 Terraform file を作らないため `terraform fmt` は適用しない
+  > 結果: scratchpad に複製して `init -backend=false` の後 `terraform validate` が Success。新規 module の `terraform fmt -check` も通過。
 - [ ] 旧構成を撤去する apply を行う
+  > plan 作成済み（apply は利用者が実行）: `Plan: 0 to add, 0 to change, 30 to destroy.`。destroy は旧構成の API Gateway、CloudFront、ECR、Lambda、S3、CodeBuild、CodePipeline 関連のみで、Amplify と state 用 resource の変更は無い。注意: static asset 用 S3 bucket は versioning 有効で非空（現行 53 object、delete marker 多数）、`force_destroy` は無いため bucket の destroy は失敗する見込み。bucket を空にする操作は利用者の確認が要る。
   - [ ] plan の destroy が旧構成の resource だけで、Amplify と state 用 resource に変更が無いことを確認してから承認する
   - [ ] static asset 用 S3 bucket が空でないため destroy に失敗した場合は、利用者の確認を得て bucket を空にしてから再実行する
 - [ ] apply 後に `terraform plan` が `No changes` であることを確認する
