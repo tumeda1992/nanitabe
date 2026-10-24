@@ -6,10 +6,18 @@ variable "route53_zone_id" { type = string } # export TF_VAR_route53_zone_id=${R
 variable "route53_name" { type = string } # export TF_VAR_route53_name=${ROUTE53_HOSTZONE_NAME}
 variable "codebuild_artifact_s3_bucket" { type = string } # export TF_VAR_codebuild_artifact_s3_bucket=${CODEBUILD_ARTICACT_S3_BUCKET}
 variable "aws_code_connection_id_to_github" { type = string } # export TF_VAR_aws_code_connection_id_to_github=${AWS_CODE_CONNECTION_ID_TO_GITHUB}
+variable "amplify_github_access_token" { # export TF_VAR_amplify_github_access_token=${AMPLIFY_GITHUB_ACCESS_TOKEN}
+  type      = string
+  sensitive = true
+}
 variable "branch" { type = string } # export TF_VAR_route53_name=main
 
 locals {
   stage = "prod"
+}
+
+module "values" {
+  source = "../../values"
 }
 
 module "ecr" {
@@ -44,6 +52,7 @@ module "cloudfront" {
   }
 
   stage = local.stage
+  enable_custom_domain = true
 
   custom_domain = "nanitabe.${var.route53_name}"
   route53_zone_id = var.route53_zone_id
@@ -70,4 +79,22 @@ module "cicd" {
   cloudfront_distribution_id = module.cloudfront.cloudfront_distribution_id
   cloudfront_domain_name = module.cloudfront.cloudfront_domain_name
   branch = var.branch
+}
+
+module "amplify" {
+  source = "../../modules/amplify"
+
+  appname        = module.values.appname
+  stage          = local.stage
+  repository_url = "https://github.com/tumeda1992/nanitabe"
+
+  github_access_token = var.amplify_github_access_token
+  backend_origin      = var.backend_origin
+
+  branch_names = ["feature-258"]
+
+  custom_domain = null
+  custom_domain_sub_domains = [
+    { branch_name = "main", prefix = "nanitabe" }
+  ]
 }

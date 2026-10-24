@@ -15,5 +15,6 @@ export TF_VAR_route53_name=${ROUTE53_HOSTZONE_NAME}
 
 export TF_VAR_codebuild_artifact_s3_bucket=${CODEBUILD_ARTICACT_S3_BUCKET}
 export TF_VAR_aws_code_connection_id_to_github=${AWS_CODE_CONNECTION_ID_TO_GITHUB}
+export TF_VAR_amplify_github_access_token=${AMPLIFY_GITHUB_ACCESS_TOKEN}
 
 terraform apply

@@ -12,6 +12,10 @@ variable "route53_name" { type = string } # export TF_VAR_route53_name=${ROUTE53
 
 variable "codebuild_artifact_s3_bucket" { type = string } # export TF_VAR_codebuild_artifact_s3_bucket=${CODEBUILD_ARTICACT_S3_BUCKET}
 variable "aws_code_connection_id_to_github" { type = string } # export TF_VAR_aws_code_connection_id_to_github=${AWS_CODE_CONNECTION_ID_TO_GITHUB}
+variable "amplify_github_access_token" { # export TF_VAR_amplify_github_access_token=${AMPLIFY_GITHUB_ACCESS_TOKEN}
+  type      = string
+  sensitive = true
+}
 variable "branch" { # export TF_VAR_branch=main
   type = string
   default = "main"
@@ -56,5 +60,6 @@ module "frontend" {
   route53_name = var.route53_name
   codebuild_artifact_s3_bucket = var.codebuild_artifact_s3_bucket
   aws_code_connection_id_to_github = var.aws_code_connection_id_to_github
+  amplify_github_access_token = var.amplify_github_access_token
   branch = var.branch
 }

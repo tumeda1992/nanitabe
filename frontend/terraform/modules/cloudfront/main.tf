@@ -6,11 +6,18 @@ variable "route53_name" { type = string }
 variable "assets_s3_bucket_regional_domain_name" { type = string }
 variable "assets_s3_cloudfront_access_identity_path" { type = string }
 
+# false にすると custom domain を外し、CloudFront 既定の証明書へ戻す（Amplify への切替用）
+variable "enable_custom_domain" {
+  type    = bool
+  default = true
+}
+
 module "values" {
   source = "../../values"
 }
 
 module "cert" {
+  count  = var.enable_custom_domain ? 1 : 0
   source = "./cert"
   providers = { aws = aws.us-east-1 } // このモジュールの呼び元での定義が必要
 
@@ -19,7 +26,7 @@ module "cert" {
 }
 
 resource "aws_cloudfront_distribution" "cf" {
-  aliases = [var.custom_domain]
+  aliases = var.enable_custom_domain ? [var.custom_domain] : []
 
   origin {
     # API Gateway のエンドポイントからスキームを除去して domain_name に指定
@@ -116,9 +123,10 @@ resource "aws_cloudfront_distribution" "cf" {
   # カスタムドメインをまだ設定しないフェーズなので、
   # CloudFront のデフォルト証明書（*.cloudfront.net）を利用
   viewer_certificate {
-    acm_certificate_arn      = module.cert.certificate_arn
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2019"
+    cloudfront_default_certificate = var.enable_custom_domain ? null : true
+    acm_certificate_arn            = var.enable_custom_domain ? module.cert[0].certificate_arn : null
+    ssl_support_method             = var.enable_custom_domain ? "sni-only" : null
+    minimum_protocol_version       = var.enable_custom_domain ? "TLSv1.2_2019" : null
   }
 }
 
@@ -166,6 +174,7 @@ resource "aws_cloudfront_cache_policy" "one_month_cache" {
 
 # もしかしたら、route53/for_cloudfront_of_api_gatewayディレクトリにおいてもいいかもしれない
 module "dns" {
+  count  = var.enable_custom_domain ? 1 : 0
   source = "./dns"
 
   custom_domain = var.custom_domain
@@ -174,6 +183,17 @@ module "dns" {
   cf_zone_id = aws_cloudfront_distribution.cf.hosted_zone_id
 
   depends_on = [module.cert]
+}
+
+# count 化に伴うアドレス変更で destroy / create させない
+moved {
+  from = module.cert
+  to   = module.cert[0]
+}
+
+moved {
+  from = module.dns
+  to   = module.dns[0]
 }
 
 output "cloudfront_distribution_id" {
