@@ -231,6 +231,7 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
   > plan 作成済み（apply は利用者が実行、開始時刻は利用者が決める）: `Plan: 0 to add, 1 to change, 5 to destroy.`。変更は distribution の update in-place（aliases 削除、証明書を CloudFront 既定へ）、destroy は cert 3 件（acm 証明書、検証、検証 record）と dns 2 件（A、AAAA）。`enable_custom_domain = false` は commit・push 済み。
   - [ ] plan の変更が distribution の alias・証明書設定の update、cert と dns の destroy だけであることを確認してから承認する
 - [ ] (3) `module "amplify"` の `custom_domain` を `var.route53_name` にして apply する
+  > plan 作成済み（apply は利用者が実行）: `Plan: 1 to add, 0 to change, 1 to destroy.`。追加は `aws_amplify_domain_association.this[0]`（親 domain、prefix `nanitabe` を `main` へ）、destroy は (2) で残った ACM 証明書のみ。`custom_domain` の変更は commit・push 済み。
   - [ ] plan の追加が `aws_amplify_domain_association` だけであることを確認してから承認する
   - [ ] apply が「already associated」等で拒否された場合は、(2) を戻す apply（`enable_custom_domain = true`、`custom_domain = null`）を行い、旧構成の応答を確認してから停止し、親 task-design へ戻る
 - [ ] 証明書の検証完了を待つ
