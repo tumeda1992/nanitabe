@@ -541,3 +541,4 @@ review の Terraform は、`main` への merge に加えて、任意の branch �
 
 review の apply role の権限は `AdministratorAccess` のままとする。Route53 の zone を prod と共有しており、名前で絞っても prod の record を書ける余地が残るためである。
 
+skill 改善の保留メモ: [pending-escalations/001-resolve-undiscussed-consequences-before-design-review.md](pending-escalations/001-resolve-undiscussed-consequences-before-design-review.md)（論点11の発端を起点とする plugin skill の修正。保留中・未引渡し）

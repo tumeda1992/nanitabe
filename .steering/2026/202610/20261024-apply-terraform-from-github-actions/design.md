@@ -58,9 +58,9 @@ repository は public であり、Actions の log と PR コメントは誰で�
 
 | file | 起動条件 | 行うこと |
 | --- | --- | --- |
-| `.github/workflows/terraform-plan-prod.yml` | `main` への PR（同じ repository の branch からだけ）、手動起動。paths: `infrastructure/terraform/envs/prod/**`、`infrastructure/terraform/modules/**`、`frontend/terraform/**`、`.terraform-version`、自身 | plan role で `terraform plan -out`。全文を S3 へ保存し、要約を PR コメントへ出す（同じ PR では既存コメントを更新） |
+| `.github/workflows/terraform-plan-prod.yml` | `main` への PR（同じ repository の branch からだけ）、手動起動。paths: `infrastructure/terraform/envs/prod/**`、`infrastructure/terraform/modules/**`、`frontend/terraform/**`、`.terraform-version`、自身、`.github/actions/terraform-run/**` | plan role で `terraform plan -out`。全文を S3 へ保存し、要約を PR コメントへ出す（同じ PR では既存コメントを更新） |
 | `.github/workflows/terraform-apply-prod.yml` | `main` への push、手動起動。paths は上と同じ | apply role で `terraform apply`。続けて plan し、差分が空であることを確かめる。全文は S3、log には結果の要約だけ |
-| `.github/workflows/terraform-plan-review.yml` | 同上。paths: `infrastructure/terraform/envs/review/**`、`backend/terraform/**`、`.terraform-version`、自身 | 同上 |
+| `.github/workflows/terraform-plan-review.yml` | 同上。paths: `infrastructure/terraform/envs/review/**`、`backend/terraform/**`、`.terraform-version`、自身、`.github/actions/terraform-run/**` | 同上 |
 | `.github/workflows/terraform-apply-review.yml` | `main` への push（paths は上と同じ）と、**任意の branch からの手動起動** | apply role（review）で apply。手動起動のときは plan を保存し、destroy（replace を含む）が 1 件でもあれば apply せず job を失敗させる。それ以外は prod の apply と同じ |
 
 - 4 file に共通する手順（checkout、`setup-terraform`、OIDC での role の assume、`init`、出力の S3 保存と要約）は `.github/actions/` の composite action に置く。各 workflow file は root、role、`TF_VAR_*` の対応だけを持つ。
