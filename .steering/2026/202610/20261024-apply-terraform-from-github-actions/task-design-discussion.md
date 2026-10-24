@@ -275,6 +275,26 @@ apply role の信頼条件は「`main` への push」なので、`main` へ直�
 
 spike 用の `test/` は module ごとに一律には作らず、必要になったときに作る。`modules/amplify/test/` は今回作らない。`infrastructure/README.md` に verify-infra の方針を書く。用途は「module をローカル実行で Terraform が動くか確かめる」こと、使う場面は (1) 一つ一つに不確実性があるとき、(2) ちょっと試したいレベルの新しい resource を軽く使ってみるとき、(3) 既存の本番を試しなしで破壊的に変えられず、部品で試せるとき。かっちりした初回作成は verify-infra を経ず、本番ライクに積み上げる。立てたら確かめた後に destroy し、local state と prod / review と重ならない stage 名（`verify-infra`）を使う。
 
+### イテレーション1（論点7）: 方針の置き場所
+
+#### 提案1（論点7）
+
+verify-infra の方針は `infrastructure/README.md` ではなく、`infrastructure/terraform/envs/verify-infra/README.md` を新設して書く。directory 自体で Terraform を実行するかは問わない。
+
+#### 検討記録（論点7・イテレーション1）
+
+利用者から置き場所の指定を受けた。`envs/` の下に置くと、`prod`、`review` と並ぶ「環境」として verify-infra が見つかり、手元で apply してよいのがどこかを directory の構成から読める。
+
+#### 提案1へのフィードバック（論点7）
+
+**結果:** 利用者の指定（task-design 内で適用済み）
+
+> 論点9のテーブル形式の2行目、review環境はGithubActionでの起動になるんでしょ？ あと、これらのキーは使ってるの？ 3行目について、verify-infraで使う場合も、使うものが別途個別で差し込まれるだけで、列挙されたものは使ってるの？ ちなみにverify-infraの説明をREADMEでするって言ってたけど、 infrastructure/terraform/envs/verify-infra/README.md を掘って書いてほしい。このディレクトリ自体にterraformは行われても行われなくてもいい。
+
+### 決定（論点7、更新）
+
+決定の内容は変えず、方針の置き場所を `infrastructure/terraform/envs/verify-infra/README.md` とする。README は用途、使う場面三つと使わない場面、使い方（root の置き場所はこの directory の下か対象 module の `test/`、local state、stage `verify-infra`、値は使うものだけ個別に渡す、確かめた後に destroy）を持つ。task-design 内で作成した。
+
 ## 論点8: 移行の手順
 
 **ステータス:** 決定
@@ -314,7 +334,7 @@ spike 用の `test/` は module ごとに一律には作らず、必要になっ
 
 ## 論点9: 手元の `.env` から消してよい値
 
-**ステータス:** 応答待ち
+**ステータス:** 決定
 
 ### イテレーション0（論点9）: `.env` の各 key の利用者
 
@@ -338,4 +358,186 @@ Terraform 専用の値も消さない。GitHub secrets は登録後に値を読�
 論点1で、手元の値は verify-infra のために残ると決めた。手元で prod / review を apply しないことは規範で担保しており、値を消すことは担保の手段ではない。
 
 #### 提案0へのフィードバック（論点9）
+
+**結果:** 修正要求（用途の根拠が実際の利用と合っていない）
+
+> 論点9のテーブル形式の2行目、review環境はGithubActionでの起動になるんでしょ？ あと、これらのキーは使ってるの？ 3行目について、verify-infraで使う場合も、使うものが別途個別で差し込まれるだけで、列挙されたものは使ってるの？ ちなみにverify-infraの説明をREADMEでするって言ってたけど、 infrastructure/terraform/envs/verify-infra/README.md を掘って書いてほしい。このディレクトリ自体にterraformは行われても行われなくてもいい。
+
+- 2行目: review 環境は GitHub Actions で起動するのではないか。挙げた key は実際に使っているか。
+- 3行目: verify-infra は使う値を個別に差し込むだけで、列挙した key を使うわけではない。実際に使っているか。
+
+### イテレーション1（論点9）: key ごとの実際の利用者
+
+#### 提案1（論点9）
+
+| key | 実際の利用者（確認方法） | 扱い |
+| --- | --- | --- |
+| `RAILS_MASTER_KEY`、`DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS` | `backend/config/database.yml`、`backend/config/environments/production.rb`。`docker-compose.yml` の `env_file` で local の container へ渡る | 残す |
+| `FRONTEND_PROD_HOST`、`BACKEND_PROD_HOST` | `backend/config/application.rb` の `config.hosts` | 残す |
+| `NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN` | `frontend/src/lib/generateApiOrigin.ts`（`ENV=production docker compose up` で手元を production の分岐で動かすとき） | 残す |
+| `AWS_ACCESS_KEY_ID`、`AWS_SECRET_ACCESS_KEY` | file 内に参照は無い。`scripts/review_backend/start.sh`・`stop.sh` が `.env` を export した後に呼ぶ AWS CLI が、環境変数として暗黙に使う | 残す |
+| `ROUTE53_HOSTZONE_NAME` | `scripts/review_backend/start.sh` が review の URL を組み立てる | 残す |
+| `AWS_DEFAULT_REGION` | file 内に参照は無い。review の script は `--region` を明示している。AWS CLI が暗黙に使う呼び出しが残っているかは未確認 | 残す（未確認のため） |
+| `AMPLIFY_GITHUB_ACCESS_TOKEN`、`AWS_ACCOUNT_ID`、`ROUTE53_HOSTZONE_ID`、`CODEBUILD_ARTICACT_S3_BUCKET`、`AWS_CODE_CONNECTION_ID_TO_GITHUB`、`REVIEW_BACKEND_ALARM_EMAIL`、`TERRAFROM_STATE_S3_BUCKET`、`TERRAFROM_STATE_DYNAMODB_TABLE` | Terraform の script だけ。移行後は手元で使わない | 移行手順 (5) で script と一緒に消す |
+| `NEXT_PUBLIC_ASSET_ORIGIN` | どこからも参照されない | 今回消す |
+
+- review 環境の起動・停止（`scripts/review_backend/start.sh`・`stop.sh`）は Terraform ではなく AWS CLI で `desired_count` と API Gateway の integration を変える script である。この phase で Actions へ移すのは Terraform の plan / apply だけで、起動・停止は手元の script のまま残る。
+- Terraform 専用の値は、移行後に手元で使わないため消す。GitHub secrets から読み出せなくなるが、値はどれも AWS（bucket 名、table 名、account ID、zone ID、CodeBuild の bucket、CodeStar connection）か GitHub（personal access token の再発行）か利用者自身（通知先の email）から再取得できる。`.env` を値の保管場所として使わない。
+
+#### 検討記録（論点9・イテレーション1）
+
+提案0は「verify-infra で同じ値が要る場合がある」ことを残す理由にしたが、verify-infra は使う値をその都度個別に渡す（論点7）ため、列挙した key を使う根拠にならなかった。key ごとに、repository 内の参照（`grep -w` で `backend/config`、`backend/app`、`backend/lib`、`frontend/src`、`next.config.js`、`entrypoint.sh`、`scripts`、`docker-compose.yml`、`Dockerfile` を検索）と、`.env` を export する script を確かめ直した。AWS の認証情報は file 内に参照が無く、review の script が export した後の AWS CLI が暗黙に読む。
+
+#### 提案1へのフィードバック（論点9）
+
+**結果:** 一部合意。AWS の access key だけ修正要求
+
+> 1行目については使ってるの知ってるから最初から問題にしていない。2行目は AWS_ACCESS_KEY_ID / SECRET 以外はok。 AWS_ACCESS_KEY_ID / SECRET についてはAWS CLI依存でこのリポジトリで残すのは危険だと思っている
+
+app の key（提案0の1行目）は元々問題にしていない。`ROUTE53_HOSTZONE_NAME`、`AWS_DEFAULT_REGION` は合意。`AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` を `.env` に残すことは危険と判断された。この key の扱いは論点10で扱う。Terraform 専用の 8 key を移行手順 (5) で消すことと、`NEXT_PUBLIC_ASSET_ORIGIN` を今回消すことには、この回では言及が無い。
+
+利用者の追認:
+
+> 論点9は指摘点以外は合意。論点10のきっかけで危険といった意味はcli実行環境に依存するものをポンポン色んなところに置いておくのが危険という意味。別に無効化すると入ってない
+
+### 決定（論点9）
+
+`.env` の key は次のとおり扱う。app が使う key（`RAILS_MASTER_KEY`、`DB_*`、`FRONTEND_PROD_HOST`、`BACKEND_PROD_HOST`、`NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN`）、`ROUTE53_HOSTZONE_NAME`、`AWS_DEFAULT_REGION` は残す。Terraform の script だけが使う `AMPLIFY_GITHUB_ACCESS_TOKEN`、`AWS_ACCOUNT_ID`、`ROUTE53_HOSTZONE_ID`、`CODEBUILD_ARTICACT_S3_BUCKET`、`AWS_CODE_CONNECTION_ID_TO_GITHUB`、`REVIEW_BACKEND_ALARM_EMAIL`、`TERRAFROM_STATE_S3_BUCKET`、`TERRAFROM_STATE_DYNAMODB_TABLE` は移行手順 (5) で script と一緒に消す。値はどれも AWS、GitHub、利用者自身から再取得でき、`.env` を値の保管場所にしない。`NEXT_PUBLIC_ASSET_ORIGIN` は今回消す。`AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` は論点10で扱う。review 環境の起動・停止は Terraform ではなく AWS CLI の script であり、この phase では手元に残る。
+
+## 論点10: 手元の AWS 認証情報の置き場所
+
+**ステータス:** 決定
+
+**親論点:** 論点9
+
+### イテレーション0（論点10）: `.env` の AWS access key の置き換え
+
+#### 提案0（論点10）
+
+`.env` から `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` を消し、長期の access key を手元から無くす。用途ごとに置き換える。
+
+| 用途 | 置き換え先 |
+| --- | --- |
+| review 環境の起動・停止（`scripts/review_backend/start.sh`・`stop.sh`） | GitHub Actions の手動起動 workflow へ移す。OIDC で、ECS の `desired_count` と API Gateway の integration の更新だけを許す専用 role を assume する |
+| verify-infra、その場の AWS CLI の確認 | IAM Identity Center の一時的な認証情報（`aws sso login` で取得する profile）を使う |
+| `envs/prod`・`envs/review` の plan / apply | 論点4の OIDC role（Actions） |
+
+- 手元の profile は repository の外（`~/.aws/config`）に置き、repository の script は access key を読まない。
+- 置き換えが終わったら、`.env` の key の元になっている IAM user の access key を無効化して削除する（利用者が行う）。
+- review 環境の起動・停止を Actions へ移すことは、親 roadmap の phase `terraform-on-github-actions` の scope に含まれていないため、scope に加える。
+
+#### 検討記録（論点10・イテレーション0）
+
+`.env` は `docker-compose.yml` の `frontend`・`backend` service の `env_file` でもある。`.env` に AWS の access key があると、その key は local の app container の環境変数にも入る。手元の AWS CLI の認証元は IAM user（AdministratorAccess 相当）の長期 key で、`~/.aws/credentials` の default profile にもある。手元には `~/.aws/sso` があり、IAM Identity Center の一時的な認証情報を使う下地がある（この account で使えるかは未確認）。
+
+review 環境の起動・停止は AWS CLI の script で、Terraform ではない。Actions へ移せば、手元で AWS を操作する場面は verify-infra とその場の確認だけになり、それも一時的な認証情報で足りる。
+
+#### 提案0へのフィードバック（論点10）
+
+**結果:** 修正要求（危険の意味の取り違え。IAM user の key の無効化は求めていない）
+
+> 論点9は指摘点以外は合意。論点10のきっかけで危険といった意味はcli実行環境に依存するものをポンポン色んなところに置いておくのが危険という意味。別に無効化すると入ってない
+
+危険と言ったのは、AWS CLI の実行環境に依存するもの（認証情報）をあちこちに置くことである。IAM user の access key の無効化は依頼に含まれていない。提案0は「長期 key を手元から無くす」と読み替え、review の起動・停止の Actions 化や IAM Identity Center の導入まで広げていた。
+
+### イテレーション1（論点10）: 認証情報を AWS CLI の設定だけに置く
+
+#### 提案1（論点10）
+
+- `.env` から `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` を消す。
+- 手元で AWS を操作するもの（`scripts/review_backend/start.sh`・`stop.sh`、verify-infra の Terraform、その場の AWS CLI）は、AWS CLI 自身の設定（`~/.aws/config`・`~/.aws/credentials`、必要なら `AWS_PROFILE`）から認証情報を得る。repository の file と `.env` は認証情報を持たない。
+- review の script は `ROUTE53_HOSTZONE_NAME` を読むために `.env` を export し続けるが、認証情報は `.env` から来なくなる。
+- IAM user の access key は無効化しない。review の起動・停止は手元の script のまま残す。roadmap の scope は変えない。
+
+#### 検討記録（論点10・イテレーション1）
+
+手元の AWS CLI は `~/.aws/credentials` の default profile で既に認証できる（`aws sts get-caller-identity` で IAM user を確認）。`.env` に同じ種類の認証情報を重ねて置くと、どちらが使われているかが export の有無で変わり、`docker-compose.yml` の `env_file` を通じて app container の環境変数にも入る。認証情報の置き場所を AWS CLI の設定に一本化すれば、`.env` は app と script の値だけを持つ。
+
+#### 提案1へのフィードバック（論点10）
+
+**結果:** 合意
+
+> ok
+
+### 決定（論点10）
+
+`.env` から `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` を消す。手元で AWS を操作するもの（review の start / stop script、verify-infra の Terraform、その場の AWS CLI）は AWS CLI 自身の設定（`~/.aws/config`・`~/.aws/credentials`、必要なら `AWS_PROFILE`）から認証情報を得て、repository の file と `.env` は認証情報を持たない。review の script は `ROUTE53_HOSTZONE_NAME` のために `.env` を export し続ける。IAM user の access key は無効化しない。review 環境の起動・停止は手元の script のまま残し、roadmap の scope は変えない。認証情報の置き場所を AWS CLI の設定に一本化するのは、置き場所が複数あるとどれが使われるかが export の有無で変わり、`docker-compose.yml` の `env_file` を通じて app container にも入るためである。
+
+
+## 論点11: review 環境の Terraform を、agent が main への merge を経ずに適用できるようにするか
+
+**ステータス:** 決定
+
+**種別:** 認識齟齬
+
+### イテレーション0（論点11）: review の適用経路
+
+#### 提案0（論点11）
+
+review の Terraform は、`main` への merge に加えて、**任意の branch から手動起動で apply できる**ようにする。agent は自分の作業 branch で review の定義を変え、`gh workflow run` で apply して試行錯誤できる。prod は従来どおり `main` への merge だけで apply する。
+
+| 経路 | prod | review |
+| --- | --- | --- |
+| PR での plan | あり | あり |
+| `main` への merge での apply | あり | あり |
+| 作業 branch からの手動起動での apply | なし | **あり**。destroy を含む plan では apply せず job を失敗させる |
+
+実現の仕方:
+
+- GitHub の Environments を `prod` と `review` の二つ作る。`prod` は deployment branch を `main` だけに制限し、`review` は制限しない。
+- apply role を環境ごとに分ける。prod の apply role の信頼条件は `repo:tumeda1992/nanitabe:environment:prod`、review の apply role は `repo:tumeda1992/nanitabe:environment:review`。apply の job は `environment:` を指定する。
+- `terraform-apply-review.yml` は `main` への push に加えて、任意の branch からの手動起動を受け付ける。手動起動のときは plan を保存し、destroy が 1 件でもあれば apply せず失敗する（現行の `envs/review/apply_terraform.sh` の判定を workflow へ移す）。
+- prod / review の値の secrets は repository secrets ではなく、各 Environment の secrets に置く。共通の値（state 用 bucket、lock 用 table、plan role）は repository secrets のまま。
+- `review_environment.md`「review 環境に閉じる操作」の「review state に対する `terraform plan`」と「destroy を含まない `terraform apply`」を、「作業 branch から review の apply workflow を手動起動すること（destroy を含む plan では workflow が止まる）」へ置き換える。事前確認なしで agent が行ってよい操作であることは変えない。
+
+この提案は論点4（role は二つで prod と review が共有）と論点5（値は repository secrets）を一部変える。plan role は一つのまま、apply role を prod 用と review 用の二つにし、環境ごとの値を Environment secrets へ移す。
+
+#### 検討記録（論点11・イテレーション0）
+
+steering は design の提示時に、論点1の原則（prod と review の apply は Actions だけ）から生じる帰結として「review の Terraform の変更も PR と merge を経る」ことを書き、議論しないまま「特に見てほしい点」として示した。利用者から、帰結があるなら議論は尽くせておらず、提案すべきだと指摘された。
+
+> いや、「 特に見てほしい点(議論では明示していなかった帰結)」があるなら、まだ議論は尽くせてないやろ。そこも提案して
+
+**帰結の中身。** `backend/docs/ai_guideline/development_standard/review_environment.md` は、review 環境に閉じる操作（本番、開発 DB、prod の state、`.env` と SSM の値に影響しない操作）を、agent が事前確認なしで行ってよいと定めている。review state への `terraform plan` と destroy を含まない `apply` がそこに含まれ、`envs/review/apply_terraform.sh` が destroy の判定を担っていた。apply を `main` への merge だけにすると、review の定義を試すには `main` へ merge する必要がある。動作確認のための環境の定義を、確かめる前に `main` へ入れる順序になり、agent の試行錯誤のたびに利用者の merge が要る。論点1の目的（3）「apply が利用者と agent の往復にならない」にも反する。
+
+**候補と決め手。**
+
+- `main` の merge だけにする: 上の問題がそのまま残る。
+- review だけ手元の apply を残す: 論点1の原則（prod と review の state へ書くのは Actions だけ）と親 phase の DoD（値を必要とする plan / apply を Actions だけで実行する）に反し、手元に review の値と認証情報が要る。
+- 作業 branch から手動起動で apply できる経路を review にだけ持つ: 値は Actions に置いたまま、agent が branch 単位で試せる。destroy の判定は workflow が持つ。
+
+**role と Environment を分ける理由。** 論点4の apply role の信頼条件は `ref:refs/heads/main` で、作業 branch からは assume できない。review だけ任意の branch から assume できる role が要る。信頼条件を branch で書き分けるより、GitHub Environments の deployment branch の制限に寄せた方が、「prod は `main` だけ、review はどこからでも」が GitHub の設定として一か所に現れる。Environment ごとの secrets を使えば、review の job には prod の値が渡らない。
+
+**残る限界。** review の apply role の権限は `AdministratorAccess` のままとする。review root は IAM role と Route53 の record を作り、Route53 の zone は prod と共有しているため、名前で権限を絞っても prod の record を書ける余地が残り、絞り込みの手間に見合う境界にならない。現行も agent は管理者権限の認証情報で review を apply しており、権限の広さは変わらない。review の手動起動の安全は、destroy の判定と、対象が review の state であることに依存する。
+
+#### 提案0へのフィードバック（論点11）
+
+**結果:** 確認の質問（destroy を含む plan を止める理由）
+
+> ちなみになんで destroy含んだらだめなんだっけ？
+
+### イテレーション1（論点11）: destroy を止める理由と判定の粒度
+
+#### 認識合わせ1（論点11）
+
+元の steering（`.steering/2026/202609/20260912-provision-on-demand-backend-verification-environment/task-design-discussion.md`）は、閉じる操作の根拠を「失敗しても停止 script と再実行で回復でき、影響が review 環境の外へ出ない」とだけ書き、destroy を外す理由を明記していない。この根拠から読み取れる理由は、destroy が「再実行で回復できる」という前提を崩すことである。review root では、ECR の repository（image が消え、build し直すまで起動できない）、CloudWatch の log group（application のログが消え、ログの lifecycle の原則と衝突する）、ACM 証明書と Route53 の record（作り直すと検証待ちの間 URL が使えない）が apply し直しても戻らない。IAM、security group、API Gateway など設定だけを持つ resource は戻る。replace も削除を含むため判定に入る。
+
+判定の粒度として、(a) 種類を区別せず一律に止める、(b) 中身を持つ resource と証明書の destroy だけを止める、を示し、(a) を推奨した。止まったときは PR の plan を読んで merge すればよく、種類の一覧を持つと resource を足すたびに見直しが要るためである。
+
+#### 認識合わせ1への回答（論点11）
+
+**結果:** 合意（a。理由を `review_environment.md` に書く）
+
+> 確かにそのとおりだわ。aで。今回挙げてもらった理由はreview_environment.mdにも書いておいて
+
+### 決定（論点11）
+
+review の Terraform は、`main` への merge に加えて、任意の branch から手動起動で apply できる。手動起動では plan を保存し、destroy（replace を含む）が 1 件でもあれば apply せず job を失敗させる。判定は resource の種類を区別しない。prod は `main` への merge だけで apply する。
+
+- GitHub の Environments を `prod`（deployment branch は `main` だけ）と `review`（制限なし）に分ける。
+- apply role を環境ごとに二つにし、信頼条件を `repo:tumeda1992/nanitabe:environment:prod` と `repo:tumeda1992/nanitabe:environment:review` にする。plan role は一つのまま。論点4の「apply role は一つで共有、信頼条件は `ref:refs/heads/main`」をこの形に改める。
+- prod と review の値は各 Environment の secrets に置き、共通の値（state 用 bucket、lock 用 table、plan role）は repository secrets に置く。論点5の「すべて repository secrets」をこの形に改める。
+- `review_environment.md`「review 環境に閉じる操作」は、review state への手元の plan / apply を「作業 branch から review の apply workflow を手動起動すること」へ置き換え、agent が事前確認なしで行ってよい点は変えない。destroy を外す理由を同 document に書いた（task-design 内で適用済み）。
+
+review の apply role の権限は `AdministratorAccess` のままとする。Route53 の zone を prod と共有しており、名前で絞っても prod の record を書ける余地が残るためである。
 
