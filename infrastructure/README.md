@@ -16,7 +16,7 @@ infrastructure/terraform/
 
 | env | 呼ぶ module | 中身 |
 | --- | --- | --- |
-| `prod` | `state_in_s3`、`frontend/terraform/envs/prod` | Terraform state 用の S3 と DynamoDB、frontend の ECR、Lambda、API Gateway、CloudFront、CI/CD |
+| `prod` | `state_in_s3`、`frontend/terraform/envs/prod` | Terraform state 用の S3 と DynamoDB、frontend の Amplify app（branch と custom domain を含む） |
 | `review` | `backend/terraform/envs/review` | backend の動作確認環境。ECR、ECS、API Gateway、CI/CD |
 
 state を分けているため、`review` への適用が `prod` の resource を対象にしない。逆も同じ。
@@ -93,7 +93,9 @@ resource を構成へ含めるかを金額で判断する基準は [`cost_judgme
 - **network**: VPC は default の 1 つだけで、subnet は 3 つとも public。
   private subnet と NAT Gateway を持たない。private subnet に置く前提の構成は、NAT Gateway の新設を伴う。
 - **GitHub と AWS の関係**: GitHub 側に AWS の credentials も OIDC の信頼設定も置かない。
-  deploy は AWS 側（CodePipeline / CodeBuild）が `CodeStarSourceConnection` で GitHub を見る形にする。
+  backend の deploy は AWS 側（CodePipeline / CodeBuild）が `CodeStarSourceConnection` で GitHub を見る形にする。
+  frontend の deploy は Amplify が GitHub の personal access token で repository を見て、`main` への push で build する。
+  token は `AMPLIFY_GITHUB_ACCESS_TOKEN` として `.env` から Terraform へ渡す。
   `.github/workflows/` は test と lint だけを行う。
 - **CPU architecture**: container の build と実行を ARM で統一する。
   CodeBuild は `ARM_CONTAINER`、Fargate は `ARM64`。

@@ -13,7 +13,7 @@ if [ "$NODE_ENV" = "production" ]; then
    # tail -n 1 -f package.json > /dev/null # デバッグ
 else
   yarn install
-  # 開発では使わないけどこれが失敗するとLambdaに載せるイメージのビルドでコケるので、成否確認
+  # 開発では使わないけどこれが失敗すると Amplify の本番 build でコケるので、成否確認
   NODE_ENV=production yarn build
   yarn dev -p ${port}
 fi

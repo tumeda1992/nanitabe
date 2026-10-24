@@ -6,7 +6,8 @@ jsのフロントエンド。
 毎日の料理だったり、今週分の買い出しのために献立を考える、更には数分で考えることを求められる日常がしんどかったから作った。
 
 ## インフラ
-本番では、Next.jsを動かすDockerイメージをLambdaで動かし、API Gateway経由でCloudFrontからアクセスさせている
+本番は AWS Amplify Hosting（`WEB_COMPUTE`）で配信している。`main` への push で Amplify が build して deploy する。
+build 設定は repository 直下の `amplify.yml`、Amplify の定義は `terraform/modules/amplify/`（設計上の注意は同 directory の README）にある。
 
 ## 主要ライブラリ
 Next.js(React) + Apollo + Tailwind CSS(v4) 構成
