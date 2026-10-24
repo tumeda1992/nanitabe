@@ -281,22 +281,29 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
     > 結果: frontend の旧 module への参照は無い。`docker-compose.yml` の `frontend_next_lambda` service が `buildOnLambda/Dockerfile` を参照していたため service ごと削除した（tasklist 外だが削除した定義への参照の解消。`docker compose config` は成功）。残る `codebuild_artifact_s3_bucket` 等の grep ヒットは backend / review 自前の module で対象外。
 - [x] `terraform validate` を Phase 1 と同じ方法（scratchpad へ複製、`init -backend=false`）で通す。この phase は新規 Terraform file を作らないため `terraform fmt` は適用しない
   > 結果: scratchpad に複製して `init -backend=false` の後 `terraform validate` が Success。新規 module の `terraform fmt -check` も通過。
-- [ ] 旧構成を撤去する apply を行う
+- [x] 旧構成を撤去する apply を行う
+  > 利用者が amplify-6 を apply: `Apply complete! Resources: 0 added, 0 changed, 2 destroyed.`（ECR repository と S3 bucket）。
   > plan 作成済み（apply は利用者が実行）: `Plan: 0 to add, 0 to change, 30 to destroy.`。destroy は旧構成の API Gateway、CloudFront、ECR、Lambda、S3、CodeBuild、CodePipeline 関連のみで、Amplify と state 用 resource の変更は無い。注意: static asset 用 S3 bucket は versioning 有効で非空（現行 53 object、delete marker 多数）、`force_destroy` は無いため bucket の destroy は失敗する見込み。bucket を空にする操作は利用者の確認が要る。
-  - [ ] plan の destroy が旧構成の resource だけで、Amplify と state 用 resource に変更が無いことを確認してから承認する
-  - [ ] static asset 用 S3 bucket が空でないため destroy に失敗した場合は、利用者の確認を得て bucket を空にしてから再実行する
+  - [x] plan の destroy が旧構成の resource だけで
+  - [x] static asset 用 S3 bucket が空でないため
+    > 実際に失敗し、利用者の操作で bucket と ECR を空にしてから再実行して成功した。
     > 経緯: 利用者が amplify-5 を apply し、ECR repository（image 10 件残存で `RepositoryNotEmptyException`）と S3 bucket（`BucketNotEmpty`）の 2 件だけ失敗、他 28 件は destroy 済み。利用者が S3 の全 version・delete marker（3,557 件）と ECR の image 10 件を削除して空にした。state が変わったため amplify-6 を作成。
     > plan 作成済み（apply は利用者が実行）: `Plan: 0 to add, 0 to change, 2 to destroy.`（`ecr.aws_ecr_repository.repo` と `s3_for_assets.aws_s3_bucket.static_files_bucket` のみ。Amplify と state 用 resource の変更なし）。
-- [ ] apply 後に `terraform plan` が `No changes` であることを確認する
-- [ ] 旧 resource が残っていないことを AWS CLI で確認する
-- [ ] custom domain が応答することを確認する
-- [ ] docs を更新する
-  - [ ] `infrastructure/README.md` の構成表と「構成上の前提」の GitHub と AWS の関係
-  - [ ] `frontend/README.md`「インフラ」
-  - [ ] `frontend/docs/ai_guideline/development_standard/docker.local.md`
-  - [ ] `frontend/entrypoint.sh` のコメント
-  - [ ] emit 前に document-review を通す
-- [ ] ここで作業を停止し、撤去の結果を利用者に確認する。次 phase へは進まない
+- [x] apply 後に `terraform plan` が `No changes`
+  > 結果: `No changes. Your infrastructure matches the configuration.`（`-detailed-exitcode` で exit 0）。
+- [x] 旧 resource が残っていないことを AWS CLI で確認する
+  > 結果: stage `prod` の旧 resource（Lambda、CloudFront、API Gateway、ECR、CodePipeline、CodeBuild、S3）は無い。残っているのは stage `verify-infra` の同名系 resource（Lambda、CloudFront、API Gateway、ECR、CodePipeline、CodeBuild、S3 各 1）で、この Terraform state の管理外の別環境のため、触っていない。CloudWatch Logs は対象外。
+- [x] custom domain が応答することを確認する
+  > 結果: custom domain は `/calendar/week/thisweek` への redirect の後 HTTP 200。
+- [x] docs を更新する
+  - [x] `infrastructure/README.md`
+  - [x] `frontend/README.md`
+  - [x] `frontend/docs/ai_guideline
+  - [x] `frontend/entrypoint.sh`
+  - [x] emit 前に document-review を通す
+    > document-review: 濃さ・記法・指示対象・機密性（domain 名、本番 backend の所在を書いていない）を確認済み。
+- [x] ここで作業を停止し、撤去の結果を利用者に確認する。次 phase へは進まない
+  > 利用者の指示により Phase 8 まで続行。
 
 ### 各task詳細
 
