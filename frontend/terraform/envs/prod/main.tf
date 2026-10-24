@@ -91,7 +91,7 @@ module "amplify" {
   github_access_token = var.amplify_github_access_token
   backend_origin      = var.backend_origin
 
-  branch_names = ["feature-258"]
+  branch_names = ["feature-258", "main"]
 
   custom_domain = null
   custom_domain_sub_domains = [

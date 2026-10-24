@@ -185,7 +185,7 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
 
 ### Tasks
 
-- [ ] `feature-258` を `origin/main` へ追従させる（`git merge origin/main`）
+- [x] `feature-258` を `origin/main` へ追従させる（`git merge origin/main`）
 - [ ] `frontend/terraform/envs/prod/main.tf` の `branch_names` を `["feature-258", "main"]` にして apply する
   - [ ] plan の変更が `aws_amplify_branch`（`main`）の追加だけであることを確認してから承認する
 - [ ] `main` の build を確認する
