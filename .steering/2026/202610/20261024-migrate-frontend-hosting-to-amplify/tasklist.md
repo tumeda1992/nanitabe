@@ -160,9 +160,10 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
 
 ### Tasks
 
-- [ ] `main` から `feature-258-amplify-build-config` を切り、`feature-258` の `amplify.yml` と `frontend/next.config.js` だけを取り込んで commit する
-- [ ] 利用者の確認を得て push し、PR を作る
-  - [ ] `create_or_get_pr.sh` に `--title` と `--body` を渡し、`Closes` を含めない
+- [x] `main` から `feature-258-amplify-build-config` を切り、`feature-258` の `amplify.yml` と `frontend/next.config.js` だけを取り込んで commit する
+- [x] 利用者の確認を得て push し、PR を作る
+  > 利用者から tasklist 記載の操作は確認不要との指示あり。PR: https://github.com/tumeda1992/nanitabe/pull/286（base main、本文に Closes なし）。
+  - [x] `create_or_get_pr.sh` に `--title` と `--body` を渡し、`Closes` を含めない
 - [ ] 利用者に PR の merge を依頼し、merge の返答を受ける
 - [ ] ここで作業を停止し、merge の結果を利用者に確認する。次 phase へは進まない
 
