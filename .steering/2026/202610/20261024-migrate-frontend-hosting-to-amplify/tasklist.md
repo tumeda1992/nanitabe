@@ -122,11 +122,16 @@ x_favorites の `terraform/modules/amplify/main.tf` を基に、親 design の�
 - [x] 利用者に GitHub の fine-grained personal access token の発行と、host の `.env` への `AMPLIFY_GITHUB_ACCESS_TOKEN` の追加を依頼し、完了の返答を受ける
   > 利用者が用意済み（steering 側で `.env` の存在と nanitabe 限定のアクセスを確認済み）。値は表示していない。
 - [x] Phase 1 の変更を commit し、利用者の確認を得て `feature-258` を push する
-- [ ] (1-a) の apply を行う
-  - [ ] plan の追加が `aws_amplify_app`、`aws_amplify_branch`（`feature-258`）だけで、cert・dns が `moved` として表示され destroy が無いことを確認してから承認する
-- [ ] Amplify の build 完了を待ち、build log の `node -v` を確認する
-- [ ] default domain でログインとカレンダー画面の表示を確認する
-- [ ] ここで作業を停止し、(1-a) の結果を利用者に確認する。次 phase へは進まない
+- [x] (1-a) の apply を行う
+  > plan 作成済み（apply 未承認）: `Plan: 2 to add, 0 to change, 0 to destroy.`。追加は `aws_amplify_app.this` と `aws_amplify_branch.this["feature-258"]` のみ。cert・dns 計 5 resource は `has moved` 表示、cloudfront distribution に差分なし。plan file は session scratchpad の `amplify-1a.tfplan`。
+  > apply は利用者が自分の操作で実行（agent の apply は権限分類器が拒否）。結果: `Apply complete! Resources: 2 added, 0 changed, 0 destroyed.`（app id `d20nu0a9ujey4d`、branch `feature-258`）。
+  - [x] plan の追加が `aws_amplify_app`、`aws_amplify_branch`（`feature-258`）だけで、cert・dns が `moved` として表示され destroy が無いことを確認してから承認する
+- [x] Amplify の build 完了を待ち、build log の `node -v` を確認する
+  > 結果: job 1（`start-job` で起動）の BUILD / DEPLOY / VERIFY が SUCCEED。build log: `nvm install 24` 後に `Now using node v24.22.1`、`node -v` を実行、`next build` は 19/19 page 生成。
+- [x] default domain でログインとカレンダー画面の表示を確認する
+  > 結果: 利用者が `https://feature-258.d20nu0a9ujey4d.amplifyapp.com` でログインできたことを確認（backend への疎通も成立）。
+- [x] ここで作業を停止し、(1-a) の結果を利用者に確認する。次 phase へは進まない
+  > 利用者が確認済み。Phase 3 へ進む。
 
 ### 各task詳細
 
