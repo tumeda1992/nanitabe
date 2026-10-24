@@ -374,18 +374,19 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
 
 > ⚠️ 動作確認phaseが完了するまでcommit、push、PRを促したり実行したりしない。急かすことも禁止する。
 
-- [ ] commit（phase単位かつ意味単位で分割）
+- [x] commit（phase単位かつ意味単位で分割）
+  > phase 単位・意味単位で commit 済み（steering 記録、amplify 設定、Terraform 定義、README、旧定義の削除、docs、tasklist の記録）。
   - MUST: まとめて一commitにしない
   - phaseごとに別commitにする（Phase 2 で push 済みの Phase 1 の commit を除く）
   - 同一phase内でも意味的に異なる変更を分割する（例: Terraform 定義の削除、docs の更新、tasklist の checkbox と `implementation_review.md`）
   - ユーザーが一部だけ承認した場合は承認範囲だけをcommitし、残りは待つ
   - ユーザーが不要と回答した場合は`[x] ~~commit~~（ユーザーが不要と回答）`の形式で完了扱いにする
 
-- [ ] `feature-258` を push し、PR #283 を `main` へ merge できる状態にする
-  - [ ] commit taskの結果としてlocal commitが実際に一件以上あることを確認する。一件もなければpushを実行しない
-  - [ ] current branchが `feature-258` であることを確認する
-  - [ ] `git push origin feature-258` を実行する
-  - [ ] PR #283 の本文から `Closes: #258` を外し、「issue #258 の完了を意味しない。roadmap の後段 phase（Terraform の Actions 移行）が残る」と参照 `#258` を書く。この merge は plugin の `development_flow/branch_pr_issue.md` の経路 2 にあたる
+- [x] `feature-258` を push し、PR #283 を `main` へ merge できる状態にする
+  - [x] commit taskの結果としてlocal commitが実際に一件以上あることを確認する。一件もなければpushを実行しない
+  - [x] current branchが `feature-258` であることを確認する
+  - [x] `git push origin feature-258` を実行する
+  - [x] PR #283 の本文から `Closes: #258` を外し、「issue #258 の完了を意味しない。roadmap の後段 phase（Terraform の Actions 移行）が残る」と参照 `#258` を書く。この merge は plugin の `development_flow/branch_pr_issue.md` の経路 2 にあたる
   - [ ] merge は利用者が行う
 
 ---
