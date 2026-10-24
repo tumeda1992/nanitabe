@@ -238,10 +238,12 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
   - [x] plan の追加が `aws_amplify_domain_association` だけであることを確認してから承認する
   - [x] apply が「already associated」等で拒否された場合は、(2) を戻す apply（`enable_custom_domain = true`、`custom_domain = null`）を行い、旧構成の応答を確認してから停止し、親 task-design へ戻る
     > 該当せず（拒否されなかった）。
-- [ ] 証明書の検証完了を待つ
-  - [ ] `aws amplify get-domain-association --app-id <app_id> --domain-name <hosted zone>` の `domainStatus` が `AVAILABLE` になるまで確認する
+- [x] 証明書の検証完了を待つ
+  - [x] `aws amplify get-domain-association --app-id <app_id> --domain-name <hosted zone>` の `domainStatus` が `AVAILABLE` になるまで確認する
+    > 結果: `domainStatus` は途中 `AWAITING_APP_CNAME`（Route53 の record は Amplify が作成済みで反映待ち）を経て `AVAILABLE`、sub domain `nanitabe` は verified。
 - [ ] (4) custom domain で受け入れ基準を確認する
-  - [ ] TLS 証明書と static asset の配信元を確認する
+  - [x] TLS 証明書と static asset の配信元を確認する
+    > 結果: 証明書は Amazon 発行で有効（2027-05-10 まで、SAN は親 domain とワイルドカード、verify OK）。`/` は `/calendar/week/thisweek` へ redirect の後 200。HTML の `/_next/static/...` はすべて相対 path（同じ origin）。注記: この host の OS resolver は切替前の否定 cache のためか名前解決に失敗したため、`dig` で得た CloudFront の IP を `--resolve` で指定して確認した。
   - [ ] ログインとカレンダー画面の表示を利用者に確認してもらう
   - [ ] 失敗した場合は (2) を戻す apply で旧構成へ戻し、停止して利用者へ報告する
 - [ ] ここで作業を停止し、切替の結果を利用者に確認する。次 phase へは進まない
