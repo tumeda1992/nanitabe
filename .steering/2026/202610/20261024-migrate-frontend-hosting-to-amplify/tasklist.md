@@ -341,14 +341,15 @@ URL は `aws amplify list-apps` で `nanitabe-front-prod` の `appId` と `defau
   - [x] 提案がある場合だけユーザー承認後に既存READMEまたは既存docsへ反映する
   - [x] 提案・承認判断を別taskへ先送りしない
   > 結果: 追加の永続化候補なし（移行の知識は amplify module README と各 docs に反映済み）。提案なし。
-- [ ] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
-  - [ ] `discussion_directory=<working_dir>`と`discussion_file_name=implementation_review.md`を渡す
-  - [ ] 原文、関連する実装・design・plan、原因、採用方針、決定を渡し、修正済みでも記録を省略しない
-  - [ ] 「共有されていなかった知識の前提は何か」を確認する
-  - [ ] 「codeを読めば分かるか、設計意図か、process不足か」を確認する
-  - [ ] 「どこに書けば次回この議論が不要になるか」を確認し、合意後だけ反映する
-  - [ ] decisionをcallerへ返し、designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す
-  - [ ] review後に実装を自動再開しない
+- [x] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
+  - [x] `discussion_directory=<working_dir>`と`discussion_file_name=implementation_review.md`を渡す
+  - [x] 原文、関連する実装・design・plan、原因、採用方針、決定を渡し、修正済みでも記録を省略しない
+  - [x] 「共有されていなかった知識の前提は何か」を確認する
+  - [x] 「codeを読めば分かるか、設計意図か、process不足か」を確認する
+  - [x] 「どこに書けば次回この議論が不要になるか」を確認し、合意後だけ反映する
+  - [x] decisionをcallerへ返し、designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す
+  - [x] review後に実装を自動再開しない
+  > 実行中の feedback は steering が `implementation_review.md` の論点1〜6 に記録・処理済み（論点6 は保留で、phase 完了報告の後に扱う）。この executor は再実装していない。
 
 ---
 
@@ -360,10 +361,12 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
 
 ### Tasks
 
-- [ ] ユーザーに動作確認を依頼する（custom domain を普段使う端末で開き、ログイン、カレンダー画面の週・月表示、献立の登録を行い、従来どおり動くこと）
-- [ ] feedbackがあれば、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用し、decisionをcallerへ返す
-  - [ ] designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す
-  - [ ] feedbackがなければ`[x] ~~feedback収集~~（feedbackなし）`の形式で完了扱いにする
+- [x] ユーザーに動作確認を依頼する（custom domain を普段使う端末で開き、ログイン、カレンダー画面の週・月表示、献立の登録を行い、従来どおり動くこと）
+  > 結果: 利用者が custom domain でログイン、カレンダーの週・月表示、献立の登録の 3 つともできたことを確認。
+- [x] feedbackがあれば、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用し、decisionをcallerへ返す
+  - [x] designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す
+  - [x] feedbackがなければ`[x] ~~feedback収集~~（feedbackなし）`の形式で完了扱いにする
+    > 実行中の feedback は steering が `implementation_review.md` 論点1〜6 に記録済み。動作確認後の新たな feedback は無し。
 
 ---
 
