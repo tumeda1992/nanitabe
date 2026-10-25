@@ -104,16 +104,16 @@ design の「更新する docs」の表のとおり。domain 名は `<hosted zon
 
 ### Tasks
 
-- [ ] import block を削除して commit・push し、PR の review の plan が変更なしで通ることを確認する
-- [ ] `terraform fmt -check`（新規 file）と `terraform validate`（scratchpad、review root）
+- [x] import block を削除して commit・push し、PR の review の plan が変更なしで通ることを確認する
+- [x] `terraform fmt -check`（新規 file）と `terraform validate`（scratchpad、review root）
 
 ## Documentation reviewと実装後振り返り
 
-- [ ] code readingまたは実装で永続化候補を得た場合、その場でdoc-enricherを提案modeで適用する
-  - [ ] 提案がある場合だけユーザー承認後に既存READMEまたは既存docsへ反映する
-- [ ] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
-  - [ ] 「共有されていなかった知識の前提は何か」「codeを読めば分かるか、設計意図か、process不足か」「どこに書けば次回この議論が不要になるか」を確認し、合意後だけ反映する
-  - [ ] designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す。review後に実装を自動再開しない
+- [x] code readingまたは実装で永続化候補を得た場合、その場でdoc-enricherを提案modeで適用する
+  - [x] 提案がある場合だけユーザー承認後に既存READMEまたは既存docsへ反映する
+- [x] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
+  - [x] 「共有されていなかった知識の前提は何か」「codeを読めば分かるか、設計意図か、process不足か」「どこに書けば次回この議論が不要になるか」を確認し、合意後だけ反映する
+  - [x] designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す。review後に実装を自動再開しない
 
 ---
 
@@ -125,9 +125,8 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
 
 ### Tasks
 
-- [ ] agent が `start.sh` で backend を起動し、frontend の `/login` と backend の `/graphql` の応答を `curl` で確かめてから、ユーザーに依頼する（PC 以外の端末で `https://review-nanitabe.<hosted zone>` を開き、ログイン、カレンダーの表示、献立の登録ができ、登録したデータが本番に入らないこと）。確認後に `stop.sh` で止める
-- [ ] feedbackがあれば、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用し、decisionをcallerへ返す
-  - [ ] feedbackがなければ`[x] ~~feedback収集~~（feedbackなし）`の形式で完了扱いにする
+- [x] agent が `start.sh` で backend を起動し、frontend の `/login` と backend の `/graphql` の応答を `curl` で確かめてから、ユーザーに依頼する（PC 以外の端末で `https://review-nanitabe.<hosted zone>` を開き、ログイン、カレンダーの表示、献立の登録ができ、登録したデータが本番に入らないこと）。確認後に `stop.sh` で止める
+- [x] ~~feedback収集~~（feedbackなし）
 
 ---
 
@@ -135,7 +134,7 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
 
 > ⚠️ 動作確認phaseが完了するまでcommit、push、PRを促したり実行したりしない。急かすことも禁止する。Phase 3〜5 の commit・push・PR は、各 phase の検証に必要なため例外とする。
 
-- [ ] 残りの変更を意味単位で commit し、`feature-280` を push する
+- [x] 残りの変更を意味単位で commit し、`feature-280` を push する
 - [ ] Phase 3 で作った PR の本文に `Closes #280` を加え、変更内容と確認結果を書く（plugin の `development_flow/branch_pr_issue.md` の経路 1）
 - [ ] merge は利用者が行う
 
