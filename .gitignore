@@ -73,7 +73,6 @@ yarn-debug.log*
 
 .terraform/
 
-**/.terraform.lock.hcl
 **/*.tfstate
 **/*.tfstate.*
 **/tfplan*

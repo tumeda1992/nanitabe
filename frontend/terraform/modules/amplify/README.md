@@ -61,8 +61,10 @@ app は fine-grained personal access token で GitHub に接続する。
 
 - 対象 repository は `tumeda1992/nanitabe` だけ
 - 権限は Contents: read、Metadata: read、Webhooks: read and write
-- 失効すると Amplify が repository を見られなくなり、build が起動しない。token を更新して apply する
-- 値は `TF_VAR_amplify_github_access_token` で渡し、repository にも chat にも書かない
+- 失効すると Amplify が repository を見られなくなり、build が起動しない。次の手順で token を更新する
+- token は Terraform に通さない。`aws_amplify_app` は `ignore_changes = [access_token]` を持ち、`amplify_github_access_token` は既定値 `null` の optional である。値を repository にも GitHub secrets にも chat にも書かない
+- 更新手順: 手元で `aws amplify update-app --app-id <app id> --access-token <新しい token>`（AWS CLI の設定の認証情報を使う）
+- app を作り直すとき（destroy 後の apply）だけ、`TF_VAR_amplify_github_access_token` に値を個別に渡す
 
 ## 変更ガイド
 
