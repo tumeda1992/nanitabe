@@ -29,3 +29,9 @@ module "backend" {
 
   review_backend_alarm_email = var.review_backend_alarm_email
 }
+
+module "frontend" {
+  source = "../../../../frontend/terraform/envs/review"
+
+  route53_name = var.route53_name
+}
