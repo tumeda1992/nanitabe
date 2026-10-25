@@ -1,0 +1,67 @@
+name: Terraform Plan (review)
+
+# plan の全文は public な log / PR コメントに出さず、state 用 S3 へ保存する。
+# PR コメントには resource 種別ごとの件数と destroy の有無だけを出す。
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "infrastructure/terraform/envs/review/**"
+      - "backend/terraform/**"
+      - ".terraform-version"
+      - ".github/workflows/terraform-plan-review.yml"
+      - ".github/actions/terraform-run/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+# 同じ ref の plan は直列にする（apply との排他は state の DynamoDB lock が担う）。
+concurrency:
+  group: terraform-plan-review-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  TF_VAR_bucket_name: ${{ secrets.TERRAFROM_STATE_S3_BUCKET }}
+  TF_VAR_dynamodb_table_name: ${{ secrets.TERRAFROM_STATE_DYNAMODB_TABLE }}
+  TF_VAR_codebuild_artifact_s3_bucket: ${{ secrets.CODEBUILD_ARTICACT_S3_BUCKET }}
+  TF_VAR_route53_name: ${{ secrets.ROUTE53_HOSTZONE_NAME }}
+  TF_VAR_review_backend_alarm_email: ${{ secrets.REVIEW_BACKEND_ALARM_EMAIL }}
+
+jobs:
+  plan:
+    # fork からの PR には secrets も OIDC も渡さない。
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - id: terraform
+        uses: ./.github/actions/terraform-run
+        with:
+          working-directory: infrastructure/terraform/envs/review
+          role-to-assume: ${{ secrets.AWS_TERRAFORM_PLAN_ROLE_ARN }}
+          state-key: review/terraform.tfstate
+          mode: plan
+          root-name: review
+          state-bucket: ${{ secrets.TERRAFROM_STATE_S3_BUCKET }}
+          lock-table: ${{ secrets.TERRAFROM_STATE_DYNAMODB_TABLE }}
+
+      - name: Upsert plan comment
+        if: ${{ always() && github.event_name == 'pull_request' && steps.terraform.outputs.summary-file != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          SUMMARY_FILE: ${{ steps.terraform.outputs.summary-file }}
+        run: |
+          marker='<!-- terraform-plan-review -->'
+          { echo "$marker"; cat "$SUMMARY_FILE"; } > "$RUNNER_TEMP/comment.md"
+          comment_id=$(gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+            --jq ".[] | select(.user.login == \"github-actions[bot]\" and (.body | startswith(\"$marker\"))) | .id" | head -n 1)
+          if [ -n "$comment_id" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${comment_id}" -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
+          else
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
+          fi

@@ -51,6 +51,8 @@ branch resource の作成は push event ではないため、build が自動で�
 `aws_amplify_domain_association` は 1 つにまとめ、branch ごとに `sub_domain` を割り当てる。
 `custom_domain` が `null` のあいだは association を作らず、default domain だけで公開できる。
 
+親 domain と prefix で持つのは、hosted zone へ置く名前をフラットな 1 ラベル（`nanitabe.<hosted zone>`、`review-nanitabe.<hosted zone>` 等）にするためである。同じ account の別の Amplify app も同じ親 domain を関連付けられる（実測済み）。動作確認環境を作るときは、この app へ branch を足すのではなく、review root からこの module を `stage = "review"` で呼んで別の app を作る（`infrastructure/README.md`「構成上の前提」の環境の分け方）。
+
 `wait_for_verification = false` にしている。証明書の DNS 検証は Route53 への record 登録が要り、Amplify が作るまでに時間差がある。`true` だと apply がそこで待ち続けるため、apply 後に `aws amplify get-domain-association` の `domainStatus` が `AVAILABLE` になるのを確認する。
 
 ### GitHub personal access token
@@ -59,8 +61,10 @@ app は fine-grained personal access token で GitHub に接続する。
 
 - 対象 repository は `tumeda1992/nanitabe` だけ
 - 権限は Contents: read、Metadata: read、Webhooks: read and write
-- 失効すると Amplify が repository を見られなくなり、build が起動しない。token を更新して apply する
-- 値は `TF_VAR_amplify_github_access_token` で渡し、repository にも chat にも書かない
+- 失効すると Amplify が repository を見られなくなり、build が起動しない。次の手順で token を更新する
+- token は Terraform に通さない。`aws_amplify_app` は `ignore_changes = [access_token]` を持ち、`amplify_github_access_token` は既定値 `null` の optional である。値を repository にも GitHub secrets にも chat にも書かない
+- 更新手順: 手元で `aws amplify update-app --app-id <app id> --access-token <新しい token>`（AWS CLI の設定の認証情報を使う）
+- app を作り直すとき（destroy 後の apply）だけ、`TF_VAR_amplify_github_access_token` に値を個別に渡す
 
 ## 変更ガイド
 

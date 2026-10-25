@@ -1,6 +1,10 @@
 variable "stage" { type = string }
-variable "route53_zone_id" { type = string }
 variable "route53_name" { type = string }
+
+# zone は route53_name から引く（prod と共有の zone）。
+data "aws_route53_zone" "this" {
+  name = var.route53_name
+}
 
 module "values" {
   source = "../../values"
@@ -90,7 +94,7 @@ resource "aws_route53_record" "cert_validation" {
     }
   }
 
-  zone_id = var.route53_zone_id
+  zone_id = data.aws_route53_zone.this.zone_id
   name    = each.value.name
   type    = each.value.type
   records = [each.value.record]
@@ -119,7 +123,7 @@ resource "aws_apigatewayv2_api_mapping" "this" {
 }
 
 resource "aws_route53_record" "alias" {
-  zone_id = var.route53_zone_id
+  zone_id = data.aws_route53_zone.this.zone_id
   name    = local.custom_domain
   type    = "A"
 

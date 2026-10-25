@@ -1,8 +1,9 @@
 variable "backend_origin" { type = string } # export TF_VAR_backend_origin=${NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN}
 variable "route53_name" { type = string } # export TF_VAR_route53_name=${ROUTE53_HOSTZONE_NAME}
-variable "amplify_github_access_token" { # export TF_VAR_amplify_github_access_token=${AMPLIFY_GITHUB_ACCESS_TOKEN}
+variable "amplify_github_access_token" { # app を作り直すときだけ export TF_VAR_amplify_github_access_token=${AMPLIFY_GITHUB_ACCESS_TOKEN}
   type      = string
   sensitive = true
+  default   = null
 }
 
 locals {

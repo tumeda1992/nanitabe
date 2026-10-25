@@ -159,7 +159,7 @@ tasklist-executor が tasklist 外で行った `docker-compose.yml` からの `f
 
 ## 論点6: アプリケーションのログを AWS resource と一緒に destroy しない構成にする
 
-**ステータス:** 保留
+**ステータス:** 決定
 
 **種別:** レビュー指摘
 
@@ -179,9 +179,33 @@ tasklist-executor が tasklist 外で行った `docker-compose.yml` からの `f
 
 この方針は今回の phase の変更を必要としない（アプリケーションのログは結果的に残っている）。どこへ反映するか（`infrastructure/README.md`「構成上の前提」への原則の追加、log group を Terraform で管理する場合の `prevent_destroy` 等）は未決である。
 
-### 再開条件（論点6）
+### イテレーション1（論点6）: 原則の反映先
 
-phase `amplify-migration` の完了報告の後、反映先と内容を利用者と決める。`terraform-on-github-actions` phase で `infrastructure/README.md` を書き換える際の入力にもなる。
+#### 提案1（論点6）
+
+`infrastructure/README.md` の「構成上の前提」へ、次の項目を追加する。他の未決事項に依存しないため、phase `amplify-migration` の完了直後に `feature-258` へ反映する。
+
+```markdown
+- **ログの lifecycle**: application が出すログ（Next.js の SSR、Rails の request log など）は、
+  それを実行する AWS resource より長く残る前提で置く。application のログを入れる log group は、
+  実行基盤の resource と同じ destroy の単位に入れない。resource 固有のログ（API Gateway の
+  access log など、その resource の振る舞いだけを記録するもの）は、resource と同じ lifecycle でよい。
+  判断の問い: 「この resource を作り直した後や撤去した後にも、このログを見返したいか」
+```
+
+#### 検討記録（論点6・イテレーション1）
+
+「構成上の前提」は、resource を足す・撤去するときに既に成立している前提を集めた節で、この原則を参照する場面（構築・撤去の設計）と一致する。現状へ当てはめると、Amplify の SSR ログと旧 Lambda・CodeBuild のログは各 service が自動作成する Terraform 管理外の log group で、resource の撤去後も残るため原則に合う。backend の review 環境の ECS ログ（`/ecs/nanitabe-back-review`）は Terraform 管理で review 環境の destroy と一緒に消えるが、review 環境は停止で運用し destroy しないため直ちに問題にはならない。原則に照らした例外として扱い、直すかは別途判断する。
+
+#### 提案1へのフィードバック（論点6）
+
+**結果:** 合意
+
+> ok
+
+### 決定（論点6）
+
+`infrastructure/README.md` の「構成上の前提」へ「ログの lifecycle」の項目を追加した。application のログは実行基盤の resource より長く残る前提で置き、同じ destroy の単位に入れない。resource 固有のログは resource と同じ lifecycle でよい。backend の review 環境の ECS ログが Terraform 管理で review 環境と一緒に消える点は原則の例外として残し、直すかは別途判断する。
 
 ## 論点7: phase 完了時の途中 merge を本線 branch から出していた
 

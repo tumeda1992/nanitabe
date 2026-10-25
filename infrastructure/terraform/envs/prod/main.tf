@@ -5,9 +5,10 @@ variable "backend_origin" { type = string } # export TF_VAR_backend_origin=${NEX
 
 variable "route53_name" { type = string } # export TF_VAR_route53_name=${ROUTE53_HOSTZONE_NAME}
 
-variable "amplify_github_access_token" { # export TF_VAR_amplify_github_access_token=${AMPLIFY_GITHUB_ACCESS_TOKEN}
+variable "amplify_github_access_token" { # app を作り直すときだけ export TF_VAR_amplify_github_access_token=${AMPLIFY_GITHUB_ACCESS_TOKEN}
   type      = string
   sensitive = true
+  default   = null
 }
 
 provider "aws" {
@@ -34,4 +35,13 @@ module "frontend" {
   backend_origin              = var.backend_origin
   route53_name                = var.route53_name
   amplify_github_access_token = var.amplify_github_access_token
+}
+
+module "github_oidc" {
+  source = "../../modules/github_oidc"
+
+  repository        = "tumeda1992/nanitabe"
+  name_prefix       = "nanitabe"
+  state_bucket_name = var.bucket_name
+  lock_table_name   = var.dynamodb_table_name
 }

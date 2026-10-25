@@ -427,7 +427,8 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
   - [x] current branchが `feature-258` であることを確認する
   - [x] `git push origin feature-258` を実行する
   - [x] PR #283 の本文から `Closes: #258` を外し、「issue #258 の完了を意味しない。roadmap の後段 phase（Terraform の Actions 移行）が残る」と参照 `#258` を書く。この merge は plugin の `development_flow/branch_pr_issue.md` の経路 2 にあたる
-  - [ ] merge は利用者が行う
+  - [x] merge は利用者が行う
+    > 結果: 利用者が PR #288 を merge（main は 4f4d876）。steering 側で origin/main を feature-258 へ merge して push 済み。
 
 ---
 
