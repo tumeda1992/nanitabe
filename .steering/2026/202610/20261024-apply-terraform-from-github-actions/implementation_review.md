@@ -29,3 +29,29 @@ Phase 2 の apply で、利用者の実行が `EntityAlreadyExists: Provider wit
 ### 決定（論点1）
 
 `github_oidc` module は OIDC provider を作らず、既存の provider を URL で参照する data source を使う。role 3 つは nanitabe が作る。provider の所有者は同じ account の x_favorites の Terraform とし、import しない。依存を module の README とコメント、`infrastructure/README.md`「構成上の前提」に書く。
+
+## 論点2: 実装中に直した workflow の不具合と、design からのずれ
+
+**ステータス:** 決定
+
+**種別:** レビュー指摘
+
+### イテレーション0（論点2）: tasklist-executor の報告の記録
+
+#### 変更内容0（論点2）
+
+tasklist-executor が実装・検証中に見つけて直したもの、または design から外れたものを記録する。いずれも tasklist の実施メモに詳細がある。
+
+- **plan workflow の初回失敗:** GitHub Actions の `run` は bash を `-e` 付きで動かす。`terraform plan -detailed-exitcode` は差分があると終了コード 2 を返し、script がそこで中断して S3 への保存と要約が行われなかった。composite action の該当箇所に `set +e` を入れて直した。
+- **要約の数え方:** state から外すだけの変更（`removed` block による forget）が update と数えられていた。要約の表に forget の列を足した。
+- **plan が Environment secrets を読めない:** discussion 論点12で扱い、値を repository secrets に置く形へ design を改めた。
+- **OIDC provider の衝突:** 論点1。
+- **`aws_codestarconnections_connection` の一過性の DNS 解決エラー:** 一度だけ発生し、endpoint が解決できることを確かめてから再実行して通った。再現していない。
+
+#### 検討記録（論点2・イテレーション0）
+
+前二つは、GitHub Actions の shell の既定値と、Terraform の `removed` の plan 上の表れ方という、実際に動かして初めて確かめられる挙動だった。design は要約の形（種別ごとの件数と destroy の有無）までを決めており、forget の扱いは決めていなかった。どちらも design の判断を変えず、実装の誤りとして直した。repository の docs へ書く知識としては、GitHub Actions の shell の既定値は一般的な挙動であり書かない。forget の列は `infrastructure/README.md`「出力の読み方」の件数の説明に含めた（tasklist-executor が反映済み）。
+
+### 決定（論点2）
+
+上の修正を維持する。design の判断は変わらない。
