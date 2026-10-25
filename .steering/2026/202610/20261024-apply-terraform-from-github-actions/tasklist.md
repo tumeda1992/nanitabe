@@ -171,7 +171,7 @@ design の「workflow の構成」の表のとおり。
 
 ### Tasks
 
-- [ ] `main` から `feature-258-terraform-on-github-actions` を切り、`feature-258` の Phase 1 の変更を取り込んで PR を作る（`Closes` なし。本文に「issue #258 の完了を意味しない」と書く。plugin の `development_flow/branch_pr_issue.md` の経路 2）
+- [x] `main` から `feature-258-terraform-on-github-actions` を切り、`feature-258` の Phase 1 の変更を取り込んで PR を作る（`Closes` なし。本文に「issue #258 の完了を意味しない」と書く。plugin の `development_flow/branch_pr_issue.md` の経路 2）
 - [ ] 利用者に merge を依頼して止まる
 - [ ] merge 後、両 apply workflow の成功と要約を確認する。S3 の `applies/` の全文で、prod は差分 0、review は SSM parameter の state からの削除だけで、post-apply plan が両方 0 であることを確認する。AWS 上に SSM parameter が残っていることを `aws ssm get-parameters-by-path --path /nanitabe-back/review/`（名前だけ）で確認する
 - [ ] `main` を `feature-258` へ取り込む
