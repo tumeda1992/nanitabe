@@ -29,3 +29,15 @@ module "backend" {
 
   review_backend_alarm_email = var.review_backend_alarm_email
 }
+
+module "frontend" {
+  source = "../../../../frontend/terraform/envs/review"
+
+  route53_name = var.route53_name
+}
+
+# 取り込み後に削除する（app は CLI で作成済み。frontend/terraform/modules/amplify/README.md 参照）
+import {
+  to = module.frontend.module.amplify.aws_amplify_app.this
+  id = "dbojsgkwxbq4g"
+}

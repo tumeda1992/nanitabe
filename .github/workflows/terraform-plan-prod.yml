@@ -9,6 +9,7 @@ on:
       - "infrastructure/terraform/envs/prod/**"
       - "infrastructure/terraform/modules/**"
       - "frontend/terraform/**"
+      - "!frontend/terraform/envs/review/**"
       - ".terraform-version"
       - ".github/workflows/terraform-plan-prod.yml"
       - ".github/actions/terraform-run/**"

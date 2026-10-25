@@ -8,6 +8,8 @@ on:
     paths:
       - "infrastructure/terraform/envs/review/**"
       - "backend/terraform/**"
+      - "frontend/terraform/envs/review/**"
+      - "frontend/terraform/modules/amplify/**"
       - ".terraform-version"
       - ".github/workflows/terraform-apply-review.yml"
       - ".github/actions/terraform-run/**"
