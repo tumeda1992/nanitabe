@@ -18,16 +18,17 @@
 
 ### Tasks
 
-- [ ] `frontend/terraform/envs/review/main.tf` を作り、`.gitkeep` を消す
-- [ ] `infrastructure/terraform/envs/review/main.tf` に `module "frontend"` を足す
-- [ ] workflow 4 本の paths を変える
-- [ ] scratchpad で `terraform fmt -check`（新規 file）と `terraform validate`（review root）を通す
-- [ ] docs を更新する（emit 前に document-review を通す）
-  - [ ] `backend/docs/ai_guideline/development_standard/review_environment.md`
-  - [ ] `frontend/docs/ai_guideline/development_standard/README.md`
-  - [ ] `infrastructure/README.md`「環境の使い方」
-  - [ ] `frontend/terraform/modules/amplify/README.md`
-- [ ] app 作成用の script を scratchpad に用意する
+- [x] `frontend/terraform/envs/review/main.tf` を作り、`.gitkeep` を消す
+- [x] `infrastructure/terraform/envs/review/main.tf` に `module "frontend"` を足す
+- [x] workflow 4 本の paths を変える
+- [x] scratchpad で `terraform fmt -check`（新規 file）と `terraform validate`（review root）を通す
+- [x] docs を更新する（emit 前に document-review を通す）
+  - [x] `backend/docs/ai_guideline/development_standard/review_environment.md`
+  - [x] `frontend/docs/ai_guideline/development_standard/README.md`
+  - [x] `infrastructure/README.md`「環境の使い方」
+  - [x] `frontend/terraform/modules/amplify/README.md`
+  - [x] `frontend/terraform/modules/amplify/README.md` に、Amplify が token を保存して clone に使うこと、期限切れで build が止まること、`aws amplify update-app --access-token` で入れ直す手順を足す（`implementation_review.md` 論点1）
+- [x] app 作成用の script を scratchpad に用意する
 
 ### 各task詳細
 
@@ -59,8 +60,8 @@ design の「更新する docs」の表のとおり。domain 名は `<hosted zon
 
 ### Tasks
 
-- [ ] 利用者に、token の発行（`tumeda1992/nanitabe` だけ、Contents: read、Metadata: read、Webhooks: read and write）と、利用者の端末での `bash <scratchpad>/create_review_amplify_app.sh` の実行を依頼して止まる（`read -rs` を使うため、`!` ではなく利用者の terminal で実行する）
-- [ ] app id を `aws amplify list-apps` で確認する
+- [x] 利用者に、token の発行（`tumeda1992/nanitabe` だけ、Contents: read、Metadata: read、Webhooks: read and write）と、利用者の端末での `bash <scratchpad>/create_review_amplify_app.sh` の実行を依頼して止まる（`read -rs` を使うため、`!` ではなく利用者の terminal で実行する）
+- [x] app id を `aws amplify list-apps` で確認する
 
 ## Phase 3: app を Terraform に取り込み、branch と domain を作る
 
@@ -72,7 +73,7 @@ design の「更新する docs」の表のとおり。domain 名は `<hosted zon
 
 ### Tasks
 
-- [ ] `infrastructure/terraform/envs/review/main.tf` に import block（`to = module.frontend.module.amplify.aws_amplify_app.this`、`id = "<app id>"`）を足す
+- [x] `infrastructure/terraform/envs/review/main.tf` に import block（`to = module.frontend.module.amplify.aws_amplify_app.this`、`id = "<app id>"`）を足す
 - [ ] Phase 1・3 の変更を意味単位で commit し、`feature-280` を push して `main` への PR を作る（`Closes #280` は付けない。Phase 5 で付ける）
 - [ ] plan workflow の要約を確認する（review は import と追加だけ、destroy 0。prod の plan は起動しない）
 - [ ] `gh workflow run terraform-apply-review.yml --ref feature-280` で apply し、成功と post-apply plan 0 を確認する

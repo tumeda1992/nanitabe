@@ -56,7 +56,7 @@
 (6) domain association が AVAILABLE になったら、backend を起動して画面で確かめる
 ```
 
-- app を CLI で作って import するのは、`aws_amplify_app` が repository への接続に作成時の token を要し、token を Terraform と GitHub に置かない原則（`infrastructure/README.md`）を守るためである。import block は Actions の apply からも実行でき、token は CLI の一回にしか渡らない。token を一時的に GitHub secrets に戻して Actions で作ると作成時の値が state に残り、Terraform で repository 無しの app を作って後から接続すると、branch を作れる時点と `repository` の差分の出方が未確認のまま apply が二段になる。
+- app を CLI で作って import するのは、`aws_amplify_app` が repository への接続に作成時の token を要し、token を Terraform と GitHub に置かない原則（`infrastructure/README.md`）を守るためである。import block は Actions の apply からも実行でき、token は Terraform の state にも GitHub にも残らない。ただし Amplify は token を保存して build のたびの clone に使う（`repositoryCloneMethod = TOKEN`）ため、token の期限が切れるとその app の build が止まる（`implementation_review.md` 論点1）。token を一時的に GitHub secrets に戻して Actions で作ると作成時の値が state に残り、Terraform で repository 無しの app を作って後から接続すると、branch を作れる時点と `repository` の差分の出方が未確認のまま apply が二段になる。
 - import は (2) の app が存在してからでないと plan が失敗するため、(2) を (3) より先に行う。import block は取り込みが済んだ後に削除する。
 - (4) の force push は backend の CodePipeline も起動するが、`main` の内容を build するだけで backend の挙動は変わらない。`review` への force push は `review_environment.md` の「review 環境に閉じる操作」に含まれる。
 
