@@ -64,6 +64,8 @@ runs:
         STATE_BUCKET: ${{ inputs.state-bucket }}
         LOCK_TABLE: ${{ inputs.lock-table }}
       run: |
+        # GitHub の bash は -e つきで起動する。plan の -detailed-exitcode は差分ありで 2 を返すため、-e を外して終了コードを自分で扱う。
+        set +e
         set -uo pipefail
 
         OUT="$PWD/out.txt"
