@@ -110,8 +110,8 @@ frontend の本番配信を Amplify Hosting へ移し、旧構成（Lambda、API
 ### 運用field（steeringだけが更新する）
 
 - 子steering: `.steering/2026/202610/20261024-apply-terraform-from-github-actions/`
-- status: 進行中
-- 完了日: 未完了
+- status: 完了
+- 完了日: 2026-10-25
 
 ---
 
