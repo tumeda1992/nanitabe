@@ -216,9 +216,11 @@ design の「workflow の構成」の表のとおり。
 
 ### Tasks
 
-- [ ] 設定コマンド（`gh api -X PUT .../branches/main/protection`。PR 必須、required check なし）を用意し、利用者に実行を依頼して止まる
-- [ ] 設定を読み取りで確認する。`main` への実際の push で試さない
-- [ ] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+- [x] 設定コマンド（`gh api -X PUT .../branches/main/protection`。PR 必須、required check なし）を用意し、利用者に実行を依頼して止まる
+- [x] 設定を読み取りで確認する。`main` への実際の push で試さない
+- [x] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+
+> 実施メモ: 利用者が `protect_main.sh` を実行した。読み取り確認（`gh api repos/tumeda1992/nanitabe/branches/main/protection`）で、`enforce_admins` true、PR 必須、required check なし、force push 禁止、削除禁止を確認した。`main` への実際の push では試していない。
 
 ## Phase 8: 品質check
 
@@ -229,14 +231,16 @@ design の「workflow の構成」の表のとおり。
 
 ### Tasks
 
-- [ ] `terraform fmt -check`（新規 file）と `terraform validate`（scratchpad、両 root）
-- [ ] `docker compose exec backend bundle exec rspec`、`docker compose exec frontend yarn test`
-- [ ] `docker compose exec backend bundle exec rubocop`、`docker compose exec frontend yarn lint`
+- [x] `terraform fmt -check`（新規 file）と `terraform validate`（scratchpad、両 root）
+- [x] `docker compose exec backend bundle exec rspec`、`docker compose exec frontend yarn test`
+- [x] `docker compose exec backend bundle exec rubocop`、`docker compose exec frontend yarn lint`
+
+> 実施メモ: 新規 Terraform file（`modules/github_oidc/main.tf`）の `terraform fmt -check` が通り、scratchpad の複製で prod・review の `terraform validate` が通った。`docker compose exec` で backend の rspec（744 examples, 0 failures）、rubocop、frontend の `yarn test`（192 tests）、`yarn lint` がすべて green。`yarn build` は exec していない。
 
 ## Documentation reviewと実装後振り返り
 
-- [ ] code readingまたは実装で永続化候補を得た場合、その場でdoc-enricherを提案modeで適用する
-  - [ ] 提案がある場合だけユーザー承認後に既存READMEまたは既存docsへ反映する
+- [x] code readingまたは実装で永続化候補を得た場合、その場でdoc-enricherを提案modeで適用する（候補なし。得た知見は README・module README・action 内のコメントへ既に反映した）
+  - [x] 提案がある場合だけユーザー承認後に既存READMEまたは既存docsへ反映する（提案なし）
 - [ ] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
   - [ ] 原文、関連する実装・design・plan、原因、採用方針、決定を渡し、修正済みでも記録を省略しない
   - [ ] 「共有されていなかった知識の前提は何か」「codeを読めば分かるか、設計意図か、process不足か」「どこに書けば次回この議論が不要になるか」を確認し、合意後だけ反映する
