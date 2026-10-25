@@ -140,7 +140,7 @@ resource を構成へ含めるかを金額で判断する基準は [`cost_judgme
   AWS の access key は GitHub にも `.env` にも置かない。
   repository は public のため、plan / apply の出力の全文は log に出さず非公開の S3 へ保存する（「適用のしかた」）。
   backend の deploy は AWS 側（CodePipeline / CodeBuild）が `CodeStarSourceConnection` で GitHub を見る形にする。
-  frontend の deploy は Amplify が GitHub の personal access token で repository を見て、`main` への push で build する。
+  frontend の deploy は Amplify が GitHub の personal access token で repository を見て、監視する branch（本番の app は `main`、review の app は `review`）への push で build する。
   token は Terraform に通さず、手元で更新する（[`frontend/terraform/modules/amplify/README.md`](../frontend/terraform/modules/amplify/README.md)）。
   `.github/workflows/` は test と lint のほか、Terraform の plan と apply を行う。
 - **CPU architecture**: container の build と実行を ARM で統一する。
@@ -162,6 +162,10 @@ resource を構成へ含めるかを金額で判断する基準は [`cost_judgme
 - **API Gateway v2 の管理 API 権限**: EventBridge Scheduler 等の AWS SDK 統合から apigatewayv2 の操作
   （`UpdateIntegration` 等）を呼ぶ場合、IAM policy は HTTP verb ベースの action（`apigateway:PATCH` 等）で与える。
   `apigatewayv2:UpdateIntegration` のような friendly な action 名は評価されず、`AccessDenied` になる。
+- **provider の version 制約は module に上限を書かない**: 複数の root から呼ぶ module は、provider の version 制約を下限だけで書く（`>= 5.0`）。
+  上限付き（`~> 5.0`）にしない。version の固定は各 root の `.terraform.lock.hcl` が持ち、root ごとに major version が違うことがある。
+  上限付きの制約は、lock の異なる root から呼んだ時点で `init` を失敗させる。
+  Terraform の変更は、本物の lock のまま `terraform init -backend=false` と `validate` で確かめる。lock を消して init し直すと、この衝突を見逃す。
 - **EC2 系 resource の `description` は ASCII のみ**: `aws_security_group` 等の `description` 属性へ
   日本語を書くと `InvalidParameterValue` で失敗する。設計意図は属性値ではなく HCL コメント（`#`）へ書く。
 
