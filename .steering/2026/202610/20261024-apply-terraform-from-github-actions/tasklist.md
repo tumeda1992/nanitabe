@@ -194,17 +194,19 @@ design の「workflow の構成」の表のとおり。
 
 - [x] 4 本の script を削除する
 - [x] `.claude/settings.json` から `Bash(bash infrastructure/terraform/envs/review/apply_terraform.sh)` を外す
-- [ ] GitHub の repository secrets から `DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS`、`RAILS_MASTER_KEY`、`ROUTE53_HOSTZONE_ID`、`AWS_ACCOUNT_ID`、`AWS_CODE_CONNECTION_ID_TO_GITHUB`、`AMPLIFY_GITHUB_ACCESS_TOKEN`、`CI_JENKINS_URL`、`CI_JENKINS_NANITABE_BUILD_JOB_URL`、`CI_JENKINS_NANITABE_BUILD_TOKEN` を消すコマンド（`gh secret delete`）を示し、利用者に実行を依頼する
-- [ ] `.env` から消す key の一覧を示し、利用者に削除を依頼して止まる（値を出さない `sed -i` のコマンドを添える）
-- [ ] `start.sh` を実行して review 環境を起動し、`/graphql` へ `POST` して応答を確認してから `stop.sh` で停止する
+- [x] GitHub の repository secrets から `DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS`、`RAILS_MASTER_KEY`、`ROUTE53_HOSTZONE_ID`、`AWS_ACCOUNT_ID`、`AWS_CODE_CONNECTION_ID_TO_GITHUB`、`AMPLIFY_GITHUB_ACCESS_TOKEN`、`CI_JENKINS_URL`、`CI_JENKINS_NANITABE_BUILD_JOB_URL`、`CI_JENKINS_NANITABE_BUILD_TOKEN` を消すコマンド（`gh secret delete`）を示し、利用者に実行を依頼する
+- [x] `.env` から消す key の一覧を示し、利用者に削除を依頼して止まる（値を出さない `sed -i` のコマンドを添える）
+- [x] `start.sh` を実行して review 環境を起動し、`/graphql` へ `POST` して応答を確認してから `stop.sh` で停止する
 - [x] docs を書き換える（design の「更新する docs」の表）
   - [x] `infrastructure/README.md`
   - [x] `backend/docs/ai_guideline/development_standard/review_environment.md`（SSM parameter の値を変える経路が `put_ssm_parameters.sh` であることも書き足す）
   - [x] emit 前に document-review を通す
 - [x] 変更を commit し、`feature-258` へ push する（PR の plan workflow が差分 0 で通ることを確認する）
-- [ ] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+- [x] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
 
 > 実施メモ: script 4 本の削除、settings の allow 削除、docs 2 本の書き換え、commit・push は済み。document-review の観点（濃さ・記法・指示対象・機密性）を当て、参照先の path を明示する指摘を直した。push 後の PR #289 の plan workflow は prod・review とも変更なし。残りは利用者の操作（secrets の削除、`.env` の編集。`scratchpad/cleanup_secrets_and_env.sh`）と、その後の start.sh / stop.sh の確認。
+
+> 実施メモ: 利用者が cleanup script を実行した。repository secrets は 9 個（`AWS_TERRAFORM_PLAN_ROLE_ARN`、`CODEBUILD_ARTICACT_S3_BUCKET`、`N8N_*` 2 つ、`NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN`、`REVIEW_BACKEND_ALARM_EMAIL`、`ROUTE53_HOSTZONE_NAME`、`TERRAFROM_STATE_*` 2 つ）、`.env` は 11 key（`RAILS_MASTER_KEY`、`DB_*` 5 つ、`NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN`、`FRONTEND_PROD_HOST`、`BACKEND_PROD_HOST`、`AWS_DEFAULT_REGION`、`ROUTE53_HOSTZONE_NAME`）。`.env` に AWS key が無い状態で `start.sh` が成功し（task が SSM の値で起動）、`POST /graphql` が HTTP 200 で応答した（未認証のため `AUTHENTICATION_ERROR`。app が動いている証拠）。続けて `stop.sh` で停止し、desired_count 0 を確認した。
 
 ## Phase 7: `main` を保護する
 
