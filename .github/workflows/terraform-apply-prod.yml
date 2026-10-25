@@ -1,0 +1,47 @@
+name: Terraform Apply (prod)
+
+# apply の全文は public な log に出さず、state 用 S3 へ保存する。
+# job は Environment prod を指定する。apply role の信頼条件が environment:prod に固定されている。
+on:
+  push:
+    branches: [main]
+    paths:
+      - "infrastructure/terraform/envs/prod/**"
+      - "infrastructure/terraform/modules/**"
+      - "frontend/terraform/**"
+      - ".terraform-version"
+      - ".github/workflows/terraform-apply-prod.yml"
+      - ".github/actions/terraform-run/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+# 実行中の apply は取り消さない。
+concurrency:
+  group: terraform-apply-prod
+  cancel-in-progress: false
+
+env:
+  TF_VAR_bucket_name: ${{ secrets.TERRAFROM_STATE_S3_BUCKET }}
+  TF_VAR_dynamodb_table_name: ${{ secrets.TERRAFROM_STATE_DYNAMODB_TABLE }}
+  TF_VAR_backend_origin: ${{ secrets.NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN }}
+  TF_VAR_route53_name: ${{ secrets.ROUTE53_HOSTZONE_NAME }}
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: ./.github/actions/terraform-run
+        with:
+          working-directory: infrastructure/terraform/envs/prod
+          role-to-assume: ${{ secrets.AWS_TERRAFORM_APPLY_ROLE_ARN }}
+          state-key: prod/terraform.tfstate
+          mode: apply
+          root-name: prod
+          state-bucket: ${{ secrets.TERRAFROM_STATE_S3_BUCKET }}
+          lock-table: ${{ secrets.TERRAFROM_STATE_DYNAMODB_TABLE }}

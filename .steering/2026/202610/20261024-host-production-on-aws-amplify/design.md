@@ -177,8 +177,8 @@ frontend/buildOnLambda/                         手順 (5) で削除
 
 **設計意図:**
 
-- custom domain を親 domain と branch ごとの prefix で関連付けるのは、後から review branch を足すときに prefix を一組増やすだけで、`review-nanitabe.<hosted zone>` のようなフラットな 1 ラベルの名前を作れるためである（`infrastructure/README.md`「構成上の前提」の host 名）。
-- 同じ account の別の Amplify app が同じ親 domain をすでに関連付けている。共有が通るかは公式文書で確認できておらず、手順 (3) の apply で実測する。拒否された場合は (2) を戻す apply で旧構成へ戻し、design へ戻る。`domain_name` を `nanitabe.<hosted zone>` 自体にする代替は、review branch がフラットな 1 ラベルの前提を崩すため、その場では採らない。
+- custom domain を親 domain と prefix で関連付けるのは、hosted zone へ置く名前をフラットな 1 ラベル（`nanitabe.<hosted zone>`）にするためである（`infrastructure/README.md`「構成上の前提」の host 名）。動作確認環境は別の Amplify app として作るため（[論点7](task-design-discussion.md)）、親 domain は本番と動作確認環境の app で共有される。
+- 同じ account の別の Amplify app が同じ親 domain をすでに関連付けている。共有が通るかは公式文書で確認できておらず、手順 (3) の apply で実測する。拒否された場合は (2) を戻す apply で旧構成へ戻し、design へ戻る。`domain_name` を `nanitabe.<hosted zone>` 自体にする代替は、動作確認環境の名前がフラットな 1 ラベルの前提を崩すため、その場では採らない。
 
 **「Amplify 移行」で更新する docs:**
 
@@ -200,7 +200,7 @@ frontend/buildOnLambda/                         手順 (5) で削除
 - frontend の本番配信を Amplify Hosting へ移す。
 - 移行後に旧構成（Lambda、API Gateway、CloudFront、static asset 用 S3、ECR、CodePipeline、CodeBuild と、それを定義する `frontend/terraform/` 配下・`frontend/buildOnLambda/`）を撤去する。
 - Terraform の適用を GitHub Actions へ移す。Amplify 移行（旧構成の撤去まで）を現行の手元 apply で先に終えてから行う。旧構成のための長期 IAM access key と撤去予定 service への権限を、GitHub secrets と apply role へ持ち込まないため。
-- Amplify 構成は branch を list で持ち、custom domain を branch ごとの sub domain の集合で持つ。後から review branch を足す作業を list への追加で済ませるため。
+- Amplify 構成は branch を list で持ち、custom domain を branch ごとの sub domain の集合で持つ。監視 branch を「追加してから外す」順で切り替えるため（移行手順 (1-a)〜(1-d)）。動作確認環境はこの app に branch を足して作らず、review root から同じ module を呼んで別の app として作る（論点7）。
 - 作業を phase「Amplify 移行」→ phase「Terraform の Actions 移行」の順に分け、「Amplify 移行」の完了時点で本番が正常に利用できる状態にする。
 - 旧構成の撤去までは、旧 CloudFront へ custom domain を戻す rollback の手段を残す。
 

@@ -101,6 +101,16 @@ resource を構成へ含めるかを金額で判断する基準は [`cost_judgme
   CodeBuild は `ARM_CONTAINER`、Fargate は `ARM64`。
 - **課金**: resource を足すかどうかを金額で判断するときは [`cost_judgment.md`](./cost_judgment.md) を見る。
   時間課金と保存・件数課金を分けて考え、防ぐ対象の損失と固定費を並べて比べる。
+- **環境の分け方**: 本番と動作確認環境（review）は、同じ module を `stage` 違いで呼び、resource を環境ごとに別の実体として持つ。
+  本番の resource の中に review 用の変種（Amplify の branch、Lambda の alias、API Gateway の stage 等）を作って共用しない。
+  変種の仕組みは resource の種類ごとに違い、無いものもあるため、共用すると review の定義が本番と review の root にまたがる。
+  どうしても共用しなければならない制約があるものだけを例外として共用し、その制約を記録する。
+  判断の問い: 「これを review 用に別の実体として作れない制約は何か。それを書けるか」
+- **ログの lifecycle**: application が出すログ（Next.js の SSR、Rails の request log など）は、
+  それを実行する AWS resource より長く残る前提で置く。application のログを入れる log group は、
+  実行基盤の resource と同じ destroy の単位に入れない。resource 固有のログ（API Gateway の
+  access log など、その resource の振る舞いだけを記録するもの）は、resource と同じ lifecycle でよい。
+  判断の問い: 「この resource を作り直した後や撤去した後にも、このログを見返したいか」
 - **host 名**: hosted zone へ置くレコードはフラットな 1 ラベルにする。sub-sub ドメインを掘らない。
   domain 名は `.env` の `ROUTE53_HOSTZONE_NAME` から渡し、terraform の定義にも document にも直接書かない。
 - **API Gateway v2 の管理 API 権限**: EventBridge Scheduler 等の AWS SDK 統合から apigatewayv2 の操作

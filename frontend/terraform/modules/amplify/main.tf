@@ -5,6 +5,7 @@ variable "repository_url" { type = string }
 variable "github_access_token" {
   type      = string
   sensitive = true
+  default   = null # app の作成時だけ渡す。以後の更新は README を参照
 }
 
 variable "branch_names" { type = list(string) }
@@ -40,6 +41,11 @@ resource "aws_amplify_app" "this" {
   name         = "${var.appname}-${var.stage}"
   repository   = var.repository_url
   access_token = var.github_access_token
+
+  lifecycle {
+    # token は Terraform に通さず、手元で aws amplify update-app --access-token で更新する（README 参照）
+    ignore_changes = [access_token]
+  }
 
   # Next.js の API routes と server 側描画を使うため SSR を指定する。
   platform = "WEB_COMPUTE"

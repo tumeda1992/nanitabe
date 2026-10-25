@@ -1,0 +1,176 @@
+name: terraform-run
+description: >-
+  Terraform の init / plan / apply を実行し、全文を state 用 S3 へ保存し、
+  log と PR に出してよい要約だけを返す。public repository のため、
+  Terraform の標準出力と標準エラーは log へ出さない。
+
+inputs:
+  working-directory:
+    description: Terraform root（例 infrastructure/terraform/envs/prod）
+    required: true
+  role-to-assume:
+    description: OIDC で assume する role の ARN
+    required: true
+  state-key:
+    description: state の key（例 prod/terraform.tfstate）
+    required: true
+  mode:
+    description: plan / apply / apply-guarded
+    required: true
+  root-name:
+    description: S3 の保存先に使う root 名（prod / review）
+    required: true
+  state-bucket:
+    description: state 用 S3 bucket
+    required: true
+  lock-table:
+    description: lock 用 DynamoDB table
+    required: true
+
+outputs:
+  summary-file:
+    description: 要約（markdown）の file path
+    value: ${{ steps.run.outputs.summary-file }}
+  s3-key:
+    description: 全文の S3 key
+    value: ${{ steps.run.outputs.s3-key }}
+
+runs:
+  using: composite
+  steps:
+    - name: Read terraform version
+      id: tf_version
+      shell: bash
+      run: echo "value=$(cat .terraform-version)" >> "$GITHUB_OUTPUT"
+
+    - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+      with:
+        terraform_version: ${{ steps.tf_version.outputs.value }}
+        terraform_wrapper: false
+
+    - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+      with:
+        role-to-assume: ${{ inputs.role-to-assume }}
+        aws-region: ap-northeast-1
+
+    - name: terraform ${{ inputs.mode }}
+      id: run
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      env:
+        MODE: ${{ inputs.mode }}
+        ROOT_NAME: ${{ inputs.root-name }}
+        STATE_KEY: ${{ inputs.state-key }}
+        STATE_BUCKET: ${{ inputs.state-bucket }}
+        LOCK_TABLE: ${{ inputs.lock-table }}
+      run: |
+        # GitHub の bash は -e つきで起動する。plan の -detailed-exitcode は差分ありで 2 を返すため、-e を外して終了コードを自分で扱う。
+        set +e
+        set -uo pipefail
+
+        OUT="$PWD/out.txt"
+        : > "$OUT"
+        SUMMARY="${RUNNER_TEMP}/terraform-summary.md"
+        : > "$SUMMARY"
+
+        if [ "$MODE" = "plan" ]; then PREFIX="plans"; else PREFIX="applies"; fi
+        RUN_NAME="${GITHUB_RUN_ID}"
+        if [ "${GITHUB_RUN_ATTEMPT}" != "1" ]; then RUN_NAME="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"; fi
+        S3_KEY="${PREFIX}/${ROOT_NAME}/${RUN_NAME}.txt"
+
+        # Terraform の出力はすべて file へ。log には出さない。
+        tf() { terraform "$@" >> "$OUT" 2>&1; }
+
+        # plan.json から resource の種別ごとの件数表と destroy 件数を作る。
+        counts_markdown() {
+          local json="$1"
+          jq -r '
+            [ .resource_changes[]?
+              | .change.actions as $a
+              | select(($a | index("no-op") | not) and ($a | index("read") | not))
+              | { type: .type,
+                  kind: (if ($a | index("delete")) and ($a | index("create")) then "replace"
+                         elif ($a | index("delete")) then "delete"
+                         elif ($a | index("forget")) then "forget"
+                         elif ($a | index("create")) then "create"
+                         else "update" end) } ] as $changes
+            | ($changes | map(select(.kind == "delete" or .kind == "replace")) | length) as $destroy
+            | "destroy: \($destroy) 件（replace を含む）\n"
+              + (if ($changes | length) == 0 then "\n変更なし"
+                 else "\n| resource type | create | update | delete | replace | forget（state から外すだけ） |\n| --- | --- | --- | --- | --- | --- |\n"
+                   + ( $changes | group_by(.type)
+                       | map("| \(.[0].type) | \(map(select(.kind=="create"))|length) | \(map(select(.kind=="update"))|length) | \(map(select(.kind=="delete"))|length) | \(map(select(.kind=="replace"))|length) | \(map(select(.kind=="forget"))|length) |")
+                       | join("\n") )
+                 end)
+          ' "$json"
+        }
+
+        destroy_count() {
+          jq -r '[ .resource_changes[]? | select(.change.actions | index("delete")) ] | length' "$1"
+        }
+
+        # 全文を S3 へ保存し、要約を書いて終了する。$1: 結果の一行、$2: 終了コード、$3: 追記する本文（任意）
+        finish() {
+          local headline="$1" code="$2" body="${3:-}"
+          if ! aws s3 cp --only-show-errors "$OUT" "s3://${STATE_BUCKET}/${S3_KEY}"; then
+            headline="${headline}（全文の S3 保存にも失敗した）"
+            code=1
+          fi
+          {
+            echo "**${MODE} (${ROOT_NAME}): ${headline}**"
+            echo ""
+            if [ -n "$body" ]; then echo "$body"; echo ""; fi
+            echo "全文: S3 の \`${S3_KEY}\`（\`aws s3 cp\` で取得する）"
+          } > "$SUMMARY"
+          cat "$SUMMARY" >> "$GITHUB_STEP_SUMMARY"
+          echo "summary-file=${SUMMARY}" >> "$GITHUB_OUTPUT"
+          echo "s3-key=${S3_KEY}" >> "$GITHUB_OUTPUT"
+          exit "$code"
+        }
+
+        tf init -lockfile=readonly -input=false -no-color \
+          -backend-config="bucket=${STATE_BUCKET}" \
+          -backend-config="key=${STATE_KEY}" \
+          -backend-config="region=ap-northeast-1" \
+          -backend-config="dynamodb_table=${LOCK_TABLE}" \
+          -backend-config="encrypt=true" \
+          || finish "失敗した（init）" 1
+
+        tf plan -input=false -no-color -detailed-exitcode -out=tfplan
+        rc=$?
+        if [ "$rc" -ne 0 ] && [ "$rc" -ne 2 ]; then finish "失敗した（plan）" 1; fi
+
+        terraform show -json tfplan > plan.json 2>> "$OUT" || finish "失敗した（plan の読み取り）" 1
+        COUNTS="$(counts_markdown plan.json)"
+
+        if [ "$MODE" = "plan" ]; then
+          finish "成功" 0 "$COUNTS"
+        fi
+
+        if [ "$MODE" = "apply-guarded" ]; then
+          n="$(destroy_count plan.json)"
+          if [ "$n" -ne 0 ]; then
+            finish "失敗した（plan に destroy が ${n} 件含まれるため apply しなかった）" 1 "$COUNTS"
+          fi
+        fi
+
+        tf apply -input=false -no-color tfplan || finish "失敗した（apply）" 1 "$COUNTS"
+
+        tf plan -input=false -no-color -detailed-exitcode -out=post.tfplan
+        rc=$?
+        if [ "$rc" -eq 0 ]; then
+          finish "成功（適用後の plan は変更なし）" 0 "適用した変更:
+
+        $COUNTS"
+        elif [ "$rc" -eq 2 ]; then
+          terraform show -json post.tfplan > post.json 2>> "$OUT" || true
+          finish "失敗した（適用後の plan に差分が残っている）" 1 "適用した変更:
+
+        $COUNTS
+
+        適用後に残った差分:
+
+        $(counts_markdown post.json)"
+        else
+          finish "失敗した（適用後の plan）" 1 "$COUNTS"
+        fi

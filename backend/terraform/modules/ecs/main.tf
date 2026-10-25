@@ -2,18 +2,22 @@ variable "stage" { type = string }
 variable "ecr_repository_url" { type = string }
 variable "route53_name" { type = string }
 
-variable "db_name_arn" { type = string }
-variable "db_host_arn" { type = string }
-variable "db_port_arn" { type = string }
-variable "db_user_arn" { type = string }
-variable "db_pass_arn" { type = string }
-variable "rails_master_key_arn" { type = string }
-
 module "values" {
   source = "../../values"
 }
 
+data "aws_caller_identity" "current" {}
+
 locals {
+  # review の SSM parameter は Terraform の管理外。scripts/review_backend/put_ssm_parameters.sh が同じ名前で書く。
+  ssm_parameter_arn_prefix = "arn:aws:ssm:ap-northeast-1:${data.aws_caller_identity.current.account_id}:parameter/${module.values.appname}/${var.stage}"
+  db_name_arn              = "${local.ssm_parameter_arn_prefix}/DB_NAME"
+  db_host_arn              = "${local.ssm_parameter_arn_prefix}/DB_HOST"
+  db_port_arn              = "${local.ssm_parameter_arn_prefix}/DB_PORT"
+  db_user_arn              = "${local.ssm_parameter_arn_prefix}/DB_USER"
+  db_pass_arn              = "${local.ssm_parameter_arn_prefix}/DB_PASS"
+  rails_master_key_arn     = "${local.ssm_parameter_arn_prefix}/RAILS_MASTER_KEY"
+
   cluster_name = "${module.values.appname}-${var.stage}"
   service_name = "${module.values.appname}_service_${var.stage}"
   backend_prod_host = "review-backend-nanitabe.${var.route53_name}"
@@ -93,12 +97,12 @@ resource "aws_iam_role_policy" "task_execution_role_ssm" {
         Effect = "Allow"
         Action = ["ssm:GetParameters"]
         Resource = [
-          var.db_name_arn,
-          var.db_host_arn,
-          var.db_port_arn,
-          var.db_user_arn,
-          var.db_pass_arn,
-          var.rails_master_key_arn,
+          local.db_name_arn,
+          local.db_host_arn,
+          local.db_port_arn,
+          local.db_user_arn,
+          local.db_pass_arn,
+          local.rails_master_key_arn,
         ]
       },
       {
@@ -144,12 +148,12 @@ resource "aws_ecs_task_definition" "this" {
       ]
 
       secrets = [
-        { name = "DB_NAME", valueFrom = var.db_name_arn },
-        { name = "DB_HOST", valueFrom = var.db_host_arn },
-        { name = "DB_PORT", valueFrom = var.db_port_arn },
-        { name = "DB_USER", valueFrom = var.db_user_arn },
-        { name = "DB_PASS", valueFrom = var.db_pass_arn },
-        { name = "RAILS_MASTER_KEY", valueFrom = var.rails_master_key_arn },
+        { name = "DB_NAME", valueFrom = local.db_name_arn },
+        { name = "DB_HOST", valueFrom = local.db_host_arn },
+        { name = "DB_PORT", valueFrom = local.db_port_arn },
+        { name = "DB_USER", valueFrom = local.db_user_arn },
+        { name = "DB_PASS", valueFrom = local.db_pass_arn },
+        { name = "RAILS_MASTER_KEY", valueFrom = local.rails_master_key_arn },
       ]
 
       logConfiguration = {

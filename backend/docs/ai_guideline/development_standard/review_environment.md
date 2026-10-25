@@ -129,6 +129,15 @@ review 環境に閉じる操作を、次のいずれにも影響が及ばない�
   この確認は `infrastructure/terraform/envs/review/apply_terraform.sh` が行う。
   同 script は plan を保存し、destroy を含む変更が 1 件でもあれば apply せず異常終了する。
   `terraform apply` を直接実行せず、この script を使う。
+- destroy を含む差分を閉じる操作から外すのは、destroy が「失敗しても再実行で回復できる」という前提を崩すためである。
+  add と change は apply し直せば戻るが、destroy で消したものは apply し直しても戻らないことがある。
+  - ECR の repository: 中の image も消える。CodePipeline で build し直すまで起動できない。
+  - CloudWatch の log group: application のログが消える（`infrastructure/README.md`「構成上の前提」のログの lifecycle）。
+  - ACM 証明書と Route53 の record: 作り直すと証明書の検証を待つ間、review の URL が使えない。
+  - IAM、security group、API Gateway などの設定だけを持つ resource は、apply し直せば同じものが戻る。
+  変更できない属性の変更による作り直し（replace）も削除を含むため、同じく止まる。
+  判定は resource の種類を区別せず一律に止める。種類の一覧を持つと resource を足すたびに見直しが要り、
+  止まったときは plan を読んで判断すればよく、往復が増えるのはまれだからである。
 - secret を log、成果物、chat へ出さない。
 - `main` への merge と PR 操作は緩和の対象外とする。
 
