@@ -75,10 +75,10 @@ design の「更新する docs」の表のとおり。domain 名は `<hosted zon
 
 - [x] `infrastructure/terraform/envs/review/main.tf` に import block（`to = module.frontend.module.amplify.aws_amplify_app.this`、`id = "<app id>"`）を足す
 - [x] Phase 1・3 の変更を意味単位で commit し、`feature-280` を push して `main` への PR を作る（`Closes #280` は付けない。Phase 5 で付ける）
-- [ ] `frontend/terraform/modules/amplify/main.tf` の aws provider の制約を `>= 5.0` にし、本物の lock（prod と review の両方）で `terraform init`（backend なし）と `validate` が通ることを確かめてから commit・push する（`implementation_review.md` 論点2）
-- [ ] plan workflow の要約を確認する（review は import と追加だけ、destroy 0。prod の plan は変更なし）
-- [ ] `gh workflow run terraform-apply-review.yml --ref feature-280` で apply し、成功と post-apply plan 0 を確認する
-- [ ] `domainStatus` が `AVAILABLE` になるまで待つ（15 秒間隔、上限 30 分。`FAILED` か上限で抜けて止まる）
+- [x] `frontend/terraform/modules/amplify/main.tf` の aws provider の制約を `>= 5.0` にし、本物の lock（prod と review の両方）で `terraform init`（backend なし）と `validate` が通ることを確かめてから commit・push する（`implementation_review.md` 論点2）
+- [x] plan workflow の要約を確認する（review は import と追加だけ、destroy 0。prod の plan は変更なし）
+- [x] `gh workflow run terraform-apply-review.yml --ref feature-280` で apply し、成功と post-apply plan 0 を確認する
+- [x] `domainStatus` が `AVAILABLE` になるまで待つ（15 秒間隔、上限 30 分。`FAILED` か上限で抜けて止まる）
 
 ## Phase 4: `review` branch を揃え、build を確かめる
 
@@ -90,10 +90,10 @@ design の「更新する docs」の表のとおり。domain 名は `<hosted zon
 
 ### Tasks
 
-- [ ] `git push -f origin main:review` を実行する
-- [ ] frontend の build を確認する（job が無ければ `aws amplify start-job --job-type RELEASE` で起動し、完了を待つ）
-- [ ] backend の CodePipeline の実行が成功することを確認する
-- [ ] `curl` で frontend の `/login` の応答を確認する（hosted zone 名は `.env` から読み、chat に出さない）
+- [x] `git push -f origin main:review` を実行する
+- [x] frontend の build を確認する（job が無ければ `aws amplify start-job --job-type RELEASE` で起動し、完了を待つ）
+- [x] backend の CodePipeline の実行が成功することを確認する
+- [x] `curl` で frontend の `/login` の応答を確認する（hosted zone 名は `.env` から読み、chat に出さない）
 
 ## Phase 5: import block を外し、品質を確かめる
 
