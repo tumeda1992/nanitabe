@@ -20,15 +20,30 @@
 
 ### Tasks
 
-- [ ] `infrastructure/terraform/modules/github_oidc/main.tf` を作る
-- [ ] `infrastructure/terraform/envs/prod/main.tf` から `module "github_oidc"` を呼ぶ
-- [ ] composite action `.github/actions/terraform-run/action.yml` を作る
-- [ ] workflow 4 本を作る
-- [ ] `.terraform-version` を置き、lock file を追跡対象にする
-- [ ] scratchpad で `terraform fmt -check`（新規 file）と `terraform validate`（両 root）を通す
-- [ ] workflow と composite action を YAML として parse できることを確かめる
-- [ ] secrets 登録用の script を scratchpad に作る
-- [ ] `.env` から `NEXT_PUBLIC_ASSET_ORIGIN` を消す手順を、利用者向けに用意する（値を出さない `sed` の 1 行）
+- [x] `infrastructure/terraform/modules/github_oidc/main.tf` を作る
+- [x] `infrastructure/terraform/envs/prod/main.tf` から `module "github_oidc"` を呼ぶ
+- [x] composite action `.github/actions/terraform-run/action.yml` を作る
+- [x] workflow 4 本を作る
+- [x] `.terraform-version` を置き、lock file を追跡対象にする
+- [x] scratchpad で `terraform fmt -check`（新規 file）と `terraform validate`（両 root）を通す
+- [x] workflow と composite action を YAML として parse できることを確かめる
+- [x] secrets 登録用の script を scratchpad に作る
+- [x] secrets 登録 script から、Terraform に通さなくなった値（`DB_*`、`RAILS_MASTER_KEY`、`ROUTE53_HOSTZONE_ID`、`AWS_ACCOUNT_ID`、`AWS_CODE_CONNECTION_ID_TO_GITHUB`、`AMPLIFY_GITHUB_ACCESS_TOKEN`）を外す（discussion 論点13・14）
+- [x] review の SSM parameter を Terraform の管理から外す（design「review の SSM parameter」、discussion 論点13）
+  - [x] `backend/terraform/modules/ssm/` を削除し、ssm module を呼んでいる root に `removed` block（`from = module.ssm`、`lifecycle { destroy = false }`）を置く
+  - [x] ECS module へ渡していた parameter の ARN を、名前から組み立てて渡す（task definition の `valueFrom` と `ssm:GetParameters` の対象の値が変わらないこと）
+  - [x] review root と backend の review env から `db_*`、`rails_master_key` の variable を外す
+  - [x] `scripts/review_backend/put_ssm_parameters.sh` を作る（`.env` から 6 つを読み、`aws ssm put-parameter --type SecureString --overwrite`。値を出力しない。AWS CLI の設定の認証情報を使う）
+- [x] AWS から引ける識別子を data source に置き換える（discussion 論点14）
+  - [x] `route53_zone_id` を `data "aws_route53_zone"`（`route53_name` から）に置き換える
+  - [x] `aws_account_id` を `data "aws_caller_identity"` に置き換える
+  - [x] `aws_code_connection_id_to_github` を `data "aws_codestarconnections_connection"`（connection の名前は AWS CLI の `aws codeconnections list-connections` で確認して module に書く）に置き換える
+  - [x] review root と backend の review env から 3 つの variable を外す
+- [x] `aws_amplify_app` に `lifecycle { ignore_changes = [access_token] }` を付け、`amplify_github_access_token` の variable を既定値 `null` の optional にする（prod root、frontend の prod env、`modules/amplify`）。`modules/amplify/README.md` に token の更新手順（`aws amplify update-app --access-token`）を書く
+- [x] 上の変更後、scratchpad で両 root の `terraform validate` と plan を作り（読み取りだけで apply しない）、prod は差分 0、review は SSM parameter 6 つの state からの削除だけであることを確認する
+- [x] `.env` から `NEXT_PUBLIC_ASSET_ORIGIN` を消す手順を、利用者向けに用意する（値を出さない `sed` の 1 行）
+
+> 実施メモ: scratchpad の複製で両 root の `terraform validate` が通り、read-only の plan を作った。prod は `No changes`、review は `aws_ssm_parameter` 6 つの state からの削除（forget）だけで、追加・変更・destroy は 0。`aws_codestarconnections_connection` の data source は 1 度 DNS 解決の一過性エラーで失敗したが、同じ endpoint が解決できることを確認して再実行し通った（provider 6.70.0 に `aws_codeconnections_connection` の data source は無い）。ecs module の region は `ap-northeast-1` を直接書いた（`aws_region.name` が deprecated のため）。
 
 ### 各task詳細
 
@@ -89,6 +104,13 @@ design の「workflow の構成」の表のとおり。
 - role の ARN は Phase 2 の apply 後に `aws iam get-role` で取得する
 - 値は標準入力から渡し（`gh secret set NAME --body -` ではなく `printf '%s' "$V" | gh secret set NAME`）、echo しない。最後に `gh secret list` と `gh secret list --env <env>` の名前だけを表示する
 
+#### Phase 1 実施メモ（design との差分）
+
+- plan workflow は Environment を指定できない（指定すると OIDC の `sub` が `environment:*` になり、plan role の信頼条件と合わない）。そのため plan に要る TF_VAR の元の値は Environment secrets では plan から読めない。secrets 登録 script は、prod と review の TF_VAR の元の値を repository secrets に登録し、apply role の ARN（`AWS_TERRAFORM_APPLY_ROLE_ARN`）だけを Environment secrets に登録する。secret 名は prod と review で重ならない。design の「review の job には prod の値が渡らない」は成り立たなくなる（repository の workflow を書ける者は全 secrets を読める）。
+- apply 系は、plan を保存してから `terraform apply tfplan` する（要約を適用内容から作るため）。`apply-guarded` との違いは destroy の判定だけ。
+- S3 key は `<run id>.txt`、再実行（attempt 2 以降）は `<run id>-<attempt>.txt`。
+- `.env` から `NEXT_PUBLIC_ASSET_ORIGIN` を消す 1 行: `sed -i '' '/^NEXT_PUBLIC_ASSET_ORIGIN=/d' /etc/opt/app_setting_files/nanitabe/.env`
+
 ## Phase 2: OIDC と role を作る（手元からの最後の prod apply）
 
 ### DoD（完了条件）
@@ -97,11 +119,13 @@ design の「workflow の構成」の表のとおり。
 
 ### Tasks
 
-- [ ] `envs/prod` の plan を作る（`terraform plan -out=<scratchpad>/oidc.tfplan`）
-  - [ ] plan の追加が OIDC provider、role 3 つ、policy と attachment だけで、変更・削除が無いことを確認する
-- [ ] 利用者に apply を依頼する。要約と、`cd <envs/prod> && export $(grep -v '^#' <.env> | xargs) && terraform apply <plan file>` の形のコマンドを示して止まる
-- [ ] apply 後、`terraform plan` が `No changes` であることを確認する
-- [ ] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+- [x] `envs/prod` の plan を作る（`terraform plan -out=<scratchpad>/oidc.tfplan`）
+  - [x] plan の追加が OIDC provider、role 3 つ、policy と attachment だけで、変更・削除が無いことを確認する
+- [x] 利用者に apply を依頼する。要約と、`cd <envs/prod> && export $(grep -v '^#' <.env> | xargs) && terraform apply <plan file>` の形のコマンドを示して止まる
+- [x] apply 後、`terraform plan` が `No changes` であることを確認する
+- [x] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+
+> 実施メモ: 初回の apply は、OIDC provider が同じ account の x_favorites の Terraform に所有されており `EntityAlreadyExists` で失敗した（何も作られていない）。provider を作らず `data "aws_iam_openid_connect_provider"` で参照する形に変え（implementation_review.md 論点1）、`Apply complete! Resources: 7 added, 0 changed, 0 destroyed.`（role 3、role policy 1、attachment 3）。適用後の `terraform plan` は `No changes`。
 
 ## Phase 3: GitHub の Environments と secrets を用意する
 
@@ -112,10 +136,10 @@ design の「workflow の構成」の表のとおり。
 
 ### Tasks
 
-- [ ] Environment を作るコマンド（`gh api -X PUT repos/tumeda1992/nanitabe/environments/prod` に `deployment_branch_policy`、`review` は制限なし）を用意し、利用者に実行を依頼して止まる
-- [ ] secrets 登録 script の実行を利用者に依頼して止まる（`! bash <scratchpad>/register_github_secrets.sh`）
-- [ ] 名前の一覧を確認する（値は見ない）
-- [ ] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+- [x] Environment を作るコマンド（`gh api -X PUT repos/tumeda1992/nanitabe/environments/prod` に `deployment_branch_policy`、`review` は制限なし）を用意し、利用者に実行を依頼して止まる
+- [x] secrets 登録 script の実行を利用者に依頼して止まる（`! bash <scratchpad>/register_github_secrets.sh`）
+- [x] 名前の一覧を確認する（値は見ない）
+- [x] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
 
 ## Phase 4: PR で plan workflow を確かめる
 
@@ -130,7 +154,7 @@ design の「workflow の構成」の表のとおり。
 - [ ] Phase 1 の変更を意味単位で commit し、`feature-258` を push する
 - [ ] `feature-258` から `main` への PR を作る（`Closes #258` は付けない。Phase 8 で付ける）
 - [ ] plan workflow の成功と PR コメントを確認する
-- [ ] S3 の全文を `aws s3 cp` で取得し、差分が 0 であることを確認する
+- [ ] S3 の全文を `aws s3 cp` で取得し、差分が prod は 0、review は SSM parameter 6 つの state からの削除（`removed`、destroy ではない）だけであることを確認する
 - [ ] log と PR コメントを、hosted zone 名、account ID、zone ID の文字列で検索し、出ていないことを確認する（検索語は `.env` から読み、chat に出さない）
 - [ ] 失敗した場合は、原因を特定してから直す。値が log に出た場合は当該 run の log を削除し、利用者へ報告して止まる
 - [ ] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
@@ -147,7 +171,7 @@ design の「workflow の構成」の表のとおり。
 
 - [ ] `main` から `feature-258-terraform-on-github-actions` を切り、`feature-258` の Phase 1 の変更を取り込んで PR を作る（`Closes` なし。本文に「issue #258 の完了を意味しない」と書く。plugin の `development_flow/branch_pr_issue.md` の経路 2）
 - [ ] 利用者に merge を依頼して止まる
-- [ ] merge 後、両 apply workflow の成功と要約を確認する。S3 の `applies/` の全文で差分 0 を確認する
+- [ ] merge 後、両 apply workflow の成功と要約を確認する。S3 の `applies/` の全文で、prod は差分 0、review は SSM parameter の state からの削除だけで、post-apply plan が両方 0 であることを確認する。AWS 上に SSM parameter が残っていることを `aws ssm get-parameters-by-path --path /nanitabe-back/review/`（名前だけ）で確認する
 - [ ] `main` を `feature-258` へ取り込む
 - [ ] `gh workflow run terraform-apply-review.yml --ref feature-258` を実行し、成功を確認する
 - [ ] `gh workflow run terraform-apply-prod.yml --ref feature-258` を実行し、job が Environment の制限で動かないことを確認する
@@ -166,11 +190,12 @@ design の「workflow の構成」の表のとおり。
 
 - [ ] 4 本の script を削除する
 - [ ] `.claude/settings.json` から `Bash(bash infrastructure/terraform/envs/review/apply_terraform.sh)` を外す
+- [ ] GitHub の repository secrets から `DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS`、`RAILS_MASTER_KEY`、`ROUTE53_HOSTZONE_ID`、`AWS_ACCOUNT_ID`、`AWS_CODE_CONNECTION_ID_TO_GITHUB`、`AMPLIFY_GITHUB_ACCESS_TOKEN`、`CI_JENKINS_URL`、`CI_JENKINS_NANITABE_BUILD_JOB_URL`、`CI_JENKINS_NANITABE_BUILD_TOKEN` を消すコマンド（`gh secret delete`）を示し、利用者に実行を依頼する
 - [ ] `.env` から消す key の一覧を示し、利用者に削除を依頼して止まる（値を出さない `sed -i` のコマンドを添える）
 - [ ] `start.sh` を実行して review 環境を起動し、`/graphql` へ `POST` して応答を確認してから `stop.sh` で停止する
 - [ ] docs を書き換える（design の「更新する docs」の表）
   - [ ] `infrastructure/README.md`
-  - [ ] `backend/docs/ai_guideline/development_standard/review_environment.md`
+  - [ ] `backend/docs/ai_guideline/development_standard/review_environment.md`（SSM parameter の値を変える経路が `put_ssm_parameters.sh` であることも書き足す）
   - [ ] emit 前に document-review を通す
 - [ ] 変更を commit し、`feature-258` へ push する（PR の plan workflow が差分 0 で通ることを確認する）
 - [ ] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない

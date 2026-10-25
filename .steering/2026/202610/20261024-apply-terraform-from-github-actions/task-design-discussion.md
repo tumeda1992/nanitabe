@@ -542,3 +542,142 @@ review の Terraform は、`main` への merge に加えて、任意の branch �
 review の apply role の権限は `AdministratorAccess` のままとする。Route53 の zone を prod と共有しており、名前で絞っても prod の record を書ける余地が残るためである。
 
 skill 改善の保留メモ: [pending-escalations/001-resolve-undiscussed-consequences-before-design-review.md](pending-escalations/001-resolve-undiscussed-consequences-before-design-review.md)（論点11の発端を起点とする plugin skill の修正。保留中・未引渡し）
+
+## 論点12: plan の job が Environment の値を読めない問題と、prod と review の値の分離
+
+**ステータス:** 決定
+
+**親論点:** 論点11
+
+**種別:** レビュー指摘
+
+### イテレーション0（論点12）: 値の置き場所の作り直し
+
+#### 提案0（論点12）
+
+prod と review の値は repository secrets に置く。Environment secrets に置くのは apply role の ARN だけにする。論点11の「review の job には prod の値が渡らない」は外す。
+
+| 案 | 内容 | 得るもの | 失うもの |
+| --- | --- | --- | --- |
+| a（推奨） | 値は repository secrets。Environment は apply role の ARN と、deployment branch の制限だけを持つ | 構成が単純。apply の branch 制限（prod は `main` だけ）は保たれる | 作業 branch の job からも prod の値（`AMPLIFY_GITHUB_ACCESS_TOKEN` 等）を読める |
+| b | plan 用の Environment（`prod-plan`、`review-plan`。branch 制限なし）を足し、plan role の信頼条件を `environment:prod-plan` と `environment:review-plan` にする。値は plan 用と apply 用の Environment の両方に置く | 作業 branch の job は prod の apply 用 Environment の値を読めない | Environment が 4 つになり、同じ値を二か所に登録する。plan 用の Environment は branch 制限が無いため、作業 branch の job は結局 prod の値（plan 用）を読める |
+| c | OIDC の `sub` を repository 単位で custom 化し、`environment` と `ref` の両方を含める。plan と apply が同じ Environment を使い、apply role の信頼条件で `ref:refs/heads/main` を要求する | 値は一か所。apply は `main` だけ | `prod` の Environment に branch 制限を掛けられず（plan が PR で動くため）、作業 branch の job は prod の値を読める。repository 全体の OIDC 設定を変える |
+
+#### 検討記録（論点12・イテレーション0）
+
+tasklist-executor が Phase 1 で、plan の job が Environment を指定できないことを見つけた。job に `environment:` を指定すると OIDC の `sub` が `repo:<repo>:environment:<name>` になり、plan role の信頼条件（`pull_request`、`ref:refs/heads/*`）と一致しない。plan は prod / review の値（`TF_VAR_*`）を必要とするため、値を Environment secrets に置くと plan から読めない。executor は登録 script で値を repository secrets へ登録する形に変えていた（design の変更であり、合意を経ていない）。
+
+三案を比べると、作業 branch の job が prod の値を読めなくなる案は無い。plan は PR（作業 branch）で動き、prod の値を必要とするためである。値の分離は、plan が値を必要とする限り成立しない。apply の branch 制限（prod の apply role は `main` からしか assume できない）は、どの案でも Environment の deployment branch の制限で保たれる。a は分離を諦める代わりに構成が最も単純で、b と c は複雑さを足しても分離を得られない。
+
+作業 branch に push できるのは利用者と agent だけである。agent はこれまで `.env` で同じ値を手元に持っていた。a で作業 branch の job が prod の値を読めることは、移行前より広がらない。
+
+#### 提案0へのフィードバック（論点12）
+
+**結果:** 合意（案 a）
+
+> a
+
+### 決定（論点12）
+
+prod と review の値は repository secrets に置き、Environment secrets には apply role の ARN だけを置く。Environment は apply role の ARN と deployment branch の制限（`prod` は `main` だけ、`review` は制限なし）を持つ。論点11の「prod と review の値は各 Environment の secrets に置き、review の job には prod の値が渡らない」を改める。plan は PR（作業 branch）で動き prod の値を必要とするため、作業 branch の job から prod の値を読めなくする分離はどの構成でも成立しない。作業 branch に push できるのは利用者と agent だけで、agent は移行前も `.env` で同じ値を持っていたため、範囲は広がらない。
+
+
+## 論点13: DB の接続情報と `RAILS_MASTER_KEY` を GitHub と Terraform に持たせない
+
+**ステータス:** 決定
+
+**親論点:** 論点5
+
+**種別:** レビュー指摘
+
+### イテレーション0（論点13）: review の SSM parameter の値の持ち方
+
+#### 提案0（論点13）
+
+review root の SSM parameter（`/nanitabe-back/review/DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS`、`RAILS_MASTER_KEY`）を Terraform の管理から外す。値は `.env` から手元の script で SSM へ書き込む。
+
+- Terraform: `backend/terraform/modules/ssm/` を削除し、`removed` block（`lifecycle { destroy = false }`）で state から外す。AWS 上の parameter は消さない。ECS の task definition は parameter の ARN を名前から組み立てて参照する（`arn:aws:ssm:<region>:<account>:parameter/nanitabe-back/review/DB_NAME` 等）。task execution role の `ssm:GetParameters` は同じ ARN を対象にする。
+- 値の書き込み: `scripts/review_backend/put_ssm_parameters.sh` を新設する。`.env` を読み、`aws ssm put-parameter --type SecureString --overwrite` で 6 つを書く。AWS CLI の設定の認証情報を使う。値を変えたときに利用者が実行する。
+- GitHub: repository secrets から `DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS`、`RAILS_MASTER_KEY` を削除する（登録済みのため `gh secret delete` を利用者が実行する）。review root の variable からも外す。
+- `review_environment.md`「閉じているように見えて該当しないもの」の「SSM parameter の値の変更。値の出所が `.env` であり、開発環境と共有しているため閉じない」はそのまま成り立つ。値を変える経路が Terraform から script に変わることを書き足す。
+
+#### 検討記録（論点13・イテレーション0）
+
+利用者から、DB の接続先や `RAILS_MASTER_KEY` を GitHub に持たせてよいのか、Terraform の variable を機械的に移しただけではないか、と指摘を受けた。
+
+> あれ、さっきrepository secret持つこと okとしたけど、GithubごときがDBの接続先とか持っていいのか？ RAILS_MASTER_KEYとかも。今のterraformの機械的移行だと思うけど再考しなくていいのか？
+
+論点5は、現行の `TF_VAR_*` をそのまま secrets へ移す前提で値の一覧を作り、各値が Terraform に入っている理由を問わなかった。review root がこれらの値を受け取るのは、`backend/terraform/modules/ssm/` が SSM parameter（SecureString）を作り、その値として渡すためである。ECS の task は SSM から値を読み（`valueFrom` に parameter の ARN）、Terraform 自身は値を使わない。値を Terraform に通すことで、GitHub secrets に加えて Terraform の state（S3）にも値が平文で残っている（`aws_ssm_parameter` は value を state に持つ）。
+
+Terraform で parameter を作り値だけ `ignore_changes` にする案は、refresh のたびに AWS の値が state に読み込まれるため、state から値を消せない。parameter を Terraform の管理から外し、値を書く経路を script に分ければ、GitHub にも state にも値が残らない。値の出所はもともと `.env`（開発 DB と共有）であり、手元の script から書くのは現行の値の流れと同じである。代償は、parameter の存在が IaC に現れなくなることで、task definition の参照先が存在しない場合は task の起動時に失敗する。script と task definition が同じ名前を使うことで対応を保つ。
+
+`AMPLIFY_GITHUB_ACCESS_TOKEN` も Terraform の state に残るが、Amplify app の作成に Terraform が直接使う値であり、GitHub の token を GitHub が持つことでもあるため、この論点では扱わない。
+
+#### 提案0へのフィードバック（論点13）
+
+**結果:** 合意
+
+> ok
+
+### 決定（論点13）
+
+review root の SSM parameter（`/nanitabe-back/review/` の `DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS`、`RAILS_MASTER_KEY`）を Terraform の管理から外す。`backend/terraform/modules/ssm/` を削除し、`removed` block（`lifecycle { destroy = false }`）で state から外して AWS 上の parameter は残す。ECS の task definition と task execution role の `ssm:GetParameters` は parameter の ARN を名前から組み立てて参照する。値は新設する `scripts/review_backend/put_ssm_parameters.sh` が `.env` から AWS CLI の設定の認証情報で書き込む。GitHub の repository secrets から 6 つを削除し、review root の variable からも外す。値を Terraform に通さないのは、GitHub secrets と Terraform の state の両方に値が残るためで、`ignore_changes` では refresh で state へ読み込まれるため消せない。論点5の secrets の一覧を改める。
+
+
+## 論点14: GitHub secrets と Terraform に通す値を、全 variable について見直す
+
+**ステータス:** 決定
+
+**親論点:** 論点5
+
+**種別:** レビュー指摘
+
+### イテレーション0（論点14）: 値ごとに、Terraform が値を必要とする理由を問う
+
+> 論点13の合意直後、design と tasklist へ反映している途中で受けた指摘から始まった。
+
+#### 提案0（論点14）
+
+**原則:** Terraform に通す値は、resource の定義に Terraform 自身が必要とし、AWS から引けない値だけにする。AWS から引ける識別子は data source で引き、認証情報や鍵は Terraform に通さない（論点13の一般化）。
+
+| 値 | Terraform での使われ方 | 扱い |
+| --- | --- | --- |
+| `TERRAFROM_STATE_S3_BUCKET`、`TERRAFROM_STATE_DYNAMODB_TABLE` | `init` の backend 設定、`state_in_s3` | GitHub に残す。backend 設定は data source で引けない |
+| `ROUTE53_HOSTZONE_NAME` | domain 名の組み立て（Amplify、API Gateway、ECS の host） | GitHub に残す。zone を引く手がかりになる唯一の値 |
+| `ROUTE53_HOSTZONE_ID` | Route53 の record の `zone_id` | **GitHub から外す**。`data "aws_route53_zone"` で `ROUTE53_HOSTZONE_NAME` から引く |
+| `AWS_ACCOUNT_ID` | CodeStar connection の ARN の組み立て | **GitHub から外す**。`data "aws_caller_identity"` で引く |
+| `AWS_CODE_CONNECTION_ID_TO_GITHUB` | CodePipeline の source の connection ARN | **GitHub から外す**。`data "aws_codestarconnections_connection"` で connection の名前から引く。名前は識別子ではない固定の語として module に書く（実在の名前は実装時に AWS から確認する） |
+| `CODEBUILD_ARTICACT_S3_BUCKET` | CodeBuild / CodePipeline の artifact の置き場所 | GitHub に残す。Terraform 管理外の既存 bucket の名前で、引く手がかりが無い |
+| `NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN` | Amplify app の環境変数 | GitHub に残す。frontend の bundle に埋め込まれる公開値で、認証情報ではない |
+| `AMPLIFY_GITHUB_ACCESS_TOKEN` | `aws_amplify_app.access_token` | **GitHub と Terraform から外す**。`lifecycle { ignore_changes = [access_token] }` とし、variable は既定値 `null` の optional にする。token の更新は `aws amplify update-app --access-token` を手元で行う。app を作り直すときだけ、手元の verify-infra と同じく値を個別に渡す |
+| `REVIEW_BACKEND_ALARM_EMAIL` | SNS の email subscription の endpoint | GitHub に残す。個人の連絡先だが認証情報ではなく、subscription は Terraform で管理したい（email の購読は確認の click が要り、手作業に移すと再作成時に漏れる） |
+| `AWS_TERRAFORM_PLAN_ROLE_ARN`、`AWS_TERRAFORM_APPLY_ROLE_ARN` | workflow の role の assume | GitHub に残す。ARN に account ID を含むため secret として log で隠す |
+| `DB_*`、`RAILS_MASTER_KEY` | SSM parameter の値 | GitHub と Terraform から外す（論点13で決定済み） |
+
+GitHub から外す値（`ROUTE53_HOSTZONE_ID`、`AWS_ACCOUNT_ID`、`AWS_CODE_CONNECTION_ID_TO_GITHUB`、`AMPLIFY_GITHUB_ACCESS_TOKEN`）は、論点13の 6 つと一緒に Phase 6 で `gh secret delete` する。
+
+repository secrets には、今回とは別に `CI_JENKINS_URL`、`CI_JENKINS_NANITABE_BUILD_JOB_URL`、`CI_JENKINS_NANITABE_BUILD_TOKEN`、`N8N_WORKFLOW_ORIGIN`、`N8N_WORKFLOW_TOKEN_OF_NANITABE_BACKEND_DEPLOY` がある。`N8N_*` は `backend-deploy.yml` が使う。`CI_JENKINS_*` は `.github/workflows/` のどこからも参照されていない。どちらもこの phase の scope 外であり、触らない。
+
+#### 検討記録（論点14・イテレーション0）
+
+論点13の後、利用者から「言われた変数以外も考慮してね」と指摘を受けた。論点13は利用者が名指しした `DB_*` と `RAILS_MASTER_KEY` だけを扱い、同じ問い（その値を GitHub と Terraform が持つ必要があるか）を残りの値へ当てていなかった。
+
+各 variable の使われ方を `grep` で確かめた（`backend/terraform`、`infrastructure/terraform/envs/review`）。`aws_account_id` は CodeStar connection の ARN の組み立てにだけ使われ、`route53_zone_id` は API Gateway の custom domain の record と証明書の検証 record の `zone_id` にだけ使われる。どちらも AWS から data source で引ける。`aws_code_connection_id_to_github` も connection の名前から引ける。
+
+`AMPLIFY_GITHUB_ACCESS_TOKEN` は Amplify app の作成と GitHub への webhook の登録に使う認証情報で、論点13で「GitHub の token を GitHub が持つだけ」として扱いを外したが、原則（認証情報を Terraform に通さない）に照らすと外す対象である。Terraform の state にも残っている。`ignore_changes` にしても state には作成時の値が残るため、外した後に `terraform state` の値を消すには app の作り直しか state の編集が要る。この phase では state の既存の値は残し、今後 GitHub と plan / apply の経路に値を通さないことを目的とする。
+
+#### 提案0へのフィードバック（論点14）
+
+**結果:** 合意（`CI_JENKINS_*` は Jenkins から n8n へ移行済みで不要との補足あり）
+
+> ok。そうだjenkinsやめてn8nにしたんだ
+
+### 決定（論点14）
+
+Terraform に通す値は、resource の定義に Terraform 自身が必要とし、AWS から引けない値だけにする。AWS から引ける識別子は data source で引き、認証情報や鍵は Terraform に通さない。
+
+- `ROUTE53_HOSTZONE_ID` は `data "aws_route53_zone"`（`ROUTE53_HOSTZONE_NAME` から）、`AWS_ACCOUNT_ID` は `data "aws_caller_identity"`、`AWS_CODE_CONNECTION_ID_TO_GITHUB` は `data "aws_codestarconnections_connection"`（connection の名前から）で引き、GitHub と variable から外す。
+- `AMPLIFY_GITHUB_ACCESS_TOKEN` は `aws_amplify_app` に `lifecycle { ignore_changes = [access_token] }` を付け、variable を既定値 `null` の optional にし、GitHub から外す。token の更新は手元で `aws amplify update-app --access-token` を行う。state に残る作成時の値はこの phase では消さない。
+- `TERRAFROM_STATE_*`、`ROUTE53_HOSTZONE_NAME`、`CODEBUILD_ARTICACT_S3_BUCKET`、`NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN`、`REVIEW_BACKEND_ALARM_EMAIL`、role の ARN は GitHub に残す。
+- 外す 4 つは論点13の 6 つと一緒に Phase 6 で削除する。Jenkins から n8n へ移行済みで参照の無い `CI_JENKINS_URL`、`CI_JENKINS_NANITABE_BUILD_JOB_URL`、`CI_JENKINS_NANITABE_BUILD_TOKEN` も、同じ削除の依頼に含める（利用者が実行する）。`N8N_*` は残す。
+

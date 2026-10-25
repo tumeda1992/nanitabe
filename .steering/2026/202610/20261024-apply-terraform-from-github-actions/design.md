@@ -87,12 +87,13 @@ repository は public であり、Actions の log と PR コメントは誰で�
 ```text
 (1) infrastructure/terraform/modules/github_oidc/ を追加し、envs/prod から呼ぶ
     → 利用者の手元 apply で OIDC と role を作る（手元からの最後の prod apply）
-(2) 利用者が GitHub の Environments（prod、review）を作り、script で repository secrets と Environment secrets を登録する
+(2) 利用者が GitHub の Environments（prod、review）を作り、script で repository secrets と、Environment secrets（apply role の ARN）を登録する
 (3) workflow 4 本、composite action、lock file、.terraform-version を feature-258 に追加する
     → feature-258 の PR で plan workflow が動き、要約コメントと S3 の全文を確認する
 (4) 派生 branch からの途中 merge（Closes なし）で main へ入れる
     → apply workflow が No changes で通ることを確認する
 (5) 手元の init_terraform.sh / apply_terraform.sh（prod と review）を削除し、.claude/settings.json の review apply の allow を外す
+    GitHub の repository secrets から DB_*、RAILS_MASTER_KEY、ROUTE53_HOSTZONE_ID、AWS_ACCOUNT_ID、AWS_CODE_CONNECTION_ID_TO_GITHUB、AMPLIFY_GITHUB_ACCESS_TOKEN、CI_JENKINS_* を削除する（利用者）
     .env から Terraform 専用の 8 key と AWS の access key を消す（利用者）
     infrastructure/README.md と review_environment.md を新しい経路へ書き換える
 (6) branch protection を設定する（利用者）
@@ -109,7 +110,7 @@ repository は public であり、Actions の log と PR コメントは誰で�
 
 | resource | 設定 |
 | --- | --- |
-| OIDC identity provider | `token.actions.githubusercontent.com`、audience `sts.amazonaws.com`。account に一つ |
+| OIDC identity provider | `token.actions.githubusercontent.com`、audience `sts.amazonaws.com`。account に一つしか作れず、同じ account の別 repository（x_favorites）の Terraform が所有している。nanitabe は作らず、URL で引く data source で参照する |
 | plan role | 信頼条件 `repo:tumeda1992/nanitabe:pull_request` と手動起動。権限は `ReadOnlyAccess`、state 用 S3 bucket の読み書き（`plans/`・`applies/` の保存を含む）、lock 用 DynamoDB の読み書き |
 | apply role（prod） | 信頼条件 `repo:tumeda1992/nanitabe:environment:prod` だけ。権限は `AdministratorAccess` |
 | apply role（review） | 信頼条件 `repo:tumeda1992/nanitabe:environment:review` だけ。権限は `AdministratorAccess` |
@@ -117,19 +118,31 @@ repository は public であり、Actions の log と PR コメントは誰で�
 - 定義は `infrastructure/terraform/modules/github_oidc/` に置き、`envs/prod` から呼ぶ。plan role は prod と review で共有し、apply role は環境ごとに分ける。review だけ任意の branch から apply できるようにするためで、branch の制限は Environment の deployment branch の設定が持つ。
 - apply role の権限を列挙しないのは、review root が IAM role を作るため列挙が実質的な制限にならず、resource を足すたびの更新が保守対象を増やすためである。review の role を名前で絞らないのは、Route53 の zone を prod と共有しており、絞っても prod の record を書ける余地が残るためである。`main` への直接 push を防ぐのは branch protection が担う。
 
-**GitHub secrets:** 共通の値は repository secrets、prod と review の値はそれぞれの Environment secrets に置く。review の job には prod の値が渡らない。
+**GitHub secrets:** prod と review の値は repository secrets に置き、Environment secrets には apply role の ARN だけを置く。plan の job は Environment を指定できない（指定すると OIDC の `sub` が `environment:*` になり plan role の信頼条件と合わない）ため、plan が必要とする値は repository secrets でなければ読めない。plan は作業 branch で動き prod の値を必要とするため、作業 branch の job から prod の値を読めなくする分離はどの構成でも成立しない。
 
 | 区分 | secret | workflow での渡し先 |
 | --- | --- | --- |
 | 共通（repository） | `AWS_TERRAFORM_PLAN_ROLE_ARN` | `aws-actions/configure-aws-credentials` |
 | prod / review（Environment） | `AWS_TERRAFORM_APPLY_ROLE_ARN`（Environment ごとに別の値） | `aws-actions/configure-aws-credentials` |
 | 共通（repository） | `TERRAFROM_STATE_S3_BUCKET`、`TERRAFROM_STATE_DYNAMODB_TABLE` | `terraform init` の `-backend-config`、`TF_VAR_bucket_name`、`TF_VAR_dynamodb_table_name` |
-| 共通（repository） | `ROUTE53_HOSTZONE_NAME` | `TF_VAR_route53_name` |
-| prod（Environment） | `NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN`、`AMPLIFY_GITHUB_ACCESS_TOKEN` | `TF_VAR_backend_origin`、`TF_VAR_amplify_github_access_token` |
-| review（Environment） | `AWS_ACCOUNT_ID`、`CODEBUILD_ARTICACT_S3_BUCKET`、`AWS_CODE_CONNECTION_ID_TO_GITHUB`、`ROUTE53_HOSTZONE_ID`、`DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS`、`RAILS_MASTER_KEY`、`REVIEW_BACKEND_ALARM_EMAIL` | review root の同名の `TF_VAR_*` |
+| 共通（repository） | `ROUTE53_HOSTZONE_NAME` | `TF_VAR_route53_name`（zone の ID もこの名前から data source で引く） |
+| prod（repository） | `NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN` | `TF_VAR_backend_origin` |
+| review（repository） | `CODEBUILD_ARTICACT_S3_BUCKET`、`REVIEW_BACKEND_ALARM_EMAIL` | review root の同名の `TF_VAR_*` |
 
 - secret 名は `.env` の key 名に揃える。AWS の access key は置かない。
+- Terraform に通す値は、resource の定義に Terraform 自身が必要とし、AWS から引けない値だけにする。AWS から引ける識別子は data source で引き、認証情報や鍵は Terraform に通さない。
+  - `ROUTE53_HOSTZONE_ID` は `data "aws_route53_zone"`（`ROUTE53_HOSTZONE_NAME` から）、`AWS_ACCOUNT_ID` は `data "aws_caller_identity"`、`AWS_CODE_CONNECTION_ID_TO_GITHUB` は `data "aws_codestarconnections_connection"`（connection の名前から）で引く。
+  - `AMPLIFY_GITHUB_ACCESS_TOKEN` は `aws_amplify_app` に `lifecycle { ignore_changes = [access_token] }` を付け、variable を既定値 `null` の optional にする。token の更新は手元で `aws amplify update-app --access-token` を行う。app を作り直すときだけ値を個別に渡す。作成時の値は state に残っており、この phase では消さない。
+  - DB の接続情報と `RAILS_MASTER_KEY` は GitHub にも Terraform にも置かない（下の「review の SSM parameter」）。
+  - Jenkins から n8n への移行で参照されなくなった `CI_JENKINS_*` の repository secrets も、移行手順 (5) で一緒に削除する。
 - 登録は `.env` を読んで `gh secret set` する script を scratchpad に用意し、利用者が `!` で実行する。値は chat と log に出さない。
+
+**review の SSM parameter:**
+
+- `/nanitabe-back/review/` の `DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS`、`RAILS_MASTER_KEY` は Terraform の管理から外す。`backend/terraform/modules/ssm/` を削除し、`removed` block（`lifecycle { destroy = false }`）で state から外す。AWS 上の parameter は消さない。
+- ECS の task definition の `valueFrom` と task execution role の `ssm:GetParameters` は、parameter の ARN を名前から組み立てて参照する。
+- 値は `scripts/review_backend/put_ssm_parameters.sh`（新設）が `.env` から読み、`aws ssm put-parameter --type SecureString --overwrite` で書く。AWS CLI の設定の認証情報を使う。値を変えたときに実行する。
+- 値を Terraform に通さないのは、通すと GitHub secrets と Terraform の state（`aws_ssm_parameter` は value を state に持つ）の両方に値が残るためである。値だけ `ignore_changes` にしても、refresh で AWS の値が state へ読み込まれる。代償として parameter の存在が IaC に現れず、script と task definition が同じ名前を使うことで対応を保つ。
 
 **state、lock、再現性:**
 
@@ -158,6 +171,7 @@ repository は public であり、Actions の log と PR コメントは誰で�
 | 対象 | 更新後に書かれていること |
 | --- | --- |
 | `infrastructure/README.md` | 構成表に verify-infra を加える。「適用のしかた」を、PR の plan と merge の apply、出力の要約と S3 の全文、手動起動、初回の bootstrap（OIDC と role だけは手元 apply）に書き換える。「review 環境に固有の注意」から `apply_terraform.sh` の destroy 判定の記述を、PR の要約で destroy を確かめる記述へ置き換える。「構成上の前提」の GitHub と AWS の関係を、OIDC で role を assume して Actions が適用する形と、public repository のため出力の全文を公開しないことへ書き換える |
+| `backend/docs/ai_guideline/development_standard/review_environment.md`（SSM） | 「閉じているように見えて該当しないもの」の SSM parameter の項に、値を変える経路が `put_ssm_parameters.sh` であることを書き足す |
 | `backend/docs/ai_guideline/development_standard/review_environment.md` | 「review 環境に閉じる操作」の review state への手元の `terraform plan` / `apply` を、作業 branch からの review の apply workflow の手動起動へ置き換える（destroy を外す理由は task-design 内で追記済み） |
 | `.claude/settings.json` | `Bash(bash infrastructure/terraform/envs/review/apply_terraform.sh)` の allow を外す |
 
@@ -171,6 +185,7 @@ repository は public であり、Actions の log と PR コメントは誰で�
 - plan / apply の全文を Actions の log と PR コメントに出さない。
 - prod の apply role は `main` からしか assume できない。review の apply role は review の Environment からしか assume できない。
 - repository の file と `.env` に AWS の認証情報を持たない。
+- DB の接続情報と `RAILS_MASTER_KEY` を GitHub secrets と Terraform の state に持たない。AWS から引ける識別子と `AMPLIFY_GITHUB_ACCESS_TOKEN` を GitHub secrets に持たない。
 
 ### SHOULD（できれば）
 
@@ -194,6 +209,7 @@ repository は public であり、Actions の log と PR コメントは誰で�
 - `main` への merge で apply workflow が動き、適用後の plan が `No changes` で job が成功する。
 - 作業 branch から review の apply workflow を手動起動でき、destroy を含む plan では apply せず失敗する。作業 branch から prod の apply role は assume できない。
 - repository に `init_terraform.sh` / `apply_terraform.sh` が無く、`.env` に Terraform 専用の 8 key と AWS の access key が無い。review の `start.sh` / `stop.sh` が AWS CLI の設定の認証情報で動く。
+- GitHub secrets に `DB_*` と `RAILS_MASTER_KEY` が無く、review root の state に SSM parameter が無い。review 環境を起動すると、task が SSM から値を読んで起動し `/graphql` が応答する。
 - `main` への直接 push が拒否される。
 - 本番の custom domain と review 環境（起動して `/graphql` を叩く）が移行前と同じく使える。
 - `infrastructure/README.md` と `review_environment.md` の手順だけを読んで、Terraform の変更を PR から適用できる。
