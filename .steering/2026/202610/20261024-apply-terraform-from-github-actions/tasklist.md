@@ -172,12 +172,14 @@ design の「workflow の構成」の表のとおり。
 ### Tasks
 
 - [x] `main` から `feature-258-terraform-on-github-actions` を切り、`feature-258` の Phase 1 の変更を取り込んで PR を作る（`Closes` なし。本文に「issue #258 の完了を意味しない」と書く。plugin の `development_flow/branch_pr_issue.md` の経路 2）
-- [ ] 利用者に merge を依頼して止まる
-- [ ] merge 後、両 apply workflow の成功と要約を確認する。S3 の `applies/` の全文で、prod は差分 0、review は SSM parameter の state からの削除だけで、post-apply plan が両方 0 であることを確認する。AWS 上に SSM parameter が残っていることを `aws ssm get-parameters-by-path --path /nanitabe-back/review/`（名前だけ）で確認する
-- [ ] `main` を `feature-258` へ取り込む
-- [ ] `gh workflow run terraform-apply-review.yml --ref feature-258` を実行し、成功を確認する
-- [ ] `gh workflow run terraform-apply-prod.yml --ref feature-258` を実行し、job が Environment の制限で動かないことを確認する
-- [ ] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+- [x] 利用者に merge を依頼して止まる
+- [x] merge 後、両 apply workflow の成功と要約を確認する。S3 の `applies/` の全文で、prod は差分 0、review は SSM parameter の state からの削除だけで、post-apply plan が両方 0 であることを確認する。AWS 上に SSM parameter が残っていることを `aws ssm get-parameters-by-path --path /nanitabe-back/review/`（名前だけ）で確認する
+- [x] `main` を `feature-258` へ取り込む
+- [x] `gh workflow run terraform-apply-review.yml --ref feature-258` を実行し、成功を確認する
+- [x] `gh workflow run terraform-apply-prod.yml --ref feature-258` を実行し、job が Environment の制限で動かないことを確認する
+- [x] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+
+> 実施メモ: PR #290 の merge で `terraform-apply-prod` と `terraform-apply-review` が成功した。S3 の `applies/` の全文で、prod は apply 0・post-apply plan 0、review は apply 0（SSM parameter 6 つの state からの削除のみ）・post-apply plan 0。AWS 上の `/nanitabe-back/review/` に 6 つの parameter が残っている（名前だけ確認）。`main` を `feature-258` へ取り込んだ（tasklist の add/add conflict は `feature-258` 側を採用）。`feature-258` から review の apply workflow を手動起動し（`apply-guarded`）、変更 0 で成功した。prod の手動起動は `Branch "feature-258" is not allowed to deploy to prod due to environment protection rules.` で job が 0 step のまま失敗した（期待どおり）。両 apply の log に hosted zone 名・account ID・zone ID は出ていない。
 
 ## Phase 6: 手元の入口と値を片付け、docs を新しい経路へ書き換える
 
@@ -190,17 +192,19 @@ design の「workflow の構成」の表のとおり。
 
 ### Tasks
 
-- [ ] 4 本の script を削除する
-- [ ] `.claude/settings.json` から `Bash(bash infrastructure/terraform/envs/review/apply_terraform.sh)` を外す
+- [x] 4 本の script を削除する
+- [x] `.claude/settings.json` から `Bash(bash infrastructure/terraform/envs/review/apply_terraform.sh)` を外す
 - [ ] GitHub の repository secrets から `DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS`、`RAILS_MASTER_KEY`、`ROUTE53_HOSTZONE_ID`、`AWS_ACCOUNT_ID`、`AWS_CODE_CONNECTION_ID_TO_GITHUB`、`AMPLIFY_GITHUB_ACCESS_TOKEN`、`CI_JENKINS_URL`、`CI_JENKINS_NANITABE_BUILD_JOB_URL`、`CI_JENKINS_NANITABE_BUILD_TOKEN` を消すコマンド（`gh secret delete`）を示し、利用者に実行を依頼する
 - [ ] `.env` から消す key の一覧を示し、利用者に削除を依頼して止まる（値を出さない `sed -i` のコマンドを添える）
 - [ ] `start.sh` を実行して review 環境を起動し、`/graphql` へ `POST` して応答を確認してから `stop.sh` で停止する
-- [ ] docs を書き換える（design の「更新する docs」の表）
-  - [ ] `infrastructure/README.md`
-  - [ ] `backend/docs/ai_guideline/development_standard/review_environment.md`（SSM parameter の値を変える経路が `put_ssm_parameters.sh` であることも書き足す）
-  - [ ] emit 前に document-review を通す
-- [ ] 変更を commit し、`feature-258` へ push する（PR の plan workflow が差分 0 で通ることを確認する）
+- [x] docs を書き換える（design の「更新する docs」の表）
+  - [x] `infrastructure/README.md`
+  - [x] `backend/docs/ai_guideline/development_standard/review_environment.md`（SSM parameter の値を変える経路が `put_ssm_parameters.sh` であることも書き足す）
+  - [x] emit 前に document-review を通す
+- [x] 変更を commit し、`feature-258` へ push する（PR の plan workflow が差分 0 で通ることを確認する）
 - [ ] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+
+> 実施メモ: script 4 本の削除、settings の allow 削除、docs 2 本の書き換え、commit・push は済み。document-review の観点（濃さ・記法・指示対象・機密性）を当て、参照先の path を明示する指摘を直した。push 後の PR #289 の plan workflow は prod・review とも変更なし。残りは利用者の操作（secrets の削除、`.env` の編集。`scratchpad/cleanup_secrets_and_env.sh`）と、その後の start.sh / stop.sh の確認。
 
 ## Phase 7: `main` を保護する
 
