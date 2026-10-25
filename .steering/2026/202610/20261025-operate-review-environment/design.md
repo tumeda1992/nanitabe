@@ -67,7 +67,7 @@
 ```text
 infrastructure/terraform/envs/review/main.tf      module "frontend" を追加し、import block を置く（取り込み後に削除）
 frontend/terraform/envs/review/main.tf            新設（.gitkeep を置き換える）。modules/amplify を stage = "review" で呼ぶ
-frontend/terraform/modules/amplify/               変えない
+frontend/terraform/modules/amplify/               aws provider の制約を ~> 5.0 から >= 5.0 にする（implementation_review.md 論点2）。それ以外は変えない
 ```
 
 本番（`infrastructure/terraform/envs/prod` → `frontend/terraform/envs/prod` → `modules/amplify`）と同じ形にする。

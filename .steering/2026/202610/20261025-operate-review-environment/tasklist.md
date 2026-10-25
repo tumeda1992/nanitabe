@@ -67,15 +67,16 @@ design の「更新する docs」の表のとおり。domain 名は `<hosted zon
 
 ### DoD（完了条件）
 
-- `feature-280` の PR で review の plan が成功し、要約が import 1 件と追加（branch、domain association）だけを示す。prod の plan は動かない。
+- `feature-280` の PR で review の plan が成功し、要約が import 1 件と追加（branch、domain association）だけを示す。prod の plan は、workflow file を変える PR では起動するが、変更なしである（`implementation_review.md` 論点2）。
 - 作業 branch から review の apply を手動起動して成功し、post-apply plan が 0 になる。
 - `aws amplify get-domain-association` の `domainStatus` が `AVAILABLE` になる（`AWAITING_APP_CNAME` 等の途中の状態は待つ）。
 
 ### Tasks
 
 - [x] `infrastructure/terraform/envs/review/main.tf` に import block（`to = module.frontend.module.amplify.aws_amplify_app.this`、`id = "<app id>"`）を足す
-- [ ] Phase 1・3 の変更を意味単位で commit し、`feature-280` を push して `main` への PR を作る（`Closes #280` は付けない。Phase 5 で付ける）
-- [ ] plan workflow の要約を確認する（review は import と追加だけ、destroy 0。prod の plan は起動しない）
+- [x] Phase 1・3 の変更を意味単位で commit し、`feature-280` を push して `main` への PR を作る（`Closes #280` は付けない。Phase 5 で付ける）
+- [ ] `frontend/terraform/modules/amplify/main.tf` の aws provider の制約を `>= 5.0` にし、本物の lock（prod と review の両方）で `terraform init`（backend なし）と `validate` が通ることを確かめてから commit・push する（`implementation_review.md` 論点2）
+- [ ] plan workflow の要約を確認する（review は import と追加だけ、destroy 0。prod の plan は変更なし）
 - [ ] `gh workflow run terraform-apply-review.yml --ref feature-280` で apply し、成功と post-apply plan 0 を確認する
 - [ ] `domainStatus` が `AVAILABLE` になるまで待つ（15 秒間隔、上限 30 分。`FAILED` か上限で抜けて止まる）
 
