@@ -241,10 +241,11 @@ design の「workflow の構成」の表のとおり。
 
 - [x] code readingまたは実装で永続化候補を得た場合、その場でdoc-enricherを提案modeで適用する（候補なし。得た知見は README・module README・action 内のコメントへ既に反映した）
   - [x] 提案がある場合だけユーザー承認後に既存READMEまたは既存docsへ反映する（提案なし）
-- [ ] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
-  - [ ] 原文、関連する実装・design・plan、原因、採用方針、決定を渡し、修正済みでも記録を省略しない
-  - [ ] 「共有されていなかった知識の前提は何か」「codeを読めば分かるか、設計意図か、process不足か」「どこに書けば次回この議論が不要になるか」を確認し、合意後だけ反映する
-  - [ ] designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す。review後に実装を自動再開しない
+- [x] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
+  - [x] 原文、関連する実装・design・plan、原因、採用方針、決定を渡し、修正済みでも記録を省略しない
+  - [x] 「共有されていなかった知識の前提は何か」「codeを読めば分かるか、設計意図か、process不足か」「どこに書けば次回この議論が不要になるか」を確認し、合意後だけ反映する
+  - [x] designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す。review後に実装を自動再開しない
+  > 実装中の feedback は implementation_review.md の論点1・2 に steering が記録済み。利用者の動作確認での feedback はなし。
 
 ---
 
@@ -256,9 +257,11 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
 
 ### Tasks
 
-- [ ] ユーザーに動作確認を依頼する（Phase 4 の PR の要約コメントを読み、S3 の全文の取り寄せ方が README のとおりに使えること。本番の custom domain が今までどおり使えること）
-- [ ] feedbackがあれば、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用し、decisionをcallerへ返す
-  - [ ] feedbackがなければ`[x] ~~feedback収集~~（feedbackなし）`の形式で完了扱いにする
+- [x] ユーザーに動作確認を依頼する（Phase 4 の PR の要約コメントを読み、S3 の全文の取り寄せ方が README のとおりに使えること。本番の custom domain が今までどおり使えること）
+- [x] feedbackがあれば、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用し、decisionをcallerへ返す
+  - [x] ~~feedback収集~~（feedbackなし）
+
+> 動作確認の結果: 利用者が PR #289 の plan 要約、S3 の全文の取り寄せ、本番の custom domain を確認し、期待どおりだった（steering 側でも `/login` 200 と S3 からの全文取得を確認済み）。
 
 ---
 
@@ -266,8 +269,8 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
 
 > ⚠️ 動作確認phaseが完了するまでcommit、push、PRを促したり実行したりしない。急かすことも禁止する。Phase 4〜6 の commit・push・PR は、各 phase の検証に必要なため例外とする。
 
-- [ ] 残りの変更を phase 単位かつ意味単位で commit し、`feature-258` を push する
-- [ ] Phase 4 で作った PR の本文に `Closes #258` を加え、変更内容と確認結果を書く（issue #258 の完了の merge。plugin の `development_flow/branch_pr_issue.md` の経路 1）
+- [x] 残りの変更を phase 単位かつ意味単位で commit し、`feature-258` を push する
+- [x] Phase 4 で作った PR の本文に `Closes #258` を加え、変更内容と確認結果を書く（issue #258 の完了の merge。plugin の `development_flow/branch_pr_issue.md` の経路 1）
 - [ ] merge は利用者が行う
 
 ---
