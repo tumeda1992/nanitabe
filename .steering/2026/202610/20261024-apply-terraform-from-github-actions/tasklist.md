@@ -171,13 +171,15 @@ design の「workflow の構成」の表のとおり。
 
 ### Tasks
 
-- [ ] `main` から `feature-258-terraform-on-github-actions` を切り、`feature-258` の Phase 1 の変更を取り込んで PR を作る（`Closes` なし。本文に「issue #258 の完了を意味しない」と書く。plugin の `development_flow/branch_pr_issue.md` の経路 2）
-- [ ] 利用者に merge を依頼して止まる
-- [ ] merge 後、両 apply workflow の成功と要約を確認する。S3 の `applies/` の全文で、prod は差分 0、review は SSM parameter の state からの削除だけで、post-apply plan が両方 0 であることを確認する。AWS 上に SSM parameter が残っていることを `aws ssm get-parameters-by-path --path /nanitabe-back/review/`（名前だけ）で確認する
-- [ ] `main` を `feature-258` へ取り込む
-- [ ] `gh workflow run terraform-apply-review.yml --ref feature-258` を実行し、成功を確認する
-- [ ] `gh workflow run terraform-apply-prod.yml --ref feature-258` を実行し、job が Environment の制限で動かないことを確認する
-- [ ] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+- [x] `main` から `feature-258-terraform-on-github-actions` を切り、`feature-258` の Phase 1 の変更を取り込んで PR を作る（`Closes` なし。本文に「issue #258 の完了を意味しない」と書く。plugin の `development_flow/branch_pr_issue.md` の経路 2）
+- [x] 利用者に merge を依頼して止まる
+- [x] merge 後、両 apply workflow の成功と要約を確認する。S3 の `applies/` の全文で、prod は差分 0、review は SSM parameter の state からの削除だけで、post-apply plan が両方 0 であることを確認する。AWS 上に SSM parameter が残っていることを `aws ssm get-parameters-by-path --path /nanitabe-back/review/`（名前だけ）で確認する
+- [x] `main` を `feature-258` へ取り込む
+- [x] `gh workflow run terraform-apply-review.yml --ref feature-258` を実行し、成功を確認する
+- [x] `gh workflow run terraform-apply-prod.yml --ref feature-258` を実行し、job が Environment の制限で動かないことを確認する
+- [x] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+
+> 実施メモ: PR #290 の merge で `terraform-apply-prod` と `terraform-apply-review` が成功した。S3 の `applies/` の全文で、prod は apply 0・post-apply plan 0、review は apply 0（SSM parameter 6 つの state からの削除のみ）・post-apply plan 0。AWS 上の `/nanitabe-back/review/` に 6 つの parameter が残っている（名前だけ確認）。`main` を `feature-258` へ取り込んだ（tasklist の add/add conflict は `feature-258` 側を採用）。`feature-258` から review の apply workflow を手動起動し（`apply-guarded`）、変更 0 で成功した。prod の手動起動は `Branch "feature-258" is not allowed to deploy to prod due to environment protection rules.` で job が 0 step のまま失敗した（期待どおり）。両 apply の log に hosted zone 名・account ID・zone ID は出ていない。
 
 ## Phase 6: 手元の入口と値を片付け、docs を新しい経路へ書き換える
 
@@ -190,17 +192,21 @@ design の「workflow の構成」の表のとおり。
 
 ### Tasks
 
-- [ ] 4 本の script を削除する
-- [ ] `.claude/settings.json` から `Bash(bash infrastructure/terraform/envs/review/apply_terraform.sh)` を外す
-- [ ] GitHub の repository secrets から `DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS`、`RAILS_MASTER_KEY`、`ROUTE53_HOSTZONE_ID`、`AWS_ACCOUNT_ID`、`AWS_CODE_CONNECTION_ID_TO_GITHUB`、`AMPLIFY_GITHUB_ACCESS_TOKEN`、`CI_JENKINS_URL`、`CI_JENKINS_NANITABE_BUILD_JOB_URL`、`CI_JENKINS_NANITABE_BUILD_TOKEN` を消すコマンド（`gh secret delete`）を示し、利用者に実行を依頼する
-- [ ] `.env` から消す key の一覧を示し、利用者に削除を依頼して止まる（値を出さない `sed -i` のコマンドを添える）
-- [ ] `start.sh` を実行して review 環境を起動し、`/graphql` へ `POST` して応答を確認してから `stop.sh` で停止する
-- [ ] docs を書き換える（design の「更新する docs」の表）
-  - [ ] `infrastructure/README.md`
-  - [ ] `backend/docs/ai_guideline/development_standard/review_environment.md`（SSM parameter の値を変える経路が `put_ssm_parameters.sh` であることも書き足す）
-  - [ ] emit 前に document-review を通す
-- [ ] 変更を commit し、`feature-258` へ push する（PR の plan workflow が差分 0 で通ることを確認する）
-- [ ] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+- [x] 4 本の script を削除する
+- [x] `.claude/settings.json` から `Bash(bash infrastructure/terraform/envs/review/apply_terraform.sh)` を外す
+- [x] GitHub の repository secrets から `DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS`、`RAILS_MASTER_KEY`、`ROUTE53_HOSTZONE_ID`、`AWS_ACCOUNT_ID`、`AWS_CODE_CONNECTION_ID_TO_GITHUB`、`AMPLIFY_GITHUB_ACCESS_TOKEN`、`CI_JENKINS_URL`、`CI_JENKINS_NANITABE_BUILD_JOB_URL`、`CI_JENKINS_NANITABE_BUILD_TOKEN` を消すコマンド（`gh secret delete`）を示し、利用者に実行を依頼する
+- [x] `.env` から消す key の一覧を示し、利用者に削除を依頼して止まる（値を出さない `sed -i` のコマンドを添える）
+- [x] `start.sh` を実行して review 環境を起動し、`/graphql` へ `POST` して応答を確認してから `stop.sh` で停止する
+- [x] docs を書き換える（design の「更新する docs」の表）
+  - [x] `infrastructure/README.md`
+  - [x] `backend/docs/ai_guideline/development_standard/review_environment.md`（SSM parameter の値を変える経路が `put_ssm_parameters.sh` であることも書き足す）
+  - [x] emit 前に document-review を通す
+- [x] 変更を commit し、`feature-258` へ push する（PR の plan workflow が差分 0 で通ることを確認する）
+- [x] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+
+> 実施メモ: script 4 本の削除、settings の allow 削除、docs 2 本の書き換え、commit・push は済み。document-review の観点（濃さ・記法・指示対象・機密性）を当て、参照先の path を明示する指摘を直した。push 後の PR #289 の plan workflow は prod・review とも変更なし。残りは利用者の操作（secrets の削除、`.env` の編集。`scratchpad/cleanup_secrets_and_env.sh`）と、その後の start.sh / stop.sh の確認。
+
+> 実施メモ: 利用者が cleanup script を実行した。repository secrets は 9 個（`AWS_TERRAFORM_PLAN_ROLE_ARN`、`CODEBUILD_ARTICACT_S3_BUCKET`、`N8N_*` 2 つ、`NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN`、`REVIEW_BACKEND_ALARM_EMAIL`、`ROUTE53_HOSTZONE_NAME`、`TERRAFROM_STATE_*` 2 つ）、`.env` は 11 key（`RAILS_MASTER_KEY`、`DB_*` 5 つ、`NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN`、`FRONTEND_PROD_HOST`、`BACKEND_PROD_HOST`、`AWS_DEFAULT_REGION`、`ROUTE53_HOSTZONE_NAME`）。`.env` に AWS key が無い状態で `start.sh` が成功し（task が SSM の値で起動）、`POST /graphql` が HTTP 200 で応答した（未認証のため `AUTHENTICATION_ERROR`。app が動いている証拠）。続けて `stop.sh` で停止し、desired_count 0 を確認した。
 
 ## Phase 7: `main` を保護する
 
@@ -210,9 +216,11 @@ design の「workflow の構成」の表のとおり。
 
 ### Tasks
 
-- [ ] 設定コマンド（`gh api -X PUT .../branches/main/protection`。PR 必須、required check なし）を用意し、利用者に実行を依頼して止まる
-- [ ] 設定を読み取りで確認する。`main` への実際の push で試さない
-- [ ] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+- [x] 設定コマンド（`gh api -X PUT .../branches/main/protection`。PR 必須、required check なし）を用意し、利用者に実行を依頼して止まる
+- [x] 設定を読み取りで確認する。`main` への実際の push で試さない
+- [x] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+
+> 実施メモ: 利用者が `protect_main.sh` を実行した。読み取り確認（`gh api repos/tumeda1992/nanitabe/branches/main/protection`）で、`enforce_admins` true、PR 必須、required check なし、force push 禁止、削除禁止を確認した。`main` への実際の push では試していない。
 
 ## Phase 8: 品質check
 
@@ -223,18 +231,21 @@ design の「workflow の構成」の表のとおり。
 
 ### Tasks
 
-- [ ] `terraform fmt -check`（新規 file）と `terraform validate`（scratchpad、両 root）
-- [ ] `docker compose exec backend bundle exec rspec`、`docker compose exec frontend yarn test`
-- [ ] `docker compose exec backend bundle exec rubocop`、`docker compose exec frontend yarn lint`
+- [x] `terraform fmt -check`（新規 file）と `terraform validate`（scratchpad、両 root）
+- [x] `docker compose exec backend bundle exec rspec`、`docker compose exec frontend yarn test`
+- [x] `docker compose exec backend bundle exec rubocop`、`docker compose exec frontend yarn lint`
+
+> 実施メモ: 新規 Terraform file（`modules/github_oidc/main.tf`）の `terraform fmt -check` が通り、scratchpad の複製で prod・review の `terraform validate` が通った。`docker compose exec` で backend の rspec（744 examples, 0 failures）、rubocop、frontend の `yarn test`（192 tests）、`yarn lint` がすべて green。`yarn build` は exec していない。
 
 ## Documentation reviewと実装後振り返り
 
-- [ ] code readingまたは実装で永続化候補を得た場合、その場でdoc-enricherを提案modeで適用する
-  - [ ] 提案がある場合だけユーザー承認後に既存READMEまたは既存docsへ反映する
-- [ ] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
-  - [ ] 原文、関連する実装・design・plan、原因、採用方針、決定を渡し、修正済みでも記録を省略しない
-  - [ ] 「共有されていなかった知識の前提は何か」「codeを読めば分かるか、設計意図か、process不足か」「どこに書けば次回この議論が不要になるか」を確認し、合意後だけ反映する
-  - [ ] designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す。review後に実装を自動再開しない
+- [x] code readingまたは実装で永続化候補を得た場合、その場でdoc-enricherを提案modeで適用する（候補なし。得た知見は README・module README・action 内のコメントへ既に反映した）
+  - [x] 提案がある場合だけユーザー承認後に既存READMEまたは既存docsへ反映する（提案なし）
+- [x] 実装、review、validationからfeedbackまたは実装とのずれが生じた場合、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用する
+  - [x] 原文、関連する実装・design・plan、原因、採用方針、決定を渡し、修正済みでも記録を省略しない
+  - [x] 「共有されていなかった知識の前提は何か」「codeを読めば分かるか、設計意図か、process不足か」「どこに書けば次回この議論が不要になるか」を確認し、合意後だけ反映する
+  - [x] designまたはplan構造が変わる場合は同じworking directoryでtask-designへ戻す。review後に実装を自動再開しない
+  > 実装中の feedback は implementation_review.md の論点1・2 に steering が記録済み。利用者の動作確認での feedback はなし。
 
 ---
 
@@ -246,9 +257,11 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
 
 ### Tasks
 
-- [ ] ユーザーに動作確認を依頼する（Phase 4 の PR の要約コメントを読み、S3 の全文の取り寄せ方が README のとおりに使えること。本番の custom domain が今までどおり使えること）
-- [ ] feedbackがあれば、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用し、decisionをcallerへ返す
-  - [ ] feedbackがなければ`[x] ~~feedback収集~~（feedbackなし）`の形式で完了扱いにする
+- [x] ユーザーに動作確認を依頼する（Phase 4 の PR の要約コメントを読み、S3 の全文の取り寄せ方が README のとおりに使えること。本番の custom domain が今までどおり使えること）
+- [x] feedbackがあれば、直接受領したworkflow ownerがpluginの`facilitate-discussion`を`implementation_review.md`へ適用し、decisionをcallerへ返す
+  - [x] ~~feedback収集~~（feedbackなし）
+
+> 動作確認の結果: 利用者が PR #289 の plan 要約、S3 の全文の取り寄せ、本番の custom domain を確認し、期待どおりだった（steering 側でも `/login` 200 と S3 からの全文取得を確認済み）。
 
 ---
 
@@ -256,8 +269,8 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
 
 > ⚠️ 動作確認phaseが完了するまでcommit、push、PRを促したり実行したりしない。急かすことも禁止する。Phase 4〜6 の commit・push・PR は、各 phase の検証に必要なため例外とする。
 
-- [ ] 残りの変更を phase 単位かつ意味単位で commit し、`feature-258` を push する
-- [ ] Phase 4 で作った PR の本文に `Closes #258` を加え、変更内容と確認結果を書く（issue #258 の完了の merge。plugin の `development_flow/branch_pr_issue.md` の経路 1）
+- [x] 残りの変更を phase 単位かつ意味単位で commit し、`feature-258` を push する
+- [x] Phase 4 で作った PR の本文に `Closes #258` を加え、変更内容と確認結果を書く（issue #258 の完了の merge。plugin の `development_flow/branch_pr_issue.md` の経路 1）
 - [ ] merge は利用者が行う
 
 ---
