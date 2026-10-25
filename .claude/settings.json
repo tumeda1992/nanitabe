@@ -15,8 +15,7 @@
       "Bash(git push:*)",
       "Bash(git fetch:*)",
       "Bash(git checkout:*)",
-      "Bash(bash scripts/github/create_pr_from_branch_name.sh)",
-      "Bash(bash infrastructure/terraform/envs/review/apply_terraform.sh)"
+      "Bash(bash scripts/github/create_pr_from_branch_name.sh)"
     ]
   },
   "hooks": {
