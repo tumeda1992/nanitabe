@@ -1,7 +1,5 @@
 variable "stage" { type = string }
-variable "aws_account_id" { type = string }
 variable "codebuild_artifact_s3_bucket" { type = string }
-variable "aws_code_connection_id_to_github" { type = string }
 variable "codebuild_project_name" { type = string }
 variable "branch" { type = string }
 
@@ -9,8 +7,13 @@ module "values" {
   source = "../../../values/"
 }
 
+# GitHub への CodeConnections は手動で作成済みのものを名前で参照する（AWS CLI: aws codeconnections list-connections）。
+data "aws_codestarconnections_connection" "github" {
+  name = "github_setsumaru1992"
+}
+
 locals {
-  aws_code_connection_github_arn = "arn:aws:codeconnections:ap-northeast-1:${var.aws_account_id}:connection/${var.aws_code_connection_id_to_github}"
+  aws_code_connection_github_arn = data.aws_codestarconnections_connection.github.arn
 }
 
 resource "aws_codepipeline" "pipeline" {
