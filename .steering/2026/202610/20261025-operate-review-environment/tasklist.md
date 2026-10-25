@@ -135,7 +135,7 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
 > ⚠️ 動作確認phaseが完了するまでcommit、push、PRを促したり実行したりしない。急かすことも禁止する。Phase 3〜5 の commit・push・PR は、各 phase の検証に必要なため例外とする。
 
 - [x] 残りの変更を意味単位で commit し、`feature-280` を push する
-- [ ] Phase 3 で作った PR の本文に `Closes #280` を加え、変更内容と確認結果を書く（plugin の `development_flow/branch_pr_issue.md` の経路 1）
+- [x] Phase 3 で作った PR の本文に `Closes #280` を加え、変更内容と確認結果を書く（plugin の `development_flow/branch_pr_issue.md` の経路 1）
 - [ ] merge は利用者が行う
 
 ---
