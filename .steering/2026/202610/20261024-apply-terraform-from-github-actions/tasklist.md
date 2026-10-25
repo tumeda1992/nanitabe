@@ -157,7 +157,7 @@ design の「workflow の構成」の表のとおり。
 - [x] S3 の全文を `aws s3 cp` で取得し、差分が prod は 0、review は SSM parameter 6 つの state からの削除（`removed`、destroy ではない）だけであることを確認する
 - [x] log と PR コメントを、hosted zone 名、account ID、zone ID の文字列で検索し、出ていないことを確認する（検索語は `.env` から読み、chat に出さない）
 - [x] 失敗した場合は、原因を特定してから直す。値が log に出た場合は当該 run の log を削除し、利用者へ報告して止まる
-- [ ] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
+- [x] ここで作業を停止し、結果を利用者に確認する。次 phase へは進まない
 
 > 実施メモ: PR は #289（`Closes` なし）。最初の push で review の plan が失敗した。原因は、GitHub の bash が `-e` で動き、`terraform plan -detailed-exitcode` が差分ありで返す終了コード 2 で script が中断したこと（`finish` が呼ばれず S3 保存も要約も無かった）。`set +e` を加えて修正した。続けて、要約で state から外すだけの変更（forget）が update と数えられていたため、`forget` の列を足した。最終の run: prod は変更なし、review は `aws_ssm_parameter` の forget 6、追加・変更・destroy は 0。S3 の全文（`plans/prod/`、`plans/review/`）の要点行は手元の plan と一致した。両 workflow の log（失敗した run を含む 4 本以上）と PR コメントに、hosted zone 名、account ID、zone ID は出ていない。PR コメントは同じ marker のものが更新される（2 件のまま）。
 
