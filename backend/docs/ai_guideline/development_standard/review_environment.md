@@ -119,16 +119,14 @@ review 環境に閉じる操作を、次のいずれにも影響が及ばない�
 
 - `review` branch への force push
 - `start.sh` と `stop.sh` の実行
-- review state に対する `terraform plan`
-- 差分が review state 内の resource の追加・変更だけで、destroy を含まない `terraform apply`
+- 作業 branch から review の apply workflow（`terraform-apply-review.yml`）を手動起動すること（`gh workflow run terraform-apply-review.yml --ref <branch>`）。plan に destroy が 1 件でもあれば workflow が apply せず失敗する
 
 ### 閉じる範囲でも緩めないこと
 
-- `terraform apply` の前に必ず `terraform plan` を実行し、差分が上の条件を満たすことを確認する。
-  満たさない差分が 1 件でもあれば apply せず停止して報告する。
-  この確認は `infrastructure/terraform/envs/review/apply_terraform.sh` が行う。
-  同 script は plan を保存し、destroy を含む変更が 1 件でもあれば apply せず異常終了する。
-  `terraform apply` を直接実行せず、この script を使う。
+- review の apply は手元から行わず、apply workflow の手動起動で行う。
+  手動起動の apply は plan を保存し、destroy を含む変更が 1 件でもあれば apply せず失敗する（replace を含む）。
+  満たさない差分で workflow が失敗したら、再実行せず停止して報告する。
+  plan / apply の全文は S3 にあり、Actions の log には出ない（`infrastructure/README.md`「適用のしかた」）。
 - destroy を含む差分を閉じる操作から外すのは、destroy が「失敗しても再実行で回復できる」という前提を崩すためである。
   add と change は apply し直せば戻るが、destroy で消したものは apply し直しても戻らないことがある。
   - ECR の repository: 中の image も消える。CodePipeline で build し直すまで起動できない。
@@ -145,7 +143,7 @@ review 環境に閉じる操作を、次のいずれにも影響が及ばない�
 
 - `review` へ載せたコードに含まれる migration。起動時に開発 DB のスキーマを変えるため閉じない。
 - prod state に対する apply。review 環境のための変更であっても閉じない。
-- SSM parameter の値の変更。値の出所が `.env` であり、開発環境と共有しているため閉じない。
+- SSM parameter の値の変更。値の出所が `.env` であり、開発環境と共有しているため閉じない。値を変える経路は `scripts/review_backend/put_ssm_parameters.sh`（`.env` から読み、AWS CLI の設定の認証情報で書く）で、これらの parameter は Terraform の管理外である。
 
 閉じるかどうかは**対象の resource と state で決まる**。`review` という名前が付いているかでは決まらない。
 
@@ -157,6 +155,6 @@ review 環境に閉じる操作を、次のいずれにも影響が及ばない�
 
 ## インフラ側の制約
 
-`terraform apply` を実行すると、起動中の review 環境が停止する。
+review の apply（`main` への merge、または手動起動）が走ると、起動中の review 環境が停止する。
 ECS service の `desired_count = 0` が Terraform 定義の正であるため。
 詳細と理由は [`infrastructure/README.md`](../../../../infrastructure/README.md) にある。

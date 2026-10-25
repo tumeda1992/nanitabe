@@ -7,41 +7,83 @@ AWS 上のインフラを Terraform で定義する場所。
 ```text
 infrastructure/terraform/
 ├── values/values.tf        # appname = "nanitabe"
+├── modules/github_oidc/    # GitHub Actions が assume する AWS role（README あり）
 └── envs/
     ├── prod/               # 本番。state key = prod/terraform.tfstate
-    └── review/             # 動作確認環境。state key = review/terraform.tfstate
+    ├── review/             # 動作確認環境。state key = review/terraform.tfstate
+    └── verify-infra/       # module がローカル実行で動くかを確かめる spike 用（README 参照）
 ```
 
 `envs/*` が root module であり、各アプリケーションの `terraform/envs/*` を module として呼ぶ。
 
 | env | 呼ぶ module | 中身 |
 | --- | --- | --- |
-| `prod` | `state_in_s3`、`frontend/terraform/envs/prod` | Terraform state 用の S3 と DynamoDB、frontend の Amplify app（branch と custom domain を含む） |
+| `prod` | `state_in_s3`、`frontend/terraform/envs/prod`、`github_oidc` | Terraform state 用の S3 と DynamoDB、frontend の Amplify app（branch と custom domain を含む）、GitHub Actions 用の role |
 | `review` | `backend/terraform/envs/review` | backend の動作確認環境。ECR、ECS、API Gateway、CI/CD |
 
 state を分けているため、`review` への適用が `prod` の resource を対象にしない。逆も同じ。
+`verify-infra` の spike は local state を使い、prod と review の state には触れない。
 
 ## 適用のしかた
 
-各 env の directory で、`init_terraform.sh` を実行してから `apply_terraform.sh` を実行する。
+`prod` と `review` の plan と apply は GitHub Actions だけが行う。手元から実行しない。
 
-どちらの script も `/etc/opt/app_setting_files/nanitabe/.env` を読み、必要な値を `TF_VAR_*` へ export する。
-secret を repository へ置かないため、この形になっている。
-
-```sh
-cd infrastructure/terraform/envs/review
-./init_terraform.sh
-./apply_terraform.sh
+```text
+PR を出す  → plan workflow が動き、要約が PR コメントに出る
+merge する → apply workflow が動き、続けて plan して差分が空であることを確かめる
 ```
 
-`init_terraform.sh` は S3 backend の設定を `-backend-config` で渡す。state key は env ごとに違う。
+| workflow | 起動 | 行うこと |
+| --- | --- | --- |
+| `terraform-plan-prod.yml`、`terraform-plan-review.yml` | `main` への PR（同じ repository の branch から。対象 root の file を変えたときだけ）、手動 | plan role で plan。全文を S3 へ保存し、要約を PR コメントへ出す |
+| `terraform-apply-prod.yml` | `main` への push、手動 | Environment `prod` の apply role で apply。続けて plan し、差分が空であることを確かめる |
+| `terraform-apply-review.yml` | `main` への push、任意の branch からの手動 | Environment `review` の apply role で apply。手動起動のときは、plan に destroy が 1 件でもあれば apply せず失敗する |
 
-`review` env の `apply_terraform.sh` は、prod 側と違い plan の実行と差分の判定を含む。
-plan を file へ保存し、destroy を含む変更が 1 件でもあれば apply せず異常終了する。
-review 環境では agent が permission を持ってこの script を実行するため、
-差分の確認を人の目視に委ねず script 自身が行う形にしている。
+- 4 本が共有する手順は `.github/actions/terraform-run/` にある。各 workflow は root、role、`TF_VAR_*` の対応だけを持つ。
+- `TF_VAR_*` の元の値は GitHub の repository secrets にある。secret 名は旧 `.env` の key 名に揃えている。apply role の ARN だけは Environment secrets（`prod`、`review`）にある。
+- Terraform に通す値は、resource の定義に Terraform 自身が必要とし、AWS から引けない値だけにする。AWS から引ける識別子（zone の ID、account ID、CodeConnections の connection）は data source で引く。認証情報と鍵は通さない（Amplify の GitHub token、review の DB 接続情報と `RAILS_MASTER_KEY`）。
+
+### 出力の読み方
+
+repository は public で、Actions の log と PR コメントは誰でも読める。plan / apply の全文には domain 名、account ID、zone ID が含まれるため、log にも PR コメントにも出さない。
+
+- PR コメントと log に出るのは、resource の種別ごとの create / update / delete / replace / forget の件数と、destroy の件数だけである。destroy が 0 でなければ merge の前に全文を読む。
+- 全文は state 用 bucket の `plans/<root>/<run id>.txt`（plan）と `applies/<root>/<run id>.txt`（apply）へ保存される。要約に key が書かれている。非公開で暗号化済みである。
+
+```sh
+aws s3 ls                                                        # state 用 bucket の名前を確かめる
+aws s3 cp "s3://<state 用 bucket>/plans/review/<run id>.txt" - | less
+```
+
+認証情報は AWS CLI の設定（`~/.aws/`）から得る。
+
+- Terraform のエラーメッセージに値が混ざる可能性は残る。失敗した run は log を確認し、値が出ていれば当該 run の log を削除する。
+
+### review の apply を試す
+
+review の定義を試すために `main` へ merge する必要は無い。作業 branch から `terraform-apply-review.yml` を手動起動する（`gh workflow run terraform-apply-review.yml --ref <branch>`）。destroy を含む plan では apply せず失敗する。`terraform-apply-prod.yml` を作業 branch から起動しても、Environment `prod` の deployment branch が `main` だけのため動かない。
+
+### 初回の bootstrap
+
+GitHub Actions が AWS に接続するための role（`modules/github_oidc/`）だけは、role が無いと Actions が動かないため、手元から一度だけ apply した。以後は Actions が適用し、この role 自身の変更も PR から行う。
+
+### spike（verify-infra）
+
+手元で Terraform を実行してよいのは、module がローカル実行で動くかを確かめる spike だけである。方針は [`envs/verify-infra/README.md`](./terraform/envs/verify-infra/README.md) にある。prod と review の apply を手元から行わない決まりは、構成ではなく規範が担保する。
+
+### `main` の保護
+
+branch protection で PR を経ない push を禁止している。required check は置かない（paths で絞った workflow を required にすると、Terraform に触れない PR が merge できなくなるため）。
 
 ## review 環境に固有の注意
+
+### review の変更は PR の要約で destroy を確かめてから merge する
+
+`main` への merge での review の apply は、destroy の有無を自動では止めない（手動起動の apply だけが止める）。PR の要約の先頭にある destroy の件数を見て、0 でなければ全文を読んでから merge する。destroy を一律に止めるのは、destroy が「失敗しても再実行で回復できる」前提を崩すためである（理由は [`review_environment.md`](../backend/docs/ai_guideline/development_standard/review_environment.md)）。
+
+### review の SSM parameter は Terraform の管理外
+
+`/nanitabe-back/review/` の `DB_NAME`、`DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASS`、`RAILS_MASTER_KEY` は Terraform の管理外で、AWS 上に残っている。値を GitHub secrets と Terraform の state の両方に残さないためである。task definition の `valueFrom` と task execution role の `ssm:GetParameters` は、名前から組み立てた ARN で参照する。値を変えるときは `scripts/review_backend/put_ssm_parameters.sh`（`.env` から読む）を実行する。代償として parameter の存在が IaC に現れず、script と task definition が同じ名前を使うことで対応を保つ。
 
 ### `terraform apply` は起動中の review 環境を落とす
 
@@ -92,11 +134,15 @@ resource を構成へ含めるかを金額で判断する基準は [`cost_judgme
 
 - **network**: VPC は default の 1 つだけで、subnet は 3 つとも public。
   private subnet と NAT Gateway を持たない。private subnet に置く前提の構成は、NAT Gateway の新設を伴う。
-- **GitHub と AWS の関係**: GitHub 側に AWS の credentials も OIDC の信頼設定も置かない。
+- **GitHub と AWS の関係**: GitHub Actions が OIDC で AWS の role を assume して Terraform を適用する。
+  OIDC identity provider は同じ account の別 repository（x_favorites）の Terraform が所有し、この repository は参照するだけである（[`modules/github_oidc/README.md`](./terraform/modules/github_oidc/README.md)）。
+  plan role は PR と任意の branch から、apply role は Environment（`prod`、`review`）からだけ assume できる。
+  AWS の access key は GitHub にも `.env` にも置かない。
+  repository は public のため、plan / apply の出力の全文は log に出さず非公開の S3 へ保存する（「適用のしかた」）。
   backend の deploy は AWS 側（CodePipeline / CodeBuild）が `CodeStarSourceConnection` で GitHub を見る形にする。
   frontend の deploy は Amplify が GitHub の personal access token で repository を見て、`main` への push で build する。
-  token は `AMPLIFY_GITHUB_ACCESS_TOKEN` として `.env` から Terraform へ渡す。
-  `.github/workflows/` は test と lint だけを行う。
+  token は Terraform に通さず、手元で更新する（[`frontend/terraform/modules/amplify/README.md`](../frontend/terraform/modules/amplify/README.md)）。
+  `.github/workflows/` は test と lint のほか、Terraform の plan と apply を行う。
 - **CPU architecture**: container の build と実行を ARM で統一する。
   CodeBuild は `ARM_CONTAINER`、Fargate は `ARM64`。
 - **課金**: resource を足すかどうかを金額で判断するときは [`cost_judgment.md`](./cost_judgment.md) を見る。
