@@ -1,6 +1,6 @@
 # modules/amplify
 
-nanitabe frontend の本番配信先である AWS Amplify Hosting の app、branch、custom domain を作る。
+nanitabe frontend の本番配信先と動作確認環境（review）である AWS Amplify Hosting の app、branch、custom domain を作る。
 
 ## この module が持つもの / 持たないもの
 
@@ -21,7 +21,7 @@ nanitabe frontend の本番配信先である AWS Amplify Hosting の app、bran
 | --- | --- |
 | build の手順、Node.js の version | repository 直下の `amplify.yml` |
 | app の環境変数 | `main.tf` の `environment_variables`（`AMPLIFY_MONOREPO_APP_ROOT` と `NEXT_PUBLIC_CLIENT_SIDE_PROD_ORIGIN`） |
-| 監視する branch | 呼び出し側 `envs/prod/main.tf` の `branch_names` |
+| 監視する branch | 呼び出し側 `envs/prod/main.tf`（`main`）と `envs/review/main.tf`（`review`）の `branch_names` |
 | custom domain の割り当て | 呼び出し側の `custom_domain` と `custom_domain_sub_domains` |
 
 ## 不変条件
@@ -61,10 +61,20 @@ app は fine-grained personal access token で GitHub に接続する。
 
 - 対象 repository は `tumeda1992/nanitabe` だけ
 - 権限は Contents: read、Metadata: read、Webhooks: read and write
-- 失効すると Amplify が repository を見られなくなり、build が起動しない。次の手順で token を更新する
+- Amplify は token を app に保存し、build のたびの clone に使う（`repositoryCloneMethod = TOKEN`）。期限が切れると、その app の build が止まる。prod と review は別の app で、token も別に持つため、それぞれ期限を管理する。次の手順で token を入れ直す
 - token は Terraform に通さない。`aws_amplify_app` は `ignore_changes = [access_token]` を持ち、`amplify_github_access_token` は既定値 `null` の optional である。値を repository にも GitHub secrets にも chat にも書かない
 - 更新手順: 手元で `aws amplify update-app --app-id <app id> --access-token <新しい token>`（AWS CLI の設定の認証情報を使う）
-- app を作り直すとき（destroy 後の apply）だけ、`TF_VAR_amplify_github_access_token` に値を個別に渡す
+- app を作り直すとき（destroy 後の apply）だけ、`TF_VAR_amplify_github_access_token` に値を個別に渡す（prod）
+
+### review の app の作り方
+
+review（`envs/review`）は `github_access_token` を受け取らない。app は token を CLI の一回だけに渡して作り、Terraform へ import する。token を Terraform と GitHub secrets に残さないためである。
+
+1. token を発行する（上の権限）
+2. `aws amplify create-app --name nanitabe-front-review --repository https://github.com/tumeda1992/nanitabe --access-token <token> --platform WEB_COMPUTE`（token はこの command にだけ渡し、保存しない）
+3. review root（`infrastructure/terraform/envs/review/main.tf`）へ import block（`to = module.frontend.module.amplify.aws_amplify_app.this`、`id = "<app id>"`）を足し、PR の plan で import と追加（branch、domain association）だけであることを確認して apply する
+4. 取り込み後に import block を削除する
+5. git の `review` branch を `main` へ揃え、build が起動しなければ `aws amplify start-job --job-type RELEASE` で起動する
 
 ## 変更ガイド
 

@@ -5,6 +5,7 @@
 - フォーマット方針 @formatting.md
 - dockerコマンド実行方針 @docker.md
 - ローカル開発マシン固有のdocker事象 @docker.local.md
+- PC 以外の端末で画面を確かめる動作確認環境 @../../../../backend/docs/ai_guideline/development_standard/review_environment.md
 
 ## リポジトリ非依存の共通標準
 

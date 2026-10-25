@@ -1,6 +1,6 @@
-# review 環境（backend の動作確認環境）
+# review 環境（動作確認環境）
 
-`main` へ入れる前の backend を、開発者の PC 以外の端末から叩いて確認するための環境。
+`main` へ入れる前の変更を、開発者の PC 以外の端末から、画面の操作と API の呼び出しで確認するための環境。frontend（Amplify）と backend（ECS）から成り、同じ git の `review` branch を両方が監視する。
 
 ## 何ができて、何ができないか
 
@@ -9,22 +9,24 @@
 - ECS 上で production 設定の Rails を起動し、
   `https://review-backend-nanitabe.<hosted zone>/graphql` へ `POST` を叩ける。
   `<hosted zone>` は `.env` の `ROUTE53_HOSTZONE_NAME` が指す domain。terraform 側も同じ変数から組み立てる。
+- frontend の画面 `https://review-nanitabe.<hosted zone>` を PC 以外の端末で開き、ログイン、カレンダーの表示、献立の登録などを画面から操作できる。frontend は backend の review 環境を向き、本番の backend は向かない。
 - スマホ実機など、ローカルの `docker compose` へ到達できない端末から確認できる。これがこの環境を作った理由である。
 
 できないこと。
 
-- frontend とは繋がない。画面から操作する確認はできない。
+- backend が停止している間の API 呼び出しと、データを変える画面操作。frontend の画面は常に開けるが、API が応答しない（後述）。
+- 本番の backend を向いた確認。
 - `admin/` 配下の管理画面は開けない。image で `assets:precompile` を行っていないため。
 - `/graphiql` は開けない。`RAILS_ENV=production` では mount されない。
 
 ## 開発 DB を共有している
 
-この環境は、ローカルの `docker compose` が使っているのと同じ DB・同じ database へ接続する。専用の DB を持たない。
+この環境（frontend 経由の操作を含む）は、ローカルの `docker compose` が使っているのと同じ DB・同じ database へ接続する。専用の DB を持たない。
 
 そのため次の 2 つが起きる。どちらも承知のうえで、実データのまま確認できることを取っている。
 
 - 起動時に `rails db:migrate` が走る。`review` へ載せたコードに未適用の migration が含まれていれば、開発 DB のスキーマがその時点で変わる。
-- この環境からの mutation は開発 DB のデータを変える。ローカルでの確認結果に影響する。
+- この環境からの mutation は、画面からの操作を含めて開発 DB のデータを変える。ローカルでの確認結果に影響する。本番のデータは変わらない。
 
 ## 使い方
 
@@ -38,15 +40,22 @@ git push -f origin <確認対象の branch>:review
 
 `main` へ rebase してから載せる。`main` の変更と組み合わせた挙動を確認するため。
 
+frontend と backend は同じ `review` branch を監視するため、片方だけ古いまま確かめる事故は起きない。frontend だけの変更を載せても、backend は `main` の上に frontend の変更が乗った commit を build するため、挙動は `main` と同じになる。
+
 ### 2. build の成否を確認する
 
-push を契機に CodePipeline が起動し、CodeBuild が image を作って ECR へ push する。
+push を契機に、backend は CodePipeline が起動し、CodeBuild が image を作って ECR へ push する。frontend は Amplify の review app が build して配信する。
 
-build が失敗すると ECR には前回の image が残る。**成否を確認せずに起動すると、確認したい内容ではなく前回の内容が動く。**
+backend の build が失敗すると ECR には前回の image が残る。**成否を確認せずに起動すると、確認したい内容ではなく前回の内容が動く。** frontend も同様に、失敗すると前回の build が配信され続ける。
 
 ```sh
+# backend
 aws codepipeline list-pipeline-executions --pipeline-name nanitabe-back_codepipeline_review
+# frontend（app id は aws amplify list-apps で nanitabe-front-review の id を引く）
+aws amplify list-jobs --app-id <review app id> --branch-name review
 ```
+
+frontend の job が起動しなかったときは `aws amplify start-job --app-id <review app id> --branch-name review --job-type RELEASE` で起動する。
 
 ### 3. 起動する
 
@@ -68,7 +77,9 @@ schedule の登録に失敗した場合、script は起動を取り消して終�
 
 ### 4. 確認する
 
-出力された URL へ `POST /graphql` する。認証は通常どおり devise + JWT で、開発 DB の既存アカウントがそのまま使える。
+画面から確かめるときは、`https://review-nanitabe.<hosted zone>` を PC 以外の端末で開く。認証は通常どおりで、開発 DB の既存アカウントがそのまま使える。frontend は常に配信していて、起動・停止の操作を持たない。
+
+API だけを確かめるときは、出力された URL へ `POST /graphql` する。認証は devise + JWT。
 
 ### 5. 停止する
 
@@ -80,7 +91,9 @@ schedule の登録に失敗した場合、script は起動を取り消して終�
 
 ### 停止中に URL を叩くとどうなるか
 
-HTTP 500 が返る。**これは壊れているのではなく、停止中の正常な状態である。**
+frontend の画面は開けるが、API が応答しないため、ログインやデータの取得・登録はできない。これも壊れているのではない。backend を `start.sh` で起動してから確かめる。
+
+backend の URL を直接叩くと HTTP 500 が返る。**これは壊れているのではなく、停止中の正常な状態である。**
 
 API Gateway と証明書と DNS レコードは常設なので、URL 自体は生きている。停止すると転送先が到達しない address へ戻るため、API Gateway が backend へ届かず 500 になる。
 
@@ -150,7 +163,8 @@ review 環境に閉じる操作を、次のいずれにも影響が及ばない�
 ## 誤適用
 
 - `review` を「`main` と同じものが載っている場所」として開くこと。何が載っているかは保証しない。
-- frontend と繋いだ end-to-end の確認に使おうとすること。この環境は backend API 単体までを対象にしている。
+- backend を起動せずに frontend の画面を開いて、壊れていると判断すること。
+- 画面の操作が本番のデータに入ると考えること。向き先は backend の review 環境で、データは開発 DB である。
 - `admin/` 配下の管理画面を開こうとすること。image で `assets:precompile` を行っていないため開けない。
 
 ## インフラ側の制約

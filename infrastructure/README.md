@@ -167,5 +167,9 @@ resource を構成へ含めるかを金額で判断する基準は [`cost_judgme
 
 ## 環境の使い方
 
-review 環境へ何を載せ、どう起動して確認するかは、
+review 環境は frontend（Amplify の app `nanitabe-front-review`）と backend を合わせた動作確認環境で、
+frontend は `https://review-nanitabe.<hosted zone>` で常時配信し、backend の review 環境を向く。
+何を載せ、どう起動して確認するかは、
 [`review_environment.md`](../backend/docs/ai_guideline/development_standard/review_environment.md) にある。
+frontend の app を作り直す手順は
+[`modules/amplify/README.md`](../frontend/terraform/modules/amplify/README.md) にある。
