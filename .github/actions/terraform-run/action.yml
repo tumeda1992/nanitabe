@@ -91,14 +91,15 @@ runs:
               | { type: .type,
                   kind: (if ($a | index("delete")) and ($a | index("create")) then "replace"
                          elif ($a | index("delete")) then "delete"
+                         elif ($a | index("forget")) then "forget"
                          elif ($a | index("create")) then "create"
                          else "update" end) } ] as $changes
             | ($changes | map(select(.kind == "delete" or .kind == "replace")) | length) as $destroy
             | "destroy: \($destroy) 件（replace を含む）\n"
               + (if ($changes | length) == 0 then "\n変更なし"
-                 else "\n| resource type | create | update | delete | replace |\n| --- | --- | --- | --- | --- |\n"
+                 else "\n| resource type | create | update | delete | replace | forget（state から外すだけ） |\n| --- | --- | --- | --- | --- | --- |\n"
                    + ( $changes | group_by(.type)
-                       | map("| \(.[0].type) | \(map(select(.kind=="create"))|length) | \(map(select(.kind=="update"))|length) | \(map(select(.kind=="delete"))|length) | \(map(select(.kind=="replace"))|length) |")
+                       | map("| \(.[0].type) | \(map(select(.kind=="create"))|length) | \(map(select(.kind=="update"))|length) | \(map(select(.kind=="delete"))|length) | \(map(select(.kind=="replace"))|length) | \(map(select(.kind=="forget"))|length) |")
                        | join("\n") )
                  end)
           ' "$json"
