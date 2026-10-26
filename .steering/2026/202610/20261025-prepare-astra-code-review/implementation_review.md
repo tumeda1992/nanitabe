@@ -21,3 +21,7 @@ NormalizeWordAttributes.buildへ保存属性生成を集約し、登録create・
 ## RV-013
 
 GraphQL層FoodDishInputへ出典relationとタグ変換を抽出。resolverのtransactionと集約間呼出順は維持。入力なし・種別別・新規出典ID・タグ順の7ケース追加。関連dish/meal mutationを含むRSpec: 58 examples, 0 failures。
+
+## RV-001
+
+既存出典/新規出典の入力変換をジェネリック関数へ集約。旧実装へ追加した回帰7件が成功してから抽出し、freeze入力・meal/frameEntryId・タグ・NO_VALUEのnull保持を確認。料理/食事フォームを含むJest: 10 suites, 54 tests成功。

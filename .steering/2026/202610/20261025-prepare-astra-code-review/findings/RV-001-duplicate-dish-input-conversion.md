@@ -2,8 +2,8 @@
 
 - 観点: 保守性・契約
 - 優先度: 中
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 今回の適用対象: 対象
 - 対象コミット: 46ad16a84c2d4c0cc82d23136573ac139493215e
 - 対象: frontend/src/features/dish/addDishMutation.ts、frontend/src/features/meal/addMealMutation.ts、frontend/src/features/meal/updateMealMutation.ts、frontend/src/features/dish/updateDishMutation.ts の convertFrom…InputToGraphqlInput
@@ -27,4 +27,6 @@ normalizeFunctions.tsに既存出典用・新規出典用の入力変換を集�
 
 ## 採否・対応記録
 
-静的コード確認のみ。テスト未実行、未適用。
+- 2026-10-26: ユーザーの適用指示により採用・実装済み。
+- 検証: 既存出典/新規出典の入力変換をジェネリック関数へ集約。旧実装へ追加した回帰7件が成功してから抽出し、freeze入力・meal/frameEntryId・タグ・NO_VALUEのnull保持を確認。料理/食事フォームを含むJest: 10 suites, 54 tests成功。
+- 適用コミット: 本ファイルの完了記録と同じコミット（git logで参照可能）
