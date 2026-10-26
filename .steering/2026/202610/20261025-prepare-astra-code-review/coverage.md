@@ -1,5 +1,7 @@
 # 確認範囲と検証記録
 
+本ファイルは静的レビュー完了時点の記録。適用工程のテスト結果は[implementation_review.md](./implementation_review.md)を参照する。
+
 - 対象コミット: `46ad16a84c2d4c0cc82d23136573ac139493215e`
 - 作業ブランチ: `feature-287`
 - 完了日: 2026-10-26
