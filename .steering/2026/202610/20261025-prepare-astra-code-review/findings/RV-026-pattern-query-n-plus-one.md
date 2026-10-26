@@ -2,8 +2,8 @@
 
 - 観点: 保守性・性能・契約
 - 優先度: 中
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 今回の適用対象: 対象
 - 対象コミット: 46ad16a84c2d4c0cc82d23136573ac139493215e
 - 対象: backend/app/graphql/queries/meal/frame/pattern/meal_frame_patterns.rb; backend/app/graphql/types/output/meal/frame/pattern/meal_frame_pattern_for_list.rb: entries; meal_frame_pattern_entry_for_list.rb: meal_frame_name
@@ -27,4 +27,6 @@
 
 ## 採否・対応記録
 
-静的確認のみ。動的再現・テスト未実行、採否未判断、未適用。
+- 2026-10-26: ユーザーの適用指示により採用・実装済み。
+- 検証: GraphQL Dataloaderでパターンentriesと枠名をbatch取得。追加SQL数テストは変更前13 SELECTで失敗、変更後3 SELECTで成功。順序・空一覧・他ユーザー除外・欠落枠空文字とpattern mutationを含むRSpec: 12 examples, 0 failures。
+- 適用コミット: 本ファイルの完了記録と同じコミット（git logで参照可能）

@@ -5,7 +5,7 @@ module Types::Output::Meal::Frame::Pattern
     field :entries, [::Types::Output::Meal::Frame::Pattern::MealFramePatternEntryForList], null: false
 
     def entries
-      ::MealFramePatternEntry.where(meal_frame_pattern_id: object[:id]).map do |entry|
+      context.dataloader.with(::Sources::MealFramePatternEntries).load(object[:id]).map do |entry|
         {
           id: entry.id,
           day_offset: entry.day_offset,

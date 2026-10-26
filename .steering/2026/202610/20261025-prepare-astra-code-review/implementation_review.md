@@ -33,3 +33,7 @@ GraphQL層FoodDishInputへ出典relationとタグ変換を抽出。resolverのtr
 ## RV-012
 
 MealFramePatternFieldsへ入力・検証・DOMを集約し、作成/編集wrapperにAPI呼出と初期値復元を残した。共通化前の回帰6件と既存Form/Listを実行: 3 suites, 13 tests成功。
+
+## RV-026
+
+GraphQL Dataloaderでパターンentriesと枠名をbatch取得。追加SQL数テストは変更前13 SELECTで失敗、変更後3 SELECTで成功。順序・空一覧・他ユーザー除外・欠落枠空文字とpattern mutationを含むRSpec: 12 examples, 0 failures。
