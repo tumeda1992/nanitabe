@@ -29,3 +29,7 @@ GraphQL層FoodDishInputへ出典relationとタグ変換を抽出。resolverのtr
 ## RV-029
 
 週/月ページのURL日付処理をcalendarDateFromPathへ抽出。09:00、query付きURLのfallback、形式のみ検査、非anchor正規表現を維持。Jest: 日付8ケースとCalendar統合3ケース、計2 suites/11 tests成功。
+
+## RV-012
+
+MealFramePatternFieldsへ入力・検証・DOMを集約し、作成/編集wrapperにAPI呼出と初期値復元を残した。共通化前の回帰6件と既存Form/Listを実行: 3 suites, 13 tests成功。

@@ -2,8 +2,8 @@
 
 - 観点: 保守性・責務・型
 - 優先度: 中
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 今回の適用対象: 対象
 - 対象コミット: 46ad16a84c2d4c0cc82d23136573ac139493215e
 - 対象: frontend/src/components/meal/frame/pattern/MealFramePatternForm.tsx; MealFramePatternEditForm.tsx
@@ -27,6 +27,6 @@
 
 ## 採否・対応記録
 
-- ユーザーの判断: 未判断
-- 確認: コードと記載した関連specの静的確認。動的再現・テストは未実行。
-- 適用コミット: 未適用
+- 2026-10-26: ユーザーの適用指示により採用・実装済み。
+- 検証: MealFramePatternFieldsへ入力・検証・DOMを集約し、作成/編集wrapperにAPI呼出と初期値復元を残した。共通化前の回帰6件と既存Form/Listを実行: 3 suites, 13 tests成功。
+- 適用コミット: 本ファイルの完了記録と同じコミット（git logで参照可能）
