@@ -17,6 +17,7 @@ const buildMeal = (overrides = {}) => ({
   date: new Date(2026, 2, 9),
   mealType: MEAL_TYPE.LUNCH,
   comment: null,
+  mealFrameEntryId: null as number | null,
   dish: {
     id: 55,
     name: '生姜焼き',
