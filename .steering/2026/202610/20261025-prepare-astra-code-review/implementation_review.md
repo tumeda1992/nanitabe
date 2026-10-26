@@ -25,3 +25,7 @@ GraphQL層FoodDishInputへ出典relationとタグ変換を抽出。resolverのtr
 ## RV-001
 
 既存出典/新規出典の入力変換をジェネリック関数へ集約。旧実装へ追加した回帰7件が成功してから抽出し、freeze入力・meal/frameEntryId・タグ・NO_VALUEのnull保持を確認。料理/食事フォームを含むJest: 10 suites, 54 tests成功。
+
+## RV-029
+
+週/月ページのURL日付処理をcalendarDateFromPathへ抽出。09:00、query付きURLのfallback、形式のみ検査、非anchor正規表現を維持。Jest: 日付8ケースとCalendar統合3ケース、計2 suites/11 tests成功。

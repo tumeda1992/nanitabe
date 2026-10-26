@@ -2,8 +2,8 @@
 
 - 観点: 保守性・性能・契約
 - 優先度: 低
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 今回の適用対象: 対象
 - 対象コミット: 46ad16a84c2d4c0cc82d23136573ac139493215e
 - 対象: frontend/src/app/calendar/week/[date]/page.tsx; frontend/src/app/calendar/month/[date]/page.tsx
@@ -27,4 +27,6 @@
 
 ## 採否・対応記録
 
-静的確認のみ。動的再現・テスト未実行、採否未判断、未適用。
+- 2026-10-26: ユーザーの適用指示により採用・実装済み。
+- 検証: 週/月ページのURL日付処理をcalendarDateFromPathへ抽出。09:00、query付きURLのfallback、形式のみ検査、非anchor正規表現を維持。Jest: 日付8ケースとCalendar統合3ケース、計2 suites/11 tests成功。
+- 適用コミット: 本ファイルの完了記録と同じコミット（git logで参照可能）
