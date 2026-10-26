@@ -2,8 +2,8 @@
 
 - 観点: 保守性・責務・型
 - 優先度: 中
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 今回の適用対象: 対象
 - 対象コミット: 46ad16a84c2d4c0cc82d23136573ac139493215e
 - 対象: backend/app/domain/business/food/dish/word/usecase/add_command.rb: call; update_command.rb: call
@@ -27,6 +27,6 @@ Normalizerの呼び出し回数とuse_db_normalize_word: false、blank判定を�
 
 ## 採否・対応記録
 
-- ユーザーの判断: 未判断
-- 確認: コードと記載した関連specの静的確認。動的再現・テストは未実行。
-- 適用コミット: 未適用
+- 2026-10-26: ユーザーの適用指示により採用・実装済み。
+- 検証: NormalizeWordAttributes.buildへ保存属性生成を集約し、登録create・更新update!と再反映を維持。空白destinationの回帰ケースを先に追加。RSpec word/usecase全体: 56 examples, 0 failures。
+- 適用コミット: 本ファイルの完了記録と同じコミット（git logで参照可能）

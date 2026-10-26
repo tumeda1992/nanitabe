@@ -13,3 +13,7 @@ food/READMEの責務境界・現行namespaceを統一。相対リンク検査成
 ## RV-015
 
 モード定数・共有型・setterを限定。Jest: 4 suites, 7 tests成功（切替・Escape、料理割当・移動・延期確定）。未定義モードを@ts-expect-errorで検査。既存fixtureの5件の型不整合は独立した変更で補完し、最終tscも成功した。
+
+## RV-014
+
+NormalizeWordAttributes.buildへ保存属性生成を集約し、登録create・更新update!と再反映を維持。空白destinationの回帰ケースを先に追加。RSpec word/usecase全体: 56 examples, 0 failures。
