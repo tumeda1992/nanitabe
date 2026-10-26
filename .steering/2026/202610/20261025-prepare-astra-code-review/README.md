@@ -16,6 +16,7 @@ Astraがリポジトリをレビューし、指摘を独立して参照・採否
 
 - このファイル: レビュー方針、読む順番、確認済み範囲、指摘への索引。
 - [commit-plan.md](./commit-plan.md): レビュー記録を共有するコミット計画。
+- [implementation-commit-plan.md](./implementation-commit-plan.md): 適用差分のコミット計画と、コミット前の未完了事項。
 - [coverage.md](./coverage.md): 確認した範囲、検証と未確認事項。
 - [finding-template.md](./finding-template.md): 各指摘のテンプレート。
 - [findings/](./findings/): `RV-001-具体的な英語の要約.md` の形式で、1指摘1ファイルを保存する。
