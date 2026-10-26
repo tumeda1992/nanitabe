@@ -2,8 +2,8 @@
 
 - 観点: 保守性・責務・型
 - 優先度: 中
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 今回の適用対象: 対象
 - 対象コミット: 46ad16a84c2d4c0cc82d23136573ac139493215e
 - 対象: backend/app/graphql/mutations/dish/add_dish.rb; add_dish_with_new_source.rb; update_dish_with_new_source.rb; backend/app/graphql/mutations/meal/add_meal_with_new_dish.rb; add_meal_with_new_dish_and_new_source.rb; update_meal_with_new_dish.rb; update_meal_with_new_dish_and_new_source.rb
@@ -27,6 +27,6 @@ GraphQL入力層に出典関係変換を抽出し、出典type・確定済みID�
 
 ## 採否・対応記録
 
-- ユーザーの判断: 未判断
-- 確認: コードと記載した関連specの静的確認。動的再現・テストは未実行。
-- 適用コミット: 未適用
+- 2026-10-26: ユーザーの適用指示により採用・実装済み。
+- 検証: GraphQL層FoodDishInputへ出典relationとタグ変換を抽出。resolverのtransactionと集約間呼出順は維持。入力なし・種別別・新規出典ID・タグ順の7ケース追加。関連dish/meal mutationを含むRSpec: 58 examples, 0 failures。
+- 適用コミット: 本ファイルの完了記録と同じコミット（git logで参照可能）

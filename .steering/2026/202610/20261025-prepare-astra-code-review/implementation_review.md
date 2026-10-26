@@ -17,3 +17,7 @@ food/READMEの責務境界・現行namespaceを統一。相対リンク検査成
 ## RV-014
 
 NormalizeWordAttributes.buildへ保存属性生成を集約し、登録create・更新update!と再反映を維持。空白destinationの回帰ケースを先に追加。RSpec word/usecase全体: 56 examples, 0 failures。
+
+## RV-013
+
+GraphQL層FoodDishInputへ出典relationとタグ変換を抽出。resolverのtransactionと集約間呼出順は維持。入力なし・種別別・新規出典ID・タグ順の7ケース追加。関連dish/meal mutationを含むRSpec: 58 examples, 0 failures。
