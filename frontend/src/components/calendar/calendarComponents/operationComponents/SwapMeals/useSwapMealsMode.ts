@@ -2,18 +2,12 @@ import { useState } from 'react';
 import useMeal from '../../../../../features/meal/useMeal';
 import { useBackToDateWhenModeStarted } from '../../useCalendarMode';
 
-export const SWAPPING_MEALS_MODES = {
-  SWAPPING_MEALS_MODE: 'SWAPPING_MEALS_MODE',
-};
-export type SwappingMealMode =
-  (typeof SWAPPING_MEALS_MODES)[keyof typeof SWAPPING_MEALS_MODES];
+import { SWAPPING_MEALS_MODES } from '../../calendarMode';
+import type { CalendarModeControls } from '../../calendarMode';
+export { SWAPPING_MEALS_MODES } from '../../calendarMode';
+export type { SwappingMealMode } from '../../calendarMode';
 
-export default (args: {
-  calendarMode: any;
-  updateCalendarMode: any;
-  changeCalendarModeToDisplayCalendarMode: any;
-  onDataChanged?: any;
-}) => {
+export default (args: CalendarModeControls) => {
   const {
     calendarMode,
     updateCalendarMode,

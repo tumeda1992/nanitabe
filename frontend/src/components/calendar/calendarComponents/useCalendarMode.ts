@@ -1,16 +1,8 @@
 import { useState, useEffect } from 'react';
-import useAssignDishMode, {
-  AssigningDishMode,
-} from './operationComponents/AssignDish/useAssignDishMode';
-import useMoveMealMode, {
-  MovingMealMode,
-} from './operationComponents/MoveMeal/useMoveMealMode';
-import useSwapMealsMode, {
-  SwappingMealMode,
-} from './operationComponents/SwapMeals/useSwapMealsMode';
-import usePostponedMealMode, {
-  PostponedMealMode,
-} from './operationComponents/PostponeMeal/usePostponedMealMode';
+import useAssignDishMode from './operationComponents/AssignDish/useAssignDishMode';
+import useMoveMealMode from './operationComponents/MoveMeal/useMoveMealMode';
+import useSwapMealsMode from './operationComponents/SwapMeals/useSwapMealsMode';
+import usePostponedMealMode from './operationComponents/PostponeMeal/usePostponedMealMode';
 import {
   isMonthPath,
   monthCalendarPagePathOf,
@@ -18,17 +10,17 @@ import {
 import { weekCalendarPagePathOf } from '../../../app/calendar/week/[date]/consts';
 import { useLogicalHistory } from '../../../app/logical-history';
 
-export const DISPLAY_CALENDAR_MODE = 'DISPLAY_CALENDAR_MODE';
+import { DISPLAY_CALENDAR_MODE } from './calendarMode';
+import type { CalendarMode, CalendarModeControls } from './calendarMode';
+export { DISPLAY_CALENDAR_MODE } from './calendarMode';
+export type { CalendarMode } from './calendarMode';
 
-export type CalendarMode =
-  | typeof DISPLAY_CALENDAR_MODE
-  | AssigningDishMode
-  | SwappingMealMode
-  | MovingMealMode
-  | PostponedMealMode;
-
-export default ({ onDataChanged }) => {
-  const [calendarMode, setCalendarMode] = useState(DISPLAY_CALENDAR_MODE);
+export default ({
+  onDataChanged,
+}: Pick<CalendarModeControls, 'onDataChanged'>) => {
+  const [calendarMode, setCalendarMode] = useState<CalendarMode>(
+    DISPLAY_CALENDAR_MODE,
+  );
   const updateCalendarMode = (mode: CalendarMode) => {
     setCalendarMode(mode);
   };

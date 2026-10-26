@@ -2,8 +2,8 @@
 
 - 観点: 保守性・責務・型
 - 優先度: 中
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 今回の適用対象: 対象
 - 対象コミット: 46ad16a84c2d4c0cc82d23136573ac139493215e
 - 対象: frontend/src/components/calendar/calendarComponents/useCalendarMode.ts; operationComponents/MoveMeal/useMoveMealMode.ts; operationComponents/PostponeMeal/usePostponedMealMode.ts; operationComponents/AssignDish/useAssignDishMode.ts; operationComponents/SwapMeals/useSwapMealsMode.ts
@@ -27,6 +27,6 @@
 
 ## 採否・対応記録
 
-- ユーザーの判断: 未判断
-- 確認: コードと記載した関連specの静的確認。動的再現・テストは未実行。
-- 適用コミット: 未適用
+- 2026-10-26: ユーザーの適用指示により採用・実装済み。
+- 検証: モード定数・共有型・setterを限定。Jest: 4 suites, 7 tests成功（切替・Escape、料理割当・移動・延期確定）。未定義モードを@ts-expect-errorで検査。既存fixtureの型不整合は別変更で補完し、最終tscも成功。
+- 適用コミット: 本ファイルの完了記録と同じコミット（git logで参照可能）
