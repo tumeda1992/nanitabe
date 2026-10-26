@@ -15,7 +15,8 @@
         - Finder: データの取得のみを行う処理
       - rootのメソッドなどビジネスロジックを呼び出すことにとどめて、このクラス内でビジネスロジックを実装することは基本的には避ける
         - ドメインロジックがビジネスロジックから散逸することを防ぐため
-      - モジュールを跨がざるを得ない処理はbusinessディレクトリと同階層のapplicationディレクトリで行う
+      - 異なる集約をまたぐオーケストレーションはプレゼンテーション層（controller・GraphQL resolver）が担う
+        - Commandは自集約の内部だけを扱う。詳細な責務境界は[開発標準](../../../../docs/ai_guideline/development_standard/application_architecture.md#レイヤードアーキテクチャ)を正本とする
   - businessディレクトリ内の他モジュールへ公開するエンドポイント
     - usecaseディレクトリ配下のファイル
     - factory.rb
@@ -28,7 +29,9 @@
 | サブモジュール | 役割 |
 |---|---|
 | `Dish` | 料理マスタ |
-| `Meal` | 食事記録（日付 + 料理が確定した記録。`dish_id` は常に必須）。サブモジュールとして `Frame`（枠マスタ）・`FrameEntry`（カレンダー枠エントリ）・`Postponed`（延期された食事）を持つ |
+| `Meal` | 食事記録（日付 + 料理が確定した記録。`dish_id` は常に必須）。サブモジュールとして `Frame`（枠マスタ、その配下に `Frame::Entry` と `Frame::Pattern`）・`Postponed`（延期された食事）を持つ |
+
+枠エントリの現行namespaceは `Meal::Frame::Entry`。旧 `Meal::FrameEntry` の実装も残っているため、移行・削除時には動的参照を含めた利用確認が必要である。現行構成と変更ガイドは[meal/README.md](./meal/README.md)を参照する。
 
 ### Meal・MealFrameEntry・PostponedMeal の違い
 
