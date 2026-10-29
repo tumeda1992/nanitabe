@@ -1,0 +1,9 @@
+yarn run v1.22.22
+$ jest --runInBand --silent src/review-probe.spec.tsx
+PASS src/review-probe.spec.tsx
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        0.995 s, estimated 1 s
+Done in 1.65s.
