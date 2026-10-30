@@ -1,6 +1,9 @@
+import {
+  normalizeDishInputWithExistingSource,
+  normalizeDishInputWithNewSource,
+} from './normalizeFunctions';
 import { gql } from '@apollo/client';
 import * as z from 'zod';
-import _ from 'lodash';
 import {
   newDishSchema,
   putDishRelationSchema,
@@ -18,10 +21,6 @@ import {
   useAddDishWithNewSourceMutation,
 } from '../../lib/graphql/generated/graphql';
 import { newDishSourceSchema } from './source/schema';
-import {
-  normalizeDishSourceRelationDetail,
-  normalizeInputOfAddingDishWithExistingSource,
-} from './normalizeFunctions';
 
 export const ADD_DISH = gql`
   mutation addDish(
@@ -52,16 +51,8 @@ export const AddDishSchema = z.object({
 
 export type AddDish = z.infer<typeof AddDishSchema>;
 
-const convertFromAddDishInputToGraphqlInput = (input: AddDish): AddDish => {
-  const normalizedInput = _.cloneDeep(input);
-  const { selectedDishSource } = input;
-
-  return normalizeInputOfAddingDishWithExistingSource(
-    normalizedInput,
-    selectedDishSource,
-    normalizedInput.dishSourceRelation.dishSourceRelationDetail,
-  );
-};
+const convertFromAddDishInputToGraphqlInput =
+  normalizeDishInputWithExistingSource<AddDish>;
 
 export const ADD_DISH_WITH_NEW_SOURCE = gql`
   mutation addDishWithNewSource(
@@ -93,18 +84,8 @@ export const AddDishWithNewSourceSchema = z.object({
 
 export type AddDishWithNewSource = z.infer<typeof AddDishWithNewSourceSchema>;
 
-const convertFromAddDishWithNewSourceInputToGraphqlInput = (
-  input: AddDishWithNewSource,
-): AddDishWithNewSource => {
-  const normalizedInput = _.cloneDeep(input);
-  const { dishSource } = input;
-
-  normalizedInput.dishSourceRelationDetail = normalizeDishSourceRelationDetail(
-    dishSource.type,
-    normalizedInput.dishSourceRelation.dishSourceRelationDetail,
-  );
-  return normalizedInput;
-};
+const convertFromAddDishWithNewSourceInputToGraphqlInput =
+  normalizeDishInputWithNewSource<AddDishWithNewSource>;
 
 export type AddDishInput = AddDish | AddDishWithNewSource;
 export type AddDishOutput = AddDishMutation | AddDishWithNewSourceMutation;

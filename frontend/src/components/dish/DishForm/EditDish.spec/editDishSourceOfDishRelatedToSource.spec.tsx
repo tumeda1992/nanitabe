@@ -31,6 +31,8 @@ describe('<EditDish>', () => {
     const registeredDishWithDishSourceRelation = {
       ...registeredDish,
       dishSourceRelation: {
+        dishId: registeredDish.id,
+        type: registeredDishSource2.type,
         dishSourceId: registeredDishSource2.id,
         recipeWebsiteUrl: 'https://youtube/ahoaho_channel',
         recipeBookPage: undefined,

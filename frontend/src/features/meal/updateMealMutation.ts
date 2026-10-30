@@ -1,6 +1,9 @@
+import {
+  normalizeDishInputWithExistingSource,
+  normalizeDishInputWithNewSource,
+} from '../dish/normalizeFunctions';
 import { gql } from '@apollo/client';
 import * as z from 'zod';
-import _ from 'lodash';
 import {
   buildMutationExecutor,
   MutationCallbacks,
@@ -19,10 +22,6 @@ import {
   AddDishSchema,
   AddDishWithNewSourceSchema,
 } from '../dish/addDishMutation';
-import {
-  normalizeDishSourceRelationDetail,
-  normalizeInputOfAddingDishWithExistingSource,
-} from '../dish/normalizeFunctions';
 
 export const UPDATE_MEAL = gql`
   mutation updateMeal($dishId: Int!, $meal: MealForUpdate!) {
@@ -66,18 +65,8 @@ const UpdateMealWithNewDishSchema = AddDishSchema.extend({
 });
 export type UpdateMealWithNewDish = z.infer<typeof UpdateMealWithNewDishSchema>;
 
-const convertFromUpdateMealWithNewDishInputToGraphqlInput = (
-  input: UpdateMealWithNewDish,
-): UpdateMealWithNewDish => {
-  const normalizedInput = _.cloneDeep(input);
-  const { selectedDishSource } = input;
-
-  return normalizeInputOfAddingDishWithExistingSource(
-    normalizedInput,
-    selectedDishSource,
-    normalizedInput.dishSourceRelation.dishSourceRelationDetail,
-  );
-};
+const convertFromUpdateMealWithNewDishInputToGraphqlInput =
+  normalizeDishInputWithExistingSource<UpdateMealWithNewDish>;
 
 export const UPDATE_MEAL_WITH_NEW_DISH_AND_NEW_SOURCE = gql`
   mutation updateMealWithNewDishAndNewSource(
@@ -111,18 +100,8 @@ export type UpdateMealWithNewDishAndNewSource = z.infer<
   typeof UpdateMealWithNewDishAndNewSourceSchema
 >;
 
-const convertFromUpdateMealWithNewDishAndNewSourceInputToGraphqlInput = (
-  input: UpdateMealWithNewDishAndNewSource,
-): UpdateMealWithNewDishAndNewSource => {
-  const normalizedInput = _.cloneDeep(input);
-  const { dishSource } = input;
-
-  normalizedInput.dishSourceRelationDetail = normalizeDishSourceRelationDetail(
-    dishSource.type,
-    normalizedInput.dishSourceRelation.dishSourceRelationDetail,
-  );
-  return normalizedInput;
-};
+const convertFromUpdateMealWithNewDishAndNewSourceInputToGraphqlInput =
+  normalizeDishInputWithNewSource<UpdateMealWithNewDishAndNewSource>;
 
 export type UpdateMealInput =
   | UpdateMeal

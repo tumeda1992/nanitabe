@@ -10,8 +10,8 @@ module Business::Food::Meal
     validates :date2, presence: true
 
     def call
-      date1_meal_roots = ::Meal.fetch_by_date(date1)
-      date2_meal_roots = ::Meal.fetch_by_date(date2)
+      date1_meal_roots = ::Meal.where(user_id: user_id, date: date1).map { |meal| ::Meal.build_existing_root_from_id(meal.id) }
+      date2_meal_roots = ::Meal.where(user_id: user_id, date: date2).map { |meal| ::Meal.build_existing_root_from_id(meal.id) }
 
       date1_meal_roots.each do |date1_meal_root|
         date1_meal_root.reschedule(date2)

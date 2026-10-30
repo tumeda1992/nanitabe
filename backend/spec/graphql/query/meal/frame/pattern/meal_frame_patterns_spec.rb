@@ -71,4 +71,38 @@ RSpec.describe "mealFramePatterns query", type: :request do
       expect(names).not_to include("他ユーザーのパターン")
     end
   end
+  context "when several patterns share frames" do
+    let!(:patterns_with_entries) do
+      Array.new(4) do |index|
+        pattern = MealFramePattern.create!(user: user_record, name: "配置#{index}")
+        [3, 1].each do |day|
+          MealFramePatternEntry.create!(meal_frame_pattern: pattern, meal_frame:, day_offset: day, meal_type: 3)
+        end
+        pattern
+      end
+    end
+
+    it "loads entries and frame names in a bounded number of SELECTs" do
+      headers = fetch_auth_header_values(existing_user_id: user_record.id)
+      data = nil
+      queries = count_queries { data = fetch_mutation(build_query, {}, headers:) }
+      pattern_queries = queries.grep(/FROM ["`]?meal_frame/)
+      expect(pattern_queries.length).to eq(3)
+      expect(data["mealFramePatterns"].map { |pattern| pattern["id"] }).to eq(patterns_with_entries.map(&:id))
+      data["mealFramePatterns"].each do |pattern|
+        expect(pattern["entries"].map { |entry| entry["dayOffset"] }).to eq([3, 1])
+        expect(pattern["entries"].map { |entry| entry["mealFrameName"] }).to eq(["テスト枠", "テスト枠"])
+      end
+    end
+  end
+
+  it "keeps missing frame names as an empty string" do
+    pattern = MealFramePattern.create!(user: user_record, name: "欠落枠")
+    entry = MealFramePatternEntry.create!(meal_frame_pattern: pattern, meal_frame:, day_offset: 1, meal_type: 1)
+    ActiveRecord::Base.connection.disable_referential_integrity do
+      entry.update_column(:meal_frame_id, 999_999)
+    end
+    data = fetch_mutation_with_auth(build_query, {}, user_record.id)
+    expect(data["mealFramePatterns"].first["entries"].first["mealFrameName"]).to eq("")
+  end
 end

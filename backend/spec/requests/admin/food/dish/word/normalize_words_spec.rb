@@ -1,6 +1,11 @@
 require "rails_helper"
+require Rails.root.join("spec/support/admin_authentication")
 
 RSpec.describe "Admin::Food::Dish::Word::NormalizeWords", type: :request do
+  include AuthenticatedAdminRequests
+
+  before { stub_admin_credentials }
+
   describe "GET /admin/food/dish/word/normalize_words" do
     it "returns http success" do
       get admin_food_dish_word_normalize_words_path

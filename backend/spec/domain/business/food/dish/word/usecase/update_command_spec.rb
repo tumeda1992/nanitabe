@@ -119,6 +119,13 @@ RSpec.describe Business::Food::Dish::Word::Usecase::UpdateCommand do
       end
     end
 
+    it "uses normalized source when destination is whitespace" do
+      described_class.call(normalize_word_id: normalize_word.id, source: "ぶた", destination: "  ")
+      word = normalize_word.reload
+      expect(word.entered_destination).to eq("")
+      expect(word.destination).to eq("ブタ")
+    end
+
     context "when destination is nil" do
       it "updates with source as destination" do
         described_class.call(

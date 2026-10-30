@@ -1,6 +1,9 @@
+import {
+  normalizeDishInputWithExistingSource,
+  normalizeDishInputWithNewSource,
+} from '../dish/normalizeFunctions';
 import { gql } from '@apollo/client';
 import * as z from 'zod';
-import _ from 'lodash';
 import {
   AddMealMutation,
   AddMealWithNewDishAndNewSourceMutation,
@@ -15,10 +18,7 @@ import {
 } from '../utils/mutationUtils';
 import { newMealSchema } from './schema';
 import { dishIdSchema, newDishSchema } from '../dish/schema';
-import {
-  normalizeDishSourceRelationDetail,
-  normalizeInputOfAddingDishWithExistingSource,
-} from '../dish/normalizeFunctions';
+
 import {
   AddDishSchema,
   AddDishWithNewSourceSchema,
@@ -26,7 +26,9 @@ import {
 
 export const ADD_MEAL = gql`
   mutation addMeal($dishId: Int!, $meal: MealForCreate!, $frameEntryId: Int) {
-    addMeal(input: { dishId: $dishId, meal: $meal, frameEntryId: $frameEntryId }) {
+    addMeal(
+      input: { dishId: $dishId, meal: $meal, frameEntryId: $frameEntryId }
+    ) {
       mealId
     }
   }
@@ -70,18 +72,8 @@ const AddMealWithNewDishSchema = AddDishSchema.extend({
 });
 export type AddMealWithNewDish = z.infer<typeof AddMealWithNewDishSchema>;
 
-const convertFromAddMealWithNewDishInputToGraphqlInput = (
-  input: AddMealWithNewDish,
-): AddMealWithNewDish => {
-  const normalizedInput = _.cloneDeep(input);
-  const { selectedDishSource } = input;
-
-  return normalizeInputOfAddingDishWithExistingSource(
-    normalizedInput,
-    selectedDishSource,
-    normalizedInput.dishSourceRelation.dishSourceRelationDetail,
-  );
-};
+const convertFromAddMealWithNewDishInputToGraphqlInput =
+  normalizeDishInputWithExistingSource<AddMealWithNewDish>;
 
 export const ADD_MEAL_WITH_NEW_DISH_AND_NEW_SOURCE = gql`
   mutation addMealWithNewDishAndNewSource(
@@ -117,18 +109,8 @@ export type AddMealWithNewDishAndNewSource = z.infer<
   typeof AddMealWithNewDishAndNewSourceSchema
 >;
 
-const convertFromAddMealWithNewDishAndNewSourceInputToGraphqlInput = (
-  input: AddMealWithNewDishAndNewSource,
-): AddMealWithNewDishAndNewSource => {
-  const normalizedInput = _.cloneDeep(input);
-  const { dishSource } = input;
-
-  normalizedInput.dishSourceRelationDetail = normalizeDishSourceRelationDetail(
-    dishSource.type,
-    normalizedInput.dishSourceRelation.dishSourceRelationDetail,
-  );
-  return normalizedInput;
-};
+const convertFromAddMealWithNewDishAndNewSourceInputToGraphqlInput =
+  normalizeDishInputWithNewSource<AddMealWithNewDishAndNewSource>;
 
 export type AddMealMutationInput =
   | AddMeal

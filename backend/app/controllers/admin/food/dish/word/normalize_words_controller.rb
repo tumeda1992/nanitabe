@@ -2,7 +2,7 @@ module Admin
   module Food
     module Dish
       module Word
-        class NormalizeWordsController < ApplicationController
+        class NormalizeWordsController < ::Admin::BaseController
           def index
             @normalize_words = NormalizeWord.all
           end

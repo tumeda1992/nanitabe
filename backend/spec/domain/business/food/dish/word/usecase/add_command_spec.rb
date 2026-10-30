@@ -80,6 +80,13 @@ RSpec.describe Business::Food::Dish::Word::Usecase::AddCommand do
       described_class.call(source: "ぶた", destination: "豚")
     end
 
+    it "uses normalized source when destination is whitespace" do
+      described_class.call(source: "ぶた", destination: "  ")
+      word = NormalizeWord.last
+      expect(word.entered_destination).to eq("")
+      expect(word.destination).to eq("ブタ")
+    end
+
     context "when destination is nil" do
       it "creates normalize word with empty string destination" do
         described_class.call(source: "ぶた", destination: nil)
