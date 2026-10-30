@@ -1,0 +1,14 @@
+{
+  "request_id": "fr002-green",
+  "attempt": 1,
+  "kind": "test-runner",
+  "task": "FR-002",
+  "checks": [
+    "date exchange preserves other users records and exchanges own meals"
+  ],
+  "dod": [
+    "all targeted specs pass"
+  ],
+  "command": "docker exec -e RAILS_ENV=test nanitabe-review-tests-backend-1 bundle exec rspec spec/domain/business/food/meal/usecase/swap_meals_between_days_command_spec.rb",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/requests"
+}

@@ -83,6 +83,17 @@ RSpec.describe Business::Food::Meal::Usecase::SwapMealsBetweenDaysCommand do
   end
 
   describe "#call" do
+    it "does not move another user's meals on either date" do
+      other = FactoryBot.create(:user, id_param: "fr002-other-user")
+      own_meal = FactoryBot.create(:meal, user: user_record, dish: dish1_record, date: date1)
+      foreign = [date1, date2].map { |date| FactoryBot.create(:meal, user: other, dish: FactoryBot.create(:dish, user: other), date: date) }
+      snapshots = foreign.map(&:attributes)
+      result = described_class.call(user_id: user_record.id, date1: date1, date2: date2)
+      expect(result.map(&:id)).to eq([own_meal.id])
+      expect(own_meal.reload.date).to eq(date2)
+      expect(foreign.map { |meal| meal.reload.attributes }).to eq(snapshots)
+    end
+
     context "with meals on both dates" do
       let!(:date1_meal1) do
         FactoryBot.create(
