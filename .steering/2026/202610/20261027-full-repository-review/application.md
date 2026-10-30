@@ -48,7 +48,11 @@ Dockerへの通常接続は権限拒否。権限要求が返らないため、�
 | [FR-028: Host制限を直接アクセス防止として扱っている](findings/FR-028-host-not-access-control.md) | 未着手 | 未実行 |
 | [FR-029: デプロイWebhookのHTTPエラーを成功扱いする](findings/FR-029-deploy-webhook.md) | 未着手 | 未実行 |
 | [FR-030: ビルドworkflow自身だけの変更で検証をskipする](findings/FR-030-build-filter.md) | 未着手 | 未実行 |
-| [FR-031: 認証テストhelperの再ログイン分岐が存在しない引数を送る](findings/FR-031-auth-test-helper.md) | 対応中 | 連続要求・ユーザー切替の回帰テストと補助処理を変更。Docker実行待ち、未コミット |
+| [FR-031: 認証テストhelperの再ログイン分岐が存在しない引数を送る](findings/FR-031-auth-test-helper.md) | 完了 | ecfcb96。Dockerで追加2件と関連回帰570件が成功 |
 | [FR-032: パターン作成・編集で入力schemaが重複している](findings/FR-032-pattern-schema-duplication.md) | 未着手 | 未実行 |
 | [FR-033: パターンのGraphQL子入力変換が作成・更新に重複する](findings/FR-033-pattern-input-conversion.md) | 未着手 | 未実行 |
 | [FR-034: 旧FrameEntryと現行Frame::Entryの実装が併存する](findings/FR-034-legacy-frame-entry.md) | 未着手 | 未実行 |
+
+## 環境復旧とFR-031検証（2026-10-30）
+
+GitHub連携の許可対象追加によりpluginのpushとPR作成が成功。隔離テストコンテナを再開し、FR-031の追加2 examples・関連回帰570 examplesが成功した。残る33件は未完了であり、全件完了とはしない。
