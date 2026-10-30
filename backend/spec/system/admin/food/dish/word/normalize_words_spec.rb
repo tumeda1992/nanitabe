@@ -1,8 +1,13 @@
 require "rails_helper"
+require Rails.root.join("spec/support/admin_authentication")
 
 RSpec.describe "Admin::Food::Dish::Word::NormalizeWords", type: :system do
+  include AdminAuthenticationSpecSupport
+
   before do
+    stub_admin_credentials
     driven_by(:rack_test)
+    page.driver.browser.basic_authorize("test-admin", "test-only-admin-password")
   end
 
   describe "一覧表示" do

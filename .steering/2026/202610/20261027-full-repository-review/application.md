@@ -18,7 +18,7 @@ Dockerへの通常接続は権限拒否。権限要求が返らないため、�
 
 | 指摘 | 状態 | commit・検証 |
 | --- | --- | --- |
-| [FR-001: 管理CRUDに認証・管理権限の確認がない](findings/FR-001-admin-authorization.md) | 未着手 | 未実行 |
+| [FR-001: 管理CRUDに認証・管理権限の確認がない](findings/FR-001-admin-authorization.md) | 対応中 | Basic認証実装とspecを作成。green受付不能、未検証のWIPとして現状保存。CSRF強化は設計確定・未実施 |
 | [FR-002: 日付交換が他ユーザーの食事まで移動する](findings/FR-002-swap-user-scope.md) | 未着手 | 未実行 |
 | [FR-003: 食事の更新・削除が所有者を検証しない](findings/FR-003-meal-mutation-ownership.md) | 未着手 | 未実行 |
 | [FR-004: 料理・出典・一括タグの更新が所有者を検証しない](findings/FR-004-dish-source-tag-ownership.md) | 未着手 | 未実行 |
@@ -56,3 +56,21 @@ Dockerへの通常接続は権限拒否。権限要求が返らないため、�
 ## 環境復旧とFR-031検証（2026-10-30）
 
 GitHub連携の許可対象追加によりpluginのpushとPR作成が成功。隔離テストコンテナを再開し、FR-031の追加2 examples・関連回帰570 examplesが成功した。残る33件は未完了であり、全件完了とはしない。
+
+## FR-001の実行ブロック（2026-10-30）
+
+管理基底に環境変数によるBasic認証を置き、両管理controllerの継承と既存認証済みCRUD用のテスト補助、新規認可specを作成した。新規認可specは未認証・誤認証・未設定・不正Basicヘッダーを検証する。今回のredは実行できておらず、旧レビューの未認証GET成功の実測だけを修正前根拠とした。
+
+指定green commandは親でも上限45秒で試行したが、session ID/exit/stdoutを取得できず、開始時のredirect logも作成されなかった。親で1回再試行しても同じ結果であり、host上のRuby/RSpec processも観測されなかった。成功を確認できないためFR-001は未完了、アプリ変更は未コミットのまま凍結する。残るFR-002〜030・032〜034の32件へは進めていない。
+
+確定した追加設計: 管理基底だけでCSRFを例外拒否にし、認証をprependする。認証済みでtokenを欠くPOST/PATCH/DELETEの拒否と、正規フォームtoken付き操作の成功を検証する。一般GraphQLの動作は変えない。このCSRF追加はまだ実装していない。
+
+復旧後は、同時実行が残っていないことを確認し、CSRF追加とそのspecを作成したうえで次のgreenを実行する。
+
+`docker exec -e RAILS_ENV=test nanitabe-review-tests-backend-1 bundle exec rspec spec/requests/admin spec/system/admin/food/dish/word/normalize_words_spec.rb`
+
+同じ受付不能の要求を無制限に再送せず、実行環境の復旧を確認してから再開する。
+
+## 利用者指定による現状保存（2026-10-30）
+
+利用者の「nanitabeはこの時点でコミットpushして、リトライやれそうならやってむりそうなら諦めて教えて」に従い、FR-001の実装途中・未検証の変更と実行記録をWIPコミットで保存して既存PRへpushする。これは指摘解消のコミットではなくチェックポイントであり、FR-001の完了判定は変更しない。CSRF対応は未実装。保存後に実行環境と既存処理の状態を確認し、可能ならテストを再試行する。

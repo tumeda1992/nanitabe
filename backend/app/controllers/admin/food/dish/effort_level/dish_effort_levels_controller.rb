@@ -2,7 +2,7 @@ module Admin
   module Food
     module Dish
       module EffortLevel
-        class DishEffortLevelsController < ApplicationController
+        class DishEffortLevelsController < ::Admin::BaseController
           def index
             @dish_effort_levels = DishEffortLevel.order(:meal_position, :minutes)
           end

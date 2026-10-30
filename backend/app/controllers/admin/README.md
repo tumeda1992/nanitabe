@@ -3,13 +3,13 @@
 このディレクトリは管理画面用のコントローラを配置する。
 
 ## 役割（What）
-- 自分専用の管理ツール（認証・認可なし）
+- 環境変数で設定した管理用HTTP Basic認証を必須とする管理ツール
 - NormalizeWord等の内部データのCRUD操作
 - Rails標準のRESTful設計、erbビュー
 
 ## 非責務（やらないこと）
 - ユーザー向け機能（GraphQL経由で提供）
-- 認証・認可（自分しか使わない前提）
+- 一般利用者向けのログインと権限管理（GraphQL側で提供）
 
 ---
 
@@ -47,7 +47,7 @@
 ## よくある変更パターン
 
 ### 新しい管理画面を追加する
-1. コントローラ作成: `admin/[domain]/[entity]_controller.rb`
+1. `Admin::BaseController`を継承してコントローラを作成: `admin/[domain]/[entity]_controller.rb`
 2. ルーティング追加: `config/routes.rb` の `namespace :admin` 配下
 3. ビュー作成: `app/views/admin/[domain]/[entity]/`
 4. Command呼び出し: 既存のusecase（AddCommand/UpdateCommand/RemoveCommand）を `call` で呼ぶ
@@ -62,6 +62,12 @@
 ---
 
 # 参照
-- [DDDアーキテクチャ方針](../../docs/ai_guideline/development_standard/application_architecture.md)
-- [テストファースト方針](../../docs/ai_guideline/development_standard/testing.md)
+- [DDDアーキテクチャ方針](../../../docs/ai_guideline/development_standard/application_architecture.md)
+- [テストファースト方針](../../../docs/ai_guideline/development_standard/testing.md)
 - [business/food/README.md](../../domain/business/food/README.md): usecase/Commandの役割
+
+## 管理用認証の設定
+
+管理画面はGraphQLの一般利用者ログインとは別に、`ADMIN_USERNAME`と`ADMIN_PASSWORD`によるHTTP Basic認証を要求する。いずれかが未設定・空文字ならすべての管理CRUDを拒否する。設定値は実行環境の秘密情報として渡し、repositoryへ保存しない。HTTPSで運用する。新しい管理controllerも`Admin::BaseController`を継承し、認証を迂回しない。
+
+認証拒否の回帰テストは`spec/requests/admin/authorization_spec.rb`、認証後のCRUDは各管理request specで確認する。
