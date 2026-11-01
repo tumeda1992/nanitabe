@@ -1,8 +1,8 @@
 # FR-024: 辞書更新と全料理への再反映が一体で保存されない
 
 - 優先度: P2
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -36,3 +36,14 @@
 
 - ユーザー判断: 未判断
 - 適用コミット: 未適用
+
+## 適用結果（2026-11-01）
+
+辞書の追加・更新・削除と全件再反映をそれぞれ同じtransactionへ含めた。再反映Command単独で呼ばれた場合も全料理・タグをまとめてrollbackする。例外の型・メッセージとCommandの戻値を維持している。
+
+追加4ケースは、2料理と各タグを用意し、2件目の料理永続化で実際に失敗させる。失敗直前に1件目の料理・タグが既に書かれたことも読み取り、失敗後に辞書・2料理・両タグの全属性が元へ戻ることを確認した。反映Command全体を例外stubするだけのテストではない。修正前は全4件が辞書残存/部分反映で失敗。修正後は関連95 examples / 0 failures、変更5ファイルRuboCop違反なし。
+
+- `docker compose -f compose.dev.local.yml exec -T backend bundle exec rspec spec/domain/business/food/dish/word spec/requests/admin/food/dish/word/normalize_words_spec.rb spec/system/admin/food/dish/word/normalize_words_spec.rb`
+- 同backendの`bundle exec rubocop app/domain/business/food/dish/word/usecase/add_command.rb app/domain/business/food/dish/word/usecase/update_command.rb app/domain/business/food/dish/word/usecase/remove_command.rb app/domain/business/food/dish/word/usecase/reflect_latest_normalize_word_command.rb spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb`
+
+実データへの辞書変更・再反映は行っていない。適用commitはapplication.mdとGit履歴で追跡する。

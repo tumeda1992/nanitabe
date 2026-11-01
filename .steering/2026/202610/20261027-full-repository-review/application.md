@@ -214,3 +214,7 @@ frontend34 tests、backend11 examples、型・lintに加え、ブラウザも出
 ## FR-023の適用完了（2026-11-01）
 
 新旧Normalizerでsource/destinationを文字列として扱い、SQL LIKEのwildcard候補差も取り除いた。現行red8件と旧red7件を確認後、関連152 examples / 0 failures、変更3ファイルlint成功。FR-022のcommitは`5b54e45`。次はFR-024の辞書変更と全件再反映の原子性へ進む。
+
+## FR-024の適用完了（2026-11-01）
+
+辞書CRUDと全料理・タグの再反映をtransactionへまとめ、再反映単独にも原子性を持たせた。2件目の実保存を失敗させる追加4件のred後、関連95 examples / 0 failures、変更5ファイルlint成功。FR-023のcommitは`73b8797`。次はFR-025の削除失敗時rescueへ進む。
