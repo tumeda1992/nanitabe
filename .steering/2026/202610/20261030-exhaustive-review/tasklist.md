@@ -18,11 +18,13 @@
 
 **DoD**: IDを変えずcontent/normalized_contentを保存する。追加・削除との混在でも成立し、他人・本人別料理・不在のタグIDを拒否する。タグ途中失敗でも料理・出典・タグの部分保存がない。
 
-- [ ] `backend/spec/models/dish_tag_spec.rb`と`backend/spec/graphql/mutation/dish/update_dish_spec.rb`へ同IDの内容変更・再取得、追加削除混在、所有/所属拒否を追加しredを確認する。後段タグ保存失敗で料理名・出典関連も不変となる回帰をモデルまたはCommandのspecへ追加する。
-- [ ] `DishTag.replace_tags_of_dish`の早期returnを除き、全入力の所有/所属/必須値確認後、既存と新規Rootを保存する。`persist_from_root`の既存ID取得を同じdish_id/user_idへ限定する。
-- [ ] `DishTag`の置換と`Dish.persist_from_food_dish_root`全体をそれぞれtransactionへ入れ、直接呼出でもrollbackを保証する。
-- [ ] タグモデル・料理の作成/更新Command・GraphQL作成/更新・辞書再反映の関連specを実行し、既存の新規ID設定/Relation返却もgreenにする。変更RubyファイルのRuboCopを成功させる。
-- [ ] finding/applicationへ結果を記録しdocument-review後、CR-002だけを独立commitする。前指摘のSHAも追記する。
+- [x] `backend/spec/models/dish_tag_spec.rb`と`backend/spec/graphql/mutation/dish/update_dish_spec.rb`へ同IDの内容変更・再取得、追加削除混在、所有/所属拒否を追加しredを確認する。後段タグ保存失敗で料理名・出典関連も不変となる回帰をモデルまたはCommandのspecへ追加する。
+- [x] `DishTag.replace_tags_of_dish`の早期returnを除き、全入力の所有/所属/必須値確認後、既存と新規Rootを保存する。`persist_from_root`の既存ID取得を同じdish_id/user_idへ限定する。
+- [x] `DishTag`の置換と`Dish.persist_from_food_dish_root`全体をそれぞれtransactionへ入れ、直接呼出でもrollbackを保証する。
+- [x] 変更前baselineと構造・契約ledgerを固定し、`ReflectLatestNormalizeWordCommand`を`dish_root.tags`自身の再正規化→料理保存での一回保存へ適応する。全料理・ログ・例外wrap・辞書CRUDとのatomicityを維持し、古い正規化値へ戻る既存失敗specをgreenにする。
+- [x] タグ置換入力が空の場合だけ認可用の料理再読を省き、既存タグ削除とRelation返却を維持する。入力ありの所有・所属拒否を維持し、辞書反映の既存performance specの60 query未満を満たす。
+- [x] タグモデル・料理の作成/更新Command・GraphQL作成/更新・辞書再反映の関連specを実行し、既存の新規ID設定/Relation返却もgreenにする。変更RubyファイルのRuboCopを成功させる。
+- [x] finding/applicationへ結果を記録しdocument-review後、CR-002だけを独立commitする。前指摘のSHAも追記する。
 
 ## CR-003: 関連料理の詳細を壊す出典種別変更を拒否する
 

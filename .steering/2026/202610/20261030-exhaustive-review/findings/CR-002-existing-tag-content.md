@@ -5,8 +5,8 @@
 - 対象: `backend/app/models/dish_tag.rb:40`
 - 観点: 保存契約
 - 由来: 全体レビュー・既存。既存未対応指摘とは原因・修正を分離。
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用（全review指摘反映の後続指示）
+- 対応状況: 適用・関連/全体自動検証完了
 - 適用枠: 挙動変更が必要
 - 依存する指摘: なし
 
@@ -34,3 +34,11 @@ UPDATED_TAG=alpha。変更後Rootを渡しても旧値が残ることをDocker�
 - 修正内容・判断理由: 未適用
 - 実行した検証と結果: 上記参照。問題再現であり修正成功ではない。
 - 適用コミット: 未適用
+
+## 適用結果（2026-11-02）
+
+タグID配列一致の早期returnを除去し、既存content/normalized_contentも保存する。全入力の所有・料理所属・必須値を先に確認し、他人/別料理/不在IDは副作用前に拒否する。直接persistもid/dish_id/user_idを限定する。新規IDのRootへの設定と置換後Relation返却を維持した。
+
+タグ置換と料理・出典関連・タグの全保存をtransactionへまとめた。既存の辞書反映が別Rootで保存した最新タグを古い料理Rootで上書きする依存を関連テストが検出したため、料理Root自身のタグを再正規化して一度に保存するよう適応した。ログ/例外/全件原子性は維持する。[移行台帳](../evidence/cr002-reflection-migration.md)を参照。
+
+新規model9件はすべてred。実GraphQL再取得1件も、検索fixtureの既存Bullet条件を揃えた後に旧content保持をred確認した。修正後は新規10件を含む関連204 examples、backend全体902 examplesが全成功。既存の60 query未満の性能基準と変更5ファイルRuboCopも成功。commitはapplication.mdとGit履歴で追跡する。

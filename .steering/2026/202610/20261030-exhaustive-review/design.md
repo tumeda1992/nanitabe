@@ -67,6 +67,10 @@ ID配列一致だけの早期returnを除き、新規・既存の両Rootを既�
 
 タグ置換単体はtransactionに入れる。さらに`backend/app/models/dish.rb`の`persist_from_food_dish_root`全体もtransactionに入れ、料理保存→出典関連→タグ置換を一体にする。GraphQL以外のCommand・モデル直接呼出でも、タグ拒否・途中保存失敗で料理名等だけが残らない。辞書再反映の既存transactionとは通常のnested transactionとして合流する。
 
+既存タグの保存を有効にすると、呼出元の`backend/app/domain/business/food/dish/word/usecase/reflect_latest_normalize_word_command.rb`も適応が必要になる。現行は取得済み`dish_root.tags`とは別にタグRootを作って先に再正規化・保存するため、その後の料理保存が古い`dish_root.tags`の正規化値を再保存して巻き戻す。`dish_root.tags`自身へ`renormalize_content`を実行し、料理名も再正規化した後、既存の`Dish.persist_from_food_dish_root`で料理とタグを一度だけ保存する。全料理を対象にする範囲、開始/完了ログの順、例外の`ReflectLatestNormalizeWordError`へのwrap、辞書CRUDと反映全体の原子性を維持する。適用担当は変更前baselineと構造・契約ledgerを固定してこの呼出元適応を検証する。
+
+空のタグ置換入力では所有・所属を照合する入力Rootがないため、認可用の料理再読を省ける。既存タグの削除と置換後Relation返却は省略せず、入力が一件でもある場合の所有・所属検証も維持する。この最適化は辞書反映の既存performance specの60 query未満という契約を保つために行い、認可を緩める理由には使わない。
+
 #### CR-003: 共通保存境界で種別変更を拒否
 
 `backend/app/domain/business/food/dish/source/policy/type_change_policy.rb`に`Business::Food::Dish::Source::Policy::TypeChangePolicy.allowed?`を置く。入力は`current_type:`、`requested_type:`、`has_related_dishes:`、戻り値はbooleanとし、同一typeまたは関連なしなら許可する。PolicyにDB問い合わせや保存・GraphQL応答処理を持たせない。
@@ -111,6 +115,7 @@ CR-004の行ロックはMySQLで検証する。親担当が既存開発Compose�
 | --- | --- |
 | タグのJOIN条件をEXISTSへ変えて先頭固定や他フィルタを失う | 既存relationを保持し、新旧検索specとGraphQL query specを実行する |
 | 既存タグの更新を新たに有効にして他料理のタグを変更する | 全入力のid/dish_id/user_idを確認し、保存境界とGraphQLの両方で拒否・rollbackを検証する |
+| 辞書反映が別Rootへ保存した値を古い料理Rootで巻き戻す | 同じdish_root.tagsを再正規化して料理と一度だけ保存し、既存辞書反映・CRUD rollback・query数の回帰を実行する |
 | 出典の先行legacy保存がtype検査を迂回する | 共通モデルvalidationへ置き、実GraphQL・旧Command・現行Commandを検証する |
 | 並行テストが実際には1接続で動く | poolから独立二接続を借り、transaction外にcommit済みfixtureを作り、開始barrierで同期する |
 | MySQLの再現テストが実DBへ接続する | fixture接続guardをschema load前とspec開始時に確認し、危険なfallbackを設けない |
@@ -148,7 +153,7 @@ CR-004は逐次再送・所有者拒否・作成失敗/削除失敗rollback・�
 | 対象 | 掲載理由 | 参照するdesign section |
 | --- | --- | --- |
 | CR-001の検索実装修正と回帰 | 本番アプリケーションcoding | CR-001: 語ごとの相関タグ検索 |
-| CR-002のタグ保存・認可・原子性と回帰 | 本番アプリケーションcoding | CR-002: 既存タグの内容を保存 |
+| CR-002のタグ保存・認可・原子性・辞書反映の呼出元適応と回帰 | 本番アプリケーションcoding | CR-002: 既存タグの内容を保存 |
 | CR-003のtype変更拒否と回帰 | 本番アプリケーションcoding | CR-003: 共通保存境界で種別変更を拒否 |
 | CR-004の一回消費とMySQL検証 | 本番アプリケーションcodingと独立した並行受け入れ検証 | CR-004: 元レコードをロックして一回消費 |
 | 個別/全体検証・適用記録・公開 | 上記成果物のacceptanceと既存の公開許可 | 要件と受け入れ基準 |
