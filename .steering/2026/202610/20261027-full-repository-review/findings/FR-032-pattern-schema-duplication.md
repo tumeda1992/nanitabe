@@ -1,8 +1,8 @@
 # FR-032: パターン作成・編集で入力schemaが重複している
 
 - 優先度: P3
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用（全件適用の合意）
+- 対応状況: 適用・関連自動検証完了
 - 振る舞い維持の適用枠: 対象
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -34,3 +34,9 @@
 
 - ユーザー判断: 未判断
 - 適用コミット: 未適用
+
+## 適用結果（2026-11-02）
+
+schema.tsをentry/body/create/update schemaの正本にし、mutation側は型とhookのbindingを参照する。numberの許容範囲、日本語error、unknown keyのstrip、配列順序・空配列、作成id不要/更新id必須を保持した。更新用はidを先頭にしたobjectへ共通bodyをmergeし、errorのid→name→entries順も維持する。
+
+移行前11件のcharacterization、移行後関連33 tests、最終schema13件、型検査、変更4ファイルlintが成功。表示・markup変更はなく、schemaに新しいvalidationを追加していない。baselineと全contract照合は[evidence/fr032-migration.md](../evidence/fr032-migration.md)。commitはapplication.mdとGit履歴で追跡する。

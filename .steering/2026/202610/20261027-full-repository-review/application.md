@@ -242,3 +242,7 @@ WebhookのHTTPエラーをcurlの失敗へ反映し、接続/全体deadlineを�
 ## FR-030の適用完了（2026-11-01）
 
 build workflow自身を変更検出へ含めるtypo修正。実bash blockの3 testsでworkflow単独のredを確認し、修正後は全成功。FR-029のcommitは`d3e4515`。次はFR-032の入力schema共通化へ進む。
+
+## FR-032の適用完了（2026-11-02）
+
+schemaの二重定義を一元化し、入力・error順・infer型とhookの契約を維持した。二層台帳の8 contractを照合、関連33 tests、最終schema13件、型検査・lint成功。FR-030のcommitは`a871b4c`。次はFR-033のGraphQL入力変換へ進む。
