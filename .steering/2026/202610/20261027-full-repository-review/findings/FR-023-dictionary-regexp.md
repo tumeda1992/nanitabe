@@ -1,8 +1,8 @@
 # FR-023: 正規化辞書の文字列を未エスケープの正規表現として扱う
 
 - 優先度: P2
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-021（現行コードで再確認）。
@@ -33,3 +33,15 @@
 
 - ユーザー判断: 未判断
 - 適用コミット: 未適用
+
+## 適用検証（2026-11-01）
+
+現行Normalizerと、旧料理・タグCommandが使うBusiness::Dish::Word::Normalize::Command::NormalizeCommandをともに修正した。元の正規化済み入力へsourceが文字列として含まれる規則だけを一度選び、String#gsubの文字列patternとblock戻値で置換する。sourceの正規表現記号もdestinationのbackreferenceも解釈しない。置換出力だけに現れるsourceを新たに候補へ追加しない。
+
+現行の追加11件で8件red、旧経路にも同じ回帰を当て7件redを確認した。最終specは共通10ケースを両経路へ適用し、現行の料理名・タグ再反映も1ケース検証する。関連152 examples / 0 failures。既存の辞書取得1queryの性能specも成功した。
+
+- `docker compose -f compose.dev.local.yml exec -T backend bundle exec rspec spec/domain/business/food/dish/word spec/domain/business/dish/word spec/domain/business/dish/dish spec/requests/admin/food/dish/word/normalize_words_spec.rb spec/system/admin/food/dish/word/normalize_words_spec.rb`
+
+DB検証はtest環境だけで、実データへの再反映は実行していない。
+
+変更3ファイルの`bundle exec rubocop app/domain/business/food/dish/word/usecase/normalizer.rb app/domain/business/dish/word/normalize/command/normalize_command.rb spec/domain/business/food/dish/word/usecase/literal_normalization_spec.rb`も、specの空行整形後に違反なし。適用commitはapplication.mdとGit履歴で追跡する。

@@ -210,3 +210,7 @@ Next遷移のpathname/search変化を同期し、独自push/popも同じpath+que
 ## FR-022の適用完了（2026-11-01）
 
 frontend34 tests、backend11 examples、型・lintに加え、ブラウザも出典なしの保存1回、食事ID保持、modal終了、新料理名表示を確認した。3画像目視済み。結果はrequests/fr022-visual-result.json。次はFR-023の辞書文字列の正規表現解釈を直す。
+
+## FR-023の適用完了（2026-11-01）
+
+新旧Normalizerでsource/destinationを文字列として扱い、SQL LIKEのwildcard候補差も取り除いた。現行red8件と旧red7件を確認後、関連152 examples / 0 failures、変更3ファイルlint成功。FR-022のcommitは`5b54e45`。次はFR-024の辞書変更と全件再反映の原子性へ進む。

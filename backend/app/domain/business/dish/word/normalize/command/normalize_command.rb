@@ -19,14 +19,9 @@ module Business::Dish::Word::Normalize
     private
 
     def normalize_with_db_word(string_sequence_arg)
-      normalize_words = if Rails.env.test? # SQLite固有の記法
-                          NormalizeWord.where("? LIKE '%' || normalize_words.source || '%'", string_sequence_arg)
-                        else
-                          NormalizeWord.where("? LIKE CONCAT('%', normalize_words.source, '%')", string_sequence_arg)
-                        end
+      normalize_words = NormalizeWord.all.select { |word| string_sequence_arg.include?(word.source) }
       normalize_words.reduce(string_sequence_arg.dup) do |normalized, normalize_word|
-        # Rails.logger.info "★[正規化]対象:#{normalized} from:#{normalize_word.source} to:#{normalize_word.destination}" # デバッグ
-        normalized.gsub(/#{normalize_word.source}/, normalize_word.destination)
+        normalized.gsub(normalize_word.source) { normalize_word.destination }
       end
     end
   end
