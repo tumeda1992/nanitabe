@@ -1,8 +1,8 @@
 # FR-030: ビルドworkflow自身だけの変更で検証をskipする
 
 - 優先度: P2
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用（全件適用の合意）
+- 対応状況: 適用・関連自動検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-019（現行コードで再確認）。
@@ -33,3 +33,7 @@ frontend変更、workflow単独変更、無関係変更の3つの変更ファイ
 
 - ユーザー判断: 未判断
 - 適用コミット: 未適用
+
+## 適用結果（2026-11-01）
+
+変更検出regexのbuidを実ファイル名のbuildへ修正した。実workflowのDetect frontend changes blockをbashで実行し、gitの差分一覧だけをstubにする。frontendのみ/workflow自身のみ/無関係な複数ファイルの3ケースでGITHUB_OUTPUTを確認し、workflow単独変更のred後、3 tests成功。GitHub上でのworkflow実行はpush後のCIで確認する。commitはapplication.mdとGit履歴で追跡する。

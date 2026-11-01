@@ -238,3 +238,7 @@ VPC link SG経由だけを許可し、固定Cloud Map ARNとECSのSRV登録へ�
 ## FR-029の適用完了（2026-11-01）
 
 WebhookのHTTPエラーをcurlの失敗へ反映し、接続/全体deadlineを設けた。ローカルHTTP fixtureと実curlによる6 tests成功、実Webhookは未呼出し。FR-028のcommitは`2bf938d`。追加のTerraform prod root validateも固定version/元hash保持の隔離copyで成功し、FR-026のfmt/validate保留を解消した。AWS実効権限は未実測。次はFR-030のbuild変更検出へ進む。
+
+## FR-030の適用完了（2026-11-01）
+
+build workflow自身を変更検出へ含めるtypo修正。実bash blockの3 testsでworkflow単独のredを確認し、修正後は全成功。FR-029のcommitは`d3e4515`。次はFR-032の入力schema共通化へ進む。
