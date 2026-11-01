@@ -254,3 +254,7 @@ schemaの二重定義を一元化し、入力・error順・infer型とhookの契
 ## FR-034の適用完了（2026-11-02）
 
 旧定数と返却classを維持した互換委譲へ変更し、旧Removeにも本人scopeを適用した。10 contractを照合し、関連57 examples、backend全体885 examples、lint/eager loadが成功。外部利用の不存在は断定しない。FR-033のcommitは`65dc499`。FR-001を除くFR項目のコード適用は完了し、次は20261030-exhaustive-reviewのCR-001〜004へ進む。
+
+## FR-019のMySQL検証保留の解消（2026-11-02）
+
+CR-004と同じ専用MySQL8.0.46で、migration down/upとFK保持、既存重複時の無変更停止、二接続Command一回割当、DB uniqueによる直接二重書込み拒否の4 examplesが成功した。specのlintも成功。テスト専用DBは除去済みで、実DBへmigrationは未適用。FR-034のcommitは`fcac860`、CR-004のcommitは`02e2caf`。補完検証は独立commitとして保存する。

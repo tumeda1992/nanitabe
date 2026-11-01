@@ -2,7 +2,7 @@
 
 - 優先度: P2
 - 採否: 採用
-- 対応状況: 完了
+- 対応状況: 完了（SQLite/MySQL検証済み。実DB migrationは未適用）
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -50,3 +50,14 @@ migrationは重複meal_idを検出したらデータもindexも変更せずMigra
 - 同backendの`bundle exec rubocop app/domain/business/food/meal/frame/entry/policy/assign_meal_policy.rb app/domain/business/food/meal/frame/entry/usecase/fill_with_meal_command.rb spec/domain/business/food/meal/frame/entry/usecase/cardinality_spec.rb spec/migrations/ensure_one_frame_per_meal_spec.rb spec/graphql/mutation/meal/frame_entry/unassign_meal_from_frame_entry_spec.rb`: 違反なし。
 
 migration specは独立した一時SQLite DBで重複時の停止・値の維持・up/down・複数NULLを検証した。barrierで独立2接続から同時INSERTし、1件成功/1件RecordNotUnique、最終1行を実測した。これはDB制約の並行検証であり、MySQL上のCommand並行要求・row lockの実測は未実施。実DBへのmigrationやデータ整理も今回の範囲外で実行していない。適用commitはapplication.mdとGit履歴で追跡する。
+
+## MySQLでの補完検証（2026-11-02）
+
+CR-004用の隔離MySQL8.0.46/InnoDBを再利用し、既存backendからfixture限定URLで追加4 examplesを実行して全成功した。
+
+- nullable unique indexのdown/upを実行し、MySQLのmeal外部キーと複数NULL割当を保持する。
+- unique導入前の重複をfixtureで作り、upがデータ/既存indexを変更せず停止する。fixture整理後の再upも成功。
+- 独立二接続を開始barrierで同期し、同じmealへの2つのFill Commandは成功1・既存の重複拒否1・割当1件となる。
+- Commandを迂回した同時DB書込みも成功1・RecordNotUnique1・割当1件となる。
+
+specはbackend/spec_mysql/frame_assignment_spec.rb。RuboCopも成功。接続guard・setup/cleanupは[CR-004のMySQL evidence](../../20261030-exhaustive-review/evidence/cr004-mysql.md)と同じで、通常SQLite回帰へpendingを混ぜない。専用DBは全検証後に除去済み。開発/本番DBへmigrationを適用した結果ではない。これにより11月1日時点のMySQL検証保留を解消した。
