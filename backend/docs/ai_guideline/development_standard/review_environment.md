@@ -65,15 +65,17 @@ frontend の job が起動しなかったときは `aws amplify start-job --app-
 
 script が行うこと。
 
-1. ECS service の `desired_count` を 1 にする
-2. task が RUNNING になるまで待ち、public IP を取得する
-3. API Gateway の integration URI をその IP へ向ける
-4. 30 分後の自動停止を EventBridge Scheduler へ登録する
-5. 到達 URL と自動停止の予定時刻を出力する
+1. Terraformのprivate integrationとVPC link、停止用roleの前提を確認する
+2. ECS serviceのdesired_countを1にし、taskの稼働を待つ。既に1でも後続の確認を省かない
+3. Cloud Mapのhealthy登録とVPC linkのAVAILABLE、GraphQL metadata応答を確認する
+4. 30分後にECSを0へ戻すone-time scheduleをEventBridge Schedulerへ登録する
+5. 到達URLと自動停止の予定時刻を出力する
 
-自動停止までの時間は `REVIEW_BACKEND_AUTO_STOP_MINUTES` で上書きできる。既定は 30。
+自動停止までの時間は`REVIEW_BACKEND_AUTO_STOP_MINUTES`で上書きできる。既定は30で、正の整数だけを受け付ける。
 
-schedule の登録に失敗した場合、script は起動を取り消して終了する。自動停止の保証がないまま起動したままにしないため。
+private構成がまだ適用されていなければ、起動前の確認で失敗する。applyは既存のworkflowと許可に従って行い、scriptが代わりに構成を作らない。VPC linkは60日無通信でINACTIVEになることがあり、再有効化のためのENI作成には数分かかる。起動scriptは認証不要のGraphQL metadata requestで再有効化を促し、HTTP 200とQuery型のJSON応答まで確認する。Gateway自身の404や、正常なGraphQL dataを含まない200は成功扱いにしない。
+
+途中の失敗やINT/TERMでは、scriptはECSの停止を試みて元の終了codeで終わる。停止権限が拒否された場合はその失敗も表示するため、実際のtask状態を確認して停止する。自動停止の設定が揃う前に起動成功を表示しない。旧方式のintegration停止scheduleも、固定Cloud Map ARNを後から壊さないよう除去する。
 
 ### 4. 確認する
 
@@ -93,11 +95,9 @@ API だけを確かめるときは、出力された URL へ `POST /graphql` す
 
 frontend の画面は開けるが、API が応答しないため、ログインやデータの取得・登録はできない。これも壊れているのではない。backend を `start.sh` で起動してから確かめる。
 
-backend の URL を直接叩くと HTTP 500 が返る。**これは壊れているのではなく、停止中の正常な状態である。**
+停止中はtaskが終了し、Cloud Mapにhealthyな転送先がなくなるため、API Gateway経由のAPI呼出しはエラーになる。具体的なHTTP statusはVPC linkや転送先の状態による。API Gateway、証明書、DNSレコード自体は常設なのでURLは存在する。
 
-API Gateway と証明書と DNS レコードは常設なので、URL 自体は生きている。停止すると転送先が到達しない address へ戻るため、API Gateway が backend へ届かず 500 になる。
-
-停止中に前の起動の IP を指したままにしない設計にしているのは、その IP が AWS から別の利用者へ再割当されるためである。指したままだと、URL を叩いた request が無関係の第三者のホストへ届く。
+転送先は固定のCloud Map service ARNであり、taskのpublic IPをURIに残さない。taskの追加・終了にECSの登録が追随するため、古いpublic IPが第三者へ再割当されてもそのaddressへ転送する設定が残らない。手動停止scriptはtask終了を待ってから完了を表示する。
 
 ## 規約
 

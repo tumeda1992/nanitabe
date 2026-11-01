@@ -18,10 +18,10 @@ locals {
   db_pass_arn              = "${local.ssm_parameter_arn_prefix}/DB_PASS"
   rails_master_key_arn     = "${local.ssm_parameter_arn_prefix}/RAILS_MASTER_KEY"
 
-  cluster_name = "${module.values.appname}-${var.stage}"
-  service_name = "${module.values.appname}_service_${var.stage}"
+  cluster_name      = "${module.values.appname}-${var.stage}"
+  service_name      = "${module.values.appname}_service_${var.stage}"
   backend_prod_host = "review-backend-nanitabe.${var.route53_name}"
-  container_port = 18101
+  container_port    = 18101
 }
 
 data "aws_vpc" "default" {
@@ -35,6 +35,18 @@ data "aws_subnets" "public" {
   }
 }
 
+data "aws_subnets" "vpc_link" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+  # API Gateway VPC link V2 が対応する Tokyo の AZ ID だけを使う。
+  filter {
+    name   = "availability-zone-id"
+    values = ["apne1-az1", "apne1-az2", "apne1-az4"]
+  }
+}
+
 resource "aws_ecs_cluster" "this" {
   name = local.cluster_name
   # Container Insights は有効にしない（費用対効果が低いため design.md 参照）
@@ -45,17 +57,31 @@ resource "aws_cloudwatch_log_group" "task" {
   # retention_in_days は設定しない（無期限保持）
 }
 
+resource "aws_security_group" "vpc_link" {
+  name        = "${local.cluster_name}_vpc_link_sg"
+  description = "API Gateway private integration interfaces"
+  vpc_id      = data.aws_vpc.default.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_security_group" "task" {
   name = "${local.cluster_name}_task_sg"
-  # review backend task用。API Gatewayの送信元IPが固定されないため0.0.0.0/0を許可し、IP直アクセスはRailsのconfig.hostsで弾く
+  # Host 検査とは独立に、VPC link の ENI からだけ受信する。
+  # descriptionは不変属性のため既存値を維持する。受信制御は以下のSG参照で定義する。
   description = "review backend task security group. Direct IP access is blocked by Rails config.hosts."
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
-    from_port   = local.container_port
-    to_port     = local.container_port
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port       = local.container_port
+    to_port         = local.container_port
+    protocol        = "tcp"
+    security_groups = [aws_security_group.vpc_link.id]
   }
 
   egress {
@@ -63,6 +89,28 @@ resource "aws_security_group" "task" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_service_discovery_private_dns_namespace" "backend" {
+  name = "${local.cluster_name}.internal"
+  vpc  = data.aws_vpc.default.id
+}
+
+resource "aws_service_discovery_service" "backend" {
+  name = "backend"
+
+  dns_config {
+    namespace_id   = aws_service_discovery_private_dns_namespace.backend.id
+    routing_policy = "MULTIVALUE"
+    dns_records {
+      ttl  = 10
+      type = "SRV"
+    }
+  }
+
+  health_check_custom_config {
+    failure_threshold = 1
   }
 }
 
@@ -140,6 +188,14 @@ resource "aws_ecs_task_definition" "this" {
         }
       ]
 
+      healthCheck = {
+        command     = ["CMD-SHELL", "ruby -rsocket -e 'TCPSocket.new(\"127.0.0.1\", Integer(ENV.fetch(\"PORT\"))).close'"]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 60
+      }
+
       environment = [
         { name = "RAILS_ENV", value = "production" },
         { name = "RAILS_LOG_TO_STDOUT", value = "1" },
@@ -175,13 +231,20 @@ resource "aws_ecs_service" "this" {
   desired_count   = 0
   launch_type     = "FARGATE"
 
+  service_registries {
+    registry_arn   = aws_service_discovery_service.backend.arn
+    container_name = "backend"
+    container_port = local.container_port
+  }
+
   network_configuration {
     subnets          = data.aws_subnets.public.ids
     security_groups  = [aws_security_group.task.id]
     assign_public_ip = true
   }
 
-  # deployment circuit breaker は設けない。起動失敗は30分の自動停止で止まるため（design.md参照）
+  # 正常起動後は停止scheduleを作り、起動途中の失敗はscriptがrollbackで停止を試みる。
+  # deployment circuit breaker は従来どおり設けない。
   # lifecycle.ignore_changes[desired_count] も付けない。terraform applyが常に停止側へ倒れる挙動を意図している
 }
 
@@ -191,3 +254,6 @@ output "service_name" { value = aws_ecs_service.this.name }
 output "service_arn" { value = aws_ecs_service.this.id }
 output "log_group_name" { value = aws_cloudwatch_log_group.task.name }
 output "backend_prod_host" { value = local.backend_prod_host }
+output "vpc_link_security_group_id" { value = aws_security_group.vpc_link.id }
+output "vpc_link_subnet_ids" { value = data.aws_subnets.vpc_link.ids }
+output "discovery_service_arn" { value = aws_service_discovery_service.backend.arn }

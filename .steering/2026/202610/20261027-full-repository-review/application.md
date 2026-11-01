@@ -230,3 +230,7 @@ PutObjectをplans/*だけへ分離。追加3件の静的テストは修正前1�
 ## FR-027の適用完了（2026-11-01）
 
 失敗と割込みのcleanupを起動前に登録し、起動済みでも停止設定を修復する。新規31 testsすべて成功、bash syntax/diff check成功。実AWSは未実施。FR-026のcommitは`df42ad7`。FR-025後のbackend全体回帰も873 examples / 0 failuresだった。次はFR-028の経路制限とprivate integrationへ進む。
+
+## FR-028のコード適用完了（2026-11-01）
+
+VPC link SG経由だけを許可し、固定Cloud Map ARNとECSのSRV登録へ変更した。起動/停止の移行と26 contractのwhite-box照合を完了し、59 tests、Rails metadata1 example、lint/bash/fmt、隔離copyのreview Terraform validateが成功。元lockfileのversion/既存hashは保持した。実AWS apply/到達性は未実測であり、実適用時に確認する。namespaceの実適用後費用も記載済み。FR-027のcommitは`7772f90`。FR-026のfmtも成功した。次はFR-029のWebhook失敗検知へ進む。

@@ -13,14 +13,14 @@ locals {
 
 module "ecr" {
   source = "../../modules/ecr"
-  stage = local.stage
+  stage  = local.stage
 }
 
 module "cicd" {
   source = "../../modules/cicd"
 
-  stage = local.stage
-  ecr_repository_url = module.ecr.repository_url
+  stage                        = local.stage
+  ecr_repository_url           = module.ecr.repository_url
   codebuild_artifact_s3_bucket = var.codebuild_artifact_s3_bucket
 }
 
@@ -37,25 +37,28 @@ removed {
 module "ecs" {
   source = "../../modules/ecs"
 
-  stage               = local.stage
-  ecr_repository_url  = module.ecr.repository_url
-  route53_name        = var.route53_name
+  stage              = local.stage
+  ecr_repository_url = module.ecr.repository_url
+  route53_name       = var.route53_name
 }
 
 module "apigateway" {
   source = "../../modules/apigateway"
 
-  stage           = local.stage
-  route53_name    = var.route53_name
+  stage                      = local.stage
+  route53_name               = var.route53_name
+  discovery_service_arn      = module.ecs.discovery_service_arn
+  vpc_link_security_group_id = module.ecs.vpc_link_security_group_id
+  vpc_link_subnet_ids        = module.ecs.vpc_link_subnet_ids
 }
 
 module "alarm" {
   source = "../../modules/alarm"
 
-  stage               = local.stage
-  ecs_cluster_name    = module.ecs.cluster_name
-  ecs_service_name    = module.ecs.service_name
-  notification_email  = var.review_backend_alarm_email
+  stage              = local.stage
+  ecs_cluster_name   = module.ecs.cluster_name
+  ecs_service_name   = module.ecs.service_name
+  notification_email = var.review_backend_alarm_email
 }
 
 module "scheduler_role" {
@@ -64,5 +67,4 @@ module "scheduler_role" {
   stage            = local.stage
   ecs_cluster_name = module.ecs.cluster_name
   ecs_service_name = module.ecs.service_name
-  api_id           = module.apigateway.api_id
 }
