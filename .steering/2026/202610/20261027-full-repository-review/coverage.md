@@ -30,3 +30,29 @@ FR-002〜012の反映後、既存開発用Compose内でbackend全体821 examples
 FR-013の変更後は料理/食事フォーム10 suites / 52 tests、backend料理詳細/カレンダー7 examples、型検査と変更箇所lintに成功。実ブラウザは人工データのGraphQLモックで手間の表示・送信4項目を検証し、画像4枚を目視した。実DB保存の再読込は含まない。390px幅の横はみ出しは別観測であり、変更前比較は未確認。既存専用Composeを追加せず、開発用`compose.dev.local.yml`を使用する。
 
 FR-014は実ApolloのObservableを保留してloading/error、callback省略、6 mutation経路の集約を検証し、最終14 testsと型検査/lintが成功。FR-015はclearStore/refetchを個別保留・拒否するtestと、実ブラウザの更新失敗→再取得を確認した。実ブラウザは全GraphQLモック、登録mutation1回、5画像目視であり、実DBへの登録確認は含まない。
+
+
+## 最終検証（2026-11-02）
+
+source/testの固定点は`3dcad04`。当初のAstraレビューを入力にした適用工程であり、新しいAstra全体レビューを実施済みとは扱わない。
+
+| 検証 | 結果 |
+| --- | --- |
+| backend全RSpec | 937 examples / 0 failures |
+| frontend全Jest | 47 suites / 283 tests成功（fixture由来のconsole警告は残る） |
+| TypeScript | tsc --noEmit成功 |
+| frontend全ESLint | src 239 files、0 errors / 0 warnings |
+| backend全RuboCop | 492 files、保留FR-001の既存2 offensesのみ。今回の変更fileは0 offenses |
+| 運用・Terraform/IAM・CI条件 | Node 68 tests成功、bash syntax/diff check成功 |
+| MySQL並行・migration | CR-004の2件＋FR-019の4件、すべて成功。独立接続・専用fixture DBで実測 |
+| eager load | test設定のzeitwerk:check成功。既存libはeager_load対象外という警告は継続 |
+| Next production build | 最終commitのsourceを既存container内の一時copyでbuildし、静的19ページ生成まで成功 |
+| Terraform | 変更5ファイルfmt、固定依存の隔離copyでreview/prod root init/validate成功 |
+
+RuboCopの残りはapp/controllers/admin/base_controller.rbのStyle/FetchEnvVar 2件。利用者が保留したFR-001の既存WIPであり、作業開始時affd7ecとbyte一致を確認したため今回変更しない。一時検証Rubyの名前/書式も整理済みで、生成artifactを既存source違反として混ぜていない。全体lintが完全greenとは報告しない。
+
+production buildはgit archiveで取得したcommitted sourceを使い、既存node_modulesと生成済みCSSを再利用した。常駐CSS watcherは重複起動していない。外部dependency symlinkを解決するTurbopack root指定は一時copyにだけ設定し、repository/dev設定は変更しない。通常テスト時の作業treeには利用者由来3差分を維持しており、それらはcommit対象外である。
+
+ブラウザ確認は各FRのrequestsにある人工fixture/GraphQL mockで行ったもので、実DBへのUI保存を証明しない。実DB migration、AWS apply/実効IAM権限/Host偽装の直アクセス拒否、実Webhookは今回未実施。FR-019のunique index導入は実データに既存重複があれば停止する設計である。TerraformのARM h1追加は検証copyだけで、repository lockfileのversion/constraint/hashは変更していない。
+
+一時MySQLは検証後にservice/dataを除去済み。既存の開発backend/frontendは継続稼働している。再発防止の恒久documentは提案のみで、未承認の追加規範を適用しない。

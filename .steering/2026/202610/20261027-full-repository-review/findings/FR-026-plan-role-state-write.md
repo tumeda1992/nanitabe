@@ -32,8 +32,8 @@ IAM policyの静的検査と権限simulationで、planログ保存は許可、tf
 
 ## 採否・対応記録
 
-- ユーザー判断: 未判断
-- 適用コミット: 未適用
+- ユーザー判断: 全review指摘反映の後続指示により採用
+- 適用コミット: `df42ad7`
 
 ## 適用結果（2026-11-01）
 
@@ -44,3 +44,7 @@ state bucketの全objectにはGetObjectだけを残し、PutObjectをplans/*だ�
 [ReadOnlyAccessの公式policy](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/ReadOnlyAccess.html)も確認し、このmanaged policyにS3 PutObjectがないことを確認した。ただし多サービス・多resourceへの広い読取り権限は残り、この変更を最小read権限化と呼ばない。実際のroleへ別途付与されたpolicy、bucket policy、SCPなどを含む実効権限は未実測。
 
 hostと既存backend containerにTerraform CLIがないため、fmt/validateは未実施。新規tool取得やAWS simulationを実行する追加許可は、外出中の利用者指示に従って要求していない。今回のコードは静的検証済みとして保存し、Terraformを利用できるCI/環境でのvalidateと許可されたAWS simulatorでの実効権限確認ができた時点で検証記録を更新する。Terraform applyや実環境のrole更新は今回の対象外で実行していない。適用commitはapplication.mdとGit履歴で追跡する。
+
+## CLI検証の補完（2026-11-02）
+
+Terraform1.9.4のfmtが成功し、prod/review rootのoffline init/validateも成功した。元lockfileのversion/constraint/全hashを保持した隔離copyに、元ZIPのzhと公式SHA256を照合して計算したARM h1だけを追加して検証した。repositoryのlockfileは変更していない。詳細は[evidence/fr028-migration.md](../evidence/fr028-migration.md)。AWS実効権限simulationやapplyは未実施であり、CLI検証と区別する。

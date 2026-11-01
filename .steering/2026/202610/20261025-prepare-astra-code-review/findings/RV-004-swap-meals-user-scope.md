@@ -2,8 +2,8 @@
 
 - 観点: 契約・正しさ・運用
 - 優先度: 高
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用（後続の全件反映指示）
+- 対応状況: 完了（FR-002で追跡）
 - 今回の適用対象: 対象外
 - 対象コミット: 46ad16a84c2d4c0cc82d23136573ac139493215e
 - 対象: backend/app/domain/business/food/meal/usecase/swap_meals_between_days_command.rb: call; backend/app/models/meal.rb: fetch_by_date; backend/app/graphql/mutations/meal/swap_meals_between_days.rb: resolve
@@ -27,6 +27,10 @@ fetch_by_dateに必須のuser_idを渡し、where(user_id:, date:)で取得す�
 
 ## 採否・対応記録
 
-- ユーザーの判断: 未判断
-- 確認: コードと記載した関連specの静的確認。動的再現・テストは未実行。
-- 適用コミット: 未適用
+- ユーザーの判断: 後続の全件反映指示により採用（FR-002）
+- 初回確認: コードと記載した関連specの静的確認。後続の検証結果は以下のFR記録を参照。
+- 適用コミット: `03e4828`
+
+## 後続の反映（2026-11-02）
+
+本fileの「今回の適用対象」は初回の挙動維持枠を指す。後続の全件反映指示による現行状態・検証は[FR-002](../../20261027-full-repository-review/findings/FR-002-swap-user-scope.md)へ集約する。適用commitは`03e4828`。

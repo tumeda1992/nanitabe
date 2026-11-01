@@ -23,3 +23,19 @@
 ## 全体回帰からのCR-003補完（2026-11-02）
 
 最初の全体936件で旧Repository specのtype変更成功期待だけが合意契約と衝突したため、拒否/不変の期待へ更新し、合法なURL詳細更新の回帰を残した。関連26 examplesとlint成功。実装本体の追加変更はない。経緯はimplementation_review.md。CR-004のcommitは`02e2caf`。frontend全体47 suites / 283 testsは成功済み。
+
+## 最終対応表（2026-11-02）
+
+| 指摘 | 実装commit | 補完 |
+| --- | --- | --- |
+| [CR-001](findings/CR-001-multi-tag-search.md) | `ddfef5a` | — |
+| [CR-002](findings/CR-002-existing-tag-content.md) | `30c86bb` | — |
+| [CR-003](findings/CR-003-source-type-details.md) | `45074dc` | `852718f`（旧spec契約の補完） |
+| [CR-004](findings/CR-004-postponed-concurrent-consumption.md) | `02e2caf` | — |
+
+
+## 全体検証への参照（2026-11-02）
+
+backend937件、frontend283件、MySQL6件、運用系68件が成功。最終Next production build・型検査・lintの条件と、保留FR-001の既存lint2件を含む限界は[coverageの最終検証](../20261027-full-repository-review/coverage.md#最終検証2026-11-02)を正本とする。
+
+CR-003のspec補完は`852718f`、FR-019のMySQL補完は`3dcad04`。公開は次の工程で行い、完了後に追記する。

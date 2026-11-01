@@ -258,3 +258,53 @@ schemaの二重定義を一元化し、入力・error順・infer型とhookの契
 ## FR-019のMySQL検証保留の解消（2026-11-02）
 
 CR-004と同じ専用MySQL8.0.46で、migration down/upとFK保持、既存重複時の無変更停止、二接続Command一回割当、DB uniqueによる直接二重書込み拒否の4 examplesが成功した。specのlintも成功。テスト専用DBは除去済みで、実DBへmigrationは未適用。FR-034のcommitは`fcac860`、CR-004のcommitは`02e2caf`。補完検証は独立commitとして保存する。
+
+## 最終対応表（2026-11-02）
+
+FR-002〜034の33件は反映済み（先行のFR-031を含む）。FR-001だけ利用者保留を維持する。各行のfileを採否・検証の正本とし、補完検証commitは実装と区別する。
+
+| 指摘 | 状態 | 適用commit |
+| --- | --- | --- |
+| [FR-001](findings/FR-001-admin-authorization.md) | 利用者保留 | — |
+| [FR-002](findings/FR-002-swap-user-scope.md) | 反映・検証済み | `03e4828` |
+| [FR-003](findings/FR-003-meal-mutation-ownership.md) | 反映・検証済み | `f440ac4` |
+| [FR-004](findings/FR-004-dish-source-tag-ownership.md) | 反映・検証済み | `8adcbd6` |
+| [FR-005](findings/FR-005-frame-mutation-ownership.md) | 反映・検証済み | `f7b3e68` |
+| [FR-006](findings/FR-006-pattern-mutation-ownership.md) | 反映・検証済み | `d34ce8c` |
+| [FR-007](findings/FR-007-pinned-dish-disclosure.md) | 反映・検証済み | `3751b09` |
+| [FR-008](findings/FR-008-frame-fill-ownership.md) | 反映・検証済み | `a2ca053` |
+| [FR-009](findings/FR-009-foreign-dish-reference.md) | 反映・検証済み | `9528fa1` |
+| [FR-010](findings/FR-010-foreign-frame-reference.md) | 反映・検証済み | `86ab57e` |
+| [FR-011](findings/FR-011-evaluation-ownership.md) | 反映・検証済み | `cdb8e27` |
+| [FR-012](findings/FR-012-optional-graphql-keywords.md) | 反映・検証済み | `ceb1da7` |
+| [FR-013](findings/FR-013-effort-level-reset.md) | 反映・検証済み | `fb59312` |
+| [FR-014](findings/FR-014-mutation-state.md) | 反映・検証済み | `601d722` |
+| [FR-015](findings/FR-015-refresh-promise.md) | 反映・検証済み | `c05d21d` |
+| [FR-016](findings/FR-016-search-timer.md) | 反映・検証済み | `5319fbd` |
+| [FR-017](findings/FR-017-pattern-placeholder.md) | 反映・検証済み | `62359ad` |
+| [FR-018](findings/FR-018-frame-meal-date.md) | 反映・検証済み | `25471fd` |
+| [FR-019](findings/FR-019-frame-meal-cardinality.md) | 反映・検証済み | `01e5394`（実装）、`3dcad04`（MySQL補完） |
+| [FR-020](findings/FR-020-logical-history.md) | 反映・検証済み | `d8afcf0` |
+| [FR-021](findings/FR-021-calendar-invalid-date.md) | 反映・検証済み | `c240b94` |
+| [FR-022](findings/FR-022-new-dish-without-source.md) | 反映・検証済み | `5b54e45` |
+| [FR-023](findings/FR-023-dictionary-regexp.md) | 反映・検証済み | `73b8797` |
+| [FR-024](findings/FR-024-dictionary-partial-write.md) | 反映・検証済み | `9b1df0a` |
+| [FR-025](findings/FR-025-dictionary-delete-rescue.md) | 反映・検証済み | `4a12564` |
+| [FR-026](findings/FR-026-plan-role-state-write.md) | 反映・検証済み | `df42ad7` |
+| [FR-027](findings/FR-027-startup-rollback.md) | 反映・検証済み | `7772f90` |
+| [FR-028](findings/FR-028-host-not-access-control.md) | 反映・検証済み | `2bf938d` |
+| [FR-029](findings/FR-029-deploy-webhook.md) | 反映・検証済み | `d3e4515` |
+| [FR-030](findings/FR-030-build-filter.md) | 反映・検証済み | `a871b4c` |
+| [FR-031](findings/FR-031-auth-test-helper.md) | 反映・検証済み | `ecfcb96`（実装）、`b24d899`（先行検証） |
+| [FR-032](findings/FR-032-pattern-schema-duplication.md) | 反映・検証済み | `5a2fd44` |
+| [FR-033](findings/FR-033-pattern-input-conversion.md) | 反映・検証済み | `65dc499` |
+| [FR-034](findings/FR-034-legacy-frame-entry.md) | 反映・検証済み | `fcac860` |
+
+CR-001〜004の反映結果は[後続reviewのapplication](../20261030-exhaustive-review/application.md)へ集約する。恒久documentの追加案は[documentation-proposal.md](documentation-proposal.md)に提案のみ保存し、自動適用しない。
+
+
+## 全体検証への参照（2026-11-02）
+
+backend937件、frontend283件、MySQL6件、運用系68件が成功。最終Next production build・型検査・lintの条件と、保留FR-001の既存lint2件を含む限界は[coverageの最終検証](coverage.md#最終検証2026-11-02)を正本とする。
+
+公開は次の工程で行い、完了後に実行結果を追記する。

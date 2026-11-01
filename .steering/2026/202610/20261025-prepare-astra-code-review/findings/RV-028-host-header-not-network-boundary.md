@@ -2,8 +2,8 @@
 
 - 観点: 保守性・性能・契約
 - 優先度: 高
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用（後続の全件反映指示）
+- 対応状況: 完了（FR-028で追跡）
 - 今回の適用対象: 対象外
 - 対象コミット: 46ad16a84c2d4c0cc82d23136573ac139493215e
 - 対象: backend/terraform/modules/ecs/main.tf: aws_security_group.task、aws_ecs_service.this; backend/terraform/modules/apigateway/main.tf: request_parameters
@@ -27,4 +27,8 @@ Gatewayだけを通す要件があるならprivate integration/VPC Link等でネ
 
 ## 採否・対応記録
 
-静的確認のみ。動的再現・テスト未実行、採否未判断、未適用。
+初回は静的確認のみ。現在の採否・検証・適用commitは下記FR-028の反映記録を参照。
+
+## 後続の反映（2026-11-02）
+
+本fileの「今回の適用対象」は初回の挙動維持枠を指す。後続の全件反映指示による現行状態・検証は[FR-028](../../20261027-full-repository-review/findings/FR-028-host-not-access-control.md)へ集約する。適用commitは`2bf938d`。

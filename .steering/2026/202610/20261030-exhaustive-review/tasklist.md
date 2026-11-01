@@ -55,8 +55,8 @@
 
 **DoD**: CR変更の関連・全体検証の結果を区別して追跡でき、4指摘の適用commitと残るFR-001保留が既存PRから読める。実AWS・実DB・Webhookへの変更を行わない。
 
-- [ ] 既存開発backend内で全RSpecと全RuboCop、既存開発frontend内で`yarn test --runInBand`と`yarn lint`を実行する。CR変更による失敗は修正して再実行し、baseline違反があれば範囲・理由を明示する。
-- [ ] 各findingの完了根拠・4件のcommit SHA・application・coverageの実測/未実測を照合する。FR-001保留と利用者由来3ファイルの未commit状態を維持する。記録だけの追跡commitが必要なら実装の1指摘1commitと区別する。
-- [ ] 実装で得た再発防止知識をdoc-enricher提案modeでreviewする。必要な既存README更新案だけ提示し、未承認の恒久docsを自動追加しない。
+- [x] 既存開発backend内で全RSpecと全RuboCop、既存開発frontend内で`yarn test --runInBand`と`yarn lint`を実行する。CR変更による失敗は修正して再実行し、baseline違反があれば範囲・理由を明示する。
+- [x] 各findingの完了根拠・4件のcommit SHA・application・coverageの実測/未実測を照合する。FR-001保留と利用者由来3ファイルの未commit状態を維持する。記録だけの追跡commitが必要なら実装の1指摘1commitと区別する。
+- [x] 実装で得た再発防止知識をdoc-enricher提案modeでreviewする。必要な既存README更新案だけ提示し、未承認の恒久docsを自動追加しない。
 - [ ] 実際に作成したcommitと現在の非default branchを確認し、既存許可に従ってpush・既存PRの説明/検証結果を更新する。追加PR・merge・deployを行わない。
 - [ ] 利用者へ適用ID・commit・検証結果・索引path・未確認範囲を返す。任意の手動確認で追加feedbackを受けた場合は実装reviewへ記録して必要な設計へ戻す。

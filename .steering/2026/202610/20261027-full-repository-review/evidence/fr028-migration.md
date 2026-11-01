@@ -82,7 +82,7 @@ baselineの全対象範囲と現行差分を順方向・逆方向に照合した
 
 削除したIP/URI定数、ENI取得、URI書換え、URI停止target/output/permission、READMEの旧owner/固定費説明はC09/C13/C25/C26へ逆引きした。追加したSG/namespace/SRV/health/link/wiring/readinessはC09/C20/C21/C24へ対応する。新しいreadiness request specとprivate integration spec、BASH_ENV用stubは各contractを検証するartifactであり、独立した業務機能の追加ではない。新common.shにhelperの正本を移し、script側へ実装を複製していない。
 
-構造台帳16範囲を照合済み。contract集計は **適合20（KEEP14/MOVE1/ADAPT5） / 合意済み追加3 / 合意済み変更3 / 独立した明示廃止0 / 未監査0 / 未分類削除0 / 未分類追加0**。public IP方式の部分廃止は独立機能の撤去ではなくC09/C13の合意済み方式変更に含む。
+構造台帳17範囲を照合済み。contract集計は **適合20（KEEP14/MOVE1/ADAPT5） / 合意済み追加3 / 合意済み変更3 / 独立した明示廃止0 / 未監査0 / 未分類削除0 / 未分類追加0**。public IP方式の部分廃止は独立機能の撤去ではなくC09/C13の合意済み方式変更に含む。
 
 black-box検証は旧contractから作った起動・停止50 cases、private構成6 cases、FR-026のIAM3 casesの合計59 testsが成功。AWS/date/curl/sleepだけをstubにし、jqは実binaryでtarget/metadataのJSONを検査する。argument logはNUL区切り+record separatorで実jqの複数行出力も保持する。providerの大きなarchive検証を同時に行った実行では30秒timeoutが出たため、負荷を分けて59件を再実行し全成功を確認した。
 
@@ -91,3 +91,5 @@ Railsの認証なしmetadata requestは1 example成功し、User/Dish/Meal件数
 実AWSへのapply/起動/停止、Host偽装による直アクセス拒否、実VPC link経由の到達性と費用は未実測。コード検証と実環境確認を区別し、後者は実適用を別途実施する際に確認する。
 
 Terraform 1.9.4とprovider 6.70.0（review）/5.100.0（prod）は公式releaseのSHA256と元lockfileのzh hashを照合した。元lockfileにはこの実行platformのh1がなかったため、隔離した検証copyだけへ当該ZIPから計算したARM h1を1件ずつ追加した。version/constraint/既存hashは全保持し、repositoryのlockfileは変更していない。対象Terraform sourceのcopyは原本とbyte比較した。host sandboxではprovider起動が失敗したが、既存の開発用backend containerの一時領域でoffline init後、review rootのvalidateが成功した。provider 6のfailure_threshold非推奨警告は残る（AWSで値は常に1）。plan/applyやstate backend接続は行っていない。
+
+最終記録の照合で構造行数の集計誤記を16から17へ補正した。baselineの9 source fileの末尾行と全連続範囲を再照合済みで、対象範囲の追加・削減はない。prod rootのoffline init/validateも、同じ検証copyと固定provider/既存hash保持の条件で成功した。

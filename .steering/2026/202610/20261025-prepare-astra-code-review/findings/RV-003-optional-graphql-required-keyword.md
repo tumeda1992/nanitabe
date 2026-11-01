@@ -2,8 +2,8 @@
 
 - 観点: 保守性・契約
 - 優先度: 中
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用（後続の全件反映指示）
+- 対応状況: 完了（FR-012で追跡）
 - 今回の適用対象: 対象外
 - 対象コミット: 46ad16a84c2d4c0cc82d23136573ac139493215e
 - 対象: backend/app/graphql/mutations/dish/update_dish_with_new_source.rb:11 resolve
@@ -27,4 +27,8 @@ backend/spec/graphql/mutation/dish/update_dish_with_new_source_spec.rbに引数�
 
 ## 採否・対応記録
 
-静的コード確認のみ。テスト未実行、未適用。
+初回は静的コード確認のみ。現在の採否・検証・適用commitは下記FR-012の反映記録を参照。
+
+## 後続の反映（2026-11-02）
+
+本fileの「今回の適用対象」は初回の挙動維持枠を指す。後続の全件反映指示による現行状態・検証は[FR-012](../../20261027-full-repository-review/findings/FR-012-optional-graphql-keywords.md)へ集約する。適用commitは`ceb1da7`。
