@@ -32,10 +32,10 @@
 
 **DoD**: 関連料理がある異なるtype値への変更を、legacy先行保存を含む全現行入口で拒否する。出典・料理・ページ/URL/メモが不変で、同種rename/comment・未関連type変更・既存認可を維持する。
 
-- [ ] `backend/spec/models/dish_source_spec.rb`、旧/現行の出典UpdateCommand spec、`backend/spec/graphql/mutation/dish/source/update_source_spec.rb`へページ42の保持・rename同時拒否・同種変更成功・未関連変更成功を追加しredを確認する。YouTube→Webの関連あり変更も拒否する。
-- [ ] 純粋な`Business::Food::Dish::Source::Policy::TypeChangePolicy`を追加する。`DishSource`の更新validationから旧/new typeと関連有無を渡し、拒否時に設計どおりのtypeエラーを追加する。
-- [ ] GraphQLの既存legacy/food両呼出を維持して旧/現行/モデル/GraphQLの関連specをgreenにし、変更箇所RuboCopを成功させる。拒否後の料理再取得と再保存でも旧詳細を保持することを確認する。
-- [ ] finding/applicationへ現行の先行保存問題と検証結果を記録し、document-review後、CR-003だけを独立commitする。
+- [x] `backend/spec/graphql/mutation/dish/source/type_change_boundaries_spec.rb`にmodel・旧/現行Command・実GraphQLの共通シナリオをまとめ、ページ42の保持・rename同時拒否・同種変更成功・未関連変更成功を追加しredを確認する。YouTube→Webの関連あり変更も拒否する。
+- [x] 純粋な`Business::Food::Dish::Source::Policy::TypeChangePolicy`を追加する。`DishSource`の更新validationから旧/new typeと関連有無を渡し、拒否時に設計どおりのtypeエラーを追加する。
+- [x] GraphQLの既存legacy/food両呼出を維持して旧/現行/モデル/GraphQLの関連specをgreenにし、変更箇所RuboCopを成功させる。拒否後の料理再取得と再保存でも旧詳細を保持することを確認する。
+- [x] finding/applicationへ現行の先行保存問題と検証結果を記録し、document-review後、CR-003だけを独立commitする。
 
 ## CR-004: 相互変換で元レコードを一回だけ消費する
 

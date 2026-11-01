@@ -5,8 +5,8 @@
 - 対象: `backend/app/domain/business/food/dish/source/usecase/update_command.rb:29`
 - 観点: データ整合性
 - 由来: 全体レビュー・既存。既存未対応指摘とは原因・修正を分離。
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用（全review指摘反映の後続指示）
+- 対応状況: 適用・関連自動検証完了
 - 適用枠: 挙動変更が必要
 - 依存する指摘: なし
 
@@ -34,3 +34,11 @@ SOURCE_LOCATOR=nil; STORED_PAGE=42をDocker内で実測。変更前後の詳細�
 - 修正内容・判断理由: 未適用
 - 実行した検証と結果: 上記参照。問題再現であり修正成功ではない。
 - 適用コミット: 未適用
+
+## 適用結果（2026-11-02）
+
+純粋なTypeChangePolicyへ同種/関連なしの許可判定を置き、DishSource更新validationを共通の保存境界にした。関連料理が存在する異種変更はtypeエラー付きRecordInvalidで拒否する。GraphQLは旧Commandで先に保存するため、food Commandだけの検査では迂回されることを現物確認し、二重呼出を残したまま両方を覆った。
+
+model・legacy・現行・実HTTP GraphQLで同じ5シナリオを検証した。ページ42/64を持つ複数料理でtypeと同時rename/commentの全不変、拒否後の元type更新/再取得/料理再保存、同種rename、未関連type変更、YouTube→Web拒否を含む。修正前20件中12件red。修正後は純粋Policy5件と既存の出典/認可を含む158 examples / 0 failures、変更4ファイルRuboCop成功。実GraphQLの拒否は既存のHTTP 422応答として確認した。
+
+本検証は既に関連料理が存在する場合の保存契約を対象とする。並行して新しい関連を追加する操作との競合や、古いLocatorを保持する外部callerまでの完全保証は行っていない。commitはapplication.mdとGit履歴で追跡する。
