@@ -234,3 +234,7 @@ PutObjectをplans/*だけへ分離。追加3件の静的テストは修正前1�
 ## FR-028のコード適用完了（2026-11-01）
 
 VPC link SG経由だけを許可し、固定Cloud Map ARNとECSのSRV登録へ変更した。起動/停止の移行と26 contractのwhite-box照合を完了し、59 tests、Rails metadata1 example、lint/bash/fmt、隔離copyのreview Terraform validateが成功。元lockfileのversion/既存hashは保持した。実AWS apply/到達性は未実測であり、実適用時に確認する。namespaceの実適用後費用も記載済み。FR-027のcommitは`7772f90`。FR-026のfmtも成功した。次はFR-029のWebhook失敗検知へ進む。
+
+## FR-029の適用完了（2026-11-01）
+
+WebhookのHTTPエラーをcurlの失敗へ反映し、接続/全体deadlineを設けた。ローカルHTTP fixtureと実curlによる6 tests成功、実Webhookは未呼出し。FR-028のcommitは`2bf938d`。追加のTerraform prod root validateも固定version/元hash保持の隔離copyで成功し、FR-026のfmt/validate保留を解消した。AWS実効権限は未実測。次はFR-030のbuild変更検出へ進む。
