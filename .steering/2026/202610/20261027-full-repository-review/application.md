@@ -226,3 +226,7 @@ frontend34 tests、backend11 examples、型・lintに加え、ブラウザも出
 ## FR-026のコード適用完了（2026-11-01）
 
 PutObjectをplans/*だけへ分離。追加3件の静的テストは修正前1件red、修正後全成功、diff check成功。Terraform CLI不在のためfmt/validateとAWS実効権限simulationは未実施で、追加許可を要求せず記録した。広いReadOnlyAccessを最小read権限化したとは扱わない。FR-025のcommitは`4a12564`。次はFR-027の起動途中rollbackへ進む。
+
+## FR-027の適用完了（2026-11-01）
+
+失敗と割込みのcleanupを起動前に登録し、起動済みでも停止設定を修復する。新規31 testsすべて成功、bash syntax/diff check成功。実AWSは未実施。FR-026のcommitは`df42ad7`。FR-025後のbackend全体回帰も873 examples / 0 failuresだった。次はFR-028の経路制限とprivate integrationへ進む。

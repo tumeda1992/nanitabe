@@ -58,7 +58,7 @@
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
 - [x] [FR-026: Terraform plan roleがstate全体を書き換えられる](findings/FR-026-plan-role-state-write.md)
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
-- [ ] [FR-027: 起動途中の失敗で自動停止なしの稼働状態が残る](findings/FR-027-startup-rollback.md)
+- [x] [FR-027: 起動途中の失敗で自動停止なしの稼働状態が残る](findings/FR-027-startup-rollback.md)
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
 - [ ] [FR-028: Host制限を直接アクセス防止として扱っている](findings/FR-028-host-not-access-control.md)
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
