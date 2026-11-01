@@ -31,7 +31,7 @@ Dockerへの通常接続は権限拒否。権限要求が返らないため、�
 | [FR-011: 未評価料理への評価作成が料理の所有者を確認しない](findings/FR-011-evaluation-ownership.md) | 完了 | 追加4件red後、関連9 examples成功、変更3ファイルlint成功 |
 | [FR-012: 省略可能なGraphQL引数がRubyでは必須になっている](findings/FR-012-optional-graphql-keywords.md) | 完了 | 追加6件中省略2件red後、関連10 examples成功、変更3ファイルlint成功 |
 | [FR-013: 料理編集で既存の手間レベルを消してしまう](findings/FR-013-effort-level-reset.md) | 完了 | 関連52 frontend tests/7 backend examples・型検査・lint成功、実ブラウザ4項目成功 |
-| [FR-014: 共通mutationがloadingとerrorを取得できない](findings/FR-014-mutation-state.md) | 未着手 | 未実行 |
+| [FR-014: 共通mutationがloadingとerrorを取得できない](findings/FR-014-mutation-state.md) | 完了 | 状態欠落8件red・callback省略red後、関連61件と最終14件成功、型検査/lint成功 |
 | [FR-015: カレンダー更新完了を待つPromiseが途中で失われる](findings/FR-015-refresh-promise.md) | 未着手 | 未実行 |
 | [FR-016: 検索debounceが別パネルとアンマウントをまたいで残る](findings/FR-016-search-timer.md) | 未着手 | 未実行 |
 | [FR-017: パターンの枠を未選択へ戻すとNaNを送信する](findings/FR-017-pattern-placeholder.md) | 未着手 | 未実行 |
@@ -166,3 +166,7 @@ FR-013の実装と自動検証を進め、詳細は同指摘fileへ記録した�
 ## FR-013の適用完了（2026-11-01）
 
 手間IDの出力・query・初期値・選択状態を復元し、位置づけ変更時だけ意図的に解除する。関連frontend52件・backend7件・型検査・変更箇所lintに成功した。visual-inspectorも人工fixtureの全GraphQLモックで4項目成功、画像目視済み。実DBへのUI保存は未確認。390px幅の横はみ出しは変更前比較未実施の別観測として残した。結果は`requests/fr013-visual-result.json`。FR-013を独立commitにし、次はFR-014のmutation状態取得へ進む。
+
+## FR-014の適用完了（2026-11-01）
+
+Apolloの状態名とtuple型を修正。callback省略を受け付け、型検査が検出した交換日未設定も送信前に拒否する。関連61 tests、追加修正後14 tests、最終型検査・変更4ファイルlintが成功。FR-013のcommitは`fb59312`。次はFR-015の更新完了Promiseと失敗時の選択保持へ進む。
