@@ -42,3 +42,7 @@ SOURCE_LOCATOR=nil; STORED_PAGE=42をDocker内で実測。変更前後の詳細�
 model・legacy・現行・実HTTP GraphQLで同じ5シナリオを検証した。ページ42/64を持つ複数料理でtypeと同時rename/commentの全不変、拒否後の元type更新/再取得/料理再保存、同種rename、未関連type変更、YouTube→Web拒否を含む。修正前20件中12件red。修正後は純粋Policy5件と既存の出典/認可を含む158 examples / 0 failures、変更4ファイルRuboCop成功。実GraphQLの拒否は既存のHTTP 422応答として確認した。
 
 本検証は既に関連料理が存在する場合の保存契約を対象とする。並行して新しい関連を追加する操作との競合や、古いLocatorを保持する外部callerまでの完全保証は行っていない。commitはapplication.mdとGit履歴で追跡する。
+
+### 全体回帰での旧spec契約更新
+
+最初のbackend全体936件で、旧Repository specの「関連済み出典を別typeへ変えてから詳細を上書きする」成功期待が1件だけ失敗した。この操作は合意済みCR-003の拒否対象なので、拒否とsource/関連全属性不変を確認するspecへ更新した。既存Repositoryの詳細列更新能力は、最初からYouTube型のsourceへ紐づく旧データの古いbook列をURLへ置き換える別ケースで保持した。validationを迂回して元の成功期待を通す変更はしていない。両者と4経路の関連26 examples / 0 failures、変更specのRuboCop成功。補完commitはapplication.mdとGit履歴で追跡する。

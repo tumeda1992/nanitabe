@@ -19,3 +19,7 @@
 ## CR-004の適用完了（2026-11-02）
 
 相互変換の冒頭で本人の元行をlockし、延期Removeも本人scopeに揃えた。MySQL8.0.46二接続で両方向の旧2件作成を再現後、実LOCK WAIT/成功1/不存在拒否1/作成先1を確認した。専用2 examplesと通常関連39 examples、変更6ファイルlint成功。接続guard・setup・cache由来の観測timeoutと解消根拠はevidence/cr004-mysql.mdへ記録。一時DBは削除済み、既存アプリは継続稼働。CR-003のcommitは`45074dc`。次は全体回帰・索引/PR更新・公開を完了する。
+
+## 全体回帰からのCR-003補完（2026-11-02）
+
+最初の全体936件で旧Repository specのtype変更成功期待だけが合意契約と衝突したため、拒否/不変の期待へ更新し、合法なURL詳細更新の回帰を残した。関連26 examplesとlint成功。実装本体の追加変更はない。経緯はimplementation_review.md。CR-004のcommitは`02e2caf`。frontend全体47 suites / 283 testsは成功済み。
