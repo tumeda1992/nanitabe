@@ -1,8 +1,8 @@
 # FR-025: 辞書削除後の反映失敗をrescue自身が別例外で隠す
 
 - 優先度: P2
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -34,3 +34,14 @@ destroyのrescueはNormalizeWord.find(params[:id])を呼ぶが、Commandは既�
 
 - ユーザー判断: 未判断
 - 適用コミット: 未適用
+
+## 適用結果（2026-11-01）
+
+削除後の再反映エラーでは、レコードの再検索やDELETEにないnormalize_word paramsを読まず、一覧へalert付きでredirectする。一覧templateにもエラーalertを表示する。FR-024のtransactionによって辞書は元へ戻り、削除成功の通知を出さない。
+
+本文なしDELETEの追加request specで、最初はParameterMissingによる400を再現した。redirectへ直した後の検証で一覧がalertを描画しないことも検出し、templateを修正した。最終的に関連24 examples / 0 failures、変更Ruby2ファイルRuboCop違反なし。requestはredirect後の実HTMLに元の反映エラーが表示され、辞書の全属性が不変であることを確認する。既存system CRUDも成功した。
+
+- `docker compose -f compose.dev.local.yml exec -T backend bundle exec rspec spec/requests/admin/food/dish/word/normalize_words_spec.rb spec/system/admin/food/dish/word/normalize_words_spec.rb spec/domain/business/food/dish/word/usecase/remove_command_spec.rb spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb`
+- 同backendの`bundle exec rubocop app/controllers/admin/food/dish/word/normalize_words_controller.rb spec/requests/admin/food/dish/word/normalize_words_spec.rb`
+
+実DBや開発serverでの管理操作は行っていない。適用commitはapplication.mdとGit履歴で追跡する。

@@ -218,3 +218,7 @@ frontend34 tests、backend11 examples、型・lintに加え、ブラウザも出
 ## FR-024の適用完了（2026-11-01）
 
 辞書CRUDと全料理・タグの再反映をtransactionへまとめ、再反映単独にも原子性を持たせた。2件目の実保存を失敗させる追加4件のred後、関連95 examples / 0 failures、変更5ファイルlint成功。FR-023のcommitは`73b8797`。次はFR-025の削除失敗時rescueへ進む。
+
+## FR-025の適用完了（2026-11-01）
+
+本文なしDELETEの失敗を400で隠さず一覧alertへ返す。一覧のalert未描画もrequestで検出し修正した。関連24 examples / 0 failures、変更2ファイルlint成功。FR-024のcommitは`9b1df0a`。次はFR-026のplan roleのstate書込み権限へ進む。

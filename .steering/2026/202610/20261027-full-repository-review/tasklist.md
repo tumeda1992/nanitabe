@@ -54,7 +54,7 @@
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
 - [x] [FR-024: 辞書更新と全料理への再反映が一体で保存されない](findings/FR-024-dictionary-partial-write.md)
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
-- [ ] [FR-025: 辞書削除後の反映失敗をrescue自身が別例外で隠す](findings/FR-025-dictionary-delete-rescue.md)
+- [x] [FR-025: 辞書削除後の反映失敗をrescue自身が別例外で隠す](findings/FR-025-dictionary-delete-rescue.md)
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
 - [ ] [FR-026: Terraform plan roleがstate全体を書き換えられる](findings/FR-026-plan-role-state-write.md)
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。

@@ -86,6 +86,22 @@ RSpec.describe "Admin::Food::Dish::Word::NormalizeWords", type: :request do
   end
 
   describe "DELETE /admin/food/dish/word/normalize_words/:id" do
+    it "shows the reflection error for a payloadless DELETE and preserves the rolled-back dictionary" do
+      word = NormalizeWord.create!(entered_source: "FR025", entered_destination: "old", source: "FR025", destination: "old")
+      original = word.attributes
+      allow(Business::Food::Dish::Word::Usecase::ReflectLatestNormalizeWordCommand).to receive(:call)
+        .and_raise(Business::Food::Dish::Word::Errors::ReflectLatestNormalizeWordError, "反映に失敗しました")
+
+      delete admin_food_dish_word_normalize_word_path(word)
+
+      expect(response).to redirect_to(admin_food_dish_word_normalize_words_path)
+      expect(word.reload.attributes).to eq(original)
+      follow_redirect!
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include("反映に失敗しました")
+      expect(response.body).not_to include("正規化ワードを削除しました")
+    end
+
     it "deletes the NormalizeWord and redirects to index" do
       word = NormalizeWord.create!(entered_source: "test", entered_destination: "", source: "test", destination: "test")
 
