@@ -18,8 +18,8 @@ Dockerへの通常接続は権限拒否。権限要求が返らないため、�
 
 | 指摘 | 状態 | commit・検証 |
 | --- | --- | --- |
-| [FR-001: 管理CRUDに認証・管理権限の確認がない](findings/FR-001-admin-authorization.md) | 対応中 | Basic認証実装とspecを作成。green受付不能、未検証のWIPとして現状保存。CSRF強化は設計確定・未実施 |
-| [FR-002: 日付交換が他ユーザーの食事まで移動する](findings/FR-002-swap-user-scope.md) | 未着手 | 未実行 |
+| [FR-001: 管理CRUDに認証・管理権限の確認がない](findings/FR-001-admin-authorization.md) | 保留 | Basic認証実装とspecを作成。green受付不能、未検証のWIPとして現状保存。CSRF強化は設計確定・未実施 |
+| [FR-002: 日付交換が他ユーザーの食事まで移動する](findings/FR-002-swap-user-scope.md) | 完了 | 2026-11-01: Dockerで18 examples成功、変更箇所lint成功。commitは下記 |
 | [FR-003: 食事の更新・削除が所有者を検証しない](findings/FR-003-meal-mutation-ownership.md) | 未着手 | 未実行 |
 | [FR-004: 料理・出典・一括タグの更新が所有者を検証しない](findings/FR-004-dish-source-tag-ownership.md) | 未着手 | 未実行 |
 | [FR-005: 枠名変更・枠削除・枠エントリ削除がIDだけで実行される](findings/FR-005-frame-mutation-ownership.md) | 未着手 | 未実行 |
@@ -82,3 +82,11 @@ GitHub連携の許可対象追加によりpluginのpushとPR作成が成功。�
 ## 利用者指定の現状共有（2026-10-30）
 
 利用者の「今の状態でコミットしてpushして」に従い、FR-002の修正途中と回帰テスト、FR-001保留の記録、3回目レビューの成果物をWIPとして保存する。FR-002のテスト呼出しは応答未取得であり、成功・完了とは扱わない。FR-001は保留、他の未対応指摘も完了に変更しない。
+
+## ローカルでの再開（2026-11-01）
+
+利用者の「.steering/2026/202610 の*-review系…レビュー指摘後の反映をしていって」を、既存レビューの未対応指摘の適用指示として受領した。旧RVは対応するFRで追跡し二重修正しない。CR-001〜004も反映対象とする。FR-001だけは既存の明示保留を維持する。レビュー担当Astraと今回の適用担当gpt-6.1-solを区別する。
+
+開始HEAD: `affd7ec1eb9105e27795bcc9ecbdd4f9071af628`。既存の`.gitignore`と`frontend/src/lib/generateApiOrigin.ts`の未コミット変更を適用差分に含めない。作業directoryは既存の本directoryと`../20261030-exhaustive-review`を再利用する。各directory内のtemporary-overrides候補は存在しない。
+
+Docker権限を取得し、外部ネットワークなし・実環境env_fileなし・`RAILS_ENV=test`の専用コンテナを起動した。FR-002のCommand・GraphQL・旧Commandの関連18 examplesは成功。変更3ファイルのRuboCopは違反なし。FR-002のWIPを検証済みとして確定し、利用者ID必須の取得APIで再発を防止した。FR-003以降は各指摘の依存順で実施し、FR-018/019の枠整合性は認可とは別commitで扱う。

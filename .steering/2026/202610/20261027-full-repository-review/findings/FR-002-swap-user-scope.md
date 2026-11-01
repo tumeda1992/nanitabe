@@ -1,8 +1,8 @@
 # FR-002: 日付交換が他ユーザーの食事まで移動する
 
 - 優先度: P1
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-004（現行コードで再確認）。
@@ -33,5 +33,11 @@ A/Bそれぞれに両日の食事を作り、Aのmutation後にBの全属性が�
 
 ## 採否・対応記録
 
-- ユーザー判断: 未判断
-- 適用コミット: 未適用
+- ユーザー判断: 2026-11-01の指定レビュー範囲の反映依頼により採用
+- 適用コミット: 本ファイルの2026-11-01更新を含む `FR-002` コミット（SHAはapplication.md参照）
+
+## 適用結果（2026-11-01）
+
+現行CommandのWIPで利用者絞込み済みであることを確認し、取得を`Meal.fetch_by_date(date, user_id:)`へ集約した。取得APIにも利用者IDを必須にし、条件の付け忘れを防ぐ。保存済みの回帰テストは別利用者の両日の全属性が不変であることを検証する。
+
+外部ネットワークなし・実環境env_fileなしのDockerコンテナで、SQLiteのtest DBを使用した。`spec/domain/business/food/meal/usecase/swap_meals_between_days_command_spec.rb`、旧Commandの同名spec、`spec/graphql/mutation/meal/swap_meals_between_days_spec.rb`は18 examples、0 failures。同日・空の日の既存ケースを含む。変更3ファイルのRuboCopも違反なし。WIP時点のredは再実行しておらず、今回確認したのは修正後のgreenである。
