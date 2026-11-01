@@ -28,3 +28,5 @@
 FR-002〜012の反映後、既存開発用Compose内でbackend全体821 examples / 0 failuresを確認した。frontend変更前のJestは39 suites / 215 tests、型検査も成功した。
 
 FR-013の変更後は料理/食事フォーム10 suites / 52 tests、backend料理詳細/カレンダー7 examples、型検査と変更箇所lintに成功。実ブラウザは人工データのGraphQLモックで手間の表示・送信4項目を検証し、画像4枚を目視した。実DB保存の再読込は含まない。390px幅の横はみ出しは別観測であり、変更前比較は未確認。既存専用Composeを追加せず、開発用`compose.dev.local.yml`を使用する。
+
+FR-014は実ApolloのObservableを保留してloading/error、callback省略、6 mutation経路の集約を検証し、最終14 testsと型検査/lintが成功。FR-015はclearStore/refetchを個別保留・拒否するtestと、実ブラウザの更新失敗→再取得を確認した。実ブラウザは全GraphQLモック、登録mutation1回、5画像目視であり、実DBへの登録確認は含まない。

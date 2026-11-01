@@ -34,7 +34,7 @@
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
 - [x] [FR-014: 共通mutationがloadingとerrorを取得できない](findings/FR-014-mutation-state.md)
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
-- [ ] [FR-015: カレンダー更新完了を待つPromiseが途中で失われる](findings/FR-015-refresh-promise.md)
+- [x] [FR-015: カレンダー更新完了を待つPromiseが途中で失われる](findings/FR-015-refresh-promise.md)
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
 - [ ] [FR-016: 検索debounceが別パネルとアンマウントをまたいで残る](findings/FR-016-search-timer.md)
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。

@@ -1,0 +1,29 @@
+{
+  "request_id": "fr015-visual-1",
+  "kind": "visual-inspector",
+  "attempt": 1,
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "FR-015",
+  "artifact_directory": "frontend/inspect/visual/tmp/fr015-refresh-retry",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "延期食事を選択し確定、続くカレンダー再取得を一度失敗させる",
+      "expected": "選択が保持され、更新失敗のalertと再取得buttonが表示される"
+    },
+    {
+      "operation": "失敗表示中に日付を再度クリックする",
+      "expected": "登録mutationを再送しない"
+    },
+    {
+      "operation": "表示を再取得を押し、再取得を成功させる",
+      "expected": "登録を再送せず表示モードへ戻り、alertが消える"
+    }
+  ],
+  "dod": [
+    "人工fixtureで全APIをmockする",
+    "実DBへ変更しない",
+    "画像の目視と送信回数を確認する",
+    "追加承認要求なし"
+  ]
+}

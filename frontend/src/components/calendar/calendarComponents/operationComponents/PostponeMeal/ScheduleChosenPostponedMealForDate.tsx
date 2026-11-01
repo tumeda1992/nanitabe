@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from '@/components/ui/button';
 import classnames from 'classnames';
 import style from './PostponeMeal.module.scss';
 
@@ -12,10 +13,24 @@ export default (props: Props) => {
     changeCalendarModeToDisplayCalendarMode,
     changeCalendarModeToChoosingPostponedMealMode,
     selectedPostponedMeal,
+    refreshError,
+    scheduleError,
+    isScheduling,
+    retryRefresh,
   } = usePostponedMealModeResult;
 
   return (
     <div>
+      {isScheduling && <div role="status">処理中...</div>}
+      {scheduleError && <div role="alert">{scheduleError}</div>}
+      {refreshError && (
+        <div role="alert">
+          <p>{refreshError}</p>
+          <Button type="button" disabled={isScheduling} onClick={() => { void retryRefresh(); }}>
+            表示を再取得
+          </Button>
+        </div>
+      )}
       <div className={style['postpone-meal-header']}>
         <div className={style['postpone-meal-header-title__container']}>
           <div className={style['postpone-meal-header-title__guidance']}>
