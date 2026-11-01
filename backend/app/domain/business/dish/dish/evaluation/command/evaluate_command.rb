@@ -8,6 +8,8 @@ module Business::Dish::Dish::Evaluation
     validates :score, presence: true
 
     def call
+      ::Dish.where(user_id: user_id).find(dish_id)
+
       existing_evaluation = Repository.find(dish_id)
 
       if existing_evaluation.blank?
@@ -19,6 +21,7 @@ module Business::Dish::Dish::Evaluation
         Repository.add(evaluation)
         evaluation
       else
+        existing_evaluation.user_id = user_id
         existing_evaluation.score = score
         Repository.update(existing_evaluation, user_id)
         existing_evaluation

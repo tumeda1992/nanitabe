@@ -17,10 +17,11 @@ module Business::Dish::Dish::Evaluation
       def update(updated_dish_evaluation, update_user_id, force_update: false)
         existing_dish_evaluation_record = ::DishEvaluation.find_by(dish_id: updated_dish_evaluation.dish_id)
 
-        can_update = existing_dish_evaluation_record.user_id == update_user_id || force_update
+        can_update = ::Dish.where(id: updated_dish_evaluation.dish_id, user_id: update_user_id).exists? || force_update
         raise "このユーザはこのレコードを更新できません。" unless can_update
 
         dish_evaluation_record_for_update = set_same_name_fields(updated_dish_evaluation, existing_dish_evaluation_record, [:score])
+        dish_evaluation_record_for_update.user_id = update_user_id unless force_update
         dish_evaluation_record_for_update.save!
       end
     end

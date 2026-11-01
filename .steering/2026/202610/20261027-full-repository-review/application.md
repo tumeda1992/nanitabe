@@ -28,7 +28,7 @@ Dockerへの通常接続は権限拒否。権限要求が返らないため、�
 | [FR-008: 枠割当の認可が入口ごとに異なり関連先の所有者を検証しない](findings/FR-008-frame-fill-ownership.md) | 完了 | 追加16件中13件red後、関連50 examples成功、変更7ファイルlint成功 |
 | [FR-009: 他人の料理を自分の食事に登録すると内容を取得できる](findings/FR-009-foreign-dish-reference.md) | 完了 | 不正関連付けと一覧漏洩をred確認後、関連179 examples成功、変更8ファイルlint成功 |
 | [FR-010: 他人の枠を自分のパターンへ登録して枠名を読める](findings/FR-010-foreign-frame-reference.md) | 完了 | 追加5件中4件red後、関連50件・最終変更後10件成功、lint修正済み |
-| [FR-011: 未評価料理への評価作成が料理の所有者を確認しない](findings/FR-011-evaluation-ownership.md) | 未着手 | 未実行 |
+| [FR-011: 未評価料理への評価作成が料理の所有者を確認しない](findings/FR-011-evaluation-ownership.md) | 完了 | 追加4件red後、関連9 examples成功、変更3ファイルlint成功 |
 | [FR-012: 省略可能なGraphQL引数がRubyでは必須になっている](findings/FR-012-optional-graphql-keywords.md) | 未着手 | 未実行 |
 | [FR-013: 料理編集で既存の手間レベルを消してしまう](findings/FR-013-effort-level-reset.md) | 未着手 | 未実行 |
 | [FR-014: 共通mutationがloadingとerrorを取得できない](findings/FR-014-mutation-state.md) | 未着手 | 未実行 |
@@ -140,3 +140,15 @@ Docker権限を取得し、外部ネットワークなし・実環境env_fileな
 パターン子登録時の親/枠所有者照合と、既存越境関連の一覧除外を追加。関連50 examples / 0 failures、loader初期化修正後のGraphQL10 examplesも成功。変更6ファイルのRuboCop違反を解消した。単独枠登録/適用の保護はFR-008から継続。FR-009のcommitは`9528fa1`。次はFR-011の料理評価の所有者確認へ進む。
 
 frontendの既存開発用コンテナでNode 24.13.0、Next 16.2.3、TypeScript 5.9.3、React 19.2.0を確認し、後続の検証に使う。追加の隔離Composeは使用しない。
+
+## 承認要求を保留する実行条件（2026-11-01）
+
+利用者の外出前の指示原文: 「今からでかけるから、approveを求められても許可を出せない。コマンド実行前に許可を求めることかどうかを確認して、許可が不要だったらそのままコマンド実行して、許可を求めることだったら保留して次の作業して」。出典はこの作業を継続中の会話。
+
+各操作を現在のsandbox範囲と既に有効なcommand許可で確認する。承認済み`docker compose`、`git add`、`git commit`は継続可能。追加承認が必要な操作は承認要求そのものを出さず、対象・理由・再開条件をここへ記録して、依存しない指摘へ進む。ディスク上のrulesに追加済みでも、現セッションで未読込みの許可は有効と扱わない。終了時期の明示はなく、利用者から指示変更があるまでこの条件を保つ。
+
+Codexコマンド許可の追加commitは`cbfd10d`。FR-010のcommitは`86ab57e`。
+
+## FR-011の適用完了（2026-11-01）
+
+料理の所有者を基準に評価を認可し、本人の再評価時に既存の不整合所有者も修復する。関連9 examples / 0 failures、変更3ファイルRuboCop違反なし。FR-010のcommitは`86ab57e`。frontendの既存全Jestは39 suites / 215 tests成功し、後続frontend変更前の基準を確認した。次はFR-012の任意GraphQL引数へ進む。
