@@ -41,6 +41,7 @@ module Mutations::Meal::FrameEntry
 
     context "when frame_entry_id belongs to another user" do
       let(:other_user) { User.create!(id_param: "other_user_param") }
+      let(:other_meal) { FactoryBot.create(:meal, user: other_user, dish: FactoryBot.create(:dish, user: other_user)) }
       let!(:other_meal_frame) { MealFrame.create!(user: other_user, name: "他ユーザー枠") }
       let!(:other_meal_frame_entry) do
         MealFrameEntry.create!(
@@ -48,7 +49,7 @@ module Mutations::Meal::FrameEntry
           meal_frame: other_meal_frame,
           date: Date.today,
           meal_type: 1,
-          meal: meal,
+          meal: other_meal,
         )
       end
 
@@ -57,6 +58,7 @@ module Mutations::Meal::FrameEntry
         expect do
           fetch_mutation_with_auth(build_mutation, variables, user_record.id)
         end.to raise_error(RuntimeError)
+        expect(other_meal_frame_entry.reload.meal_id).to eq(other_meal.id)
       end
     end
   end

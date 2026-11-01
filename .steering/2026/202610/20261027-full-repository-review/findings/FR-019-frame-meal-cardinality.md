@@ -1,8 +1,8 @@
 # FR-019: 1食事を複数枠へ割り当てられhas_one契約が破れる
 
 - 優先度: P2
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -35,3 +35,18 @@ FillWithMealCommandは対象枠へmeal_idを代入するだけ。meal_frame_entr
 
 - ユーザー判断: 未判断
 - 適用コミット: 未適用
+
+## 適用結果（2026-11-01）
+
+1食事1枠という合意済みdesignを適用。同一枠への再割当は許可し、別枠が利用中ならAssignMealPolicyが拒否する。Commandはtransaction内で食事、対象枠の順にrow lockして確認・保存する。最後の防壁としてnullable meal_idへunique indexを追加した。新index追加後に旧indexを削除するため、MySQLの外部キー用indexを一時的に失わない。
+
+migrationは重複meal_idを検出したらデータもindexも変更せずMigrationErrorで停止する。既存データを任意に選んで解除しない。実環境へ適用する前に重複が見つかった場合、その割当を人が判断・整理してから再実行する。downは元の非unique indexを先に作ってからunique indexを外す。
+
+修正前は追加4件中2件が失敗し、CommandとDBの両方で重複が成立することを確認した。修正後の関連103 examplesは成功。全体回帰で844 examples / 0 failures、変更5ファイルのRuboCop違反なし。既存の解除認可specは同じ食事を2枠へ置いていたため、他利用者が所有する別食事へfixtureを正し、拒否後の割当不変も検証した。
+
+- `docker compose -f compose.dev.local.yml exec -T backend env RAILS_ENV=test bundle exec rails db:migrate`: test DBだけへ適用。続く同環境`rails db:schema:dump`でversionとunique indexのみ差分を確認。
+- 同backendの`bundle exec rspec spec/domain/business/food/meal/frame spec/domain/business/food/meal/frame_entry spec/graphql/mutation/meal/frame_entry spec/migrations/ensure_one_frame_per_meal_spec.rb spec/domain/business/food/meal/usecase/frame_release_spec.rb`: 103 examples成功。
+- 同backendの`bundle exec rspec`: 844 examples成功。
+- 同backendの`bundle exec rubocop app/domain/business/food/meal/frame/entry/policy/assign_meal_policy.rb app/domain/business/food/meal/frame/entry/usecase/fill_with_meal_command.rb spec/domain/business/food/meal/frame/entry/usecase/cardinality_spec.rb spec/migrations/ensure_one_frame_per_meal_spec.rb spec/graphql/mutation/meal/frame_entry/unassign_meal_from_frame_entry_spec.rb`: 違反なし。
+
+migration specは独立した一時SQLite DBで重複時の停止・値の維持・up/down・複数NULLを検証した。barrierで独立2接続から同時INSERTし、1件成功/1件RecordNotUnique、最終1行を実測した。これはDB制約の並行検証であり、MySQL上のCommand並行要求・row lockの実測は未実施。実DBへのmigrationやデータ整理も今回の範囲外で実行していない。適用commitはapplication.mdとGit履歴で追跡する。

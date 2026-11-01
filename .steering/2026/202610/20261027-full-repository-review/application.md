@@ -190,3 +190,7 @@ Promiseをカレンダー境界とrefetch完了まで維持し、更新失敗時
 ## FR-018の適用完了（2026-11-01）
 
 日時変更時だけ元枠を解除し、食事保存・解除と交換全体を原子的に保存する。新旧双方の14件でred12件確認後、関連100 examples / 0 failuresと変更6ファイルlintが成功。FR-017のcommitは`62359ad`。次はFR-019の1食事1枠制約へ進む。
+
+## FR-019の適用完了（2026-11-01）
+
+Commandで重複を拒否し、食事row lockとnullable unique indexで保護する。既存重複時はmigrationを停止し、実データを自動整理しない。関連103 examples、backend全体844 examples、lint5ファイル成功。独立SQLite接続の同時INSERTは1件成功/1件拒否。MySQL Command並行実測と実DB適用は未実施。FR-018のcommitは`25471fd`。次はFR-020のNext遷移と論理URL同期へ進む。
