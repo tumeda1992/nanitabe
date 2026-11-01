@@ -222,3 +222,7 @@ frontend34 tests、backend11 examples、型・lintに加え、ブラウザも出
 ## FR-025の適用完了（2026-11-01）
 
 本文なしDELETEの失敗を400で隠さず一覧alertへ返す。一覧のalert未描画もrequestで検出し修正した。関連24 examples / 0 failures、変更2ファイルlint成功。FR-024のcommitは`9b1df0a`。次はFR-026のplan roleのstate書込み権限へ進む。
+
+## FR-026のコード適用完了（2026-11-01）
+
+PutObjectをplans/*だけへ分離。追加3件の静的テストは修正前1件red、修正後全成功、diff check成功。Terraform CLI不在のためfmt/validateとAWS実効権限simulationは未実施で、追加許可を要求せず記録した。広いReadOnlyAccessを最小read権限化したとは扱わない。FR-025のcommitは`4a12564`。次はFR-027の起動途中rollbackへ進む。
