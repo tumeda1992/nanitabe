@@ -178,3 +178,7 @@ Apolloの状態名とtuple型を修正。callback省略を受け付け、型検�
 ## FR-015の適用完了（2026-11-01）
 
 Promiseをカレンダー境界とrefetch完了まで維持し、更新失敗時は選択とモードを保持する。再取得は登録を再送しない。関連25 tests、追加後のhook5 tests、最終型検査・変更箇所lintが成功した。実ブラウザでも3項目成功、登録mutation合計1回と5画像目視を確認。結果は`requests/fr015-visual-result.json`。実DB保存はmock対象のため未確認。次はFR-016の検索timerを各componentへ分離する。
+
+## FR-016の適用完了（2026-11-01）
+
+パネルごとのdebounceとunmount cleanupを追加。追加3件のうち2件のred確認後、関連10 tests・型検査・変更2ファイルlintが成功。FR-015のcommitは`c05d21d`。次はFR-017の未選択値と送信時検証へ進む。

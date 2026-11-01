@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Input } from '../../ui/input';
 import { type DishForSearchCard } from '../DishSearchCard/index';
 import useDish from '../../../features/dish/useDish';
@@ -58,14 +58,17 @@ const relatedMealFilters: {
   { value: 'false', label: '関連食事なし', boolValue: false },
 ];
 
-let searchTimer: ReturnType<typeof setTimeout> | null = null;
-
 const DishSearchPanel = ({
   renderCard,
   initialSearchString,
   onSearchStringChange,
   dishIdRegisteredWithMeal,
 }: DishSearchPanelProps) => {
+  const searchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (searchTimer.current !== null) clearTimeout(searchTimer.current);
+  }, []);
+
   const [searchString, setSearchString] = useState(initialSearchString ?? '');
   const [mealPositionFilter, setMealPositionFilter] =
     useState<MealPositionFilter>(null);
@@ -87,9 +90,10 @@ const DishSearchPanel = ({
 
   const handleSearchChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (searchTimer !== null) clearTimeout(searchTimer);
+      if (searchTimer.current !== null) clearTimeout(searchTimer.current);
       const value = e.target.value;
-      searchTimer = setTimeout(() => {
+      searchTimer.current = setTimeout(() => {
+        searchTimer.current = null;
         setSearchString(value);
         onSearchStringChange?.(value);
       }, 400);
