@@ -186,3 +186,7 @@ Promiseをカレンダー境界とrefetch完了まで維持し、更新失敗時
 ## FR-017の適用完了（2026-11-01）
 
 未選択をnullへ揃え、NaN・非整数・非正数も送信前に拒否する。追加2件のred後、関連15 tests、境界値追加後のeditor13 tests、型検査・lintが成功。visual-inspectorも4項目成功し6画像を目視済み。結果はrequests/fr017-visual-result.json。FR-016のcommitは`5319fbd`。次はFR-018の移動・交換時の元枠解除へ進む。
+
+## FR-018の適用完了（2026-11-01）
+
+日時変更時だけ元枠を解除し、食事保存・解除と交換全体を原子的に保存する。新旧双方の14件でred12件確認後、関連100 examples / 0 failuresと変更6ファイルlintが成功。FR-017のcommitは`62359ad`。次はFR-019の1食事1枠制約へ進む。
