@@ -202,3 +202,11 @@ Next遷移のpathname/search変化を同期し、独自push/popも同じpath+que
 ## FR-021の適用完了（2026-11-01）
 
 実在日とpath境界を検証し、有効日付に付くquery/hashを保持する。21件中11件のred確認後、関連35 tests、型検査・lint成功。visual-inspectorも有効/無効の2ケースで全dateカードを照合し2画像目視済み。FR-020のcommitは`d8afcf0`。次はFR-022の出典なし新規料理による食事編集へ進む。
+
+## FR-022の進行（2026-11-01）
+
+出典なしのGraphQL引数と変数をnullableへ揃え、source自体省略の正規化も修正した。backend11 examples、frontend34 tests、型検査・backend2/frontend4ファイルlintが成功。codegenのHTTP取得はFR-019未適用migration検知で停止したため、開発DBへ適用せず通常schemaをRails runnerでoffline出力し、一時configから型生成した。詳細はFR-022を参照。ブラウザrequestはrequests/fr022-visual.jsonで検証中。FR-021のcommitは`c240b94`。
+
+## FR-022の適用完了（2026-11-01）
+
+frontend34 tests、backend11 examples、型・lintに加え、ブラウザも出典なしの保存1回、食事ID保持、modal終了、新料理名表示を確認した。3画像目視済み。結果はrequests/fr022-visual-result.json。次はFR-023の辞書文字列の正規表現解釈を直す。

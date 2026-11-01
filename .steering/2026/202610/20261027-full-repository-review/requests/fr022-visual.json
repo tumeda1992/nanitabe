@@ -1,0 +1,25 @@
+{
+  "request_id": "fr022-visual-1",
+  "kind": "visual-inspector",
+  "attempt": 1,
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "FR-022",
+  "artifact_directory": "frontend/inspect/visual/tmp/fr022-meal-without-source",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "既存食事を編集し新規料理へ切り替え、出典未選択のまま保存",
+      "expected": "updateMealWithNewDishが1回、dishSourceとdetailはnull、mealIdと新料理が保持される"
+    },
+    {
+      "operation": "保存成功後のカレンダーを確認",
+      "expected": "編集modalが閉じ、新しい料理名が表示される"
+    }
+  ],
+  "dod": [
+    "全GraphQL人工fixtureでmock",
+    "実DB変更なし",
+    "mutationのpayload/回数を確認し画像目視",
+    "追加承認要求なし"
+  ]
+}

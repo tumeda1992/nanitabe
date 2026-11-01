@@ -8002,13 +8002,9 @@
             "name": "dishSource",
             "description": null,
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "INPUT_OBJECT",
-                "name": "SourceForRead",
-                "ofType": null
-              }
+              "kind": "INPUT_OBJECT",
+              "name": "SourceForRead",
+              "ofType": null
             },
             "defaultValue": null,
             "isDeprecated": false,

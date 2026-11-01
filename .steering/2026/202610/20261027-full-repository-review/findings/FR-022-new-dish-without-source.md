@@ -1,8 +1,8 @@
 # FR-022: 食事編集で出典なしの新規料理を選ぶと送信契約に違反する
 
 - 優先度: P2
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -36,3 +36,19 @@
 
 - ユーザー判断: 未判断
 - 適用コミット: 未適用
+
+## 適用検証（2026-11-01）
+
+合意済みdesignの「編集時も出典なし新規料理を許す」契約を適用した。backendのdish_sourceをnullableにしてRuby既定値nilを置き、frontend operation変数もnullableへ揃えた。出典自体の省略にも対応し、共通normalizerがsource/detailをnullへ返す。入力はdeep cloneしたまま変更しない。
+
+修正前は実GraphQLの省略/nullの2ケースが必須引数検証で失敗し、frontendでは省略sourceを読む3呼出元が失敗した。UI mockテスト自体は元から通るため、それだけではGraphQL契約の検証にならないことも確認した。修正後はbackend11 examples、frontend34 tests、型検査、backend2/ frontend4ファイルlintが成功。省略/nullのどちらでも新料理へ差替え、source/relation件数不変を確認した。認可失敗では新料理がrollbackされる。
+
+- `docker compose -f compose.dev.local.yml exec -T backend bundle exec rspec spec/graphql/mutation/meal/update_meal_without_source_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_and_new_source_spec.rb spec/graphql/mutation/meal/ownership_spec.rb`
+- 同frontendの`yarn test --runInBand --silent dishInputConversion EditMeal.spec AddMeal.spec AddDish.spec`
+- 同frontendの`yarn tsc --noEmit --incremental false`と変更箇所`yarn lint`、同backendの変更箇所`bundle exec rubocop`: 成功。
+
+通常のHTTP codegenはFR-019の新migrationを開発serverが検知しPendingMigrationErrorで停止した。開発DBへ適用せず、同backendの`rails runner 'File.write(Rails.root.join("tmp/fr022-development-schema.json"), BackendSchema.to_json)'`で通常schemaのみをoffline出力した。test環境では認証用schemaが異なるため、その出力は型生成に使っていない。通常schemaをfrontendのgitignore済み作業先へcopyし、schema pathだけを差し替えた一時codegen設定で生成した。生成差分が対象input・変数・operationのnullable化だけであることを確認済み。repositoryのcodegen設定は変更していない。
+
+ブラウザ確認はrequests/fr022-visual.jsonを使用し、全GraphQLを人工fixtureでmockする。実DBへのmigrationやUI保存は実施しない。
+
+visual-inspectorも成功。updateMealWithNewDishを1回だけ送信し、source/detailはnull、既存meal.idを保持するpayloadを確認した。modalが閉じて再取得後に新料理名が表示され、3画像を目視済み。未知operation・browser例外0。結果はrequests/fr022-visual-result.json。実DB保存はmock対象のため未確認であり、保存と認可rollbackはtest DBの実GraphQL requestで検証した。適用commitはapplication.mdとGit履歴で追跡する。
