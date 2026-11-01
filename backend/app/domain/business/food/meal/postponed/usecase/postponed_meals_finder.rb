@@ -6,7 +6,7 @@ module Business::Food::Meal::Postponed
     validates :user_id, presence: true
 
     def fetch
-      ::PostponedMeal.where(user_id:).includes(:dish).order(created_at: :desc).map do |record|
+      ::PostponedMeal.where(user_id:).joins(:dish).where(dishes: { user_id: user_id }).includes(:dish).order(created_at: :desc).map do |record|
         ListItem.new(
           id: record.id,
           dish_id: record.dish_id,

@@ -7,6 +7,7 @@ module Business::Food::Meal::Postponed
         meal_type,
         comment: nil
       )
+        ::Business::Food::Meal::Policy::AttachDishPolicy.ensure!(dish_id, user_id: user_id)
         Root.new(
           user_id:,
           dish_id:,

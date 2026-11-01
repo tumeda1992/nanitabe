@@ -9,7 +9,7 @@ RSpec.describe Business::Food::Meal::Policy::AttachDishPolicy do
   describe ".ensure!" do
     context "with valid dish_id" do
       it "returns true" do
-        result = described_class.ensure!(dish_record.id)
+        result = described_class.ensure!(dish_record.id, user_id: user_record.id)
         expect(result).to be true
       end
     end
@@ -17,13 +17,13 @@ RSpec.describe Business::Food::Meal::Policy::AttachDishPolicy do
     context "with blank dish_id" do
       it "raises error" do
         expect {
-          described_class.ensure!(nil)
+          described_class.ensure!(nil, user_id: user_record.id)
         }.to raise_error("料理が指定されていません。")
       end
 
       it "raises error with empty string" do
         expect {
-          described_class.ensure!("")
+          described_class.ensure!("", user_id: user_record.id)
         }.to raise_error("料理が指定されていません。")
       end
     end
@@ -31,7 +31,7 @@ RSpec.describe Business::Food::Meal::Policy::AttachDishPolicy do
     context "with non-existing dish_id" do
       it "raises error" do
         expect {
-          described_class.ensure!(999_999)
+          described_class.ensure!(999_999, user_id: user_record.id)
         }.to raise_error("存在しない料理を紐付けることはできません。")
       end
     end
