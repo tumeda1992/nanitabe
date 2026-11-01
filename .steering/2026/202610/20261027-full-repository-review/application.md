@@ -194,3 +194,7 @@ Promiseをカレンダー境界とrefetch完了まで維持し、更新失敗時
 ## FR-019の適用完了（2026-11-01）
 
 Commandで重複を拒否し、食事row lockとnullable unique indexで保護する。既存重複時はmigrationを停止し、実データを自動整理しない。関連103 examples、backend全体844 examples、lint5ファイル成功。独立SQLite接続の同時INSERTは1件成功/1件拒否。MySQL Command並行実測と実DB適用は未実施。FR-018のcommitは`25471fd`。次はFR-020のNext遷移と論理URL同期へ進む。
+
+## FR-020の適用完了（2026-11-01）
+
+Next遷移のpathname/search変化を同期し、独自push/popも同じpath+query契約に揃えた。関連19 tests、履歴spec追加後5 tests、全Jest46 suites / 256 tests、型検査・lint成功。実Next Link/独自操作の16状態とback/forward各15回のブラウザ検証が成功し、8画像を目視。結果はrequests/fr020-visual-result.json。本番Next buildも同じcontainer内の一時source copyで静的19ページ生成まで成功した。元devやrepository設定は変更していない。FR-019のcommitは`01e5394`。次はFR-021の日付URL検証へ進む。

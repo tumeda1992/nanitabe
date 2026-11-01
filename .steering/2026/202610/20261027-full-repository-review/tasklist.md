@@ -44,7 +44,7 @@
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
 - [x] [FR-019: 1食事を複数枠へ割り当てられhas_one契約が破れる](findings/FR-019-frame-meal-cardinality.md)
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
-- [ ] [FR-020: Nextの画面遷移で論理URLが更新されず日付がずれる](findings/FR-020-logical-history.md)
+- [x] [FR-020: Nextの画面遷移で論理URLが更新されず日付がずれる](findings/FR-020-logical-history.md)
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。
 - [ ] [FR-021: 日付URLが形式だけの検査で無効日付を画面へ渡す](findings/FR-021-calendar-invalid-date.md)
   - DoD: design契約に沿って改善案を適用し、当該回帰テストを実行して成功を確認する。採否・状態・検証結果を記録し、この指摘だけをcommitする。

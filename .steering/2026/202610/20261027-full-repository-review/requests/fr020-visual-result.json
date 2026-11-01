@@ -1,0 +1,25 @@
+{
+  "request_id": "fr020-visual-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": "frontend/inspect/visual/tmp/fr020-logical-history",
+  "result": "frontend/inspect/visual/tmp/fr020-logical-history/result.md",
+  "summary": "FR-020は実Next Linkと独自日付移動の16状態、back/forward各15回でURLと全日付カード・期間ラベルが一致。各画面操作で履歴1件追加、履歴移動中は追加0。8画像目視済み。全GraphQL人工fixture、mutation0、実DB変更なし。",
+  "state_count": 16,
+  "back_count": 15,
+  "forward_count": 15,
+  "initial_history_length": 2,
+  "final_history_length": 17,
+  "mutation_count": 0,
+  "screenshots": [
+    "01-initial-week.png",
+    "02-month-february.png",
+    "03-week-retains-february.png",
+    "04-next-month-march.png",
+    "05-this-month.png",
+    "06-this-week.png",
+    "07-back-to-original-week.png",
+    "08-forward-to-final-week.png"
+  ],
+  "unverified": ["実backendからのデータ取得", "production build"]
+}
