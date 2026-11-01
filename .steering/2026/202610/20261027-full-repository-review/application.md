@@ -246,3 +246,7 @@ build workflow自身を変更検出へ含めるtypo修正。実bash blockの3 te
 ## FR-032の適用完了（2026-11-02）
 
 schemaの二重定義を一元化し、入力・error順・infer型とhookの契約を維持した。二層台帳の8 contractを照合、関連33 tests、最終schema13件、型検査・lint成功。FR-030のcommitは`a871b4c`。次はFR-033のGraphQL入力変換へ進む。
+
+## FR-033の適用完了（2026-11-02）
+
+子InputObjectを転記の正本とし、両resolverの重複を解消した。5 contractを照合、関連37 examples、変更6ファイルRuboCop成功。FR-032のcommitは`5a2fd44`。次はFR-034の旧FrameEntry互換委譲へ進む。

@@ -35,6 +35,7 @@ module Mutations::Meal::Frame::Pattern
             name: "更新されたパターン",
             entries: [
               { dayOffset: 2, mealType: 3, mealFrameId: meal_frame2.id },
+              { dayOffset: 1, mealType: 1, mealFrameId: meal_frame1.id },
             ],
           },
         }
@@ -43,10 +44,23 @@ module Mutations::Meal::Frame::Pattern
         expect(result["updateMealFramePattern"]["mealFramePatternId"]).to eq(pattern.id)
         expect(pattern.reload.name).to eq("更新されたパターン")
         entries = MealFramePatternEntry.where(meal_frame_pattern_id: pattern.id)
-        expect(entries.count).to eq(1)
+        expect(entries.count).to eq(2)
         expect(entries.first.day_offset).to eq(2)
         expect(entries.first.meal_type).to eq(3)
+        expect(entries.order(:id).pluck(:day_offset, :meal_type, :meal_frame_id)).to eq([
+                                                                                          [2, 3, meal_frame2.id], [1, 1, meal_frame1.id]
+                                                                                        ])
       end
+    end
+
+    it "replaces existing entries with an empty list" do
+      result = fetch_mutation_with_auth(build_mutation, {
+        mealFramePattern: { id: pattern.id, name: "空のパターン", entries: [] },
+      }, user_record.id)
+
+      expect(result["updateMealFramePattern"]["mealFramePatternId"]).to eq(pattern.id)
+      expect(pattern.reload.name).to eq("空のパターン")
+      expect(pattern.meal_frame_pattern_entries).to be_empty
     end
   end
 end

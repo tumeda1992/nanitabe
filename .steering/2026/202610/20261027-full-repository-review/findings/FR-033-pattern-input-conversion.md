@@ -1,8 +1,8 @@
 # FR-033: パターンのGraphQL子入力変換が作成・更新に重複する
 
 - 優先度: P3
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用（全件適用の合意）
+- 対応状況: 適用・関連自動検証完了
 - 振る舞い維持の適用枠: 対象
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -35,3 +35,7 @@
 
 - ユーザー判断: 未判断
 - 適用コミット: 未適用
+
+## 適用結果（2026-11-02）
+
+MealFramePatternEntryInput#to_command_paramsへ3項目の転記を移し、両resolverはentries.mapで参照する。認可actor・更新対象・Command・transaction・返却値は保持した。独立hash、空配列、複数entryの値と順序の回帰を追加し、関連37 examples / 0 failures、変更6ファイルRuboCop成功。移行台帳は[evidence/fr033-migration.md](../evidence/fr033-migration.md)。commitはapplication.mdとGit履歴で追跡する。

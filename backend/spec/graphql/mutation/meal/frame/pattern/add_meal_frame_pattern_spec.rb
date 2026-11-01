@@ -53,6 +53,9 @@ module Mutations::Meal::Frame::Pattern
         pattern = MealFramePattern.find(pattern_id)
         expect(pattern.name).to eq("糖質オフ週")
         expect(pattern.meal_frame_pattern_entries.count).to eq(3)
+        expect(pattern.meal_frame_pattern_entries.order(:id).pluck(:day_offset, :meal_type, :meal_frame_id)).to eq([
+                                                                                                                     [1, 1, meal_frame1.id], [1, 3, meal_frame2.id], [2, 3, meal_frame1.id]
+                                                                                                                   ])
       end
     end
   end
