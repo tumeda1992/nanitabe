@@ -16,7 +16,7 @@ module Business::Food::Dish
 
     def call
       dish_root = Business::Food::Dish::Factory.build_existing_from_id(dish_params.id)
-      raise "指定した料理は存在しません。" if dish_root.blank?
+      raise "指定した料理は存在しません。" if dish_root.blank? || dish_root.user_id != user_id
 
       updated_dish_root = update_dish_root(dish_root, dish_params, dish_source_relation, dish_tags)
 

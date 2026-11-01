@@ -21,7 +21,7 @@ Dockerへの通常接続は権限拒否。権限要求が返らないため、�
 | [FR-001: 管理CRUDに認証・管理権限の確認がない](findings/FR-001-admin-authorization.md) | 保留 | Basic認証実装とspecを作成。green受付不能、未検証のWIPとして現状保存。CSRF強化は設計確定・未実施 |
 | [FR-002: 日付交換が他ユーザーの食事まで移動する](findings/FR-002-swap-user-scope.md) | 完了 | 2026-11-01: Dockerで18 examples成功、変更箇所lint成功。commitは下記 |
 | [FR-003: 食事の更新・削除が所有者を検証しない](findings/FR-003-meal-mutation-ownership.md) | 完了 | 開発用Composeで関連31 examples成功、変更3ファイルlint成功 |
-| [FR-004: 料理・出典・一括タグの更新が所有者を検証しない](findings/FR-004-dish-source-tag-ownership.md) | 未着手 | 未実行 |
+| [FR-004: 料理・出典・一括タグの更新が所有者を検証しない](findings/FR-004-dish-source-tag-ownership.md) | 完了 | 追加3件のred確認後、関連41 examples成功、変更4ファイルlint成功 |
 | [FR-005: 枠名変更・枠削除・枠エントリ削除がIDだけで実行される](findings/FR-005-frame-mutation-ownership.md) | 未着手 | 未実行 |
 | [FR-006: パターン更新・削除は操作ユーザーを受け取らない](findings/FR-006-pattern-mutation-ownership.md) | 未着手 | 未実行 |
 | [FR-007: 検索の先頭固定IDがユーザー条件を迂回する](findings/FR-007-pinned-dish-disclosure.md) | 未着手 | 未実行 |
@@ -110,3 +110,7 @@ Docker権限を取得し、外部ネットワークなし・実環境env_fileな
 ## FR-003の適用完了（2026-11-01）
 
 更新・削除の取得に操作ユーザーの条件を追加。初回green実行で既存の不存在例外契約1件が失敗し、例外を維持する形に修正してから関連31 examples / 0 failuresと変更3ファイルのRuboCop違反なしを確認した。詳細と再実行commandはFR-003の指摘fileに保存した。FR-002の適用commitは`03e4828`。FR-003を独立commitにして次はFR-004へ進む。
+
+## FR-004の適用完了（2026-11-01）
+
+料理・出典・タグ追加の所有者確認を追加し、他人IDの3操作を拒否する。混在した一括タグ追加の副作用rollbackを検証した。関連41 examples / 0 failures、変更4ファイルRuboCop違反なし。FR-003のcommitは`f440ac4`。FR-004を独立commitにし、次はFR-005の枠の所有者確認へ進む。

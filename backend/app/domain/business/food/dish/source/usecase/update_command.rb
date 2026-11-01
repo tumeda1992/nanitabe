@@ -9,7 +9,7 @@ module Business::Food::Dish::Source
 
     def call
       source_root = Business::Food::Dish::Source::Factory.build_existing_from_id(source_params.id)
-      raise "指定したレシピ元は存在しません。" if source_root.blank?
+      raise "指定したレシピ元は存在しません。" if source_root.blank? || source_root.user_id != user_id
 
       updated_source_root = update_source_root(source_root, source_params)
 
