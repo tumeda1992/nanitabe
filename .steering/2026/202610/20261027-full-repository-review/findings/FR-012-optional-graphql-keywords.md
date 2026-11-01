@@ -1,8 +1,8 @@
 # FR-012: 省略可能なGraphQL引数がRubyでは必須になっている
 
 - 優先度: P2
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-003（現行コードで再確認）。
@@ -32,5 +32,11 @@ resolve引数へnil既定値を付け、省略時の更新契約を明確にす�
 
 ## 採否・対応記録
 
-- ユーザー判断: 未判断
-- 適用コミット: 未適用
+- ユーザー判断: 2026-11-01の反映指示により採用
+- 適用コミット: 本記録を含むFR-012コミット（SHAはapplication.mdへ追記）
+
+## 適用結果（2026-11-01）
+
+`updateDish`の`dish_source_relation`と`updateDishWithNewSource`の`dish_source_relation_detail`へ`nil`既定値を追加した。省略は明示nullと同じ既存更新契約とし、維持を表す別のpresence契約は導入しない。
+
+追加`spec/graphql/mutation/dish/optional_arguments_spec.rb`で両mutationの省略/null/有効値を検証した。修正前は6 examples / 2 failuresで省略だけ失敗し、保存されたエラーsnapshotの`missing keyword`も確認した。修正後は追加specと既存料理更新3 specで10 examples / 0 failures。変更3ファイルのRuboCopは違反なし。既存開発用Compose内で実行した。

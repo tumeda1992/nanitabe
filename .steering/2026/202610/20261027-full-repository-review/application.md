@@ -29,7 +29,7 @@ Dockerへの通常接続は権限拒否。権限要求が返らないため、�
 | [FR-009: 他人の料理を自分の食事に登録すると内容を取得できる](findings/FR-009-foreign-dish-reference.md) | 完了 | 不正関連付けと一覧漏洩をred確認後、関連179 examples成功、変更8ファイルlint成功 |
 | [FR-010: 他人の枠を自分のパターンへ登録して枠名を読める](findings/FR-010-foreign-frame-reference.md) | 完了 | 追加5件中4件red後、関連50件・最終変更後10件成功、lint修正済み |
 | [FR-011: 未評価料理への評価作成が料理の所有者を確認しない](findings/FR-011-evaluation-ownership.md) | 完了 | 追加4件red後、関連9 examples成功、変更3ファイルlint成功 |
-| [FR-012: 省略可能なGraphQL引数がRubyでは必須になっている](findings/FR-012-optional-graphql-keywords.md) | 未着手 | 未実行 |
+| [FR-012: 省略可能なGraphQL引数がRubyでは必須になっている](findings/FR-012-optional-graphql-keywords.md) | 完了 | 追加6件中省略2件red後、関連10 examples成功、変更3ファイルlint成功 |
 | [FR-013: 料理編集で既存の手間レベルを消してしまう](findings/FR-013-effort-level-reset.md) | 未着手 | 未実行 |
 | [FR-014: 共通mutationがloadingとerrorを取得できない](findings/FR-014-mutation-state.md) | 未着手 | 未実行 |
 | [FR-015: カレンダー更新完了を待つPromiseが途中で失われる](findings/FR-015-refresh-promise.md) | 未着手 | 未実行 |
@@ -152,3 +152,7 @@ Codexコマンド許可の追加commitは`cbfd10d`。FR-010のcommitは`86ab57e`
 ## FR-011の適用完了（2026-11-01）
 
 料理の所有者を基準に評価を認可し、本人の再評価時に既存の不整合所有者も修復する。関連9 examples / 0 failures、変更3ファイルRuboCop違反なし。FR-010のcommitは`86ab57e`。frontendの既存全Jestは39 suites / 215 tests成功し、後続frontend変更前の基準を確認した。次はFR-012の任意GraphQL引数へ進む。
+
+## FR-012の適用完了（2026-11-01）
+
+GraphQL任意引数のRuby既定値を追加し、省略を明示nullと同じ契約へ揃えた。関連10 examples / 0 failures、変更3ファイルRuboCop違反なし。FR-011のcommitは`cdb8e27`。FR-002〜012の認可・入力契約修正の区切りでbackend全体回帰を行い、次はFR-013へ進む。FR-001は既存の利用者指示による保留を維持する。
