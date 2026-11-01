@@ -43,13 +43,13 @@
 
 **DoD**: 確定・延期の両方向で同時2要求の成功1件/既存不存在拒否1件/作成先1件/元行なしをMySQL二接続で実測する。通常の所有者拒否・逐次再送・途中失敗rollback・枠解除を維持し、試験後に一時DBだけを除去する。
 
-- [ ] `backend/spec/graphql/mutation/meal/postponed/`へ両方向の逐次再送・他人/不在ID・作成/削除失敗rollbackの回帰を追加し、既存の枠解除と元属性の引継ぎを確認する。
-- [ ] 通常RSpecの探索対象外である`backend/spec_mysql/meal_conversion_concurrency_spec.rb`と同directoryの`mysql_spec_helper.rb`へMySQL専用の並行回帰を置く。標準のSQLite実行へpending/skipを混在させず、transactional fixtureを使わず、commit済みfixtureと独立二接続・開始barrier・有限待ちを用意する。各threadを別resolver/contextにし、元モデルのdestroy!直前だけをthread-local同期点で止め、元処理を実行する。先行到着後に後続を開始し、後続の削除直前到達またはINNODB_TRXのLOCK WAITを観測して順に解放する。観測用PROCESS権限は一時MySQLのfixture利用者だけへ付与する。固定sleepや両threadのロック取得完了待ちで同期しない。
-- [ ] 親担当が用意した既存開発Composeプロジェクト内の一時`mysql-regression`について、実行前にadapter=mysql2・host=mysql-regression・database=nanitabe_concurrency_test・RAILS_ENV=testのguardを確認する。schema loadもこの限定接続でのみ行い、接続値を実envから継承しない。設定・commandをevidenceに保存し、並行回帰の修正前再現をこの限定接続で確認する。
-- [ ] 確定resolverの最初の本人取得を`PostponedMeal.lock.find_by`、延期resolverを`Meal.lock.find_by`へ変更する。既存transactionを維持し、延期RemoveCommandも本人条件で元を取得する。
-- [ ] 通常の延期/確定/往復specと変更箇所RuboCopをgreenにする。限定DATABASE_URLを与えた既存backend内で`bundle exec rspec spec_mysql/meal_conversion_concurrency_spec.rb`を明示実行して両方向の並行要求を検証し、待機中に一方だけが元row lockを保持することと、解放後の一回消費を確認する。DB lock timeout/deadlockは成功に数えない。
-- [ ] fixtureを掃除し一時MySQLサービスだけを除去する。既存アプリコンテナと実環境DBを変更していないことを確認する。
-- [ ] finding/applicationへ接続方式・実コマンド・件数・例外・未確認を記録しdocument-review後、CR-004だけを独立commitする。環境障害なら未完了のまま停止理由を返す。
+- [x] `backend/spec/graphql/mutation/meal/postponed/`へ両方向の逐次再送・他人/不在ID・作成/削除失敗rollbackの回帰を追加し、既存の枠解除と元属性の引継ぎを確認する。
+- [x] 通常RSpecの探索対象外である`backend/spec_mysql/meal_conversion_concurrency_spec.rb`と同directoryの`mysql_spec_helper.rb`へMySQL専用の並行回帰を置く。標準のSQLite実行へpending/skipを混在させず、transactional fixtureを使わず、commit済みfixtureと独立二接続・開始barrier・有限待ちを用意する。各threadを別resolver/contextにし、元モデルのdestroy!直前だけをthread-local同期点で止め、元処理を実行する。先行到着後に後続を開始し、後続の削除直前到達またはINNODB_TRXのLOCK WAITを観測して順に解放する。観測用PROCESS権限は一時MySQLのfixture利用者だけへ付与する。固定sleepや両threadのロック取得完了待ちで同期しない。
+- [x] 親担当が用意した既存開発Composeプロジェクト内の一時`mysql-regression`について、実行前にadapter=mysql2・host=mysql-regression・database=nanitabe_concurrency_test・RAILS_ENV=testのguardを確認する。schema loadもこの限定接続でのみ行い、接続値を実envから継承しない。設定・commandをevidenceに保存し、並行回帰の修正前再現をこの限定接続で確認する。
+- [x] 確定resolverの最初の本人取得を`PostponedMeal.lock.find_by`、延期resolverを`Meal.lock.find_by`へ変更する。既存transactionを維持し、延期RemoveCommandも本人条件で元を取得する。
+- [x] 通常の延期/確定/往復specと変更箇所RuboCopをgreenにする。限定DATABASE_URLを与えた既存backend内で`bundle exec rspec spec_mysql/meal_conversion_concurrency_spec.rb`を明示実行して両方向の並行要求を検証し、待機中に一方だけが元row lockを保持することと、解放後の一回消費を確認する。DB lock timeout/deadlockは成功に数えない。
+- [x] fixtureを掃除し一時MySQLサービスだけを除去する。既存アプリコンテナと実環境DBを変更していないことを確認する。
+- [x] finding/applicationへ接続方式・実コマンド・件数・例外・未確認を記録しdocument-review後、CR-004だけを独立commitする。環境障害なら未完了のまま停止理由を返す。
 
 ## 全体回帰と公開
 

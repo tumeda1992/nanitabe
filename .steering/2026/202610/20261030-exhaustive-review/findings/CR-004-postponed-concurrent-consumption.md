@@ -5,8 +5,8 @@
 - 対象: `backend/app/graphql/mutations/meal/postponed/schedule_postponed_meal.rb:10`
 - 観点: 並行処理・データ整合性
 - 由来: 全体レビュー・既存。既存未対応指摘とは原因・修正を分離。
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用（全review指摘反映の後続指示）
+- 対応状況: 適用・MySQL並行/関連自動検証完了
 - 適用枠: 挙動変更が必要
 - 依存する指摘: なし
 
@@ -34,3 +34,15 @@ transaction開始時に所有者条件付きで延期食事をlockして取得�
 - 修正内容・判断理由: 未適用
 - 実行した検証と結果: 上記参照。問題再現であり修正成功ではない。
 - 適用コミット: 未適用
+
+## 適用結果（2026-11-02）
+
+確定/延期の両resolverがtransaction冒頭で元の本人行をlockして取得し、一回だけ消費する。元の作成・削除・枠解除は同じtransactionに維持した。延期RemoveCommandの直接呼出も本人条件で取得する。
+
+既存開発Composeプロジェクトへテスト用MySQL8.0.46だけを一時追加し、既存backendから限定URLで検証した。fixture専用DBのguardと二接続の同期手順・全実行条件は[evidence/cr004-mysql.md](../evidence/cr004-mysql.md)。修正前は両方向とも実際に成功2件・作成先2件を再現。修正後は実LOCK WAITを観測し、両方向で成功1/既存の不存在RuntimeError1/作成先1/元行なしを確認した。逆方向の元枠は未割当になる。
+
+- MySQL並行: 2 examples / 0 failures。lock timeout/deadlockを成功扱いにしない。
+- SQLite通常関連: 39 examples / 0 failures。逐次再送・他人・作成失敗・削除後失敗のrollback・直接Removeのowner scopeを含む。
+- 変更6ファイルRuboCop成功。fixture以外のURLはRails/DB操作前に拒否することも確認。
+
+20msのmetadata pollでは観測cacheが更新されなかったため、公式実装の100ms idle条件を確認して200msへ修正した。成功の根拠は経過時間でなく実LOCK WAITと一回消費の件数である。追加のMySQL補完検証後、一時service/データを除去済み。既存アプリは継続稼働し、実DB/AWS/Webhookは操作していない。commitはapplication.mdとGit履歴で追跡する。

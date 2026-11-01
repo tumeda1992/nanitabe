@@ -15,3 +15,7 @@
 ## CR-003の適用完了（2026-11-02）
 
 関連料理ありの出典type変更を共通モデルvalidationと純粋Policyで拒否し、先行legacy保存も覆った。4経路20件でred12件後、関連158 examplesと変更4ファイルRuboCop成功。既存HTTP 422の拒否応答と複数料理の詳細不変も確認した。CR-002のcommitは`30c86bb`。次はCR-004の相互変換一回消費とMySQL並行検証へ進む。
+
+## CR-004の適用完了（2026-11-02）
+
+相互変換の冒頭で本人の元行をlockし、延期Removeも本人scopeに揃えた。MySQL8.0.46二接続で両方向の旧2件作成を再現後、実LOCK WAIT/成功1/不存在拒否1/作成先1を確認した。専用2 examplesと通常関連39 examples、変更6ファイルlint成功。接続guard・setup・cache由来の観測timeoutと解消根拠はevidence/cr004-mysql.mdへ記録。一時DBは削除済み、既存アプリは継続稼働。CR-003のcommitは`45074dc`。次は全体回帰・索引/PR更新・公開を完了する。
