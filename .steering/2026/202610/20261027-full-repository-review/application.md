@@ -27,7 +27,7 @@ Dockerへの通常接続は権限拒否。権限要求が返らないため、�
 | [FR-007: 検索の先頭固定IDがユーザー条件を迂回する](findings/FR-007-pinned-dish-disclosure.md) | 完了 | 固定関連5件中1件red後、関連34 examples成功、変更2ファイルlint成功 |
 | [FR-008: 枠割当の認可が入口ごとに異なり関連先の所有者を検証しない](findings/FR-008-frame-fill-ownership.md) | 完了 | 追加16件中13件red後、関連50 examples成功、変更7ファイルlint成功 |
 | [FR-009: 他人の料理を自分の食事に登録すると内容を取得できる](findings/FR-009-foreign-dish-reference.md) | 完了 | 不正関連付けと一覧漏洩をred確認後、関連179 examples成功、変更8ファイルlint成功 |
-| [FR-010: 他人の枠を自分のパターンへ登録して枠名を読める](findings/FR-010-foreign-frame-reference.md) | 未着手 | 未実行 |
+| [FR-010: 他人の枠を自分のパターンへ登録して枠名を読める](findings/FR-010-foreign-frame-reference.md) | 完了 | 追加5件中4件red後、関連50件・最終変更後10件成功、lint修正済み |
 | [FR-011: 未評価料理への評価作成が料理の所有者を確認しない](findings/FR-011-evaluation-ownership.md) | 未着手 | 未実行 |
 | [FR-012: 省略可能なGraphQL引数がRubyでは必須になっている](findings/FR-012-optional-graphql-keywords.md) | 未着手 | 未実行 |
 | [FR-013: 料理編集で既存の手間レベルを消してしまう](findings/FR-013-effort-level-reset.md) | 未着手 | 未実行 |
@@ -134,3 +134,9 @@ Docker権限を取得し、外部ネットワークなし・実環境env_fileな
 ## FR-009の適用完了（2026-11-01）
 
 料理関連付けPolicyへ利用者IDを必須化し、登録・更新・延期の全経路で適用する。既存越境関連は一覧で非表示とし削除しない。関連179 examples / 0 failures、変更8ファイルRuboCop違反なし。FR-008のcommitは`a2ca053`。次はFR-010のパターンから枠への関連先認可へ進む。
+
+## FR-010の適用完了（2026-11-01）
+
+パターン子登録時の親/枠所有者照合と、既存越境関連の一覧除外を追加。関連50 examples / 0 failures、loader初期化修正後のGraphQL10 examplesも成功。変更6ファイルのRuboCop違反を解消した。単独枠登録/適用の保護はFR-008から継続。FR-009のcommitは`9528fa1`。次はFR-011の料理評価の所有者確認へ進む。
+
+frontendの既存開発用コンテナでNode 24.13.0、Next 16.2.3、TypeScript 5.9.3、React 19.2.0を確認し、後続の検証に使う。追加の隔離Composeは使用しない。
