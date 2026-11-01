@@ -7,7 +7,7 @@ module Business::Food::Meal::Frame::Entry
     validates :meal_frame_entry_id, presence: true
 
     def call
-      ::MealFrameEntry.find(meal_frame_entry_id).destroy!
+      ::MealFrameEntry.where(user_id: user_id).find(meal_frame_entry_id).destroy!
 
       meal_frame_entry_id
     end
