@@ -60,15 +60,14 @@ module Mutations::Meal::FrameEntry
 
     context "when meal_id belongs to another user" do
       let(:other_user) { User.create!(id_param: "other_user_param_fill2") }
-      let!(:other_meal) { find_or_create_meal }
+      let!(:other_meal) { FactoryBot.create(:meal, user: other_user, dish: FactoryBot.create(:dish, user: other_user)) }
 
       it "raises an error when meal_id does not belong to the user" do
-        # meal が別ユーザーに属するケースをシミュレート（現在の実装では meal の user チェックをしない）
-        # FillWithMealCommand の仕様上 meal は user チェックをしないが、フォールバックの確認
-        variables = { frameEntryId: meal_frame_entry.id, mealId: 0 }
-        expect do
-          fetch_mutation_with_auth(build_mutation, variables, user_record.id)
-        end.to raise_error(RuntimeError)
+        variables = { frameEntryId: meal_frame_entry.id, mealId: other_meal.id }
+        headers = fetch_auth_header_values(existing_user_id: user_record.id)
+        post("/graphql", params: { query: build_mutation, variables: variables }, as: :json, headers: headers)
+        expect(response).to have_http_status(:not_found)
+        expect(meal_frame_entry.reload.meal_id).to be_nil
       end
     end
   end

@@ -13,6 +13,8 @@ module Business::Food::Meal::FrameEntry
     validates :meal_type, presence: true
 
     def call
+      ::MealFrame.where(user_id: user_id).find(meal_frame_id)
+
       entry_root = Business::Food::Meal::FrameEntry::Root.new(
         user_id:,
         meal_frame_id:,
