@@ -6,11 +6,11 @@
 
 **DoD**: 別タグ・同タグ・料理名/出典との分散で全語に一致する料理が1件返り、一語不足・別料理分散を除外する。既存の本人先頭固定・位置づけ・食事有無・並び順を維持し、この指摘だけを検証・コミットする。
 
-- [ ] `backend/spec/domain/business/food/dish/usecase/dish_searcher_spec.rb`へ上記の検索回帰を追加し、現行の別タグケースの失敗を確認する。
-- [ ] `DishSearcher`の語ごとのOR条件に相関タグEXISTSを使い、元のrelationとbind変数を維持する。
-- [ ] 新規回帰と`backend/spec/graphql/query/dish/existing_dishes_for_registering_with_meal_spec.rb`を既存開発backendで実行しgreenを確認する。変更箇所RuboCopを成功させる。
-- [ ] findingへ現行成立確認・修正・red/green/lintを記録し、applicationへ適用範囲・検証・残りを追記する。文書変更にdocument-reviewを適用する。
-- [ ] CR-001だけを固定ID入りmessageでコミットし、commit SHAをapplicationの次の追記へ記録する。利用者由来3ファイルをstageしない。
+- [x] `backend/spec/domain/business/food/dish/usecase/dish_searcher_spec.rb`へ上記の検索回帰を追加し、現行の別タグケースの失敗を確認する。
+- [x] `DishSearcher`の語ごとのOR条件に相関タグEXISTSを使い、元のrelationとbind変数を維持する。
+- [x] 新規回帰と`backend/spec/graphql/query/dish/existing_dishes_for_registering_with_meal_spec.rb`を既存開発backendで実行しgreenを確認する。変更箇所RuboCopを成功させる。
+- [x] findingへ現行成立確認・修正・red/green/lintを記録し、applicationへ適用範囲・検証・残りを追記する。文書変更にdocument-reviewを適用する。
+- [x] CR-001だけを固定ID入りmessageでコミットし、commit SHAをapplicationの次の追記へ記録する。利用者由来3ファイルをstageしない。
 
 ## CR-002: 既存タグIDの内容・正規化値を保存する
 

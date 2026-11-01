@@ -147,6 +147,51 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
       end
     end
 
+    context "with multiple search words" do
+      def search_ids(words)
+        described_class.call(access_user_id: user_record.id, search_string: words).map { |dish| dish[:id] }
+      end
+
+      it "matches words in separate tags of the same dish exactly once" do
+        %w[alpha beta alpha].each do |word|
+          FactoryBot.create(:dish_tag, dish: dish1, user: user_record, content: word)
+        end
+        expect(search_ids("alpha beta")).to eq([dish1.id])
+      end
+
+      it "matches both words in a single tag" do
+        FactoryBot.create(:dish_tag, dish: dish2, user: user_record, content: "alpha beta")
+        expect(search_ids("alpha beta")).to eq([dish2.id])
+      end
+
+      it "matches words spread across the dish name and a tag" do
+        FactoryBot.create(:dish_tag, dish: dish1, user: user_record, content: "alpha")
+        expect(search_ids("チキン alpha")).to eq([dish1.id])
+      end
+
+      it "matches words spread across the source name and a tag" do
+        FactoryBot.create(:dish_tag, dish: dish_with_source, user: user_record, content: "alpha")
+        expect(search_ids("料理本A alpha")).to eq([dish_with_source.id])
+      end
+
+      it "does not combine tags from different dishes" do
+        FactoryBot.create(:dish_tag, dish: dish1, user: user_record, content: "alpha")
+        FactoryBot.create(:dish_tag, dish: dish2, user: user_record, content: "beta")
+        expect(search_ids("alpha beta")).to be_empty
+      end
+
+      it "requires every word to match" do
+        expect(search_ids("スパイス missing-word")).to be_empty
+      end
+
+      it "keeps foreign dishes out even if all their tags match" do
+        %w[alpha beta].each do |word|
+          FactoryBot.create(:dish_tag, dish: other_user_dish, user: other_user, content: word)
+        end
+        expect(search_ids("alpha beta")).to be_empty
+      end
+    end
+
     context "with meal_position filter" do
       it "filters by meal_position" do
         result = described_class.call(
