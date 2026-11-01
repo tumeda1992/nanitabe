@@ -250,3 +250,7 @@ schemaの二重定義を一元化し、入力・error順・infer型とhookの契
 ## FR-033の適用完了（2026-11-02）
 
 子InputObjectを転記の正本とし、両resolverの重複を解消した。5 contractを照合、関連37 examples、変更6ファイルRuboCop成功。FR-032のcommitは`5a2fd44`。次はFR-034の旧FrameEntry互換委譲へ進む。
+
+## FR-034の適用完了（2026-11-02）
+
+旧定数と返却classを維持した互換委譲へ変更し、旧Removeにも本人scopeを適用した。10 contractを照合し、関連57 examples、backend全体885 examples、lint/eager loadが成功。外部利用の不存在は断定しない。FR-033のcommitは`65dc499`。FR-001を除くFR項目のコード適用は完了し、次は20261030-exhaustive-reviewのCR-001〜004へ進む。
