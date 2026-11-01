@@ -198,3 +198,7 @@ Commandで重複を拒否し、食事row lockとnullable unique indexで保護�
 ## FR-020の適用完了（2026-11-01）
 
 Next遷移のpathname/search変化を同期し、独自push/popも同じpath+query契約に揃えた。関連19 tests、履歴spec追加後5 tests、全Jest46 suites / 256 tests、型検査・lint成功。実Next Link/独自操作の16状態とback/forward各15回のブラウザ検証が成功し、8画像を目視。結果はrequests/fr020-visual-result.json。本番Next buildも同じcontainer内の一時source copyで静的19ページ生成まで成功した。元devやrepository設定は変更していない。FR-019のcommitは`01e5394`。次はFR-021の日付URL検証へ進む。
+
+## FR-021の適用完了（2026-11-01）
+
+実在日とpath境界を検証し、有効日付に付くquery/hashを保持する。21件中11件のred確認後、関連35 tests、型検査・lint成功。visual-inspectorも有効/無効の2ケースで全dateカードを照合し2画像目視済み。FR-020のcommitは`d8afcf0`。次はFR-022の出典なし新規料理による食事編集へ進む。

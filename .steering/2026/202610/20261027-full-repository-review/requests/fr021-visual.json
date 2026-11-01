@@ -1,0 +1,25 @@
+{
+  "request_id": "fr021-visual-1",
+  "kind": "visual-inspector",
+  "attempt": 1,
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "FR-021",
+  "artifact_directory": "frontend/inspect/visual/tmp/fr021-calendar-date",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "/calendar/week/2024-02-29?view=all#mealへ移動",
+      "expected": "2024-02-29を含む週が表示され今日へ戻らない"
+    },
+    {
+      "operation": "/calendar/month/2024-02-30へ移動",
+      "expected": "今日を含む月へfallbackしInvalid Dateや例外が出ない"
+    }
+  ],
+  "dod": [
+    "全GraphQL人工fixtureでmock",
+    "実DB変更なし",
+    "URLと全dateカードを照合し画像目視",
+    "追加承認要求なし"
+  ]
+}

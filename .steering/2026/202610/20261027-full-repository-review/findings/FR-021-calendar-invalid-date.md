@@ -1,8 +1,8 @@
 # FR-021: 日付URLが形式だけの検査で無効日付を画面へ渡す
 
 - 優先度: P2
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -35,3 +35,17 @@ URLからpathnameの該当segmentだけを取得し、parse後に年月日が一
 
 - ユーザー判断: 未判断
 - 適用コミット: 未適用
+
+## 適用検証（2026-11-01）
+
+合意済みdesignに従い、query/hashを除いたpathnameを完全なcalendar prefixと日付1segmentで照合する。ISO形式に加え、生成したDateの年/月/日が入力と一致する場合だけ採用し、存在しない日付は今日09:00へfallbackする。year0〜99のconstructor補正を避ける既存の文字列Date生成を維持した。
+
+不具合を固定していた旧specの期待値を新契約へ直し、21件中11件のredを確認。修正後は関連3 suites / 35 tests、型検査、変更2ファイルlintが成功した。
+
+- `docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand --silent calendarDateFromPath logical-history CalendarHeader`
+- 同frontendの`yarn tsc --noEmit --incremental false`
+- 同frontendの`yarn lint src/features/calendar/calendarDateFromPath.ts src/features/calendar/calendarDateFromPath.spec.ts`
+
+ブラウザ確認はrequests/fr021-visual.jsonを使用し、全GraphQLをmockする。
+
+visual-inspectorも2ケース成功。うるう日のquery/hash付きURLは対象日を含む週を保持し、存在しない2月30日はbrowser当日を含む月へfallbackした。全dateカードとlabelを照合し2画像目視済み。例外・mutation・未知operation0。結果はrequests/fr021-visual-result.json。実backend取得はmockのため未確認。適用commitはapplication.mdとGit履歴で追跡する。

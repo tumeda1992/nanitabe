@@ -1,0 +1,17 @@
+{
+  "request_id": "fr021-visual-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": "frontend/inspect/visual/tmp/fr021-calendar-date",
+  "result": "frontend/inspect/visual/tmp/fr021-calendar-date/result.md",
+  "summary": "FR-021の2 URLで成功。query/hash付き2024-02-29は2/24〜3/1の週を保持し、無効日付2024-02-30はブラウザ当日2026-11-01の月へfallback。全日付カードとラベルを照合し2画像目視。例外・mutationとも0、全GraphQL人工fixture、実DB変更なし。",
+  "check_count": 2,
+  "browser_today": "2026-11-01",
+  "mutation_count": 0,
+  "page_error_count": 0,
+  "screenshots": [
+    "01-leap-day-query-hash.png",
+    "02-invalid-date-current-month.png"
+  ],
+  "unverified": ["実backendからのデータ取得"]
+}
