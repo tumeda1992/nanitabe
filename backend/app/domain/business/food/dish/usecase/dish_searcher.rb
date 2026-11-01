@@ -18,7 +18,7 @@ module Business::Food::Dish
                             .search_output
 
       registered_dish_with_meal = if dish_id_registered_with_meal.present?
-                                    ::Dish.where(id: dish_id_registered_with_meal)
+                                    ::Dish.for_user(access_user_id).where(id: dish_id_registered_with_meal)
                                           .with_search_relations
                                           .search_output
                                           .to_a

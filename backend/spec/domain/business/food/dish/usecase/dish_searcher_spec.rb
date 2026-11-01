@@ -189,6 +189,35 @@ RSpec.describe Business::Food::Dish::Usecase::DishSearcher do
     end
 
     context "with dish_id_registered_with_meal" do
+      it "does not expose a foreign dish through its pinned ID" do
+        result = described_class.call(
+          access_user_id: user_record.id,
+          dish_id_registered_with_meal: other_user_dish.id,
+          search_string: "no_matching_dish",
+        )
+        expect(result).to be_empty
+      end
+
+      it "keeps an owned pinned dish even when the search filters exclude it" do
+        result = described_class.call(
+          access_user_id: user_record.id,
+          dish_id_registered_with_meal: dish2.id,
+          search_string: "no_matching_dish",
+          meal_position: 2,
+          registered_with_meal: true,
+        )
+        expect(result.map { |dish| dish[:id] }).to eq([dish2.id])
+      end
+
+      it "ignores a nonexistent pinned ID" do
+        result = described_class.call(
+          access_user_id: user_record.id,
+          dish_id_registered_with_meal: Dish.maximum(:id) + 1,
+        )
+        normal_result = described_class.call(access_user_id: user_record.id)
+        expect(result).to eq(normal_result)
+      end
+
       it "includes the specified dish at the beginning of results" do
         result = described_class.call(
           access_user_id: user_record.id,
