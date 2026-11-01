@@ -30,7 +30,7 @@ Dockerへの通常接続は権限拒否。権限要求が返らないため、�
 | [FR-010: 他人の枠を自分のパターンへ登録して枠名を読める](findings/FR-010-foreign-frame-reference.md) | 完了 | 追加5件中4件red後、関連50件・最終変更後10件成功、lint修正済み |
 | [FR-011: 未評価料理への評価作成が料理の所有者を確認しない](findings/FR-011-evaluation-ownership.md) | 完了 | 追加4件red後、関連9 examples成功、変更3ファイルlint成功 |
 | [FR-012: 省略可能なGraphQL引数がRubyでは必須になっている](findings/FR-012-optional-graphql-keywords.md) | 完了 | 追加6件中省略2件red後、関連10 examples成功、変更3ファイルlint成功 |
-| [FR-013: 料理編集で既存の手間レベルを消してしまう](findings/FR-013-effort-level-reset.md) | 未着手 | 未実行 |
+| [FR-013: 料理編集で既存の手間レベルを消してしまう](findings/FR-013-effort-level-reset.md) | 完了 | 関連52 frontend tests/7 backend examples・型検査・lint成功、実ブラウザ4項目成功 |
 | [FR-014: 共通mutationがloadingとerrorを取得できない](findings/FR-014-mutation-state.md) | 未着手 | 未実行 |
 | [FR-015: カレンダー更新完了を待つPromiseが途中で失われる](findings/FR-015-refresh-promise.md) | 未着手 | 未実行 |
 | [FR-016: 検索debounceが別パネルとアンマウントをまたいで残る](findings/FR-016-search-timer.md) | 未着手 | 未実行 |
@@ -156,3 +156,13 @@ Codexコマンド許可の追加commitは`cbfd10d`。FR-010のcommitは`86ab57e`
 ## FR-012の適用完了（2026-11-01）
 
 GraphQL任意引数のRuby既定値を追加し、省略を明示nullと同じ契約へ揃えた。関連10 examples / 0 failures、変更3ファイルRuboCop違反なし。FR-011のcommitは`cdb8e27`。FR-002〜012の認可・入力契約修正の区切りでbackend全体回帰を行い、次はFR-013へ進む。FR-001は既存の利用者指示による保留を維持する。
+
+## backend全体回帰とFR-013の進行（2026-11-01）
+
+FR-002〜012後のbackend全体RSpecは821 examples / 0 failures。FR-012のcommitは`ceb1da7`。
+
+FR-013の実装と自動検証を進め、詳細は同指摘fileへ記録した。ブラウザ確認requestは`requests/fr013-visual.json`、確認成果物はgitignore済みの`frontend/inspect/visual/tmp/fr013-effort-retention/`へ置く。実データへ変更を送らないmock通信で確認する。追加承認なしで行える範囲だけを実行する条件を継続している。
+
+## FR-013の適用完了（2026-11-01）
+
+手間IDの出力・query・初期値・選択状態を復元し、位置づけ変更時だけ意図的に解除する。関連frontend52件・backend7件・型検査・変更箇所lintに成功した。visual-inspectorも人工fixtureの全GraphQLモックで4項目成功、画像目視済み。実DBへのUI保存は未確認。390px幅の横はみ出しは変更前比較未実施の別観測として残した。結果は`requests/fr013-visual-result.json`。FR-013を独立commitにし、次はFR-014のmutation状態取得へ進む。

@@ -1,0 +1,23 @@
+{
+  "request_id": "fr013-visual-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": "frontend/inspect/visual/tmp/fr013-effort-retention",
+  "result": "frontend/inspect/visual/tmp/fr013-effort-retention/result.md",
+  "summary": "FR-013の4項目が実ブラウザで成功。既存ID 17表示、名前だけ変更の17送信、明示解除・位置づけ変更のnull送信を検証。4画像目視済み。GraphQL全モックで実DB変更なし。390pxでの横はみ出しは別観測として記録。",
+  "screenshots": [
+    "01-existing-effort.png",
+    "02-name-only.png",
+    "03-explicit-clear.png",
+    "04-position-change.png"
+  ],
+  "mutation_effort_ids": [
+    17,
+    null,
+    null
+  ],
+  "unverified": [
+    "実backendへの保存・DB永続化",
+    "390px幅の横はみ出しが変更前にも存在したか"
+  ]
+}

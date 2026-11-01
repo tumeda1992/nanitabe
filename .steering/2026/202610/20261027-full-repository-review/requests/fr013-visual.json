@@ -1,0 +1,29 @@
+{
+  "request_id": "fr013-visual-1",
+  "kind": "visual-inspector",
+  "attempt": 1,
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "FR-013",
+  "artifact_directory": "frontend/inspect/visual/tmp/fr013-effort-retention",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "手間設定済み料理の修正画面を開く",
+      "expected": "既存の手間ID 17が選択される"
+    },
+    {
+      "operation": "名前だけ変更して送信する",
+      "expected": "mutationへ手間ID 17を送る"
+    },
+    {
+      "operation": "位置づけ変更と明示解除を行う",
+      "expected": "それぞれ意図的にnullへ解除される"
+    }
+  ],
+  "dod": [
+    "画面と送信値を実ブラウザで確認する",
+    "スクリーンショットを保存して目視確認する",
+    "実環境DBへ変更を送らない",
+    "新たな承認要求を出さない"
+  ]
+}
