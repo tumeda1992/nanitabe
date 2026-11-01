@@ -1,0 +1,20 @@
+{
+  "request_id": "fr017-visual-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": "frontend/inspect/visual/tmp/fr017-pattern-placeholder",
+  "result": "frontend/inspect/visual/tmp/fr017-pattern-placeholder/result.md",
+  "summary": "FR-017は作成・編集とも成功。枠を--へ戻すと未選択エラーを表示しmutation0回。再選択後は正の整数mealFrameId: 1を各1回送信。6画像を目視確認。全GraphQL人工fixture、実DB変更なし。",
+  "create_mutation_count": 1,
+  "edit_mutation_count": 1,
+  "placeholder_mutation_count": 0,
+  "screenshots": [
+    "01-create-selected.png",
+    "02-create-placeholder-error.png",
+    "03-create-valid-submit.png",
+    "04-edit-selected.png",
+    "05-edit-placeholder-error.png",
+    "06-edit-valid-submit.png"
+  ],
+  "unverified": ["実backendへの登録・更新とDB永続化"]
+}

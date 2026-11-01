@@ -4,9 +4,18 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import MealFramePatternForm from './MealFramePatternForm';
 import MealFramePatternEditForm from './MealFramePatternEditForm';
+import MealFramePatternFields from './MealFramePatternFields';
 
 const mockSubmit = jest.fn(async (_input, callbacks) => {
   callbacks.onCompleted();
+});
+
+it.each([NaN, Infinity, 0, -1, 1.5])('rejects an invalid initial frame id %s before submitting', async (mealFrameId) => {
+  const submit = jest.fn();
+  render(<MealFramePatternFields defaultName="検証用" defaultDaySlots={[{ entries: [{ dayOffset: 1, mealType: 3, mealFrameId }] }]} submitLabel="送信" submit={submit} />);
+  await userEvent.setup().click(screen.getByTestId('submitMealFramePatternButton'));
+  expect(screen.getByTestId('mealFramePatternEntryError')).toBeInTheDocument();
+  expect(submit).not.toHaveBeenCalled();
 });
 jest.mock(
   '../../../../features/meal/frame/pattern/useMealFramePattern',
@@ -90,6 +99,22 @@ describe.each(['create', 'edit'])('%s pattern editor', (mode) => {
       screen.getByText('パターン名を入力してください。'),
     ).toBeInTheDocument();
     expect(mockSubmit).not.toHaveBeenCalled();
+  });
+
+  it('rejects a frame reset to the placeholder and sends a number after reselection', async () => {
+    const user = userEvent.setup();
+    renderForm();
+    const select = screen.getByTestId('mealFrame-0-0');
+    await user.selectOptions(select, screen.getAllByRole('option', { name: '--' })[0]);
+    await user.click(screen.getByTestId('submitMealFramePatternButton'));
+    expect(screen.getByTestId('mealFramePatternEntryError')).toHaveTextContent('枠が選択されていない行があります。');
+    expect(mockSubmit).not.toHaveBeenCalled();
+    expect(select).toHaveValue('');
+    await user.selectOptions(select, '2');
+    await user.click(screen.getByTestId('submitMealFramePatternButton'));
+    expect(mockSubmit).toHaveBeenCalledTimes(1);
+    expect(mockSubmit.mock.calls[0][0].mealFramePattern.entries[0].mealFrameId).toBe(2);
+    expect(screen.queryByTestId('mealFramePatternEntryError')).not.toBeInTheDocument();
   });
 
   it('rejects an unselected frame and clears its error after selection', async () => {

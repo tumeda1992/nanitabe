@@ -182,3 +182,7 @@ Promiseをカレンダー境界とrefetch完了まで維持し、更新失敗時
 ## FR-016の適用完了（2026-11-01）
 
 パネルごとのdebounceとunmount cleanupを追加。追加3件のうち2件のred確認後、関連10 tests・型検査・変更2ファイルlintが成功。FR-015のcommitは`c05d21d`。次はFR-017の未選択値と送信時検証へ進む。
+
+## FR-017の適用完了（2026-11-01）
+
+未選択をnullへ揃え、NaN・非整数・非正数も送信前に拒否する。追加2件のred後、関連15 tests、境界値追加後のeditor13 tests、型検査・lintが成功。visual-inspectorも4項目成功し6画像を目視済み。結果はrequests/fr017-visual-result.json。FR-016のcommitは`5319fbd`。次はFR-018の移動・交換時の元枠解除へ進む。

@@ -80,11 +80,11 @@ const MealFramePatternFields = ({
     setDaySlots(updated);
   };
 
-  const updateEntry = (
+  const updateEntry = <K extends keyof EntryFormData,>(
     dayIndex: number,
     entryIndex: number,
-    field: keyof EntryFormData,
-    value: number,
+    field: K,
+    value: EntryFormData[K],
   ) => {
     const updated = daySlots.map((slot, i) => {
       if (i !== dayIndex) return slot;
@@ -117,7 +117,11 @@ const MealFramePatternFields = ({
 
     daySlots.forEach((slot, dayIndex) => {
       slot.entries.forEach((entry) => {
-        if (entry.mealFrameId == null) {
+        if (
+          entry.mealFrameId == null ||
+          !Number.isInteger(entry.mealFrameId) ||
+          entry.mealFrameId <= 0
+        ) {
           hasUnselectedMealFrame = true;
           return;
         }
@@ -193,17 +197,17 @@ const MealFramePatternFields = ({
 
                   <select
                     data-testid={`mealFrame-${dayIndex}-${entryIndex}`}
-                    value={entry.mealFrameId || undefined}
+                    value={entry.mealFrameId ?? ''}
                     onChange={(e) =>
                       updateEntry(
                         dayIndex,
                         entryIndex,
                         'mealFrameId',
-                        Number(e.target.value),
+                        e.target.value === '' ? null : Number(e.target.value),
                       )
                     }
                   >
-                    <option key={null} value={undefined}>
+                    <option value="">
                       --
                     </option>
                     {mealFrames.map((frame) => (
