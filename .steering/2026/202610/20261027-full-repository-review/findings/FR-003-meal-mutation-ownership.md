@@ -1,8 +1,8 @@
 # FR-003: 食事の更新・削除が所有者を検証しない
 
 - 優先度: P1
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-005（現行コードで再確認）。
@@ -33,5 +33,13 @@
 
 ## 採否・対応記録
 
-- ユーザー判断: 未判断
-- 適用コミット: 未適用
+- ユーザー判断: 2026-11-01の既存レビュー反映依頼により採用
+- 適用コミット: 本記録を含むFR-003コミット（application.mdにSHA記録）
+
+## 適用結果（2026-11-01）
+
+`UpdateCommand`と`RemoveCommand`の対象取得を`id`と`user_id`で絞った。他人のIDを不存在IDと同じ例外で拒否する。更新の不存在IDについては既存の`ActiveRecord::RecordNotFound`とmessageを維持した。新規料理付き更新の既存transactionにより認可失敗時の料理・出典・関連・タグの作成をrollbackする。
+
+追加した`spec/graphql/mutation/meal/ownership_spec.rb`は通常更新・削除・新規料理付き更新を他人ID/不存在IDで検証する。修正前は6 examples / 3 failuresで不正操作を再現した。開発用Composeで追加spec、更新・削除Command、通常更新・削除・新規料理付き更新・新規出典付き更新の既存GraphQL specを実行し、31 examples / 0 failures。変更3ファイルのRuboCopは違反なし。
+
+検証コマンド: `docker compose -f compose.dev.local.yml exec -T backend bundle exec rspec spec/graphql/mutation/meal/ownership_spec.rb spec/domain/business/food/meal/usecase/update_command_spec.rb spec/domain/business/food/meal/usecase/remove_command_spec.rb spec/graphql/mutation/meal/update_meal_spec.rb spec/graphql/mutation/meal/remove_meal_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_and_new_source_spec.rb`。

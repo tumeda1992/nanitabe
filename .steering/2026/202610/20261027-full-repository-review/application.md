@@ -20,7 +20,7 @@ Dockerへの通常接続は権限拒否。権限要求が返らないため、�
 | --- | --- | --- |
 | [FR-001: 管理CRUDに認証・管理権限の確認がない](findings/FR-001-admin-authorization.md) | 保留 | Basic認証実装とspecを作成。green受付不能、未検証のWIPとして現状保存。CSRF強化は設計確定・未実施 |
 | [FR-002: 日付交換が他ユーザーの食事まで移動する](findings/FR-002-swap-user-scope.md) | 完了 | 2026-11-01: Dockerで18 examples成功、変更箇所lint成功。commitは下記 |
-| [FR-003: 食事の更新・削除が所有者を検証しない](findings/FR-003-meal-mutation-ownership.md) | 未着手 | 未実行 |
+| [FR-003: 食事の更新・削除が所有者を検証しない](findings/FR-003-meal-mutation-ownership.md) | 完了 | 開発用Composeで関連31 examples成功、変更3ファイルlint成功 |
 | [FR-004: 料理・出典・一括タグの更新が所有者を検証しない](findings/FR-004-dish-source-tag-ownership.md) | 未着手 | 未実行 |
 | [FR-005: 枠名変更・枠削除・枠エントリ削除がIDだけで実行される](findings/FR-005-frame-mutation-ownership.md) | 未着手 | 未実行 |
 | [FR-006: パターン更新・削除は操作ユーザーを受け取らない](findings/FR-006-pattern-mutation-ownership.md) | 未着手 | 未実行 |
@@ -90,3 +90,23 @@ GitHub連携の許可対象追加によりpluginのpushとPR作成が成功。�
 開始HEAD: `affd7ec1eb9105e27795bcc9ecbdd4f9071af628`。既存の`.gitignore`と`frontend/src/lib/generateApiOrigin.ts`の未コミット変更を適用差分に含めない。作業directoryは既存の本directoryと`../20261030-exhaustive-review`を再利用する。各directory内のtemporary-overrides候補は存在しない。
 
 Docker権限を取得し、外部ネットワークなし・実環境env_fileなし・`RAILS_ENV=test`の専用コンテナを起動した。FR-002のCommand・GraphQL・旧Commandの関連18 examplesは成功。変更3ファイルのRuboCopは違反なし。FR-002のWIPを検証済みとして確定し、利用者ID必須の取得APIで再発を防止した。FR-003以降は各指摘の依存順で実施し、FR-018/019の枠整合性は認可とは別commitで扱う。
+
+## セッション再起動のための中断（2026-11-01）
+
+利用者がautoモード反映のためセッション再起動を希望したため、新しい修正を停止した。FR-002は`03e4828`で確定済み。FR-003は`backend/spec/graphql/mutation/meal/ownership_spec.rb`を作成し、専用Dockerで6 examples / 3 failuresを確認した。別利用者の食事に対する通常更新・削除・新規料理付き更新が拒否されず失敗し、不在IDの3ケースは成功した。これは問題を再現するredであり、修正完了ではない。アプリ実装は未変更、追加specは未コミットで保存している。
+
+再開位置はFR-003。`UpdateCommand`と`RemoveCommand`の取得を操作利用者で絞り、新規料理付き更新の認可失敗で副作用が残らないことを確認する。その後に上記specと関連既存spec、変更箇所lintを成功させ、記録とFR-003単独commitへ進む。FR-001の保留は維持する。
+
+今回のテスト環境は`/tmp/nanitabe-review-compose.yml`。backend/frontend専用サービスを起動済みで、既存イメージと作業treeを使い、外部ネットワークを無効化、実環境のenv_fileを読み込まない。backendは`RAILS_ENV=test`、SQLiteを使用する。frontendは起動のみでテストは未実行。実行中のRSpecは終了した。
+
+次回の関連テスト受付コマンド: `docker compose -f /tmp/nanitabe-review-compose.yml exec -T backend bundle exec rspec spec/graphql/mutation/meal/ownership_spec.rb`。DockerとGitへの書込みはsandboxの権限が必要。再起動後に設定fileとコンテナ状態を確認してから実行する。
+
+## ローカルの実行条件訂正（2026-11-01）
+
+利用者から「sqliteにしたのはcodexのcloud環境だったから」と訂正を受けた。Cloud向け専用Compose・DB方式をローカルでも必須と扱った判断を取り消し、designの実行条件を既存開発用Composeへ置き換えた。`config/database.yml`のtest設定は従来からSQLiteで、今回変更していない。
+
+追加したテスト用Composeのfrontend依存取得はタイムアウトし、Jestは旧依存のTypeScript設定エラーで未実行だった。取得処理を停止し、追加したbackend/frontendコンテナとネットワークを終了した。既存の開発用backendを使いFR-003の関連RSpecを再開した。frontendの既存node_modulesおよびロックファイルを変更していない。作業中に現れた`frontend/Dockerfile`の別作業の変更も今回のcommitから除外する。
+
+## FR-003の適用完了（2026-11-01）
+
+更新・削除の取得に操作ユーザーの条件を追加。初回green実行で既存の不存在例外契約1件が失敗し、例外を維持する形に修正してから関連31 examples / 0 failuresと変更3ファイルのRuboCop違反なしを確認した。詳細と再実行commandはFR-003の指摘fileに保存した。FR-002の適用commitは`03e4828`。FR-003を独立commitにして次はFR-004へ進む。

@@ -18,7 +18,7 @@
 
 ## 実行条件
 
-Docker内だけでアプリのテストを実行する。テスト専用containerは`nanitabe-review-tests-backend-1`と`nanitabe-review-tests-frontend-1`。backendは`RAILS_ENV=test`でダミー認証情報とSQLiteのみを使う。実DB・AWS・Webhookへ変更を送らない。
+Docker内だけでアプリのテストを実行する。ローカルでは既存の開発用`compose.dev.local.yml`を使い、backendのRSpecはrepositoryのtest環境設定に従う。Cloud向けに導入した専用container・SQLite限定の実行条件はローカルへ継承しない（2026-11-01の利用者訂正）。現在の`config/database.yml`ではtest DBはSQLiteであり、今回DB設定は変更しない。開発・本番DB、AWS、Webhookへテストの変更を送らない。
 
 各指摘でテストを先に追加・更新し、必要最小限の修正をする。既存fixtureの期待値を合わせて不具合を隠さない。指摘の回帰がgreenになるまで次へ進めない。最後にfrontend全体、backend回帰、型検査、変更箇所lintを行い、再発防止のdocument更新を提案する。
 

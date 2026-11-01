@@ -8,8 +8,10 @@ module Business::Food::Meal
     validate :validate_meal, if: -> { meal_params.present? }
 
     def call
-      meal_root = Business::Food::Meal::Factory.build_existing_from_id(meal_params.id)
-      raise "指定した食事は存在しません。" if meal_root.blank?
+      meal_record = ::Meal.find_by(id: meal_params.id, user_id: user_id)
+      raise ActiveRecord::RecordNotFound, "Meal with id #{meal_params.id} not found" if meal_record.blank?
+
+      meal_root = Business::Food::Meal::Factory.build_existing_from_id(meal_record.id)
 
       updated_dish_root = update_meal_root(meal_root, meal_params)
 

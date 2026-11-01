@@ -7,7 +7,7 @@ module Business::Food::Meal
     validates :meal_id, presence: true
 
     def call
-      meal_record = ::Meal.find_by(id: meal_id)
+      meal_record = ::Meal.find_by(id: meal_id, user_id: user_id)
       raise "指定した食事は存在しません。" if meal_record.blank?
 
       meal_record.destroy!
