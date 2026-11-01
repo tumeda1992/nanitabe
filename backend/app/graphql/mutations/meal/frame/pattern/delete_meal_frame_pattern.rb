@@ -6,6 +6,7 @@ module Mutations::Meal::Frame::Pattern
 
     def resolve(id:)
       deleted_id = ::Business::Food::Meal::Frame::Pattern::Usecase::RemoveCommand.call(
+        user_id: context[:current_user_id],
         meal_frame_pattern_id: id,
       )
       { meal_frame_pattern_id: deleted_id }

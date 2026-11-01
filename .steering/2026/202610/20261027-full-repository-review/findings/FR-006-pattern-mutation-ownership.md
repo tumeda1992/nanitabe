@@ -1,8 +1,8 @@
 # FR-006: パターン更新・削除は操作ユーザーを受け取らない
 
 - 優先度: P1
-- 採否: 未判断
-- 対応状況: 未着手
+- 採否: 採用
+- 対応状況: 完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-008（現行コードで再確認）。
@@ -34,5 +34,11 @@ A/Bのパターンを用意し、BのIDを使う更新・削除で名前・子�
 
 ## 採否・対応記録
 
-- ユーザー判断: 未判断
-- 適用コミット: 未適用
+- ユーザー判断: 2026-11-01の反映指示により採用
+- 適用コミット: 本記録を含むFR-006コミット（SHAはapplication.mdへ追記）
+
+## 適用結果（2026-11-01）
+
+更新・削除Commandで`user_id`を必須化し、GraphQL両入口から認証利用者IDを渡す。更新はrename・子エントリ置換前にrootの所有者を確認し、削除は利用者で絞った取得に変更した。既存Command specも明示的に本人IDを渡す。
+
+追加`spec/graphql/mutation/meal/frame/pattern/ownership_spec.rb`で他人ID・不存在IDの更新/削除とユーザー欠落を検証。初回は既存404応答を例外と誤認したためテストをHTTP status検証へ修正し、6 examples / 4 failuresで不正操作と欠落の問題を再現した。修正後はGraphQL pattern directoryとdomain pattern/usecase directoryで24 examples / 0 failures。本人の置換・空entries・cascade削除の既存動作、拒否時の親子全属性の不変を確認した。変更7ファイルのRuboCopは違反なし。既存開発用Compose内で実行。

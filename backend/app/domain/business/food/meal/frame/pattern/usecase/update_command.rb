@@ -1,5 +1,8 @@
 module Business::Food::Meal::Frame::Pattern
   class Usecase::UpdateCommand < ::Business::Base::Command
+    attribute :user_id, :integer
+    validates :user_id, presence: true
+
     attribute :meal_frame_pattern_id, :integer
     validates :meal_frame_pattern_id, presence: true
 
@@ -10,6 +13,8 @@ module Business::Food::Meal::Frame::Pattern
 
     def call
       pattern_root = ::MealFramePattern.build_existing_root_from_id(meal_frame_pattern_id)
+      raise ActiveRecord::RecordNotFound, "MealFramePattern with id #{meal_frame_pattern_id} not found" if pattern_root.user_id != user_id
+
       pattern_root.rename(name)
 
       ActiveRecord::Base.transaction do

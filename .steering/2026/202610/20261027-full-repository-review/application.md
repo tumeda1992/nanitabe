@@ -23,7 +23,7 @@ Dockerへの通常接続は権限拒否。権限要求が返らないため、�
 | [FR-003: 食事の更新・削除が所有者を検証しない](findings/FR-003-meal-mutation-ownership.md) | 完了 | 開発用Composeで関連31 examples成功、変更3ファイルlint成功 |
 | [FR-004: 料理・出典・一括タグの更新が所有者を検証しない](findings/FR-004-dish-source-tag-ownership.md) | 完了 | 追加3件のred確認後、関連41 examples成功、変更4ファイルlint成功 |
 | [FR-005: 枠名変更・枠削除・枠エントリ削除がIDだけで実行される](findings/FR-005-frame-mutation-ownership.md) | 完了 | 追加4件red後、関連19 examples成功、変更4ファイルlint成功 |
-| [FR-006: パターン更新・削除は操作ユーザーを受け取らない](findings/FR-006-pattern-mutation-ownership.md) | 未着手 | 未実行 |
+| [FR-006: パターン更新・削除は操作ユーザーを受け取らない](findings/FR-006-pattern-mutation-ownership.md) | 完了 | 追加6件中4件red後、関連24 examples成功、変更7ファイルlint成功 |
 | [FR-007: 検索の先頭固定IDがユーザー条件を迂回する](findings/FR-007-pinned-dish-disclosure.md) | 未着手 | 未実行 |
 | [FR-008: 枠割当の認可が入口ごとに異なり関連先の所有者を検証しない](findings/FR-008-frame-fill-ownership.md) | 未着手 | 未実行 |
 | [FR-009: 他人の料理を自分の食事に登録すると内容を取得できる](findings/FR-009-foreign-dish-reference.md) | 未着手 | 未実行 |
@@ -118,3 +118,7 @@ Docker権限を取得し、外部ネットワークなし・実環境env_fileな
 ## FR-005の適用完了（2026-11-01）
 
 枠改名・削除・エントリ削除を所有者に限定し、枠の利用状況より先に認可する。追加4件red確認後、関連19 examples / 0 failures、変更4ファイルRuboCop違反なし。FR-004のcommitは`8adcbd6`。次はFR-006のパターン更新・削除へ進む。
+
+## FR-006の適用完了（2026-11-01）
+
+パターンの更新・削除で認証利用者を必須にし、親子の変更前に認可する。関連24 examples / 0 failures、変更7ファイルRuboCop違反なし。FR-005のcommitは`f7b3e68`。次はFR-007の検索先頭固定IDへ所有者条件を追加する。

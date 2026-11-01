@@ -17,13 +17,13 @@ RSpec.describe Business::Food::Meal::Frame::Pattern::Usecase::RemoveCommand do
   describe "#call" do
     context "削除成功" do
       it "パターンが削除される" do
-        described_class.call(meal_frame_pattern_id: pattern.id)
+        described_class.call(user_id: user_record.id, meal_frame_pattern_id: pattern.id)
 
         expect(MealFramePattern.find_by(id: pattern.id)).to be_nil
       end
 
       it "meal_frame_pattern_entries が cascade delete される" do
-        described_class.call(meal_frame_pattern_id: pattern.id)
+        described_class.call(user_id: user_record.id, meal_frame_pattern_id: pattern.id)
 
         expect(MealFramePatternEntry.find_by(id: entry.id)).to be_nil
       end

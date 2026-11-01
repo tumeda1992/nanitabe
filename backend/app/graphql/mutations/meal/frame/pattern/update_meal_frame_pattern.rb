@@ -14,6 +14,7 @@ module Mutations::Meal::Frame::Pattern
       end
 
       updated_pattern = ::Business::Food::Meal::Frame::Pattern::Usecase::UpdateCommand.call(
+        user_id: context[:current_user_id],
         meal_frame_pattern_id: meal_frame_pattern.id,
         name: meal_frame_pattern.name,
         entries:,
