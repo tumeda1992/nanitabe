@@ -56,3 +56,9 @@ production buildはgit archiveで取得したcommitted sourceを使い、既存n
 ブラウザ確認は各FRのrequestsにある人工fixture/GraphQL mockで行ったもので、実DBへのUI保存を証明しない。実DB migration、AWS apply/実効IAM権限/Host偽装の直アクセス拒否、実Webhookは今回未実施。FR-019のunique index導入は実データに既存重複があれば停止する設計である。TerraformのARM h1追加は検証copyだけで、repository lockfileのversion/constraint/hashは変更していない。
 
 一時MySQLは検証後にservice/dataを除去済み。既存の開発backend/frontendは継続稼働している。再発防止の恒久documentは提案のみで、未承認の追加規範を適用しない。
+
+## 公開後のCI（2026-11-02）
+
+公開head `b843000`のPR-triggered runではfrontend test/lint/buildとTerraform plan prod/reviewが成功した。backend test（[run 41364503462](https://github.com/tumeda1992/nanitabe/actions/runs/41364503462)）とbackend RuboCop（[run 41364503213](https://github.com/tumeda1992/nanitabe/actions/runs/41364503213)）はSetup Rubyで失敗し、RSpec/RuboCop本体は実行されていない。
+
+両jobの実ログは`Unavailable version 3.3.8 for ruby on ubuntu-26.04`を示す。両workflowの`ubuntu-latest`とRuby3.3.8指定はorigin/mainから変更しておらず、今回の修正によるテスト失敗とは区別する。既存の開発container内で成功したbackend937件/変更箇所lintを、GitHub CI成功とは読み替えない。runner/Ruby対応の改訂は今回のreview指摘の反映に追加せず、CI全greenとは報告しない。保留FR-001の既存RuboCop2件も別に残る。

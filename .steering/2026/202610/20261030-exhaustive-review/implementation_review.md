@@ -8,9 +8,13 @@
 
 ## 公開前の確認
 
-個別の採否・commit・検証はapplication.mdと各findingを正本とする。全体結果・baseline lint・公開結果は確定後に追記する。実環境へのapply/migration/Webhook呼出しは行わない。
+個別の採否・commit・検証はapplication.mdと各findingを正本とする。全体結果・baseline lintは下記coverage、[公開結果](../20261027-full-repository-review/application.md#公開結果2026-11-02)は後続の適用記録に集約する。実環境へのapply/migration/Webhook呼出しは行わない。
 
 
 ## 全体検証への参照（2026-11-02）
 
 backend937件、frontend283件、MySQL6件、運用系68件が成功。最終Next production build・型検査・lintの条件と、保留FR-001の既存lint2件を含む限界は[coverageの最終検証](../20261027-full-repository-review/coverage.md#最終検証2026-11-02)を正本とする。
+
+## 公開後のCI環境障害
+
+backend2jobはRSpec/RuboCop実行前のSetup Rubyで停止した。既存のubuntu-latest/Ruby3.3.8指定とUbuntu26.04の組合せが原因で、アプリ修正の回帰失敗と区別する。詳細とrunは[coverage](../20261027-full-repository-review/coverage.md#公開後のci2026-11-02)へ集約した。今回の公開にrunner/Ruby変更は含めない。

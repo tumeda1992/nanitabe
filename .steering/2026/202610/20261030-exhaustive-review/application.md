@@ -38,4 +38,4 @@
 
 backend937件、frontend283件、MySQL6件、運用系68件が成功。最終Next production build・型検査・lintの条件と、保留FR-001の既存lint2件を含む限界は[coverageの最終検証](../20261027-full-repository-review/coverage.md#最終検証2026-11-02)を正本とする。
 
-CR-003のspec補完は`852718f`、FR-019のMySQL補完は`3dcad04`。公開は次の工程で行い、完了後に追記する。
+CR-003のspec補完は`852718f`、FR-019のMySQL補完は`3dcad04`。公開済み。feature-287のpushとPR #292の説明更新を完了し、GitHubのhead一致を確認した。[公開結果](../20261027-full-repository-review/application.md#公開結果2026-11-02)を正本とする。

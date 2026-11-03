@@ -307,4 +307,8 @@ CR-001〜004の反映結果は[後続reviewのapplication](../20261030-exhaustiv
 
 backend937件、frontend283件、MySQL6件、運用系68件が成功。最終Next production build・型検査・lintの条件と、保留FR-001の既存lint2件を含む限界は[coverageの最終検証](coverage.md#最終検証2026-11-02)を正本とする。
 
-公開は次の工程で行い、完了後に実行結果を追記する。
+## 公開結果（2026-11-02）
+
+feature-287をoriginへpushし、[既存PR #292](https://github.com/tumeda1992/nanitabe/pull/292)のタイトル・本文を最終の反映結果と検証条件に更新した。GitHubのPR headが公開時点の`b8430008322fcf65e86ed37692c73610545ea747`と一致することを確認した。source/test固定点は`3dcad04`で、以降は文書だけの追記である。
+
+FR-001保留、backend既存lint2件、実AWS/実DB migration/Webhook未実施をPRにも明記した。個別対応表・全体検証・再発防止の文書提案をPRから辿れる。merge/deployは実施していない。この公開記録の追記も同じbranchへcommit/pushする。
