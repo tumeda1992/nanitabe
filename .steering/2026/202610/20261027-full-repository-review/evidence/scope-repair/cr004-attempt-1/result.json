@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-cr004-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr004-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr004-attempt-1/result.md",
+  "summary": "25 examples / 0 failures、RuboCop 4 files / 0 offenses。3 production filesは02e2caf^とbyte一致。変換専用spec/checkpointだけ除去し、FR-019のMySQL guard/cleanup/spec保持を確認。diff check成功。"
+}

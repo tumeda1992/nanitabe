@@ -7,7 +7,7 @@ module Business::Food::Meal::Postponed
     validates :postponed_meal_id, presence: true
 
     def call
-      postponed_meal_record = ::PostponedMeal.find_by(id: postponed_meal_id, user_id: user_id)
+      postponed_meal_record = ::PostponedMeal.find_by(id: postponed_meal_id)
       raise "指定した延期された食事は存在しません。" if postponed_meal_record.blank?
 
       postponed_meal_record.destroy!

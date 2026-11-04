@@ -5,8 +5,8 @@
 - 対象: `backend/app/graphql/mutations/meal/postponed/schedule_postponed_meal.rb:10`
 - 観点: 並行処理・データ整合性
 - 由来: 全体レビュー・既存。既存未対応指摘とは原因・修正を分離。
-- 採否: 採用（全review指摘反映の後続指示）
-- 対応状況: 適用・MySQL並行/関連自動検証完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 適用枠: 挙動変更が必要
 - 依存する指摘: なし
 
@@ -28,7 +28,7 @@ transaction開始時に所有者条件付きで延期食事をlockして取得�
 
 実測3件の共通再現コードは[probes.rb](../evidence/probes.rb)、出力は[probes.log](../evidence/probes.log)。
 
-## 合意・適用記録
+## 旧適用記録（現在の合意として扱わない）
 
 - 合意した指示と対象範囲: 初回レビュー後の全review指摘反映・継続指示により本指摘を採用。
 - 修正内容・判断理由: 後述の適用結果とdesign.mdを参照。
@@ -46,3 +46,15 @@ transaction開始時に所有者条件付きで延期食事をlockして取得�
 - 変更6ファイルRuboCop成功。fixture以外のURLはRails/DB操作前に拒否することも確認。
 
 20msのmetadata pollでは観測cacheが更新されなかったため、公式実装の100ms idle条件を確認して200msへ修正した。成功の根拠は経過時間でなく実LOCK WAITと一回消費の件数である。追加のMySQL補完検証後、一時service/データを除去済み。既存アプリは継続稼働し、実DB/AWS/Webhookは操作していない。commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-04）
+
+全指摘の反映が挙動維持制約を解除したという旧記録はassistantの誤判断である。
+元指摘と過去の実測は保存するが、今回の工程では並行一回消費・延期Removeの認可を追加しない。
+3productionfileを02e2cafの親版へ戻し、変換専用specとMySQL checkpointを実行treeから除いた。
+FR-019のMySQL helperの接続guard/cleanupと枠検証specは次の復元単位まで保持している。
+
+[復元検証](../../20261027-full-repository-review/evidence/scope-repair/cr004-attempt-1/result.md)は
+既存関連RSpec25 examples / 0 failures、変更Ruby4fileのRuboCop0 offenses、3fileの旧版byte一致とdiff checkが成功した。
+これは旧挙動への復元の検証であり、一回消費の保証ではない。実MySQL・実DB・AWS・Webhookは操作していない。
+復元commitはapplication.mdとGit履歴に記録する。

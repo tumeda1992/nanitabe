@@ -6,7 +6,7 @@ module Mutations::Meal::Postponed
 
     def resolve(meal_id:)
       ActiveRecord::Base.transaction do
-        meal_record = ::Meal.lock.find_by(id: meal_id, user_id: context[:current_user_id])
+        meal_record = ::Meal.find_by(id: meal_id, user_id: context[:current_user_id])
         raise "指定した食事は存在しません。" if meal_record.blank?
 
         postponed_meal_root = ::Business::Food::Meal::Postponed::Usecase::AddCommand.call(

@@ -43,12 +43,15 @@ DoD: baselineと利用者変更の保持先を実装担当が特定でき、旧�
 
 ### 1. CR-004: 延期・予定食事の変換に加えたrow lockと所有者絞込みを戻す
 
-- [ ] 元変更 `02e2caf` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `02e2caf` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: 両GraphQL resolver、Business::Food::Meal::Postponed::Usecase::RemoveCommand、conversion_atomicity_spec、
   spec_mysql/meal_conversion_concurrency_spec.rb。mysql_spec_helper.rbの変換用checkpointだけを戻し、
   FR-019のframe_assignment_spec.rbが使う接続guard・cleanup・RSpec設定は項目FR-019まで保持する。
 
 DoD: 食事延期・予定化がbaselineと同じ取得・例外・保存順になる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-cr004-1 / attempt1 passed。RSpec25 examples / 0 failures、RuboCop4 files / 0 offenses、
+production3file旧版byte一致とFR-019残部保持を確認。[結果](evidence/scope-repair/cr004-attempt-1/result.md)。
 
 ### 2. CR-003: 関連料理がある出典のtype変更拒否を戻す
 

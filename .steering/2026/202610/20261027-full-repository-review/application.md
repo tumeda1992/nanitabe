@@ -327,3 +327,12 @@ steeringのdoc-enricher提案modeと再発防止gateを確認した。元README�
 利用者変更3fileは保全hashと全件一致し、既存patch保全も確認した。暫定指示は元directoryに存在せずnone。
 CR側の旧design/tasklistは今回の復元契約に置換された履歴として明示し、再適用対象から外した。
 
+
+## CR-004の範囲外適用取消（2026-11-04）
+
+scope-repair-cr004-1 / attempt1のpassed resultを消費した。3productionfileは02e2cafの親版とbyte一致し、
+変換専用specとcheckpointだけを除去、FR-019用のguard/cleanup/specは保持した。
+既存関連RSpec25 examples / 0 failures、RuboCop4 files / 0 offenses、diff check成功。
+結果は[evidence/scope-repair/cr004-attempt-1/result.md](evidence/scope-repair/cr004-attempt-1/result.md)。
+並行一回消費の保証は今回の適用範囲から外し、元の問題と過去のMySQL検証は証拠として残す。
+準備文書は独立commit c771cd2に分けた。次はCR-003のtype変更拒否と旧spec変更を戻す。

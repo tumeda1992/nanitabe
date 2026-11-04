@@ -1,5 +1,10 @@
 # CR指摘の適用記録
 
+> 2026-11-04訂正: 挙動維持条件を解除したという旧適用合意はassistantの誤判断である。
+> 現在の実行状態は[復元tasklist](../20261027-full-repository-review/tasklist.md)が所有する。
+> 以下の2026-11-02の完了・検証は旧snapshotについての歴史である。
+
+
 ## 適用合意と実行条件
 
 利用者の全review指摘反映・継続指示によりCR-001〜004を反映する。[design](design.md)と[tasklist](tasklist.md)に従い、関連green・記録・1指摘1commitで進める。設計commitは`486811d`、FR-034のcommitは`fcac860`。FR-001保留と利用者由来の未commit3ファイルを維持する。実DB・AWS・Webhookは操作せず、既存開発Composeのアプリコンテナを使う。レビュー担当Astraと今回の適用担当は区別する。
@@ -39,3 +44,9 @@
 backend937件、frontend283件、MySQL6件、運用系68件が成功。最終Next production build・型検査・lintの条件と、保留FR-001の既存lint2件を含む限界は[coverageの最終検証](../20261027-full-repository-review/coverage.md#最終検証2026-11-02)を正本とする。
 
 CR-003のspec補完は`852718f`、FR-019のMySQL補完は`3dcad04`。公開済み。feature-287のpushとPR #292の説明更新を完了し、GitHubのhead一致を確認した。[公開結果](../20261027-full-repository-review/application.md#公開結果2026-11-02)を正本とする。
+
+## CR-004の適用取消（2026-11-04）
+
+変換row lockと延期Removeへの追加owner条件を元に戻した。既存関連25 examples、Ruby lint4file、旧版byte比較が成功。
+[復元結果](../20261027-full-repository-review/evidence/scope-repair/cr004-attempt-1/result.md)を参照。
+並行一回消費は保証しない。旧問題と過去の検証は保存し、現在の採否はfindingに記録した。
