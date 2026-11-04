@@ -343,3 +343,9 @@ scope-repair-cr003-1 / attempt1のpassed resultを消費した。DishSourceの�
 852718fで変更した旧Repository specも元の種別変更成功期待へ戻した。
 既存関連135 examples / 0 failures、Ruby lint2 files / 0 offenses、旧版byte一致、保護対象保持、diff check成功。
 [結果](evidence/scope-repair/cr003-attempt-1/result.md)。CR-004の復元commitはbd0d91a。次はCR-002を戻す。
+
+## CR-002の範囲外適用取消（2026-11-04）
+
+scope-repair-cr002-1 / attempt1のpassed resultを消費した。タグ保存3productionfileを30c86bb親版へ戻し、専用2specを除去。
+既存360 examples / 0 failures、RuboCop3 files / 0 offenses、旧byte一致・FR-024/FR-004残部と利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/cr002-attempt-1/result.md)。CR-003復元commitはf210961。次はCR-001を戻す。

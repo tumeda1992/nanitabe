@@ -56,3 +56,8 @@ CR-003のspec補完は`852718f`、FR-019のMySQL補完は`3dcad04`。公開済�
 関連済み出典の種別変更拒否と旧Repository specの拒否期待を元へ戻した。既存135 examples、Ruby lint2file、旧版byte比較が成功。
 [復元結果](../20261027-full-repository-review/evidence/scope-repair/cr003-attempt-1/result.md)を参照。元の詳細不整合の指摘は保存する。
 CR-004の復元commitはbd0d91a。
+
+## CR-002の適用取消（2026-11-04）
+
+既存タグ内容保存と再正規化caller適応を元へ戻した。既存360 examples、Ruby lint3file、旧byte比較が成功。
+[復元結果](../20261027-full-repository-review/evidence/scope-repair/cr002-attempt-1/result.md)を参照。CR-003復元commitはf210961。

@@ -65,10 +65,13 @@ DoD: 出典更新の許容条件と関連先の扱いがbaselineと同じにな�
 
 ### 3. CR-002: 既存タグ内容の保存と再正規化caller適応を戻す
 
-- [ ] 元変更 `30c86bb` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `30c86bb` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: Dish/DishTag、ReflectLatestNormalizeWordCommand、タグ更新・置換spec。FR-024の既存transactionはその項目まで残す。
 
 DoD: 料理編集の既存タグと辞書再反映がCR-002以前の保存経路になる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-cr002-1 / attempt1 passed。RSpec360 examples / 0 failures、RuboCop3 files / 0 offenses、
+旧版byte一致、FR-024/FR-004と利用者変更保持、diff check成功。[結果](evidence/scope-repair/cr002-attempt-1/result.md)。
 
 ### 4. CR-001: 単語ごとの相関EXISTSによる検索結果変更を戻す
 

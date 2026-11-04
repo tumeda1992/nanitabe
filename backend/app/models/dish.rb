@@ -128,24 +128,22 @@ class Dish < ApplicationRecord
   end
 
   def persist_from_food_dish_root(food_dish_root)
-    transaction do
-      self.name = food_dish_root.name.value
-      self.normalized_name = food_dish_root.name.normalized
-      self.meal_position = food_dish_root.meal_position
-      self.comment = food_dish_root.comment
-      self.dish_effort_level_id = food_dish_root.effort_level_id
-      save!
+    self.name = food_dish_root.name.value
+    self.normalized_name = food_dish_root.name.normalized
+    self.meal_position = food_dish_root.meal_position
+    self.comment = food_dish_root.comment
+    self.dish_effort_level_id = food_dish_root.effort_level_id
+    save!
 
-      if food_dish_root.source_id.present?
-        ::DishSourceRelation.put_dish_source_relation(id, food_dish_root.source_id, food_dish_root.source_locator)
-      else
-        ::DishSourceRelation.remove_dish_source_relation(id)
-      end
-
-      ::DishTag.replace_tags_of_dish(id, food_dish_root.tags)
-
-      self
+    if food_dish_root.source_id.present?
+      ::DishSourceRelation.put_dish_source_relation(id, food_dish_root.source_id, food_dish_root.source_locator)
+    else
+      ::DishSourceRelation.remove_dish_source_relation(id)
     end
+
+    ::DishTag.replace_tags_of_dish(id, food_dish_root.tags)
+
+    self
   end
 
   def to_searched_values

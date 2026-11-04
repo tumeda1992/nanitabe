@@ -5,8 +5,8 @@
 - 対象: `backend/app/models/dish_tag.rb:40`
 - 観点: 保存契約
 - 由来: 全体レビュー・既存。既存未対応指摘とは原因・修正を分離。
-- 採否: 採用（全review指摘反映の後続指示）
-- 対応状況: 適用・関連/全体自動検証完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 適用枠: 挙動変更が必要
 - 依存する指摘: なし
 
@@ -28,7 +28,7 @@ UPDATED_TAG=alpha。変更後Rootを渡しても旧値が残ることをDocker�
 
 実測3件の共通再現コードは[probes.rb](../evidence/probes.rb)、出力は[probes.log](../evidence/probes.log)。
 
-## 合意・適用記録
+## 旧適用記録（現在の合意として扱わない）
 
 - 合意した指示と対象範囲: 初回レビュー後の全review指摘反映・継続指示により本指摘を採用。
 - 修正内容・判断理由: 後述の適用結果とdesign.mdを参照。
@@ -42,3 +42,10 @@ UPDATED_TAG=alpha。変更後Rootを渡しても旧値が残ることをDocker�
 タグ置換と料理・出典関連・タグの全保存をtransactionへまとめた。既存の辞書反映が別Rootで保存した最新タグを古い料理Rootで上書きする依存を関連テストが検出したため、料理Root自身のタグを再正規化して一度に保存するよう適応した。ログ/例外/全件原子性は維持する。[移行台帳](../evidence/cr002-reflection-migration.md)を参照。
 
 新規model9件はすべてred。実GraphQL再取得1件も、検索fixtureの既存Bullet条件を揃えた後に旧content保持をred確認した。修正後は新規10件を含む関連204 examples、backend全体902 examplesが全成功。既存の60 query未満の性能基準と変更5ファイルRuboCopも成功。commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-04）
+
+旧記録の挙動維持制約解除はassistantの誤判断である。既存タグ内容の保存と再正規化callerの適応を30c86bbの親版へ戻し、専用2specを除いた。
+[復元結果](../../20261027-full-repository-review/evidence/scope-repair/cr002-attempt-1/result.md)は
+既存RSpec360 examples / 0 failures、RuboCop3 files / 0 offenses、production3file旧byte一致、FR-024/FR-004残部と利用者変更保持、diff checkが成功した。
+元のタグ更新不具合の指摘と過去の実測は保存する。今回の復元は不具合修正の保証ではない。

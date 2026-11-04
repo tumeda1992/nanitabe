@@ -1,0 +1,34 @@
+{
+  "request_id": "scope-repair-cr002-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.3 CR-002 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr002-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "料理・タグ・出典・辞書反映とGraphQLの既存関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/dish spec/graphql/mutation/dish",
+      "expected": "全examples成功。既存の辞書再反映・性能基準・所有者回帰を残し、CR002専用2specだけが除かれる"
+    },
+    {
+      "operation": "復元した3productionfileのRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/food/dish/word/usecase/reflect_latest_normalize_word_command.rb app/models/dish.rb app/models/dish_tag.rb",
+      "expected": "3fileのoffenseなし"
+    },
+    {
+      "operation": "CR002復元範囲の静的全量比較",
+      "expected": "3productionfileは30c86bb^とbyte一致。existing_tag_update_spec.rbとdish_tag_replacement_spec.rbだけ除去。FR024 transactionとFR004所有者条件はこの項目では保持。git diff --check成功、userdirty3保持"
+    }
+  ],
+  "dod": [
+    "既存タグ内容を保存する追加処理と関連caller適応がCR002以前へ戻った",
+    "料理保存・辞書反映の既存testとlint・byte比較が成功した",
+    "後から戻すFR024/FR004の変更を巻き込まない"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。新規service、実DB/AWS/Webhook操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Composeと挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationを変更しない。artifact_directoryへcommand結果・result.md/result.jsonのみ保存。request_id/attemptを一致させる。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr002-attempt-1/result.json"
+}
