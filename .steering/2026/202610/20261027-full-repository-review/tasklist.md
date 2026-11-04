@@ -85,10 +85,13 @@ DoD: 複数タグにまたがる語の検索結果がbaselineの条件へ戻る�
 
 ### 5. FR-034: 旧Rootの継承と旧Add/Removeの委譲を戻す
 
-- [ ] 元変更 `fcac860` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `fcac860` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: 旧frame_entryのRoot/Add/Remove、互換spec、food README。旧FillのFR-008由来変更はFR-008で戻す。
 
 DoD: 旧Rootの継承関係と旧Add/Removeの認可・返却がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr034-1 / attempt1 passed。RSpec74 examples / 0 failures、RuboCop3 files / 0 offenses、
+eager load・旧継承・4file旧byte一致・旧Fill/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr034-attempt-1/result.md)。
 
 ### 6. FR-030: frontend workflow自身のfilter変更を戻す
 

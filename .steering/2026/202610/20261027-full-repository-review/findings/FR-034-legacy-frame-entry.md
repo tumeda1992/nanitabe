@@ -1,8 +1,8 @@
 # FR-034: 旧FrameEntryと現行Frame::Entryの実装が併存する
 
 - 優先度: P2
-- 採否: 採用（全件適用の合意。旧定数は互換維持）
-- 対応状況: 適用・関連/全体自動検証完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 要調査
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-016（現行コードで再確認）。
@@ -43,3 +43,12 @@
 静的参照検索でGraphQL/モデル/既存spec/READMEを確認したが、外部scriptの不存在は断定しない。旧定数を残し、削除期限は設けない。利用確認ができ、削除を合意する際に改めて判断する。二層台帳と全contract照合は[evidence/fr034-migration.md](../evidence/fr034-migration.md)。
 
 互換9件中1件の認可redを確認後、関連57 examplesとbackend全体885 examplesがすべて成功。変更4ファイルRuboCopとtest設定のzeitwerk:check成功。libがeager_load対象外という既存警告は残る。commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-04）
+
+旧Rootの継承関係と旧Add/Removeの認可・委譲は挙動を変えるため、fcac860の親版へ戻した。
+food READMEも旧実装が残る説明へ戻し、全文と変更段落をdocument-reviewの作成時・更新時観点で確認した。
+専用compatibility specは除去し、旧FillのFR-008由来変更はその復元単位まで保持した。
+[復元結果](../evidence/scope-repair/fr034-attempt-1/result.md)は既存RSpec74 examples / 0 failures、
+RuboCop3 files / 0 offenses、eager loadと旧継承関係、4file旧byte一致、利用者変更保持、diff checkが成功した。
+元の二重実装の指摘と旧適用検証は履歴として保存する。

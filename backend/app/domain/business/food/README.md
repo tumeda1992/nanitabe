@@ -31,7 +31,7 @@
 | `Dish` | 料理マスタ |
 | `Meal` | 食事記録（日付 + 料理が確定した記録。`dish_id` は常に必須）。サブモジュールとして `Frame`（枠マスタ、その配下に `Frame::Entry` と `Frame::Pattern`）・`Postponed`（延期された食事）を持つ |
 
-枠エントリの現行namespaceは `Meal::Frame::Entry`。旧 `Meal::FrameEntry` は現行実装へ委譲する互換入口として残す。登録は旧Rootの返却classを保ち、所有者確認と永続化は現行Commandへ集約する。外部利用は未確認のため、互換定数を削除する時には動的参照を含めた利用確認が必要である。現行構成と変更ガイドは[meal/README.md](./meal/README.md)を参照する。
+枠エントリの現行namespaceは `Meal::Frame::Entry`。旧 `Meal::FrameEntry` の実装も残っているため、移行・削除時には動的参照を含めた利用確認が必要である。現行構成と変更ガイドは[meal/README.md](./meal/README.md)を参照する。
 
 ### Meal・MealFrameEntry・PostponedMeal の違い
 

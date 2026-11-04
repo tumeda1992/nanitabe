@@ -355,3 +355,10 @@ scope-repair-cr002-1 / attempt1のpassed resultを消費した。タグ保存3pr
 scope-repair-cr001-1 / attempt1のpassed resultを消費し、検索の語ごとの相関EXISTSを元に戻した。
 既存36 examples / 0 failures、RuboCop2 files / 0 offenses、ddfef5a親版byte一致、FR-007と利用者変更保持、diff check成功。
 [結果](evidence/scope-repair/cr001-attempt-1/result.md)。CR-002復元commitはe0b9ddf。次はFR-034を戻す。
+
+## FR-034の範囲外適用取消（2026-11-04）
+
+scope-repair-fr034-1 / attempt1のpassed resultを消費した。旧Root/Add/Removeの継承・委譲とfood READMEをfcac860親版へ戻した。
+既存74 examples / 0 failures、Ruby lint3 files / 0 offenses、eager load・旧継承・4file旧byte一致、旧Fill/利用者変更保持、diff check成功。
+[結果](evidence/scope-repair/fr034-attempt-1/result.md)。READMEを全文通読し、文書reviewを行った。
+CR-001復元commitはd839b40。次はFR-030のworkflow filterを戻す。
