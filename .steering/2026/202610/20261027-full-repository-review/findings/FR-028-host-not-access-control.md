@@ -1,8 +1,8 @@
 # FR-028: Host制限を直接アクセス防止として扱っている
 
 - 優先度: P1
-- 採否: 採用（全件適用の合意）
-- 対応状況: コード適用・自動検証完了。実AWSへの適用・到達性は未実測
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-028（現行コードで再確認）。
@@ -48,3 +48,12 @@ start/stopとschedulerも同時に移行した。runtimeのURI更新をなくし
 - Terraform review rootのoffline init/validate成功。元version/lock hashesを維持した隔離copyにARM h1のみ補った。詳細とproviderの非推奨警告は移行台帳へ記録した。
 
 実AWSは今回の合意範囲外のため、apply、許可Hostによる直アクセス拒否、実private経路のHTTP到達性は未確認。実適用時に再確認する。適用commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-04）
+
+private integrationと関連構成・起動停止処理は挙動と適用条件を変えるため、2bf938dの非steering差分13pathを親版へ戻した。
+追加の構成適用を要求せず、FR-027時点の起動停止契約を保持する。旧証拠は当時のコード検証として保存する。
+[復元結果](../evidence/scope-repair/fr028-attempt-1/result.md)は既存Node31 tests / 0 failures、bash構文、
+13path旧byte一致/不存在、FR-027残部と利用者変更保持、運用3docの現行notice訂正、diff checkが成功した。
+運用READMEとreview_environmentを全文通読し、文書reviewで旧版との対応・現在状態と歴史の区別を確認した。
+元のHost制限の問題を解消したとは数えない。実AWS・実DB・Webhookは操作していない。

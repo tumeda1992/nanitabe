@@ -115,10 +115,13 @@ DoD: Webhook呼出しのcommandがbaselineと一致する。関連testが成功�
 
 ### 8. FR-028: private integrationと新規AWS構成への依存を戻す
 
-- [ ] 元変更 `2bf938d` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `2bf938d` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: backend/terraformの4module/env、start/stop/common、対応する運用説明、private integration検査とreadiness spec。
 
 DoD: TerraformとscriptがFR-027時点の同じ契約で動作し、新規構成のapplyを要求しない。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr028-1 / attempt1 passed。Node31 tests / 0 failures、bash構文、13path旧byte比較・
+FR-027保持・運用3doc訂正・利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr028-attempt-1/result.md)。
 
 ### 9. FR-027: 起動失敗時rollback拡張を戻す
 

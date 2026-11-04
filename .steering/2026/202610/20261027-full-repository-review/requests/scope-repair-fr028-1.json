@@ -1,0 +1,34 @@
+{
+  "request_id": "scope-repair-fr028-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.8 FR-028 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr028-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "FR027時点の既存起動script suite",
+      "command": "node --test scripts/review_backend/start.spec.mjs",
+      "expected": "旧public integration契約を使う既存31testsが成功。AWS/jq/dateはsuite内stub。FR027のrollback保証をこの項目で壊さない"
+    },
+    {
+      "operation": "復元起動停止scriptの構文",
+      "command": "bash -n scripts/review_backend/start.sh scripts/review_backend/stop.sh",
+      "expected": "構文検査成功。script本体を実envで実行しない"
+    },
+    {
+      "operation": "全非steering差分の親版比較と残存参照",
+      "expected": "restored-paths.jsonの13pathが2bf938d^とbyte一致または不存在。新規CloudMap/VPCLink/private integration前提が除かれ、private専用Node検査/readiness spec/common/cli_stubsは除去。FR027のstart suite/scriptは保持。operate-review-environment3docの現行noticeも取消状態へ訂正済み。userdirty3hash保持、git diff --check成功"
+    }
+  ],
+  "dod": [
+    "FR028が変えたTerraform/script/運用説明を同じ親版契約へ戻した",
+    "追加構成へのapplyや課金resource作成を要求しない",
+    "既存stub suite・shell構文・13path全量比較が成功しFR027を保持した"
+  ],
+  "data_preparation": "repository rootのNode suiteは自己完結stub fixtureのみ。実AWS CLI/script/実env/DB/Webhookは呼ばない。Terraform init/applyや新provider取得は不要。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand結果/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr028-attempt-1/result.json"
+}

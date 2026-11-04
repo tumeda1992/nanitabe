@@ -97,29 +97,36 @@ branch protection で PR を経ない push を禁止している。required chec
 
 環境を使っている最中に構成を変えたい場合は、先に停止してから apply する。
 
-### private経路と実行時の管理
+### 実行時の状態は Terraform が持たない
 
-API GatewayはVPC linkからtaskのprivate IPへ接続する。Cloud Mapのprivate DNS namespaceへECSがSRV登録し、API GatewayはhealthyなIPとportを取得する。taskの受信はVPC linkのsecurity groupに限定する。RailsのHost検査はホスト名の検証として残し、ネットワーク制限と併用する。
+起動・停止のたびに変わる値は Terraform の管理外にある。
 
-taskのpublic IPはECR/SSM/Logsなどへの外向き通信のために維持する。APIの転送先としてpublic IPを記録・書換えする処理は持たない。VPC linkには[Tokyoの対応AZ](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-vpc-links-v2.html)のsubnetを選ぶ。ALB、NAT Gateway、private subnetの新設は不要である。
-
-| 値 | 管理するもの |
+| 値 | 誰が変えるか |
 | --- | --- |
-| ECS serviceのdesired_count | start.shが1へ、stop.shとEventBridge Schedulerが0へ |
-| taskのprivate IPとportの登録 | ECS service discoveryがtaskの追加・終了に追随する |
-| API Gatewayのintegration URI | Terraformが固定のCloud Map service ARNを設定する |
+| ECS service の `desired_count` | `scripts/review_backend/start.sh` が 1 へ、`stop.sh` と EventBridge Scheduler が 0 へ |
+| API Gateway の integration URI | 同上。起動時に task の public IP を指し、停止時に到達しない値へ戻る |
 
-integration URIにignore_changesは置かない。固定のserviceを指すため、applyやtask再作成で実行時IPを上書きする競合がない。desired_countは従来どおり「停止している状態が正しい」という意図を表す。
+integration URI については、Terraform 側で `lifecycle { ignore_changes = [integration_uri] }` を設定している。
+`desired_count` と扱いが逆なのは、両者が表すものが違うためである。
 
-起動scriptはCloud Mapのhealthy登録、VPC linkのAVAILABLE、GraphQL metadata応答を確認してから自動停止scheduleを作る。60日無通信でVPC linkがINACTIVEになっていれば、認証不要のGraphQL metadata requestでENIの再作成を促して待つ。HTTP 200とQuery型のJSON応答を確認し、Gateway自身の404を成功扱いにしない。停止scriptはECSを0にしてtask終了を待つ。旧方式のintegration停止scheduleは、移行後に固定ARNを書き換えないよう両scriptで削除する。
+- `desired_count` は「起動しているべきか」という**意図**。apply が停止側へ倒れることに意味がある。
+- integration URI は「今どの task を指しているか」という**実体との対応**。
+  apply が実体と食い違う値を書き込むと、service は動いているのに到達できないという中途半端な状態が生まれる。
 
 ### 停止中にかかる費用
 
-停止中もECRのimage保存、CloudWatch Logsの保存、CloudWatch alarm、Cloud Mapのprivate DNS namespaceに費用が残る。imageは最新1世代だけを保持し、Logsの取り込みは起動時に発生する。
+停止中も課金される resource を、次の 3 つに限っている。合計で月 $0.3 程度。
 
-今回のprivate経路では、[Cloud Map pricing](https://aws.amazon.com/cloud-map/pricing/)にあるprivate DNS namespaceのhosted zone料金（先頭25 zoneでは約$0.50/月）が従来の保存・alarm費用に加わる。登録resource数、DiscoverInstances、DNS queryにも利用量に応じた料金がある。コードを保存しただけではresourceを作成せず、実適用後に費用が発生する。
+- ECR の image 保存。lifecycle policy で最新 1 世代だけを残している。
+- CloudWatch Logs の保存。取り込み側の課金は起動中にしか発生しない。
+- CloudWatch alarm 1 つ。止め忘れの検知に使う。
 
-ALB、RDS、NAT Gateway、Elastic IP、Secrets Manager、Container Insightsは追加しない。少額固定費を機械的に避けず、防ぐ損失と比較する判断基準は[費用の判断](./cost_judgment.md)を使う。origin秘密headerだけではネットワーク経路の制限を満たさず、手動のprivate IP登録ではtask再作成への追随が運用処理として残るため、自動SRV登録を採用している。
+存在するだけで時間課金が発生する resource（ALB、RDS、NAT Gateway、Elastic IP）と Secrets Manager、
+Container Insights は構成に含めていない。
+構成を変えるときは、この前提を崩さないか確認する。
+
+resource を構成へ含めるかを金額で判断する基準は [`cost_judgment.md`](./cost_judgment.md) にある。
+課金モデルの見分け方、損益分岐の出し方、サービス別の要点を扱う。
 
 ## 構成上の前提
 

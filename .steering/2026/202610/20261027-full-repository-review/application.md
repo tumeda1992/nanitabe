@@ -375,3 +375,10 @@ FR-034復元commitはaa3cfc9。次はFR-029のWebhook呼出しを戻す。
 scope-repair-fr029-1 / attempt1のpassed resultを消費し、追加HTTP失敗判定・timeoutを旧curlへ戻した。
 loopback fixtureのNode5 cases / 0 failures、旧byte一致・専用suite除去・利用者変更保持・diff check成功。
 [結果](evidence/scope-repair/fr029-attempt-1/result.md)。実Webhookは呼んでいない。FR-030復元commitは05f4e79。次はFR-028を戻す。
+
+## FR-028の範囲外適用取消（2026-11-04）
+
+scope-repair-fr028-1 / attempt1のpassed resultを消費し、非steering差分13pathを2bf938d親版へ戻した。
+Node31 tests / 0 failures、bash構文、13path旧byte一致/不存在、FR-027保持・運用3docのnotice訂正・利用者変更保持、diff check成功。
+[結果](evidence/scope-repair/fr028-attempt-1/result.md)。運用2文書の全文と差分を文書reviewで確認し、private構成を現行仕様とする記述を訂正した。
+実AWS操作は不要であり、実施していない。FR-029復元commitはc0a3cda。次はFR-027を戻す。

@@ -1,14 +1,5 @@
 variable "stage" { type = string }
 variable "route53_name" { type = string }
-variable "discovery_service_arn" { type = string }
-variable "vpc_link_security_group_id" { type = string }
-variable "vpc_link_subnet_ids" {
-  type = list(string)
-  validation {
-    condition     = length(var.vpc_link_subnet_ids) > 0
-    error_message = "At least one supported VPC link subnet is required."
-  }
-}
 
 # zone は route53_name から引く（prod と共有の zone）。
 data "aws_route53_zone" "this" {
@@ -20,14 +11,11 @@ module "values" {
 }
 
 locals {
-  api_name      = "${module.values.appname}-${var.stage}"
-  custom_domain = "review-backend-nanitabe.${var.route53_name}"
-}
-
-resource "aws_apigatewayv2_vpc_link" "this" {
-  name               = local.api_name
-  security_group_ids = [var.vpc_link_security_group_id]
-  subnet_ids         = var.vpc_link_subnet_ids
+  api_name       = "${module.values.appname}-${var.stage}"
+  custom_domain  = "review-backend-nanitabe.${var.route53_name}"
+  container_port = 18101
+  # 起動していない状態を表す到達しないIP（TEST-NET-1, RFC 5737）
+  stopped_integration_uri = "http://192.0.2.1:${local.container_port}/{proxy}"
 }
 
 resource "aws_apigatewayv2_api" "this" {
@@ -39,14 +27,17 @@ resource "aws_apigatewayv2_integration" "this" {
   api_id                 = aws_apigatewayv2_api.this.id
   integration_type       = "HTTP_PROXY"
   integration_method     = "ANY"
-  integration_uri        = var.discovery_service_arn
-  connection_type        = "VPC_LINK"
-  connection_id          = aws_apigatewayv2_vpc_link.this.id
+  integration_uri        = local.stopped_integration_uri
   payload_format_version = "1.0"
 
   request_parameters = {
     "overwrite:header.Host" = local.custom_domain
-    "overwrite:path"        = "$request.path"
+  }
+
+  # integration_uri は起動・停止 script が実行時に書き換える。
+  # terraform apply のたびに起動中の環境の転送先が停止側の値へ戻らないようにする
+  lifecycle {
+    ignore_changes = [integration_uri]
   }
 }
 
@@ -69,8 +60,8 @@ resource "aws_apigatewayv2_stage" "default" {
   access_log_settings {
     destination_arn = aws_cloudwatch_log_group.api_logs.arn
     format = jsonencode({
-      requestId               = "$context.requestId"
-      ip                      = "$context.identity.sourceIp"
+      requestId              = "$context.requestId"
+      ip                     = "$context.identity.sourceIp"
       protocol                = "$context.protocol"
       status                  = "$context.status"
       requestTime             = "$context.requestTime"
@@ -147,4 +138,5 @@ output "api_id" { value = aws_apigatewayv2_api.this.id }
 output "api_name" { value = local.api_name }
 output "integration_id" { value = aws_apigatewayv2_integration.this.id }
 output "custom_domain" { value = local.custom_domain }
-output "vpc_link_id" { value = aws_apigatewayv2_vpc_link.this.id }
+output "stopped_integration_uri" { value = local.stopped_integration_uri }
+output "container_port" { value = local.container_port }

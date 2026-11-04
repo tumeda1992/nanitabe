@@ -1,0 +1,54 @@
+[
+  {
+    "path": "backend/docs/ai_guideline/development_standard/review_environment.md",
+    "expected": "2bf938d^"
+  },
+  {
+    "path": "backend/spec/requests/review_backend_readiness_spec.rb",
+    "expected": "absent"
+  },
+  {
+    "path": "backend/terraform/envs/review/main.tf",
+    "expected": "2bf938d^"
+  },
+  {
+    "path": "backend/terraform/modules/apigateway/main.tf",
+    "expected": "2bf938d^"
+  },
+  {
+    "path": "backend/terraform/modules/ecs/main.tf",
+    "expected": "2bf938d^"
+  },
+  {
+    "path": "backend/terraform/modules/scheduler_role/main.tf",
+    "expected": "2bf938d^"
+  },
+  {
+    "path": "infrastructure/README.md",
+    "expected": "2bf938d^"
+  },
+  {
+    "path": "infrastructure/terraform/private_integration.spec.mjs",
+    "expected": "absent"
+  },
+  {
+    "path": "scripts/review_backend/common.sh",
+    "expected": "absent"
+  },
+  {
+    "path": "scripts/review_backend/spec_helpers/cli_stubs.sh",
+    "expected": "absent"
+  },
+  {
+    "path": "scripts/review_backend/start.sh",
+    "expected": "2bf938d^"
+  },
+  {
+    "path": "scripts/review_backend/start.spec.mjs",
+    "expected": "2bf938d^"
+  },
+  {
+    "path": "scripts/review_backend/stop.sh",
+    "expected": "2bf938d^"
+  }
+]
