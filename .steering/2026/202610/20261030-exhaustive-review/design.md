@@ -1,5 +1,11 @@
 # Design: CR-001〜004の適用
 
+> 2026-11-04訂正: 全件反映が挙動維持条件を解除したという旧記録はassistantの誤判断である。
+> 現在は[復元design](../20261027-full-repository-review/design.md)と
+> [復元tasklist](../20261027-full-repository-review/tasklist.md)を実行する。
+> CR-001〜004は挙動変更を伴うため今回の適用対象外であり、以下は旧snapshotの設計・実行記録である。再適用しない。
+
+
 ## 元の依頼内容と適用合意
 
 利用者の「.steering/2026/202610 の*-review系…レビュー指摘後の反映をしていって」と、継続・コミット・push・PR更新の既存許可を引き継ぐ。[先行applicationの適用範囲](../20261027-full-repository-review/application.md#ローカルでの再開2026-11-01)でCR-001〜004も対象とした。各findingの「レビューのみ・未合意」はレビュー作成時点の記録であり、この後続指示によって適用へ進む。findingの過去の根拠・固定IDは維持する。

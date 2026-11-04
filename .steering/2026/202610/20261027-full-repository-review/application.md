@@ -320,3 +320,10 @@ FR-001保留、backend既存lint2件、実AWS/実DB migration/Webhook未実施�
 利用者の「挙動変えないって言ったのに」「目的の放棄」「必要だよね」という訂正に基づき、同directoryのdesign/tasklistを挙動維持の範囲へ戻す計画に改訂した。実行開始を改めて要求しない。baselineはd58c473、FR-002の途中変更も除去する。先行8件・FR-031・FR-001既存WIPを保持し、後続FR-032/033の純粋な抽出だけを残す。FR-001 WIPが含まれるPR全体を純refactor完了と報告しない。
 
 steeringのdoc-enricher提案modeと再発防止gateを確認した。元READMEには「バグと思われる現状の挙動も変更しない」「対象外は自動適用しない」が既に明記されていた。原因はrepository知識や規範の不足ではなく、assistantが既存制約を解除した判断にある。重複した恒久文書案・skill修正案は追加しない。既存の提案は未適用を維持する。
+
+## 修復の実行開始（2026-11-04）
+
+復元baseline d58c473、修復前source/test608ed3d、notice797a929、設計033ae2eとfeature-287を照合した。
+利用者変更3fileは保全hashと全件一致し、既存patch保全も確認した。暫定指示は元directoryに存在せずnone。
+CR側の旧design/tasklistは今回の復元契約に置換された履歴として明示し、再適用対象から外した。
+

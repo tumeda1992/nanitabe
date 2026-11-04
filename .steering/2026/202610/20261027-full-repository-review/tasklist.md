@@ -7,11 +7,11 @@
 
 ## 0. 保持対象と記録の開始
 
-- [ ] 復元baseline d58c473、修復開始snapshot608ed3d、branch feature-287を照合し、修復前差分の対象pathを固定する。
+- [x] 復元baseline d58c473、修復開始snapshot608ed3d、branch feature-287を照合し、修復前差分の対象pathを固定する。
   .gitignore、frontend/Dockerfile、frontend/src/lib/generateApiOrigin.tsのbinary patchとhash保全を照合する。
   親の保全先は/tmp/nanitabe-preserved-user-20261104.patchと/tmp/nanitabe-scope-repair-preserved-hashes.jsonである。
   .codex/rules/default.rulesも復元対象に含めない。利用者変更をstageしない。
-- [ ] 既存README/applicationの訂正noticeを確認し、実行開始とbaselineをapplicationへ記録する。
+- [x] 既存README/applicationの訂正noticeを確認し、実行開始とbaselineをapplicationへ記録する。
   親が797a929でcommitしたnoticeを保持し、実行担当が以後のapplication/finding/tasklistのsingle writerになる。
   旧designの制限解除は利用者の合意ではなかったことを記録する。
   CR側のdesign/tasklistも、今回のdesignが優先され再適用しない状態へ訂正する。

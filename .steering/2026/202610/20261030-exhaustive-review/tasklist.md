@@ -1,5 +1,11 @@
 # Tasklist: CR-001〜004の適用
 
+> 2026-11-04訂正: 全件反映が挙動維持条件を解除したという旧記録はassistantの誤判断である。
+> 現在は[復元design](../20261027-full-repository-review/design.md)と
+> [復元tasklist](../20261027-full-repository-review/tasklist.md)を実行する。
+> CR-001〜004は挙動変更を伴うため今回の適用対象外であり、以下は旧snapshotの設計・実行記録である。再適用しない。
+
+
 設計の正本は[design.md](design.md)。各指摘は固定IDを維持し、完了状態は本tasklist、詳細な根拠・実測は各finding/applicationに記録する。利用者の全指摘反映・継続・commit/push/PR更新許可を適用し、開始確認を重ねない。各指摘は関連テストと変更箇所lintを成功させ、記録と独立commitまで完了して次へ進む。
 
 ## CR-001: 別タグへ分かれた検索語を料理単位でAND検索する
