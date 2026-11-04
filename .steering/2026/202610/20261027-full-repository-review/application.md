@@ -314,3 +314,9 @@ backend937件、frontend283件、MySQL6件、運用系68件が成功。最終Nex
 feature-287をoriginへpushし、[既存PR #292](https://github.com/tumeda1992/nanitabe/pull/292)のタイトル・本文を最終の反映結果と検証条件に更新した。GitHubのPR headが公開時点の`b8430008322fcf65e86ed37692c73610545ea747`と一致することを確認した。source/test固定点は`3dcad04`で、以降は文書だけの追記である。
 
 FR-001保留、backend既存lint2件、実AWS/実DB migration/Webhook未実施をPRにも明記した。個別対応表・全体検証・再発防止の文書提案をPRから辿れる。merge/deployは実施していない。この公開記録の追記も同じbranchへcommit/pushする。
+
+## 修復計画の受領（2026-11-04）
+
+利用者の「挙動変えないって言ったのに」「目的の放棄」「必要だよね」という訂正に基づき、同directoryのdesign/tasklistを挙動維持の範囲へ戻す計画に改訂した。実行開始を改めて要求しない。baselineはd58c473、FR-002の途中変更も除去する。先行8件・FR-031・FR-001既存WIPを保持し、後続FR-032/033の純粋な抽出だけを残す。FR-001 WIPが含まれるPR全体を純refactor完了と報告しない。
+
+steeringのdoc-enricher提案modeと再発防止gateを確認した。元READMEには「バグと思われる現状の挙動も変更しない」「対象外は自動適用しない」が既に明記されていた。原因はrepository知識や規範の不足ではなく、assistantが既存制約を解除した判断にある。重複した恒久文書案・skill修正案は追加しない。既存の提案は未適用を維持する。
