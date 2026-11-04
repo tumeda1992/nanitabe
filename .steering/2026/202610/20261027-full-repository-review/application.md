@@ -382,3 +382,10 @@ scope-repair-fr028-1 / attempt1のpassed resultを消費し、非steering差分1
 Node31 tests / 0 failures、bash構文、13path旧byte一致/不存在、FR-027保持・運用3docのnotice訂正・利用者変更保持、diff check成功。
 [結果](evidence/scope-repair/fr028-attempt-1/result.md)。運用2文書の全文と差分を文書reviewで確認し、private構成を現行仕様とする記述を訂正した。
 実AWS操作は不要であり、実施していない。FR-029復元commitはc0a3cda。次はFR-027を戻す。
+
+## FR-027の範囲外適用取消（2026-11-04）
+
+scope-repair-fr027-1 / attempt1のpassed resultを消費し、start.shを7772f90親版へ戻した。
+Node7 cases / 0 failures、bash構文、start/stop旧byte一致、common除去済みと利用者変更保持、diff check成功。
+[結果](evidence/scope-repair/fr027-attempt-1/result.md)。既存の停止漏れや早期returnも旧契約として維持し、実AWSは操作していない。
+FR-028復元commitは35325d7。次はFR-026を戻す。

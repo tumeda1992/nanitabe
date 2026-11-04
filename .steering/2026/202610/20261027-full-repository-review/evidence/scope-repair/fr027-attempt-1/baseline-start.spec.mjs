@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 
-const source = readFileSync(new URL('./start.sh', import.meta.url), 'utf8');
+const source = readFileSync('scripts/review_backend/start.sh', 'utf8');
 const stopped = 'http://192.0.2.1:18101/{proxy}';
 const stub = `#!${process.execPath}
 const fs = require('fs');
@@ -86,7 +86,7 @@ const run = (options = {}) => {
   } finally { rmSync(directory, { recursive: true, force: true }); }
 };
 
-test('successful startup configures both automatic-stop schedules', () => {
+test('baseline startup creates the original two stop schedules', () => {
   const result = run();
   assert.equal(result.status, 0, result.stderr);
   assert.equal(result.state.desired, 1);
@@ -94,78 +94,30 @@ test('successful startup configures both automatic-stop schedules', () => {
   assert.match(result.state.uri, /203\.0\.113\.10/);
 });
 
-for (const phase of ['start', 'wait', 'tasks', 'eni', 'ip', 'integration', 'delete', 'schedule-service', 'schedule-integration']) {
-  test(`rolls service and integration back after ${phase} fails`, () => {
-    const result = run({ FAIL_AT: phase });
-    assert.equal(result.status, 42, result.stderr);
-    assert.equal(result.state.desired, 0, result.stderr);
-    assert.equal(result.state.uri, stopped, result.stderr);
-  });
-}
-for (const phase of ['api', 'integration-id', 'role', 'date', 'jq']) {
-  test(`does not leave a service running when ${phase} preparation fails`, () => {
-    const result = run({ FAIL_AT: phase });
-    assert.notEqual(result.status, 0);
-    assert.equal(result.state.desired, 0, result.stderr);
-  });
-}
-test('repairs an already-running service instead of returning before scheduling', () => {
+test('already running returns before repairing the integration and schedules', () => {
   const result = run({ INITIAL: '1' });
   assert.equal(result.status, 0, result.stderr);
-  assert.equal(result.state.schedules.length, 2);
-  assert.match(result.state.uri, /203\.0\.113\.10/);
+  assert.equal(result.state.desired, 1);
+  assert.equal(result.state.schedules.length, 0);
+  assert.equal(result.state.uri, stopped);
 });
-for (const phase of ['role', 'date', 'jq']) {
-  test(`stops an already-running service when ${phase} fails during repair`, () => {
-    const result = run({ INITIAL: '1', FAIL_AT: phase });
+
+for (const phase of ['wait', 'ip', 'integration']) {
+  test(`baseline leaves desired count at one when ${phase} fails`, () => {
+    const result = run({ FAIL_AT: phase });
     assert.equal(result.status, 42, result.stderr);
+    assert.equal(result.state.desired, 1);
+    assert.equal(result.state.schedules.length, 0);
+    if (phase === 'integration') assert.match(result.state.uri, /203\.0\.113\.10/);
+    else assert.equal(result.state.uri, stopped);
+  });
+}
+
+for (const phase of ['schedule-service', 'schedule-integration']) {
+  test(`baseline rolls back and exits one when ${phase} fails`, () => {
+    const result = run({ FAIL_AT: phase });
+    assert.equal(result.status, 1, result.stderr);
     assert.equal(result.state.desired, 0);
     assert.equal(result.state.uri, stopped);
-  });
-}
-for (const phase of ['api', 'integration-id']) {
-  test(`stops service repair even when the ${phase} result is absent`, () => {
-    const result = run({ INITIAL: '1', EMPTY_AT: phase });
-    assert.notEqual(result.status, 0);
-    assert.equal(result.state.desired, 0);
-    assert.match(result.stderr, /integration ID/);
-  });
-}
-for (const phase of ['tasks', 'eni', 'ip']) {
-  test(`rejects an empty AWS ${phase} result`, () => {
-    const result = run({ EMPTY_AT: phase });
-    assert.notEqual(result.status, 0);
-    assert.equal(result.state.desired, 0);
-  });
-}
-for (const value of ['0', '-1', 'invalid']) {
-  test(`rejects invalid stop duration ${value} before starting`, () => {
-    const result = run({ REVIEW_BACKEND_AUTO_STOP_MINUTES: value });
-    assert.notEqual(result.status, 0);
-    assert.equal(result.state.desired, 0);
-  });
-}
-for (const [signal, code] of [['SIGINT', 130], ['SIGTERM', 143]]) {
-  test(`rolls back and preserves the exit status on ${signal}`, () => {
-    const result = run({ SIGNAL: signal });
-    assert.equal(result.status, code, result.stderr);
-    assert.equal(result.state.desired, 0);
-    assert.equal(result.state.uri, stopped);
-  });
-}
-for (const resource of ['service', 'integration']) {
-  test(`attempts both cleanups and reports failure when ${resource} cleanup is denied`, () => {
-    const result = run({ FAIL_AT: 'integration', CLEANUP_FAIL: resource });
-    assert.equal(result.status, 42, result.stderr);
-    assert.match(result.stderr, /rollback|停止.*失敗/i);
-    assert.ok(result.state.calls.some((args) => args[0] === 'ecs' && args.includes('0')));
-    assert.ok(result.state.calls.some((args) => args.includes(stopped)));
-    if (resource === 'service') {
-      assert.equal(result.state.desired, 1);
-      assert.equal(result.state.uri, stopped);
-    } else {
-      assert.equal(result.state.desired, 0);
-      assert.match(result.state.uri, /203\.0\.113\.10/);
-    }
   });
 }

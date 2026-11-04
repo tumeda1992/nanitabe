@@ -1,8 +1,8 @@
 # FR-027: 起動途中の失敗で自動停止なしの稼働状態が残る
 
 - 優先度: P1
-- 採否: 採用
-- 対応状況: 完了（stub検証済み、実AWS未実施）
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-024（現行コードで再確認）。
@@ -47,3 +47,11 @@ Node harnessは実start.shを一時copyし、秘密のenv file pathだけを人�
 - `git diff --check`: 成功。
 
 SIGINTは130、SIGTERMは143で終了して停止を試みる。cleanupの権限自体が拒否された場合、失敗を報告できても実resourceを強制停止できる保証はない。実AWSでの起動・停止は今回の範囲外で実施していない。FR-028ではこのpublic-IP integration方式をprivate方式へ置き換える。適用commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-04）
+
+全経路のrollback拡張を7772f90親版へ戻し、専用suiteは実行treeから除いた。
+[復元結果](../evidence/scope-repair/fr027-attempt-1/result.md)はNode7 cases / 0 failures、bash構文、
+start/stop旧byte一致、利用者変更保持とdiff checkが成功した。
+既起動では修復せず終了し、wait/IP/integration失敗時にはdesired_countが1のまま残り、schedule失敗時だけ旧rollbackになる契約を確認した。
+元の停止漏れの問題と過去の検証は保存し、解消済みとは数えない。実AWS・実envは使用していない。

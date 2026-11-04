@@ -125,10 +125,13 @@ FR-027保持・運用3doc訂正・利用者変更保持・diff check成功。[�
 
 ### 9. FR-027: 起動失敗時rollback拡張を戻す
 
-- [ ] 元変更 `7772f90` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `7772f90` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: scripts/review_backend/start.sh/stop.sh/common.shと専用stub/test、対応する運用説明。
 
 DoD: 起動停止の入出力・失敗経路がbaselineと一致する。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr027-1 / attempt1 passed。Node7 cases / 0 failures、bash構文・start/stop旧byte一致・
+利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr027-attempt-1/result.md)。
 
 ### 10. FR-026: plan用roleの権限縮小を戻す
 
