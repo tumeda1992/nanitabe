@@ -1,8 +1,8 @@
 # FR-025: 辞書削除後の反映失敗をrescue自身が別例外で隠す
 
 - 優先度: P2
-- 採否: 採用
-- 対応状況: 完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -45,3 +45,10 @@ destroyのrescueはNormalizeWord.find(params[:id])を呼ぶが、Commandは既�
 - 同backendの`bundle exec rubocop app/controllers/admin/food/dish/word/normalize_words_controller.rb spec/requests/admin/food/dish/word/normalize_words_spec.rb`
 
 実DBや開発serverでの管理操作は行っていない。適用commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-04）
+
+削除失敗時のredirectとalert表示追加は例外経路を変えるため、controller/view/request specを4a12564親版へ戻した。
+[復元結果](../evidence/scope-repair/fr025-attempt-1/result.md)はRSpec9 examples / 0 failures、RuboCop2 files / 0 offenses、
+3file旧byte一致、FR-001 WIP/FR-024と利用者変更保持、diff checkが成功した。
+元のrescue不具合の指摘と過去の検証は保存し、解消済みとは数えない。

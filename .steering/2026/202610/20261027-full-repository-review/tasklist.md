@@ -145,10 +145,13 @@ DoD: plan role定義がbaselineと一致する。関連testが成功し、元証
 
 ### 11. FR-025: 辞書削除rescueのinstance変数修正を戻す
 
-- [ ] 元変更 `4a12564` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `4a12564` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: NormalizeWordsControllerとadmin request spec。FR-001の既存認証は保持。
 
 DoD: 辞書削除の例外経路がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr025-1 / attempt1 passed。RSpec9 examples / 0 failures、RuboCop2 files / 0 offenses、
+3file旧byte一致・FR-001 WIP/FR-024と利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr025-attempt-1/result.md)。
 
 ### 12. FR-024: 辞書CRUDと全料理反映をまとめるtransactionを戻す
 

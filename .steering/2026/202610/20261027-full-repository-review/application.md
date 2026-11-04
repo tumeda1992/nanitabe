@@ -396,3 +396,9 @@ scope-repair-fr026-1 / attempt1のpassed resultを消費し、plan roleをdf42ad
 架空ARNの静的Node3 cases / 0 failures、旧policy byte一致・専用suite除去・利用者変更保持・diff check成功。
 [結果](evidence/scope-repair/fr026-attempt-1/result.md)。旧過大権限の問題は残し、実AWS/stateは操作していない。
 FR-027復元commitは979f847。次はFR-025を戻す。
+
+## FR-025の範囲外適用取消（2026-11-04）
+
+scope-repair-fr025-1 / attempt1のpassed resultを消費し、辞書削除失敗時のcontroller/view/specを旧版へ戻した。
+RSpec9 examples / 0 failures、Ruby lint2 files / 0 offenses、3file旧byte一致、FR-001 WIP/FR-024と利用者変更保持、diff check成功。
+[結果](evidence/scope-repair/fr025-attempt-1/result.md)。FR-026復元commitは74f44ac。次はFR-024を戻す。
