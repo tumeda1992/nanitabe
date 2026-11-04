@@ -369,3 +369,9 @@ scope-repair-fr030-1 / attempt1のpassed resultを消費し、workflow filterを
 git stubによるNode3 cases / 0 failures、旧byte一致・専用suite除去・利用者変更保持・diff check成功。
 [結果](evidence/scope-repair/fr030-attempt-1/result.md)。workflow自身だけでは検出されない旧条件を維持した。
 FR-034復元commitはaa3cfc9。次はFR-029のWebhook呼出しを戻す。
+
+## FR-029の範囲外適用取消（2026-11-04）
+
+scope-repair-fr029-1 / attempt1のpassed resultを消費し、追加HTTP失敗判定・timeoutを旧curlへ戻した。
+loopback fixtureのNode5 cases / 0 failures、旧byte一致・専用suite除去・利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/fr029-attempt-1/result.md)。実Webhookは呼んでいない。FR-030復元commitは05f4e79。次はFR-028を戻す。

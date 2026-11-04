@@ -4,17 +4,15 @@ import { createServer } from 'node:http';
 import { spawn } from 'node:child_process';
 import test from 'node:test';
 
-const workflow = readFileSync(new URL('../../.github/workflows/backend-deploy.yml', import.meta.url), 'utf8');
+const workflow = readFileSync('.github/workflows/backend-deploy.yml', 'utf8');
 const command = workflow.match(/        run: \|\n((?:          .*(?:\n|$))*)/)?.[1];
 assert.ok(command, 'the webhook step must have a shell command');
 
-test('bounds connection and total request time without retrying the deployment', () => {
-  assert.match(command, /--connect-timeout 10\b/);
-  assert.match(command, /--max-time 30\b/);
-  assert.doesNotMatch(command, /--retry/);
+test('preserves the original curl options without request bounds or retry', () => {
+  assert.doesNotMatch(command, /--fail|--connect-timeout|--max-time|--retry/);
 });
 
-for (const [status, expected] of [[200, 0], [401, 22], [404, 22], [500, 22], ['timeout', 28]]) {
+for (const [status, expected] of [[200, 0], [401, 0], [404, 0], [500, 0]]) {
   test(`reports ${status} from the actual workflow curl command`, async () => {
     let requests = 0;
     const server = createServer((req, res) => {
@@ -25,8 +23,7 @@ for (const [status, expected] of [[200, 0], [401, 22], [404, 22], [500, 22], ['t
     });
     await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
     try {
-      // Execute the unchanged step except for shortening its total deadline in this fixture.
-      const fixtureCommand = command.replace('--max-time 30', '--max-time 0.2');
+      const fixtureCommand = command;
       const result = await new Promise((resolve, reject) => {
         const child = spawn('bash', ['-e', '-o', 'pipefail', '-c', fixtureCommand], {
           env: {

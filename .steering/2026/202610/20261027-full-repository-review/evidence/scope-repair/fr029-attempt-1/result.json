@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr029-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr029-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr029-attempt-1/result.md",
+  "summary": "Node 5 tests / 0 failures。旧curl commandのHTTP200/401/404/500 exit0と追加optionなしをloopback fixtureだけで確認。workflow d3e4515^ byte一致、user3hash/diff check成功。"
+}

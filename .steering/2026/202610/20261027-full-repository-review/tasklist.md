@@ -105,10 +105,13 @@ DoD: workflowの起動条件がbaselineと一致する。関連testが成功し�
 
 ### 7. FR-029: デプロイWebhookのHTTP失敗判定・timeout追加を戻す
 
-- [ ] 元変更 `d3e4515` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `d3e4515` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: .github/workflows/backend-deploy.yml、専用Node検査。実Webhookは呼ばない。
 
 DoD: Webhook呼出しのcommandがbaselineと一致する。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr029-1 / attempt1 passed。Node5 cases / 0 failures、旧curl byte一致・loopback限定・
+利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr029-attempt-1/result.md)。
 
 ### 8. FR-028: private integrationと新規AWS構成への依存を戻す
 
