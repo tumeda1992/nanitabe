@@ -1,0 +1,34 @@
+{
+  "request_id": "scope-repair-cr001-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.4 CR-001 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr001-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "料理検索とGraphQL queryの既存RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/dish/usecase/dish_searcher_spec.rb spec/graphql/query/dish",
+      "expected": "全examples成功。CR001で追加した別タグAND検索期待を除去し、既存検索とFR007先頭固定owner回帰は保持"
+    },
+    {
+      "operation": "検索実装とspecのRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/food/dish/usecase/dish_searcher.rb spec/domain/business/food/dish/usecase/dish_searcher_spec.rb",
+      "expected": "2fileのoffenseなし"
+    },
+    {
+      "operation": "旧検索条件の全量照合",
+      "expected": "実装/spec2fileがddfef5a^とbyte一致。FR007の先頭固定owner条件はその復元単位まで保持。userdirty3のhash保持、git diff --check成功"
+    }
+  ],
+  "dod": [
+    "語ごとの相関EXISTS条件をCR001前の検索条件へ戻した",
+    "検索/GraphQL関連testとlint・byte比較が成功した",
+    "別指摘のFR007を今回巻き込まない"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。実DB/AWS/Webhook/new service操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへresult.md/result.jsonとcommand証拠を保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr001-attempt-1/result.json"
+}

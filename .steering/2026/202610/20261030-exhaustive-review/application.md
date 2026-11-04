@@ -61,3 +61,9 @@ CR-004の復元commitはbd0d91a。
 
 既存タグ内容保存と再正規化caller適応を元へ戻した。既存360 examples、Ruby lint3file、旧byte比較が成功。
 [復元結果](../20261027-full-repository-review/evidence/scope-repair/cr002-attempt-1/result.md)を参照。CR-003復元commitはf210961。
+
+## CR-001の適用取消（2026-11-04）
+
+検索結果を変える相関EXISTSを元へ戻した。既存36 examples、Ruby lint2file、旧byte比較が成功。
+[復元結果](../20261027-full-repository-review/evidence/scope-repair/cr001-attempt-1/result.md)を参照。CR-002復元commitはe0b9ddf。
+CR-001〜004の業務変更を取り消した。元の問題と旧検証は履歴として保存し、現在の全体検証は後続のFR復元後に行う。

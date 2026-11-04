@@ -75,10 +75,13 @@ DoD: 料理編集の既存タグと辞書再反映がCR-002以前の保存経路
 
 ### 4. CR-001: 単語ごとの相関EXISTSによる検索結果変更を戻す
 
-- [ ] 元変更 `ddfef5a` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `ddfef5a` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: DishSearcherと既存検索spec。
 
 DoD: 複数タグにまたがる語の検索結果がbaselineの条件へ戻る。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-cr001-1 / attempt1 passed。RSpec36 examples / 0 failures、RuboCop2 files / 0 offenses、
+旧版byte一致、FR-007と利用者変更保持、diff check成功。[結果](evidence/scope-repair/cr001-attempt-1/result.md)。
 
 ### 5. FR-034: 旧Rootの継承と旧Add/Removeの委譲を戻す
 

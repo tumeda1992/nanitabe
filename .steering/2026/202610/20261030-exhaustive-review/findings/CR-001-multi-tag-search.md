@@ -5,8 +5,8 @@
 - 対象: `backend/app/domain/business/food/dish/usecase/dish_searcher.rb:32`
 - 観点: 検索の正確性
 - 由来: 全体レビュー・既存。既存未対応指摘とは原因・修正を分離。
-- 採否: 採用（全review指摘反映の後続指示）
-- 対応状況: 適用・関連自動検証完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 適用枠: 挙動変更が必要
 - 依存する指摘: なし
 
@@ -28,7 +28,7 @@ SEARCH_BOTH_TAGS=false。Docker内のRails runnerで実測。異なるタグ、�
 
 実測3件の共通再現コードは[probes.rb](../evidence/probes.rb)、出力は[probes.log](../evidence/probes.log)。
 
-## 合意・適用記録
+## 旧適用記録（現在の合意として扱わない）
 
 - 合意した指示と対象範囲: 初回レビュー後の全review指摘反映・継続指示により本指摘を採用。
 - 修正内容・判断理由: 後述の適用結果とdesign.mdを参照。
@@ -40,3 +40,11 @@ SEARCH_BOTH_TAGS=false。Docker内のRails runnerで実測。異なるタグ、�
 語ごとのタグ条件を料理へ相関するEXISTSへ変更した。1語内は料理名/出典/任意タグのOR、語間はANDとし、bind変数、検索前正規化、本人scope、先頭固定、位置づけ/食事有無、distinct/並び順を保持する。別料理のタグを組み合わせて一致させない。
 
 別タグ・同タグ・料理名/出典とタグの分散、一語不足、別料理分散、他人の一致を7件追加した。日本語の未正規化fixtureを切り分けた最終再現では、別タグの1件だけred。修正後は検索34件とGraphQL2件の36 examples / 0 failures、変更2ファイルRuboCop・diff check成功。commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-04）
+
+全指摘反映が挙動維持制約を解除したという旧記録はassistantの誤判断である。
+別タグにまたがる単語検索の結果を変える相関EXISTSを元に戻し、追加した検索期待も除いた。
+[復元結果](../../20261027-full-repository-review/evidence/scope-repair/cr001-attempt-1/result.md)は
+RSpec36 examples / 0 failures、RuboCop2 files / 0 offenses、ddfef5a親版とのbyte一致、FR-007残部と利用者変更保持、diff checkが成功した。
+元の検索不具合の指摘と過去の実測は保存する。今回の復元は検索不具合の解消を意味しない。
