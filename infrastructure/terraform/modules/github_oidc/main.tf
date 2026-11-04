@@ -107,15 +107,8 @@ data "aws_iam_policy_document" "plan_state_access" {
   statement {
     sid       = "StateBucketObjects"
     effect    = "Allow"
-    actions   = ["s3:GetObject"]
+    actions   = ["s3:GetObject", "s3:PutObject"]
     resources = ["${local.state_bucket_arn}/*"]
-  }
-
-  statement {
-    sid       = "PlanLogObjects"
-    effect    = "Allow"
-    actions   = ["s3:PutObject"]
-    resources = ["${local.state_bucket_arn}/plans/*"]
   }
 
   statement {

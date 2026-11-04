@@ -135,10 +135,13 @@ DoD: 起動停止の入出力・失敗経路がbaselineと一致する。関連t
 
 ### 10. FR-026: plan用roleの権限縮小を戻す
 
-- [ ] 元変更 `df42ad7` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `df42ad7` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: infrastructure/terraform/modules/github_oidc/main.tfと専用検査。
 
 DoD: plan role定義がbaselineと一致する。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr026-1 / attempt1 passed。静的Node3 cases / 0 failures、旧policy byte一致・専用suite除去・
+利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr026-attempt-1/result.md)。
 
 ### 11. FR-025: 辞書削除rescueのinstance変数修正を戻す
 

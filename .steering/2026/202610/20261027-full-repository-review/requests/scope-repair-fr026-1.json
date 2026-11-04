@@ -1,0 +1,29 @@
+{
+  "request_id": "scope-repair-fr026-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.10 FR-026 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr026-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "旧plan roleのfixture ARNに対する権限判定",
+      "command": "node --test .steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr026-attempt-1/baseline-plan-policy.spec.mjs",
+      "expected": "3 tests成功。元のbucket全objectへのGet/Putを保持しDelete不可、DynamoDB lock操作・ReadOnlyAccess接続も保持。これはstate書換えの既知問題を解消した結果ではない"
+    },
+    {
+      "operation": "policy全量と専用testの旧版比較",
+      "expected": "main.tfはdf42ad7^とbyte一致、plan_policy.spec.mjsは実行treeから除去。artifactは元suiteを旧Put許可期待と読取pathだけへ適応。userdirty3hash保持・git diff --check成功。実AWS権限評価/API呼出しなし"
+    }
+  ],
+  "dod": [
+    "plan roleの書込みprefix制限追加を旧版へ戻した",
+    "3つのfixture権限検査と旧byte比較が成功した",
+    "実AWS/stateへ操作せず既存の問題を温存したことを明記する"
+  ],
+  "data_preparation": "NodeでrepositoryのHCLと架空ARNを読む静的検査のみ。Terraform init/apply、AWS/DB/Webhook操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr026-attempt-1/result.json"
+}

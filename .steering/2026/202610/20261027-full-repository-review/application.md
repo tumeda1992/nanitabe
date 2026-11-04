@@ -389,3 +389,10 @@ scope-repair-fr027-1 / attempt1のpassed resultを消費し、start.shを7772f90
 Node7 cases / 0 failures、bash構文、start/stop旧byte一致、common除去済みと利用者変更保持、diff check成功。
 [結果](evidence/scope-repair/fr027-attempt-1/result.md)。既存の停止漏れや早期returnも旧契約として維持し、実AWSは操作していない。
 FR-028復元commitは35325d7。次はFR-026を戻す。
+
+## FR-026の範囲外適用取消（2026-11-04）
+
+scope-repair-fr026-1 / attempt1のpassed resultを消費し、plan roleをdf42ad7親版へ戻した。
+架空ARNの静的Node3 cases / 0 failures、旧policy byte一致・専用suite除去・利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/fr026-attempt-1/result.md)。旧過大権限の問題は残し、実AWS/stateは操作していない。
+FR-027復元commitは979f847。次はFR-025を戻す。

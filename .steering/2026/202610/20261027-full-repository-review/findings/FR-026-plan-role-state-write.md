@@ -1,8 +1,8 @@
 # FR-026: Terraform plan roleがstate全体を書き換えられる
 
 - 優先度: P1
-- 採否: 採用
-- 対応状況: 完了（静的検証済み、AWS実測未実施）
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-023（現行コードで再確認）。
@@ -48,3 +48,11 @@ hostと既存backend containerにTerraform CLIがないため、fmt/validateは�
 ## CLI検証の補完（2026-11-02）
 
 Terraform1.9.4のfmtが成功し、prod/review rootのoffline init/validateも成功した。元lockfileのversion/constraint/全hashを保持した隔離copyに、元ZIPのzhと公式SHA256を照合して計算したARM h1だけを追加して検証した。repositoryのlockfileは変更していない。詳細は[evidence/fr028-migration.md](../evidence/fr028-migration.md)。AWS実効権限simulationやapplyは未実施であり、CLI検証と区別する。
+
+## 適用取消と旧挙動の復元（2026-11-04）
+
+plan roleの書込みprefix制限は権限の挙動を変えるため、df42ad7親版へ戻した。
+[復元結果](../evidence/scope-repair/fr026-attempt-1/result.md)は架空ARNの静的Node3 cases / 0 failures、
+旧policy byte一致、専用suite除去、利用者変更保持とdiff checkが成功した。
+元のstate objectへのPutを含む契約を維持しており、指摘された権限不足ではなく過大権限の問題は残る。
+元指摘と過去の検証は保存する。実AWS/state/Terraform applyへ操作していない。
