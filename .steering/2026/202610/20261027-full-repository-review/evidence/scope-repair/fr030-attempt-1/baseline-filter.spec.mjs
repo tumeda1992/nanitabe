@@ -6,11 +6,11 @@ import { spawnSync } from 'node:child_process';
 import test from 'node:test';
 
 const workflowPath = '.github/workflows/ci-frontend-build-verification.yml';
-const workflow = readFileSync(new URL(`../../${workflowPath}`, import.meta.url), 'utf8');
+const workflow = readFileSync(workflowPath, 'utf8');
 const script = workflow.match(/      - name: Detect frontend changes[\s\S]*?        run: \|\n([\s\S]*?)(?=\n      - name:)/)?.[1];
 assert.ok(script, 'the change-detection step must exist');
 
-for (const [files, changed] of [['frontend/src/app/page.tsx', true], [workflowPath, true], ['backend/app/models/dish.rb\nREADME.md', false]]) {
+for (const [files, changed] of [['frontend/src/app/page.tsx', true], [workflowPath, false], ['backend/app/models/dish.rb\nREADME.md', false]]) {
   test(`detects ${files.replaceAll('\n', ', ')} as changed=${changed}`, () => {
     const directory = mkdtempSync(join(tmpdir(), 'fr030-'));
     try {

@@ -362,3 +362,10 @@ scope-repair-fr034-1 / attempt1のpassed resultを消費した。旧Root/Add/Rem
 既存74 examples / 0 failures、Ruby lint3 files / 0 offenses、eager load・旧継承・4file旧byte一致、旧Fill/利用者変更保持、diff check成功。
 [結果](evidence/scope-repair/fr034-attempt-1/result.md)。READMEを全文通読し、文書reviewを行った。
 CR-001復元commitはd839b40。次はFR-030のworkflow filterを戻す。
+
+## FR-030の範囲外適用取消（2026-11-04）
+
+scope-repair-fr030-1 / attempt1のpassed resultを消費し、workflow filterをa871b4c親版へ戻した。
+git stubによるNode3 cases / 0 failures、旧byte一致・専用suite除去・利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/fr030-attempt-1/result.md)。workflow自身だけでは検出されない旧条件を維持した。
+FR-034復元commitはaa3cfc9。次はFR-029のWebhook呼出しを戻す。

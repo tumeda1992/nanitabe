@@ -95,10 +95,13 @@ eager load・旧継承・4file旧byte一致・旧Fill/利用者変更保持・di
 
 ### 6. FR-030: frontend workflow自身のfilter変更を戻す
 
-- [ ] 元変更 `a871b4c` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `a871b4c` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: .github/workflows/ci-frontend-build-verification.yml、専用Node検査。
 
 DoD: workflowの起動条件がbaselineと一致する。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr030-1 / attempt1 passed。Node3 cases / 0 failures、旧workflow byte一致・専用suite除去・
+利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr030-attempt-1/result.md)。
 
 ### 7. FR-029: デプロイWebhookのHTTP失敗判定・timeout追加を戻す
 

@@ -1,8 +1,8 @@
 # FR-030: ビルドworkflow自身だけの変更で検証をskipする
 
 - 優先度: P2
-- 採否: 採用（全件適用の合意）
-- 対応状況: 適用・関連自動検証完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-019（現行コードで再確認）。
@@ -37,3 +37,11 @@ frontend変更、workflow単独変更、無関係変更の3つの変更ファイ
 ## 適用結果（2026-11-01）
 
 変更検出regexのbuidを実ファイル名のbuildへ修正した。実workflowのDetect frontend changes blockをbashで実行し、gitの差分一覧だけをstubにする。frontendのみ/workflow自身のみ/無関係な複数ファイルの3ケースでGITHUB_OUTPUTを確認し、workflow単独変更のred後、3 tests成功。GitHub上でのworkflow実行はpush後のCIで確認する。commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-04）
+
+workflow自身の変更を検出する修正は挙動を変えるため、a871b4cの親版へ戻した。
+[復元結果](../evidence/scope-repair/fr030-attempt-1/result.md)はgit stubによる実script3 cases / 0 failures、
+旧workflowのbyte一致、専用suite除去、利用者変更保持とdiff checkが成功した。
+frontend変更=true、workflow自身だけ=false、backend/README変更=falseの旧条件を維持する。
+元の検出漏れの指摘と旧検証は保存し、既知の不具合を直したとは報告しない。
