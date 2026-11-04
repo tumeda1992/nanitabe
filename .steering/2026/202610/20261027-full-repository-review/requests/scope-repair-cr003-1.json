@@ -1,0 +1,34 @@
+{
+  "request_id": "scope-repair-cr003-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.2 CR-003 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr003-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "新旧出典Command/RepositoryとGraphQLの既存関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/dish/source spec/domain/business/dish/dish/source spec/domain/business/dish/dish/repository/repository_put_dish_relation_spec.rb spec/graphql/mutation/dish/source",
+      "expected": "全examples成功。既に関連済みの出典の種別変更を許す旧Repository specも復元して成功する"
+    },
+    {
+      "operation": "復元したモデルと旧Repository specのRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/models/dish_source.rb spec/domain/business/dish/dish/repository/repository_put_dish_relation_spec.rb",
+      "expected": "2fileのoffenseなし"
+    },
+    {
+      "operation": "CR003の復元範囲の全量比較",
+      "expected": "DishSourceは45074dc^、旧Repository specは852718f^とbyte一致。TypeChangePolicyと専用Policy/boundary specは除去。git diff --check成功。FR001/userdirty3を変更していない"
+    }
+  ],
+  "dod": [
+    "出典のtype変更拒否を追加するvalidation/Policyを戻した",
+    "関連出典のtype変更が成功する既存specを元に戻した",
+    "既存関連RSpec・変更Ruby lint・byte比較が成功した"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、Rails標準test DBのみ。新規service/実DB/AWS/Webhook操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。元design/tasklistの挙動維持と既存Compose指定を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せず、artifact_directoryへcommand結果・result.md/result.jsonを保存。request_id/attemptを一致させる。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr003-attempt-1/result.json"
+}

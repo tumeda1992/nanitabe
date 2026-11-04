@@ -336,3 +336,10 @@ scope-repair-cr004-1 / attempt1のpassed resultを消費した。3productionfile
 結果は[evidence/scope-repair/cr004-attempt-1/result.md](evidence/scope-repair/cr004-attempt-1/result.md)。
 並行一回消費の保証は今回の適用範囲から外し、元の問題と過去のMySQL検証は証拠として残す。
 準備文書は独立commit c771cd2に分けた。次はCR-003のtype変更拒否と旧spec変更を戻す。
+
+## CR-003の範囲外適用取消（2026-11-04）
+
+scope-repair-cr003-1 / attempt1のpassed resultを消費した。DishSourceの追加validationとPolicyを除き、
+852718fで変更した旧Repository specも元の種別変更成功期待へ戻した。
+既存関連135 examples / 0 failures、Ruby lint2 files / 0 offenses、旧版byte一致、保護対象保持、diff check成功。
+[結果](evidence/scope-repair/cr003-attempt-1/result.md)。CR-004の復元commitはbd0d91a。次はCR-002を戻す。

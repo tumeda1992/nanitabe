@@ -5,8 +5,8 @@
 - 対象: `backend/app/domain/business/food/dish/source/usecase/update_command.rb:29`
 - 観点: データ整合性
 - 由来: 全体レビュー・既存。既存未対応指摘とは原因・修正を分離。
-- 採否: 採用（全review指摘反映の後続指示）
-- 対応状況: 適用・関連自動検証完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 適用枠: 挙動変更が必要
 - 依存する指摘: なし
 
@@ -28,7 +28,7 @@ SOURCE_LOCATOR=nil; STORED_PAGE=42をDocker内で実測。変更前後の詳細�
 
 実測3件の共通再現コードは[probes.rb](../evidence/probes.rb)、出力は[probes.log](../evidence/probes.log)。
 
-## 合意・適用記録
+## 旧適用記録（現在の合意として扱わない）
 
 - 合意した指示と対象範囲: 初回レビュー後の全review指摘反映・継続指示により本指摘を採用。
 - 修正内容・判断理由: 後述の適用結果とdesign.mdを参照。
@@ -46,3 +46,12 @@ model・legacy・現行・実HTTP GraphQLで同じ5シナリオを検証した�
 ### 全体回帰での旧spec契約更新
 
 最初のbackend全体936件で、旧Repository specの「関連済み出典を別typeへ変えてから詳細を上書きする」成功期待が1件だけ失敗した。この操作は合意済みCR-003の拒否対象なので、拒否とsource/関連全属性不変を確認するspecへ更新した。既存Repositoryの詳細列更新能力は、最初からYouTube型のsourceへ紐づく旧データの古いbook列をURLへ置き換える別ケースで保持した。validationを迂回して元の成功期待を通す変更はしていない。両者と4経路の関連26 examples / 0 failures、変更specのRuboCop成功。補完commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-04）
+
+挙動維持条件を解除したという旧記録はassistantの誤判断であり、今回の工程では関連済み出典の種別変更拒否を追加しない。
+DishSourceは45074dcの親版、旧Repository specは852718fの親版へ戻し、追加Policyと専用2specを除いた。
+旧Repositoryの「関連済み出典を別typeへ変えて詳細を上書きする」成功期待を維持する。
+[復元結果](../../20261027-full-repository-review/evidence/scope-repair/cr003-attempt-1/result.md)は
+既存RSpec135 examples / 0 failures、RuboCop2 files / 0 offenses、旧版byte一致とdiff checkが成功した。
+元指摘・旧実装・過去の検証は履歴として保存する。復元commitはapplication.mdとGit履歴を参照。

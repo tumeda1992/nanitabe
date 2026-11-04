@@ -55,10 +55,13 @@ production3file旧版byte一致とFR-019残部保持を確認。[結果](evidenc
 
 ### 2. CR-003: 関連料理がある出典のtype変更拒否を戻す
 
-- [ ] 元変更 `45074dc + 852718f` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `45074dc + 852718f` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: DishSource validation、TypeChangePolicy、境界spec、後から変更したlegacy source spec。
 
 DoD: 出典更新の許容条件と関連先の扱いがbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-cr003-1 / attempt1 passed。RSpec135 examples / 0 failures、RuboCop2 files / 0 offenses、
+旧版byte一致、保護対象の保持、diff check成功。[結果](evidence/scope-repair/cr003-attempt-1/result.md)。
 
 ### 3. CR-002: 既存タグ内容の保存と再正規化caller適応を戻す
 

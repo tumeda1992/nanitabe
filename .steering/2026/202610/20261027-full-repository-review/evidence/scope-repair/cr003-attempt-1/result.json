@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-cr003-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr003-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr003-attempt-1/result.md",
+  "summary": "135 examples / 0 failures、RuboCop 2 files / 0 offenses。DishSourceと旧Repository specは指定親版とbyte一致。追加Policy/2専用spec除去、user3hash・管理WIP保持、diff check成功。"
+}

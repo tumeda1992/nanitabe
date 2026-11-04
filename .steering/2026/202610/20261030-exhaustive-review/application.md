@@ -50,3 +50,9 @@ CR-003のspec補完は`852718f`、FR-019のMySQL補完は`3dcad04`。公開済�
 変換row lockと延期Removeへの追加owner条件を元に戻した。既存関連25 examples、Ruby lint4file、旧版byte比較が成功。
 [復元結果](../20261027-full-repository-review/evidence/scope-repair/cr004-attempt-1/result.md)を参照。
 並行一回消費は保証しない。旧問題と過去の検証は保存し、現在の採否はfindingに記録した。
+
+## CR-003の適用取消（2026-11-04）
+
+関連済み出典の種別変更拒否と旧Repository specの拒否期待を元へ戻した。既存135 examples、Ruby lint2file、旧版byte比較が成功。
+[復元結果](../20261027-full-repository-review/evidence/scope-repair/cr003-attempt-1/result.md)を参照。元の詳細不整合の指摘は保存する。
+CR-004の復元commitはbd0d91a。
