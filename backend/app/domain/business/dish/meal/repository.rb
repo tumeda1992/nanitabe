@@ -32,7 +32,7 @@ module Business::Dish::Meal
         raise "このユーザはこのレコードを更新できません。" unless can_update
 
         meal_record_for_update = set_same_name_fields(updated_meal, existing_meal_record, [:dish_id, :date, :meal_type, :comment])
-        meal_record_for_update.save_with_frame_release!
+        meal_record_for_update.save!
       end
 
       def remove(meal_id, update_user_id, force_update: false)

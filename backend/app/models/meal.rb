@@ -43,26 +43,8 @@ class Meal < ApplicationRecord
     self.meal_type = food_meal_root.meal_type
     self.comment = food_meal_root.comment
 
-    save_with_frame_release!
+    save!
 
     self
-  end
-
-  def save_with_frame_release!
-    release_frame = persisted? && Business::Food::Meal::Policy::ReleaseFrameOnReschedulePolicy.required?(
-      previous_date: date_in_database,
-      previous_meal_type: meal_type_in_database,
-      date: date,
-      meal_type: meal_type,
-    )
-
-    self.class.transaction do
-      result = save!
-      if release_frame
-        MealFrameEntry.where(meal_id: id).update_all(meal_id: nil)
-        association(:meal_frame_entry).reset
-      end
-      result
-    end
   end
 end

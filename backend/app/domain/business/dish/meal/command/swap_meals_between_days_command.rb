@@ -10,22 +10,20 @@ module Business::Dish::Meal
     validates :date2, presence: true
 
     def call
-      ::Meal.transaction do
-        date1_meals = Repository.fetch_by_date(date1)
-        date2_meals = Repository.fetch_by_date(date2)
+      date1_meals = Repository.fetch_by_date(date1)
+      date2_meals = Repository.fetch_by_date(date2)
 
-        date1_meals.each do |date1_meal|
-          date1_meal.date = date2
-          Repository.update(date1_meal, user_id)
-        end
-
-        date2_meals.each do |date2_meal|
-          date2_meal.date = date1
-          Repository.update(date2_meal, user_id)
-        end
-
-        date1_meals.concat(date2_meals)
+      date1_meals.each do |date1_meal|
+        date1_meal.date = date2
+        Repository.update(date1_meal, user_id)
       end
+
+      date2_meals.each do |date2_meal|
+        date2_meal.date = date1
+        Repository.update(date2_meal, user_id)
+      end
+
+      date1_meals.concat(date2_meals)
     end
   end
 end

@@ -440,3 +440,9 @@ scope-repair-fr019-1 / attempt1のpassed resultを消費し、9pathの制約・m
 adapter/RAILS_ENV/設定pathと実SQLite fileの二重guard後、test DBだけへschema loadし再guardとmeal_id unique不在を確認。
 RSpec70 examples / 0 failures、Ruby lint2 files / 0 offenses、旧9path比較・純抽出/利用者変更保持・diff check成功。
 [結果](evidence/scope-repair/fr019-attempt-1/result.md)。実DBschemaは変更していない。FR-020復元commitは5788f15。次はFR-018を戻す。
+
+## FR-018の範囲外適用取消（2026-11-05）
+
+scope-repair-fr018-1 / attempt1のpassed resultを消費し、新旧保存と交換の6pathを25471fd親版へ戻した。
+RSpec81 examples / 0 failures、Ruby lint4 files / 0 offenses、旧比較・追加解除参照なし・FR-002/003残部/純抽出と利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/fr018-attempt-1/result.md)。FR-019復元commitはda81219。次はFR-017を戻す。

@@ -1,8 +1,8 @@
 # FR-018: 食事移動後も枠が旧日付の割当済み状態に残る
 
 - 優先度: P2
-- 採否: 採用
-- 対応状況: 完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -46,3 +46,10 @@
 - 同backendの`bundle exec rubocop app/models/meal.rb app/domain/business/food/meal/policy/release_frame_on_reschedule_policy.rb app/domain/business/food/meal/usecase/swap_meals_between_days_command.rb app/domain/business/dish/meal/repository.rb app/domain/business/dish/meal/command/swap_meals_between_days_command.rb spec/domain/business/food/meal/usecase/frame_release_spec.rb`: 6 files / 違反なし。
 
 DB検証はtest用SQLite。実DBの既存割当を移行・削除していない。適用commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-05）
+
+食事変更時の元枠解除と交換全体の追加transactionを25471fd親版へ戻し、追加Policyと専用specを除いた。
+[復元結果](../evidence/scope-repair/fr018-attempt-1/result.md)はRSpec81 examples / 0 failures、RuboCop4 files / 0 offenses、
+6path旧byte一致/不存在、解除method/Policy参照なし、FR-002/003残部・純抽出と利用者変更保持、diff checkが成功した。
+元の枠日付不整合と過去の検証は保存し、解消済みとは数えない。

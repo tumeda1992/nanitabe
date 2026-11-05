@@ -217,10 +217,13 @@ RSpec70 examples / 0 failures、RuboCop2 files / 0 offenses、9path旧比較・�
 
 ### 18. FR-018: 食事移動時の枠解除と交換transaction追加を戻す
 
-- [ ] 元変更 `25471fd` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `25471fd` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: Meal保存、新旧Repository/Swap、ReleaseFrameOnReschedulePolicyと専用spec。
 
 DoD: 日付・時間帯変更と日付交換の枠状態・保存境界がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr018-1 / attempt1 passed。RSpec81 examples / 0 failures、RuboCop4 files / 0 offenses、
+6path旧比較・解除参照なし・FR-002/003残部/純抽出/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr018-attempt-1/result.md)。
 
 ### 19. FR-017: 未選択パターン枠のnull処理と拒否を戻す
 
