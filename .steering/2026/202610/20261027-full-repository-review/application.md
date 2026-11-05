@@ -446,3 +446,10 @@ RSpec70 examples / 0 failures、Ruby lint2 files / 0 offenses、旧9path比較�
 scope-repair-fr018-1 / attempt1のpassed resultを消費し、新旧保存と交換の6pathを25471fd親版へ戻した。
 RSpec81 examples / 0 failures、Ruby lint4 files / 0 offenses、旧比較・追加解除参照なし・FR-002/003残部/純抽出と利用者変更保持・diff check成功。
 [結果](evidence/scope-repair/fr018-attempt-1/result.md)。FR-019復元commitはda81219。次はFR-017を戻す。
+
+## FR-017の範囲外適用取消（2026-11-05）
+
+scope-repair-fr017-1 / attempt1のpassed resultを消費し、フォームとspecを62359ad親版へ戻した。
+Jest19 tests・lint2file・tsc、旧byte比較が成功。d58c473元schemaとshared schemaを120ケースで実行比較しdata/issues順まで一致した。
+共有schemaは追加整数/正数拒否を含まず変更不要。純抽出6file/利用者変更保持とdiff check成功。
+[結果](evidence/scope-repair/fr017-attempt-1/result.md)。FR-018復元commitはb27bbaf。次はFR-016を戻す。

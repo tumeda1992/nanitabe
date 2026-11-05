@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr017-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr017-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr017-attempt-1/result.md",
+  "summary": "Jest2suites/19tests、2file lint/tsc成功。d58c473元schemaとshared schemaの値/data/issues順を120case全一致で実測。Fields/Editor旧版byte一致、純抽出6file/user3hash・diff check成功。"
+}

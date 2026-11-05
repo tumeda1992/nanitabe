@@ -33,3 +33,11 @@ pathの基準はfrontend/src/features/meal/frame/pattern/。consumerはuseMealFr
 集計: 適合8（MOVE4/ADAPT1/KEEP3） / 合意済み追加0 / 合意済み変更0 / 明示廃止0 / 未監査0 / 未分類削除0 / 未分類追加0。S01–S04がMOVE、S05がADAPT、S06–S08がKEEPであり、内訳はMOVE4/ADAPT1/KEEP3である。
 
 移行前の11 characterization testsが成功。移行後は更新id/検査順を加えたschema13件と関連フォームを含む33 tests、型検査が成功した。lintが検出したtestでのhook呼出しをrenderHookへ修正し、最終schema13件と変更4ファイルlintも成功した。markupや表示動作は変更していない。
+
+## 挙動維持への復元時の再照合（2026-11-05）
+
+旧baselineは過去の比較対象として保存し、現在の比較基準はd58c473とする。全件指示が挙動維持条件を解除したという旧記録はassistantの誤判断である。
+元作成/更新moduleからschemaの連続範囲を抽出し、現在の共通ownerへ各field・message・順序・bindingを再対応付けた。
+S01〜S07は元の入力schemaとの120ケースのsuccess/data/issues順比較で一致し、S08は既存schema specでhook bindingと公開infer型を確認した。
+[結果と抽出本文](scope-repair/fr017-attempt-1/result.md)を参照。0/負数/少数を拒否するFR-017の追加条件はフォームだけに存在しており、今回フォームから取り消した。
+共有schemaのnumber契約は元版と一致するため変更していない。この照合は旧不具合の解消や今回の最終全体検証を意味しない。

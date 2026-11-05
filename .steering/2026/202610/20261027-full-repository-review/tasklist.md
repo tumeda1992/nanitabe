@@ -227,10 +227,14 @@ DoD: 日付・時間帯変更と日付交換の枠状態・保存境界がbaseli
 
 ### 19. FR-017: 未選択パターン枠のnull処理と拒否を戻す
 
-- [ ] 元変更 `62359ad` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `62359ad` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: MealFramePatternFields、フォームspec。FR-032のnumber schemaは保持。
 
 DoD: 未選択操作のフォーム値と送信条件がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr017-1 / attempt1 passed。Jest19 tests・lint2file・tsc成功、旧form/spec byte一致。
+d58c473元schemaとの120ケースがdata/issues順まで一致しshared schemaの変更不要。純抽出/利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/fr017-attempt-1/result.md)。
 
 ### 20. FR-016: インスタンスごとのdebounce cleanupを戻す
 
