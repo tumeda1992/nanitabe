@@ -1,8 +1,8 @@
 # FR-020: Nextの画面遷移で論理URLが更新されず日付がずれる
 
 - 優先度: P2
-- 採否: 採用
-- 対応状況: 完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -53,3 +53,11 @@ Nextのpathname/search変化を同期childで検知し、effect実行時点のbr
 最終確認: visual-inspectorは16状態、back15回/forward15回でURL・全日付カード・期間labelの一致と履歴の重複追加なしを実測した。8画像目視済み、mutation/未知operation0。結果はrequests/fr020-visual-result.json。実backendデータ取得はmockのため未確認。
 
 同じ開発用frontend containerの`/tmp/nanitabe-fr020-build.66mdS7`で、生成済みCSSを使い`env NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 yarn next build`も成功。compile43秒、TypeScript50秒、静的19ページ生成と最適化が完了した。一時copyだけに`turbopack.root = "/"`を設定して既存node_modules symlinkを解決可能にした。repositoryのconfigは変更していない。適用commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-05）
+
+Next pathname/search同期とpushHistoryのURL正規化追加をd8afcf0親版へ戻し、専用specを除いた。
+[復元結果](../evidence/scope-repair/fr020-attempt-1/result.md)はconsumer Jest16 tests、Provider lintと型検査、
+旧byte一致・純抽出と利用者変更保持・diff checkが成功した。
+consumer mock検証を実ルーティング検証と混同しない。旧popstate/push/初期化は旧版全量照合で確認した。
+元のNext遷移時の同期漏れと過去の実測は保存し、解消済みとは数えない。

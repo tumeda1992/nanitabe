@@ -7,14 +7,15 @@ import {
   useEffect,
   useState,
   ReactNode,
-  Suspense,
 } from 'react';
 
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 /**
- * 日付移動のpushStateとNext.jsの画面遷移を共通の論理URLとして扱う。
- * ブラウザのpathとqueryを同期し、hashは表示日付の判定に含めない。
+ * Next.jsのrouterで扱う物理URLでなく、SPA的にクライアント側で使う論理URLを管理するコンテキスト
+ * - Next.jsのrouterも存在する
+ *   - しかし、history.pushStateを行うと、ページ遷移はしないが、ページ遷移時と同様コンポーネントが再描画され、本来historyを使いたい用途と逆行するため、Next.jsのrouterは使わない
+ * - 旧来のhistoryライブラリのようなものを自前で実装するイメージ
  */
 
 type LogicalHistoryContextValue = {
@@ -36,23 +37,6 @@ const LogicalHistoryContext = createContext<LogicalHistoryContextValue | null>(
   null,
 );
 
-const browserPathAndQuery = () => {
-  const url = new URL(window.location.href);
-  return url.pathname + url.search;
-};
-
-const NextNavigationSync = ({ onNavigate }: { onNavigate: (path: string) => void }) => {
-  const pathname = usePathname();
-  const search = useSearchParams()?.toString();
-
-  useEffect(() => {
-    if (pathname == null) return;
-    onNavigate(browserPathAndQuery());
-  }, [pathname, search, onNavigate]);
-
-  return null;
-};
-
 export const LogicalHistoryProvider = ({
   children,
 }: {
@@ -66,7 +50,7 @@ export const LogicalHistoryProvider = ({
       // return '/';
       return pathname || '/';
     }
-    return browserPathAndQuery();
+    return window.location.pathname + window.location.search;
   });
 
   const pushHistory = useCallback((pathAndQuery: string) => {
@@ -76,16 +60,17 @@ export const LogicalHistoryProvider = ({
       ? pathAndQuery
       : `/${pathAndQuery}`;
 
-    const url = new URL(next, window.location.href);
-    window.history.pushState(null, '', url.pathname + url.search + url.hash);
-    setCurrentPathAndQuery(url.pathname + url.search);
+    window.history.pushState(null, '', next);
+
+    setCurrentPathAndQuery(next);
   }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const handlePopState = () => {
-      setCurrentPathAndQuery(browserPathAndQuery());
+      const next = window.location.pathname + window.location.search;
+      setCurrentPathAndQuery(next);
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -96,9 +81,6 @@ export const LogicalHistoryProvider = ({
     <LogicalHistoryContext.Provider
       value={{ currentPathAndQuery, pushHistory }}
     >
-      <Suspense fallback={null}>
-        <NextNavigationSync onNavigate={setCurrentPathAndQuery} />
-      </Suspense>
       {children}
     </LogicalHistoryContext.Provider>
   );

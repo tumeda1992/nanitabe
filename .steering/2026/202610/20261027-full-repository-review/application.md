@@ -427,3 +427,9 @@ RSpec3 examples / 0 failures、Jest16 tests、backend/frontend lintとtsc成功�
 scope-repair-fr021-1 / attempt1のpassed resultを消費し、共通日付パーサーをc240b94親版へ戻した。
 Jest8 tests・lint2file・tsc成功、helper/spec旧byte一致、先行共通化/FR-020残部/純抽出と利用者変更保持、diff check成功。
 [結果](evidence/scope-repair/fr021-attempt-1/result.md)。FR-022復元commitは5fc7347。次はFR-020を戻す。
+
+## FR-020の範囲外適用取消（2026-11-05）
+
+scope-repair-fr020-1 / attempt1のpassed resultを消費し、Providerをd8afcf0親版へ戻した。
+consumer Jest16 tests・lint・tsc成功、旧byte一致・専用spec除去・純抽出と利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/fr020-attempt-1/result.md)。既知のNext同期漏れは残る。FR-021復元commitは29e3d49。次はFR-019を戻す。

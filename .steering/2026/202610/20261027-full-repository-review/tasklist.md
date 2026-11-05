@@ -196,10 +196,13 @@ DoD: 無効日付とquery/hashの解釈がbaselineと同じになる。関連tes
 
 ### 16. FR-020: Next pathname/searchとの論理履歴同期を戻す
 
-- [ ] 元変更 `d8afcf0` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `d8afcf0` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: logical-history.tsxと専用spec。
 
 DoD: Next遷移・push・popの論理URL更新条件がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr020-1 / attempt1 passed。consumer Jest16 tests・Provider lint・tsc成功、旧byte一致・
+専用spec除去・純抽出/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr020-attempt-1/result.md)。
 
 ### 17. FR-019: 一食一枠の制約とmigrationを戻す
 

@@ -1,0 +1,39 @@
+{
+  "request_id": "scope-repair-fr020-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.16 FR-020 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr020-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "論理履歴を使うカレンダーの既存consumer Jest",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand src/components/calendar/calendarComponents/useCalendarMode.spec.ts src/components/calendar/calendarComponents/Calendar/index.spec.tsx src/components/calendar/calendarComponents/CalendarHeader/index.spec.tsx",
+      "expected": "既存tests全成功。consumer側mock検証とProviderの実ルーティング検証を混同しない。FR020専用specは除去"
+    },
+    {
+      "operation": "旧Providerのlint",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn lint src/app/logical-history.tsx",
+      "expected": "1fileのlint errorなし。旧版由来の問題は新挙動を再投入して解消しない"
+    },
+    {
+      "operation": "Provider公開型の型検査",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn tsc --noEmit",
+      "expected": "型検査成功。失敗時は同条件baselineの既存性と復元回帰を分離する"
+    },
+    {
+      "operation": "旧Provider全量照合と保持条件",
+      "expected": "logical-history.tsxはd8afcf0^とbyte一致、logical-history.spec.tsxは除去。pathname同期child/Suspense/searchParams追加とURL正規化だけを戻し、旧popstate/pushHistory/初期化を全量保持。既知のNext遷移同期漏れは残る。純抽出6file/userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "Next pathname/search同期とpushHistory URL正規化追加を旧Providerへ戻した",
+    "既存consumer Jest・lint・tscと旧byte比較が成功した",
+    "旧popstate/初期化/push契約を保持し、既知の同期漏れ解消とは報告しない"
+  ],
+  "data_preparation": "既存compose.dev.local.yml frontendの既存Jest/mock環境のみ。実DB/AWS/Webhook、新service起動・依存取得なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr020-attempt-1/result.json"
+}

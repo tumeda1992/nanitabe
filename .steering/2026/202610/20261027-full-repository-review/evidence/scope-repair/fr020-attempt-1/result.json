@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr020-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr020-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr020-attempt-1/result.md",
+  "summary": "Jest 3 suites / 16 tests、Provider1file lint、tsc成功。Provider d8afcf0^byte一致、専用spec除去、純抽出6file/user3hash・diff check成功。consumer mock確認であり実routing保証ではない。"
+}
