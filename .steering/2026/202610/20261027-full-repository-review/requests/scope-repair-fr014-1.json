@@ -1,0 +1,39 @@
+{
+  "request_id": "scope-repair-fr014-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.22 FR-014 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr014-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "共通mutation consumerとカレンダーモードの既存Jest",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand src/features/dish/dishInputConversion.spec.ts src/features/meal/frame/pattern/schema.spec.ts src/components/calendar/calendarComponents/useCalendarMode.spec.ts",
+      "expected": "既存tests全成功。追加mutation state specとswap未選択拒否期待を除去し、先行入力共通化・モード型とFR032schemaを保持"
+    },
+    {
+      "operation": "旧builder/caller/specのlint",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn lint src/features/utils/mutationUtils.ts src/components/calendar/calendarComponents/operationComponents/SwapMeals/useSwapMealsMode.ts src/components/calendar/calendarComponents/useCalendarMode.spec.ts",
+      "expected": "3fileのlint errorなし"
+    },
+    {
+      "operation": "旧mutation公開型の全体型検査",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn tsc --noEmit",
+      "expected": "型検査成功。失敗時は旧版との既存性比較を行い、loading/error修正やswap入力拒否を再投入しない"
+    },
+    {
+      "operation": "旧tuple/引数とcallerの全量照合",
+      "expected": "restored-paths.jsonの4pathが601d722^とbyte一致/不存在。Apollo loading/error読み取り修正・任意callback/型強化と付随swap guardを元へ戻す。FR032/033純抽出6file/userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "共通mutationの状態読取り・callback/型変更と付随swap guardを旧版へ戻した",
+    "既存consumer Jest・lint・tscと4path旧比較が成功した",
+    "元のloading/error取得不具合を残し、純粋な共通化を保持した"
+  ],
+  "data_preparation": "既存compose.dev.local.yml frontendの既存Jest/mock環境のみ。実DB/AWS/Webhook、新service起動・依存取得なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr014-attempt-1/result.json"
+}

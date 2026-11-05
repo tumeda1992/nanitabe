@@ -1,14 +1,12 @@
-import type { ApolloError, FetchResult, MutationTuple } from '@apollo/client';
-
 export type MutationCallbacks<Output> = {
   onCompleted?: (data: Output) => void;
-  onError?: (error: ApolloError) => void;
+  onError?: (error: any) => void;
 };
 
 export type ExecMutation<Input, Output> = (
   input: Input,
-  callbacks?: MutationCallbacks<Output>,
-) => Promise<FetchResult<Output>>;
+  callbacks: MutationCallbacks<Output>,
+) => any;
 
 type BuildMutationOption<Input> = {
   normalizeInput?: (input: Input) => Input;
@@ -16,13 +14,13 @@ type BuildMutationOption<Input> = {
 };
 
 export const buildMutationExecutor = <Input = any, Output = any>(
-  codegenMutationHook: () => MutationTuple<Output, any>,
+  codegenMutationHook: () => any,
   { normalizeInput, refetchQueries }: BuildMutationOption<Input> = {},
-): [ExecMutation<Input, Output>, boolean, ApolloError | undefined] => {
-  const [mutation, { loading: mutationLoading, error: mutationError }] = codegenMutationHook();
+) => {
+  const [mutation, { mutationLoading, mutationError }] = codegenMutationHook();
   const execMutation = async (
     input: Input,
-    { onCompleted, onError }: MutationCallbacks<Output> = {},
+    { onCompleted, onError }: MutationCallbacks<Output>,
   ) => {
     const normalizedInput = normalizeInput ? normalizeInput(input) : input;
     return mutation({
@@ -31,7 +29,7 @@ export const buildMutationExecutor = <Input = any, Output = any>(
       onCompleted: (data: Output) => {
         if (onCompleted) onCompleted(data);
       },
-      onError: (error: ApolloError) => {
+      onError: (error: any) => {
         console.error(error);
         if (onError) onError(error);
       },

@@ -1,8 +1,8 @@
 # FR-014: 共通mutationがloadingとerrorを取得できない
 
 - 優先度: P2
-- 採否: 採用
-- 対応状況: 完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-002（現行コードで再確認）。
@@ -39,3 +39,10 @@ loading=trueおよびApolloErrorを返すhookを使い、そのまま利用側�
 Apolloの`loading/error`を正しい名前で取得し、戻り値をexecutor・boolean・ApolloErrorのtupleへ型付けした。executorは`Promise<FetchResult<Output>>`を返す。型検査で判明した既存のcallback省略呼出を受け付けるよう既定値を追加し、交換開始日がない状態から必須日付を送らないguardも追加した。フォーム入力とGraphQL変換後の型を全面変更せず、既存normalize/callback契約を維持する。
 
 実Apolloと保留可能なObservableでloadingのfalse→true→false、errorの同一オブジェクト伝達、normalizeと完了callbackを検証し、6つのmutation経路の状態集約も確認した。初回9 tests / 8 failuresで状態欠落を再現。callback省略も別のredで既存のdestructure例外を確認した。料理/食事フォームを含む61 tests成功後、追加修正を含む最終14 testsが成功した。最終TypeScript noEmitと変更4ファイルlintも成功。ブラウザ画面の構造変更はなく、送信状態のhook契約を対象にした。
+
+## 適用取消と旧挙動の復元（2026-11-05）
+
+Apollo状態の読み取り修正、callback/公開型の強化と付随するswap guardを601d722親版へ戻した。
+[復元結果](../evidence/scope-repair/fr014-attempt-1/result.md)はJest22 tests、変更3fileのlint・型検査、
+4path旧byte一致/不存在、先行入力共通化・モード型・純抽出と利用者変更保持、diff checkが成功した。
+loading/error取得の元の問題と過去の検証は保存し、解消済みとは数えない。

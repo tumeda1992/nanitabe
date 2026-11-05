@@ -1,14 +1,12 @@
 import { act, renderHook } from '@testing-library/react';
 import useCalendarMode from './useCalendarMode';
 
-const mockSwapMealsBetweenDays = jest.fn();
-
 jest.mock('../../../features/meal/useMeal', () => ({
   __esModule: true,
   default: () => ({
     addMeal: jest.fn(),
     updateMeal: jest.fn(),
-    swapMealsBetweenDays: mockSwapMealsBetweenDays,
+    swapMealsBetweenDays: jest.fn(),
   }),
 }));
 jest.mock('../../../features/dish/useDish', () => ({
@@ -68,20 +66,3 @@ function assertCalendarModeTypes(
   // @ts-expect-error Unknown mode must not widen to string.
   update('DISPLAY_CALENDAR_MOD');
 }
-
-it('does not send a swap before a starting date has been chosen', () => {
-  mockSwapMealsBetweenDays.mockClear();
-  const { result } = renderHook(() => useCalendarMode({ onDataChanged: jest.fn() }));
-  act(() => result.current.useSwapMealsModeResult.onDateClickForSwappingMeals(new Date(2026, 0, 2)));
-  expect(mockSwapMealsBetweenDays).not.toHaveBeenCalled();
-});
-
-it('sends both selected dates after entering swap mode', () => {
-  mockSwapMealsBetweenDays.mockClear();
-  const first = new Date(2026, 0, 1);
-  const second = new Date(2026, 0, 2);
-  const { result } = renderHook(() => useCalendarMode({ onDataChanged: jest.fn() }));
-  act(() => result.current.useSwapMealsModeResult.startSwappingMealsMode(first));
-  act(() => result.current.useSwapMealsModeResult.onDateClickForSwappingMeals(second));
-  expect(mockSwapMealsBetweenDays).toHaveBeenCalledWith({ date1: first, date2: second }, expect.any(Object));
-});

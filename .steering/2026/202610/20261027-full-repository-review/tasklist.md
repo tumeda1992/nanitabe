@@ -258,10 +258,13 @@ DoD: 延期・交換後の非同期完了とモード遷移がbaselineと同じ�
 
 ### 22. FR-014: Apollo mutation tupleのloading/error返却修正を戻す
 
-- [ ] 元変更 `601d722` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `601d722` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: mutationUtilsと専用spec。
 
 DoD: mutationの公開返却tupleがbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr014-1 / attempt1 passed。Jest22 tests・lint3file・tsc成功、4path旧比較・先行入力共通化/
+モード型/純抽出/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr014-attempt-1/result.md)。
 
 ### 23. FR-013: 料理編集のeffortId取得と初期値保持を戻す
 
