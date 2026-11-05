@@ -459,3 +459,9 @@ Jest19 tests・lint2file・tsc、旧byte比較が成功。d58c473元schemaとsha
 scope-repair-fr016-1 / attempt1のpassed resultを消費し、検索timerを5319fbd親版へ戻した。
 Jest4 tests・lint、旧byte比較・専用spec除去・純抽出/利用者変更保持・diff check成功。既存fixture警告は結果に保存した。
 [結果](evidence/scope-repair/fr016-attempt-1/result.md)。FR-017復元commitは3c9ac6b。次はFR-015を戻す。
+
+## FR-015の範囲外適用取消（2026-11-05）
+
+scope-repair-fr015-1 / attempt1のpassed resultを消費し、7pathをc05d21d親版へ戻した。
+Jest17 tests・lint4file・tsc、旧byte比較・先行モード型/純抽出/利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/fr015-attempt-1/result.md)。FR-016復元commitは566157d。次はFR-014を戻す。

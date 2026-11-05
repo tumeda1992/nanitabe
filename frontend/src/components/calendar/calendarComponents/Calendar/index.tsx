@@ -42,7 +42,9 @@ export default (props: Props) => {
     requireDisplayingBottomBar,
     onDateClick,
   } = useCalendarMode({
-    onDataChanged: refreshData,
+    onDataChanged: () => {
+      refreshData();
+    },
   });
 
   const [fixedComponentHeight, fixedComponentRef] = useMeasureHeight(

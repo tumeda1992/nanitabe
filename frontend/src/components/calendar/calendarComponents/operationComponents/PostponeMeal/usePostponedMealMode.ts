@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import usePostponedMeal from '../../../../../features/meal/postponed/usePostponedMeal';
 
 import { POSTPONED_MEAL_MODES } from '../../calendarMode';
@@ -29,25 +29,13 @@ export default (args: CalendarModeControls) => {
   };
 
   const [selectedPostponedMeal, setSelectedPostponedMeal] = useState<any>(null);
-  const [refreshError, setRefreshError] = useState<string | null>(null);
-  const [scheduleError, setScheduleError] = useState<string | null>(null);
-  const [isScheduling, setIsScheduling] = useState(false);
-  const isWorking = useRef(false);
-  const refreshPending = useRef(false);
-
 
   const startPostponedMealMode = () => {
-    setRefreshError(null);
-    setScheduleError(null);
-    refreshPending.current = false;
     setSelectedPostponedMeal(null);
     changeCalendarModeToChoosingPostponedMealMode();
   };
 
   const selectPostponedMeal = (postponedMeal) => {
-    setRefreshError(null);
-    setScheduleError(null);
-    refreshPending.current = false;
     setSelectedPostponedMeal(postponedMeal);
     changeCalendarModeToSchedulingPostponedMealMode();
   };
@@ -65,49 +53,23 @@ export default (args: CalendarModeControls) => {
     if (isChoosingPostponedMealMode) refetchPostponedMeals();
   }, [isChoosingPostponedMealMode]);
 
-  const refreshAfterScheduling = async () => {
-    isWorking.current = true;
-    setIsScheduling(true);
-    setRefreshError(null);
-    try {
-      if (onDataChanged) await onDataChanged();
-      await refetchPostponedMeals();
-      refreshPending.current = false;
-      setSelectedPostponedMeal(null);
-      changeCalendarModeToDisplayCalendarMode();
-    } catch {
-      setRefreshError('食事の登録は完了しましたが、表示の更新に失敗しました。');
-    } finally {
-      isWorking.current = false;
-      setIsScheduling(false);
-    }
-  };
-
-  const retryRefresh = async () => {
-    if (!refreshPending.current || isWorking.current) return;
-    await refreshAfterScheduling();
-  };
-
   const onDateClickForSchedulingPostponedMeal = (date: Date) => {
-    if (!selectedPostponedMeal || isWorking.current || refreshPending.current) return;
-    isWorking.current = true;
-    setIsScheduling(true);
-    setScheduleError(null);
-    const onError = () => {
-      isWorking.current = false;
-      setIsScheduling(false);
-      setScheduleError('食事を登録できませんでした。もう一度お試しください。');
-    };
-    void Promise.resolve(schedulePostponedMeal(
+    if (!selectedPostponedMeal) return;
+    schedulePostponedMeal(
       { postponedMealId: selectedPostponedMeal.id, date },
       {
         onCompleted: async () => {
-          refreshPending.current = true;
-          await refreshAfterScheduling();
+          // onDataChanged（refreshData）は apolloClient.clearStore を含む。
+          // 完了を待たずに再取得を始めると、in flightのqueryがstore resetと衝突して
+          // "Store reset while query was in flight" になる。必ず待つ。
+          if (onDataChanged) await onDataChanged();
+          // モードを戻すとqueryがskipされるため、閉じる前に取り直す
+          await refetchPostponedMeals();
+          setSelectedPostponedMeal(null);
+          changeCalendarModeToDisplayCalendarMode();
         },
-        onError,
       },
-    )).catch(onError);
+    );
   };
 
   return {
@@ -128,9 +90,5 @@ export default (args: CalendarModeControls) => {
 
     selectedPostponedMeal,
     selectPostponedMeal,
-    refreshError,
-    scheduleError,
-    isScheduling,
-    retryRefresh,
   };
 };

@@ -248,10 +248,13 @@ DoD: 複数検索パネル・unmountのtimer挙動がbaselineと同じになる�
 
 ### 21. FR-015: refresh待機と失敗時モード保持を戻す
 
-- [ ] 元変更 `c05d21d` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `c05d21d` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: カレンダーrefresh、延期・交換mode、表示retry、各関連spec。
 
 DoD: 延期・交換後の非同期完了とモード遷移がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr015-1 / attempt1 passed。Jest17 tests・lint4file・tsc成功、7path旧比較・先行モード型/純抽出/
+利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr015-attempt-1/result.md)。
 
 ### 22. FR-014: Apollo mutation tupleのloading/error返却修正を戻す
 
