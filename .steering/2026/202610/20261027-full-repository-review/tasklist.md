@@ -155,10 +155,14 @@ DoD: 辞書削除の例外経路がbaselineと同じになる。関連testが成
 
 ### 12. FR-024: 辞書CRUDと全料理反映をまとめるtransactionを戻す
 
-- [ ] 元変更 `9b1df0a` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `9b1df0a` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: 辞書Add/Update/Remove、ReflectLatestNormalizeWordCommand、admin view、原子性spec。
 
 DoD: 辞書保存と再反映の順序・失敗時副作用がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr024-1 / attempt1 passed。RSpec86 examples / 0 failures、RuboCop4 files / 0 offenses、
+4Command旧byte一致・専用spec除去・既存WIP/利用者変更保持・diff check成功。起動済みsessionから回収し二重実行なし。
+[結果](evidence/scope-repair/fr024-attempt-1/result.md)。
 
 ### 13. FR-023: 辞書source/destinationのliteral処理を戻す
 

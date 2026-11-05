@@ -1,8 +1,8 @@
 # FR-024: 辞書更新と全料理への再反映が一体で保存されない
 
 - 優先度: P2
-- 採否: 採用
-- 対応状況: 完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -47,3 +47,11 @@
 - 同backendの`bundle exec rubocop app/domain/business/food/dish/word/usecase/add_command.rb app/domain/business/food/dish/word/usecase/update_command.rb app/domain/business/food/dish/word/usecase/remove_command.rb app/domain/business/food/dish/word/usecase/reflect_latest_normalize_word_command.rb spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb`
 
 実データへの辞書変更・再反映は行っていない。適用commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-05）
+
+辞書変更と全料理反映を一体にする追加transactionを9b1df0a親版へ戻し、専用atomic specを除いた。
+[復元結果](../evidence/scope-repair/fr024-attempt-1/result.md)はRSpec86 examples / 0 failures、RuboCop4 files / 0 offenses、
+4Command旧byte一致、FR-023・既存WIP・利用者変更保持とdiff checkが成功した。
+中断前の起動済みセッションから結果を回収し、二重実行しなかった。
+元の部分保存問題と過去の検証は保存し、解消済みとは数えない。

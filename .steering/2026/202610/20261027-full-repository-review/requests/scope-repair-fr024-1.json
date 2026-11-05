@@ -1,0 +1,34 @@
+{
+  "request_id": "scope-repair-fr024-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.12 FR-024 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr024-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "辞書Command/Normalizer/再反映とadmin既存request spec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/dish/word spec/requests/admin/food/dish/word/normalize_words_spec.rb",
+      "expected": "全examples成功。追加atomic_reflection_specだけ除去し、既存の辞書保存・全件反映・ログとエラーwrapは保持"
+    },
+    {
+      "operation": "復元した辞書4CommandのRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/food/dish/word/usecase/add_command.rb app/domain/business/food/dish/word/usecase/update_command.rb app/domain/business/food/dish/word/usecase/remove_command.rb app/domain/business/food/dish/word/usecase/reflect_latest_normalize_word_command.rb",
+      "expected": "4fileのoffenseなし"
+    },
+    {
+      "operation": "旧保存境界の全量照合",
+      "expected": "4productionfileは9b1df0a^とbyte一致、atomic_reflection_spec除去、FR023のliteral処理はその項目まで保持。CR002で戻した別tagRoot保存も維持。FR001WIP/userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "辞書変更と全件再反映を一体にする追加transactionを旧版へ戻した",
+    "既存のCommand/admin回帰とlint・4file旧byte比較が成功した",
+    "元の部分保存問題は残し、後続指摘を巻き込まない"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBとfixture認証のみ。実DB/AWS/Webhook、新service操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr024-attempt-1/result.json"
+}

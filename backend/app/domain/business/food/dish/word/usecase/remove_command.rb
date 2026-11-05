@@ -4,11 +4,9 @@ module Business::Food::Dish::Word
     validates :normalize_word_id, presence: true
 
     def call
-      ::ActiveRecord::Base.transaction do
-        NormalizeWord.find(normalize_word_id).destroy!
+      NormalizeWord.find(normalize_word_id).destroy!
 
-        Usecase::ReflectLatestNormalizeWordCommand.call
-      end
+      Usecase::ReflectLatestNormalizeWordCommand.call
     end
   end
 end
