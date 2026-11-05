@@ -166,10 +166,13 @@ DoD: 辞書保存と再反映の順序・失敗時副作用がbaselineと同じ�
 
 ### 13. FR-023: 辞書source/destinationのliteral処理を戻す
 
-- [ ] 元変更 `73b8797` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `73b8797` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: 新旧Normalizerと正規化spec。
 
 DoD: 辞書置換の正規表現・置換文字列の扱いがbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr023-1 / attempt1 passed。RSpec61 examples / 0 failures、RuboCop2 files / 0 offenses、
+新旧Normalizer旧byte一致・先行共通化/旧保存境界/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr023-attempt-1/result.md)。
 
 ### 14. FR-022: 食事編集での出典なし新規料理許容を戻す
 

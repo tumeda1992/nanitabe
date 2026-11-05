@@ -409,3 +409,9 @@ scope-repair-fr024-1 / attempt1のpassed resultを消費し、辞書4Commandの�
 中断前に起動済みのsessionからRSpec86 examples / 0 failures、Ruby lint4 files / 0 offensesを回収し、二重実行なし。
 4Command旧byte一致・atomic spec除去・FR-023/既存WIP/利用者変更保持・diff check成功。
 [結果](evidence/scope-repair/fr024-attempt-1/result.md)。FR-025復元commitは53ba48e。次はFR-023を戻す。
+
+## FR-023の範囲外適用取消（2026-11-05）
+
+scope-repair-fr023-1 / attempt1のpassed resultを消費し、新旧Normalizerを73b8797親版へ戻した。
+RSpec61 examples / 0 failures、Ruby lint2 files / 0 offenses、旧byte一致・先行属性共通化/旧保存境界と利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/fr023-attempt-1/result.md)。FR-024復元commitは748a55f。次はFR-022を戻す。

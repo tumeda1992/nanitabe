@@ -1,0 +1,34 @@
+{
+  "request_id": "scope-repair-fr023-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.13 FR-023 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr023-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "新旧辞書NormalizerとCommandの既存RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/dish/word spec/domain/business/dish/word",
+      "expected": "全examples成功。FR023専用literal specだけ除去し、旧SQL候補取得・正規表現置換を保持"
+    },
+    {
+      "operation": "復元した新旧NormalizerのRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/dish/word/normalize/command/normalize_command.rb app/domain/business/food/dish/word/usecase/normalizer.rb",
+      "expected": "2fileのoffenseなし"
+    },
+    {
+      "operation": "旧SQL/置換処理の全量照合",
+      "expected": "2productionfileは73b8797^とbyte一致、literal_normalization_specは除去。先行RV014のNormalizeWordAttributes共通化とFR024で戻した保存境界は保持。userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "source/destinationをliteral扱いする追加処理を旧SQL/正規表現置換へ戻した",
+    "新旧辞書関連testとlint・2file旧byte比較が成功した",
+    "元の正規表現/backreference問題は残し、先行共通化を保持した"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。実DB/AWS/Webhook、新service操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr023-attempt-1/result.json"
+}

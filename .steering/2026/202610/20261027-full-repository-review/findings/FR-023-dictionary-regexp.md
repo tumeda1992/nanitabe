@@ -1,8 +1,8 @@
 # FR-023: 正規化辞書の文字列を未エスケープの正規表現として扱う
 
 - 優先度: P2
-- 採否: 採用
-- 対応状況: 完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-021（現行コードで再確認）。
@@ -45,3 +45,10 @@
 DB検証はtest環境だけで、実データへの再反映は実行していない。
 
 変更3ファイルの`bundle exec rubocop app/domain/business/food/dish/word/usecase/normalizer.rb app/domain/business/dish/word/normalize/command/normalize_command.rb spec/domain/business/food/dish/word/usecase/literal_normalization_spec.rb`も、specの空行整形後に違反なし。適用commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-05）
+
+文字列literalとして扱う追加処理を73b8797親版のSQL候補取得・正規表現置換へ戻し、専用literal specを除いた。
+[復元結果](../evidence/scope-repair/fr023-attempt-1/result.md)はRSpec61 examples / 0 failures、RuboCop2 files / 0 offenses、
+新旧Normalizer byte一致、先行属性共通化・旧保存境界と利用者変更保持、diff checkが成功した。
+元の正規表現・置換文字列解釈の問題と過去の検証は保存し、解消済みとは数えない。
