@@ -36,13 +36,10 @@ export const normalizeInputOfAddingDishWithExistingSource = (
 ) => {
   const normalizedInput = _.cloneDeep(input);
 
-  if (!dishSource?.id) {
-    normalizedInput.dishSource = null;
-    normalizedInput.dishSourceRelationDetail = null;
-    return normalizedInput;
-  }
-
-  normalizedInput.dishSource = dishSource;
+  normalizedInput.dishSource = (() => {
+    if (!dishSource.id) return null;
+    return dishSource;
+  })();
 
   normalizedInput.dishSourceRelationDetail = normalizeDishSourceRelationDetail(
     dishSource.type,

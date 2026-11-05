@@ -176,10 +176,13 @@ DoD: 辞書置換の正規表現・置換文字列の扱いがbaselineと同じ�
 
 ### 14. FR-022: 食事編集での出典なし新規料理許容を戻す
 
-- [ ] 元変更 `5b54e45` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `5b54e45` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: GraphQL resolver、frontend入力変換/schema参照、生成物、関連spec。
 
 DoD: 食事編集の出典必須契約と送信形式がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr022-1 / attempt1 passed。RSpec3 examples / 0 failures、Jest16 tests、変更箇所lint・tsc成功。
+8path旧byte比較・純抽出と利用者変更保持・diff check成功。既存fixture警告あり。[結果](evidence/scope-repair/fr022-attempt-1/result.md)。
 
 ### 15. FR-021: URL日付の実在日・境界検証を戻す
 

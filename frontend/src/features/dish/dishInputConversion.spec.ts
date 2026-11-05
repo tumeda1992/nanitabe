@@ -63,12 +63,6 @@ it.each([useAddDish, useAddMeal, useUpdateMeal])(
       dishSource: null,
       dishSourceRelationDetail: null,
     });
-    const omittedSource = { ...input(), selectedDishSource: undefined };
-    expect(normalize(freezeDeep(omittedSource))).toMatchObject({
-      dishSource: null,
-      dishSourceRelationDetail: null,
-      meal: omittedSource.meal,
-    });
   },
 );
 

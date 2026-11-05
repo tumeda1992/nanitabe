@@ -1144,7 +1144,7 @@ export type UpdateMealWithNewDishInput = {
   /** A unique identifier for the client performing the mutation. */
   clientMutationId?: InputMaybe<Scalars['String']['input']>;
   dish: DishForCreate;
-  dishSource?: InputMaybe<SourceForRead>;
+  dishSource: SourceForRead;
   dishSourceRelationDetail?: InputMaybe<DishSourceRelationDetail>;
   dishTags?: InputMaybe<Array<Tag>>;
   meal: MealForUpdate;
@@ -1490,7 +1490,7 @@ export type UpdateMealMutation = { __typename?: 'Mutation', updateMeal?: { __typ
 
 export type UpdateMealWithNewDishMutationVariables = Exact<{
   dish: DishForCreate;
-  dishSource?: InputMaybe<SourceForRead>;
+  dishSource: SourceForRead;
   dishSourceRelationDetail?: InputMaybe<DishSourceRelationDetail>;
   dishTags?: InputMaybe<Array<Tag> | Tag>;
   meal: MealForUpdate;
@@ -3089,7 +3089,7 @@ export type UpdateMealMutationHookResult = ReturnType<typeof useUpdateMealMutati
 export type UpdateMealMutationResult = Apollo.MutationResult<UpdateMealMutation>;
 export type UpdateMealMutationOptions = Apollo.BaseMutationOptions<UpdateMealMutation, UpdateMealMutationVariables>;
 export const UpdateMealWithNewDishDocument = gql`
-    mutation updateMealWithNewDish($dish: DishForCreate!, $dishSource: SourceForRead, $dishSourceRelationDetail: DishSourceRelationDetail, $dishTags: [Tag!], $meal: MealForUpdate!) {
+    mutation updateMealWithNewDish($dish: DishForCreate!, $dishSource: SourceForRead!, $dishSourceRelationDetail: DishSourceRelationDetail, $dishTags: [Tag!], $meal: MealForUpdate!) {
   updateMealWithNewDish(
     input: {dish: $dish, dishSource: $dishSource, dishSourceRelationDetail: $dishSourceRelationDetail, dishTags: $dishTags, meal: $meal}
   ) {

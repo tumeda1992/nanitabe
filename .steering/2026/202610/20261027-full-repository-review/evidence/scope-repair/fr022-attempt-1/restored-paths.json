@@ -1,0 +1,34 @@
+[
+  {
+    "path": "backend/app/graphql/mutations/meal/update_meal_with_new_dish.rb",
+    "expected": "5b54e45^"
+  },
+  {
+    "path": "backend/spec/graphql/mutation/meal/update_meal_without_source_spec.rb",
+    "expected": "absent"
+  },
+  {
+    "path": "frontend/src/components/meal/MealForm/EditMeal.spec.tsx",
+    "expected": "5b54e45^"
+  },
+  {
+    "path": "frontend/src/features/dish/dishInputConversion.spec.ts",
+    "expected": "5b54e45^"
+  },
+  {
+    "path": "frontend/src/features/dish/normalizeFunctions.ts",
+    "expected": "5b54e45^"
+  },
+  {
+    "path": "frontend/src/features/meal/updateMealMutation.ts",
+    "expected": "5b54e45^"
+  },
+  {
+    "path": "frontend/src/lib/graphql/generated/graphql.schema.json",
+    "expected": "5b54e45^"
+  },
+  {
+    "path": "frontend/src/lib/graphql/generated/graphql.ts",
+    "expected": "5b54e45^"
+  }
+]

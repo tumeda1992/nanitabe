@@ -2,14 +2,14 @@ module Mutations::Meal
   class UpdateMealWithNewDish < ::Mutations::BaseMutation
     argument :meal, ::Types::Input::Meal::MealForUpdate, required: true
     argument :dish, ::Types::Input::Dish::DishForCreate, required: true
-    argument :dish_source, ::Types::Input::Dish::Source::SourceForRead, required: false
+    argument :dish_source, ::Types::Input::Dish::Source::SourceForRead, required: true
     argument :dish_source_relation_detail, ::Types::Input::Dish::DishSourceRelation::DishSourceRelationDetail, required: false
     argument :dish_tags, [::Types::Input::Dish::Tag::Tag], required: false
 
     field :meal_id, Int, null: false
     field :dish_id, Int, null: false
 
-    def resolve(meal:, dish:, dish_source: nil, dish_source_relation_detail: nil, dish_tags: nil)
+    def resolve(meal:, dish:, dish_source:, dish_source_relation_detail: nil, dish_tags: nil)
       ActiveRecord::Base.transaction do
         dish_source_relation = ::Mutations::Dish::FoodDishInput.source_relation(
           dish_source, dish_source_relation_detail

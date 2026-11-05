@@ -1,8 +1,8 @@
 # FR-022: 食事編集で出典なしの新規料理を選ぶと送信契約に違反する
 
 - 優先度: P2
-- 採否: 採用
-- 対応状況: 完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -52,3 +52,10 @@
 ブラウザ確認はrequests/fr022-visual.jsonを使用し、全GraphQLを人工fixtureでmockする。実DBへのmigrationやUI保存は実施しない。
 
 visual-inspectorも成功。updateMealWithNewDishを1回だけ送信し、source/detailはnull、既存meal.idを保持するpayloadを確認した。modalが閉じて再取得後に新料理名が表示され、3画像を目視済み。未知operation・browser例外0。結果はrequests/fr022-visual-result.json。実DB保存はmock対象のため未確認であり、保存と認可rollbackはtest DBの実GraphQL requestで検証した。適用commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-05）
+
+食事編集の出典なし新規料理の追加許容を5b54e45親版のGraphQL/form契約へ戻し、生成物と対応testも同じ版へ揃えた。
+[復元結果](../evidence/scope-repair/fr022-attempt-1/result.md)はRSpec3 examples / 0 failures、Jest16 tests成功、
+backend/frontendの変更箇所lintと型検査成功、8path旧byte比較、純粋な共通化と利用者変更保持、diff checkが成功した。
+既存fixture警告は結果に保存した。出典なしで編集できない元の問題を解消したとは数えない。
