@@ -1,8 +1,8 @@
 # FR-021: 日付URLが形式だけの検査で無効日付を画面へ渡す
 
 - 優先度: P2
-- 採否: 採用
-- 対応状況: 完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -49,3 +49,10 @@ URLからpathnameの該当segmentだけを取得し、parse後に年月日が一
 ブラウザ確認はrequests/fr021-visual.jsonを使用し、全GraphQLをmockする。
 
 visual-inspectorも2ケース成功。うるう日のquery/hash付きURLは対象日を含む週を保持し、存在しない2月30日はbrowser当日を含む月へfallbackした。全dateカードとlabelを照合し2画像目視済み。例外・mutation・未知operation0。結果はrequests/fr021-visual-result.json。実backend取得はmockのため未確認。適用commitはapplication.mdとGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-05）
+
+URL日付の実在日・query/hash境界の追加検証をc240b94親版へ戻した。
+[復元結果](../evidence/scope-repair/fr021-attempt-1/result.md)はJest8 tests、2fileのlintと型検査、
+helper/spec旧byte一致、先行共通化・FR-020残部・純抽出と利用者変更保持、diff checkが成功した。
+元の無効日付の問題と過去の検証は保存し、解消済みとは数えない。

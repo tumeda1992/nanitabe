@@ -421,3 +421,9 @@ RSpec61 examples / 0 failures、Ruby lint2 files / 0 offenses、旧byte一致・
 scope-repair-fr022-1 / attempt1のpassed resultを消費し、8pathを5b54e45親版の出典必須契約へ戻した。
 RSpec3 examples / 0 failures、Jest16 tests、backend/frontend lintとtsc成功、旧byte比較・純抽出/利用者変更保持・diff check成功。
 既存fixture警告は[結果](evidence/scope-repair/fr022-attempt-1/result.md)に保存した。FR-023復元commitは7bc255e。次はFR-021を戻す。
+
+## FR-021の範囲外適用取消（2026-11-05）
+
+scope-repair-fr021-1 / attempt1のpassed resultを消費し、共通日付パーサーをc240b94親版へ戻した。
+Jest8 tests・lint2file・tsc成功、helper/spec旧byte一致、先行共通化/FR-020残部/純抽出と利用者変更保持、diff check成功。
+[結果](evidence/scope-repair/fr021-attempt-1/result.md)。FR-022復元commitは5fc7347。次はFR-020を戻す。

@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr021-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr021-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr021-attempt-1/result.md",
+  "summary": "Jest 1suite/8tests、2file lint、親指定tsc成功。helper/spec c240b94^byte一致、先行parser共通化/FR020/純抽出6file・user3hash保持、diff check成功。"
+}

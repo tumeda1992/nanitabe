@@ -1,0 +1,34 @@
+{
+  "request_id": "scope-repair-fr021-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.15 FR-021 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr021-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "共通日付パーサーの旧契約Jest",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand src/features/calendar/calendarDateFromPath.spec.ts",
+      "expected": "既存tests全成功。FR021の実在日/query/hash境界の追加期待を除き、元の週/月共通パーサー契約を維持"
+    },
+    {
+      "operation": "日付パーサーとspecのlint",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn lint src/features/calendar/calendarDateFromPath.ts src/features/calendar/calendarDateFromPath.spec.ts",
+      "expected": "2fileのlint errorなし"
+    },
+    {
+      "operation": "旧日付解釈の全量比較",
+      "expected": "helper/spec2fileがc240b94^とbyte一致。先行RV029の共通パーサーとFR032/033は保持。FR020の履歴同期はその復元単位まで保持。userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "URL日付の実在日・query/hash境界の追加検証を旧解釈へ戻した",
+    "旧パーサーのJest/lint・2filebyte比較が成功した",
+    "元の無効日付問題は残し、先行共通化を保持した"
+  ],
+  "data_preparation": "既存compose.dev.local.yml frontendの既存Jest環境のみ。実DB/AWS/Webhook、新service起動・依存取得なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr021-attempt-1/result.json"
+}

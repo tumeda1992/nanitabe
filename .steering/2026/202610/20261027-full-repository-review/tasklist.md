@@ -186,10 +186,13 @@ DoD: 食事編集の出典必須契約と送信形式がbaselineと同じにな�
 
 ### 15. FR-021: URL日付の実在日・境界検証を戻す
 
-- [ ] 元変更 `c240b94` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `c240b94` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: calendarDateFromPathと既存spec。RV-029の日付パーサー共通化は保持。
 
 DoD: 無効日付とquery/hashの解釈がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr021-1 / attempt1 passed。Jest8 tests・lint2file・tsc成功、helper/spec旧byte一致・
+先行共通化/FR-020残部/純抽出/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr021-attempt-1/result.md)。
 
 ### 16. FR-020: Next pathname/searchとの論理履歴同期を戻す
 
