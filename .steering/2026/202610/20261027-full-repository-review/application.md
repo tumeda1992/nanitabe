@@ -471,3 +471,9 @@ Jest17 tests・lint4file・tsc、旧byte比較・先行モード型/純抽出/�
 scope-repair-fr014-1 / attempt1のpassed resultを消費し、mutation builder/caller/specの4pathを601d722親版へ戻した。
 Jest22 tests・lint3file・tsc、旧byte比較・先行入力共通化/モード型/純抽出と利用者変更保持・diff check成功。
 [結果](evidence/scope-repair/fr014-attempt-1/result.md)。FR-015復元commitはaa3221c。次はFR-013を戻す。
+
+## FR-013の範囲外適用取消（2026-11-05）
+
+scope-repair-fr013-1 / attempt1のpassed resultを消費し、取得query/output/生成物とフォーム初期値の10pathをfb59312親版へ戻した。
+RSpec7 examples / 0 failures、Jest47 tests・backend/frontend lint・tsc、旧比較・先行入力共通化/純抽出/利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/fr013-attempt-1/result.md)。FR-014復元commitはeff9ffc。次はFR-012を戻す。

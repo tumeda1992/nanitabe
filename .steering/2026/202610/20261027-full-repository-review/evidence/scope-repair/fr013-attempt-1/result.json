@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr013-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr013-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr013-attempt-1/result.md",
+  "summary": "RSpec7件/0failures、Jest9suites/47tests、Ruby1file lint・frontend5file lint/tsc成功。旧10path比較・先行入力共通化/純抽出6file/user3hash・diff check成功。約35分の共通経過は性能値と扱わず記録。"
+}

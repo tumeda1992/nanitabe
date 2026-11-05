@@ -131,7 +131,6 @@ export const DISH = gql`
       id
       name
       mealPosition
-      dishEffortLevelId
       comment
       dishSourceRelation {
         dishSourceId

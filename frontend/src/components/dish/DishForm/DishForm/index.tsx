@@ -7,7 +7,6 @@ import { DishFormOfOnlyDishFields } from './DishFormOfOnlyDishFields';
 import { UseChoosingPutDishSourceTypeResult } from './useChoosingPutDishSourceType';
 import { DishFormOfRelatedDishSource } from './DishFormOfRelatedDishSource';
 import { DishFormOfTags } from './DishFormOfTags';
-import { MEAL_POSITION } from '../../../../features/dish/const';
 
 type DishFormContentProps = {
   preFilledDish?: Dish;
@@ -55,15 +54,7 @@ export default (props: Props) => {
     toggleDoContinuousRegistration,
   } = props;
 
-  const methods = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      dish: {
-        mealPosition: preFilledDish?.mealPosition || MEAL_POSITION.MAIN_DISH,
-        dishEffortLevelId: preFilledDish?.dishEffortLevelId ?? null,
-      },
-    },
-  });
+  const methods = useForm({ resolver: zodResolver(formSchema) });
   const { handleSubmit } = methods;
 
   const onError = (schemaErrors, _) => {

@@ -35,7 +35,8 @@ export const DishFormOfOnlyDishFields = (
     );
   useEffect(() => {
     setValue('dish.mealPosition', selectedMealPosition);
-  }, [selectedMealPosition, setValue]);
+    setValue('dish.dishEffortLevelId', null);
+  }, [selectedMealPosition]);
 
   return (
     <>
@@ -59,9 +60,8 @@ export const DishFormOfOnlyDishFields = (
         <SelectMealPosition
           selectedMealPosition={selectedMealPosition as MealPosition}
           onChange={(mealPosition) => {
-            if (!mealPosition || mealPosition === selectedMealPosition) return;
+            if (!mealPosition) return;
             setSelectedMealPosition(mealPosition);
-            setValue('dish.dishEffortLevelId', null);
           }}
         />
         <ErrorMessageIfExist

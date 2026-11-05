@@ -268,10 +268,13 @@ DoD: mutationの公開返却tupleがbaselineと同じになる。関連testが�
 
 ### 23. FR-013: 料理編集のeffortId取得と初期値保持を戻す
 
-- [ ] 元変更 `fb59312` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `fb59312` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: 料理/食事query、フォーム初期値・選択component、GraphQL出力と生成物、関連spec。
 
 DoD: 編集開始・時間帯変更時の手間レベル表示と送信値がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr013-1 / attempt1 passed。RSpec7 examples / 0 failures、Jest47 tests・両lint・tsc成功、
+10path旧比較・先行入力共通化/純抽出/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr013-attempt-1/result.md)。
 
 ### 24. FR-012: GraphQL任意引数のRuby既定値追加を戻す
 

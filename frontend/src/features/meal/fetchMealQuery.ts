@@ -33,7 +33,6 @@ export const MEALS_FOR_CALENDER = gql`
           id
           name
           mealPosition
-          dishEffortLevelId
           comment
           evaluationScore
           dishSourceRelation {

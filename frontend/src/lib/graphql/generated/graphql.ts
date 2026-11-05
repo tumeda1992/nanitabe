@@ -255,7 +255,6 @@ export type DeleteMealFramePayload = {
 export type Dish = DishFields & {
   __typename?: 'Dish';
   comment?: Maybe<Scalars['String']['output']>;
-  dishEffortLevelId?: Maybe<Scalars['Int']['output']>;
   dishSourceRelation?: Maybe<DishSourceRelation>;
   evaluationScore?: Maybe<Scalars['Float']['output']>;
   id: Scalars['Int']['output'];
@@ -274,7 +273,6 @@ export type DishEffortLevel = {
 
 export type DishFields = {
   comment?: Maybe<Scalars['String']['output']>;
-  dishEffortLevelId?: Maybe<Scalars['Int']['output']>;
   dishSourceRelation?: Maybe<DishSourceRelation>;
   evaluationScore?: Maybe<Scalars['Float']['output']>;
   id: Scalars['Int']['output'];
@@ -352,7 +350,6 @@ export type DishTag = {
 export type DishWithRegisteredMeals = DishFields & {
   __typename?: 'DishWithRegisteredMeals';
   comment?: Maybe<Scalars['String']['output']>;
-  dishEffortLevelId?: Maybe<Scalars['Int']['output']>;
   dishSourceRelation?: Maybe<DishSourceRelation>;
   evaluationScore?: Maybe<Scalars['Float']['output']>;
   id: Scalars['Int']['output'];
@@ -393,7 +390,6 @@ export type EvaluateDishPayload = {
 export type ExistingDishForRegisteringWithMeal = DishFields & {
   __typename?: 'ExistingDishForRegisteringWithMeal';
   comment?: Maybe<Scalars['String']['output']>;
-  dishEffortLevelId?: Maybe<Scalars['Int']['output']>;
   dishSourceName?: Maybe<Scalars['String']['output']>;
   dishSourceRelation?: Maybe<DishSourceRelation>;
   effortLevelMinutes?: Maybe<Scalars['Int']['output']>;
@@ -984,7 +980,6 @@ export type SourceForUpdate = {
 export type SpecifiedDish = DishFields & {
   __typename?: 'SpecifiedDish';
   comment?: Maybe<Scalars['String']['output']>;
-  dishEffortLevelId?: Maybe<Scalars['Int']['output']>;
   dishSourceRelation?: Maybe<DishSourceRelation>;
   evaluationScore?: Maybe<Scalars['Float']['output']>;
   id: Scalars['Int']['output'];
@@ -1233,7 +1228,7 @@ export type DishQueryVariables = Exact<{
 }>;
 
 
-export type DishQuery = { __typename?: 'Query', dish: { __typename?: 'SpecifiedDish', id: number, name: string, mealPosition: number, dishEffortLevelId?: number | null, comment?: string | null, dishSourceRelation?: { __typename?: 'DishSourceRelation', dishSourceId: number, recipeBookPage?: number | null, recipeWebsiteUrl?: string | null, recipeSourceMemo?: string | null } | null, tags?: Array<{ __typename?: 'DishTag', id: number, content: string }> | null } };
+export type DishQuery = { __typename?: 'Query', dish: { __typename?: 'SpecifiedDish', id: number, name: string, mealPosition: number, comment?: string | null, dishSourceRelation?: { __typename?: 'DishSourceRelation', dishSourceId: number, recipeBookPage?: number | null, recipeWebsiteUrl?: string | null, recipeSourceMemo?: string | null } | null, tags?: Array<{ __typename?: 'DishTag', id: number, content: string }> | null } };
 
 export type DishesPerSourceQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1354,7 +1349,7 @@ export type MealsForCalenderQueryVariables = Exact<{
 }>;
 
 
-export type MealsForCalenderQuery = { __typename?: 'Query', mealsForCalender: Array<{ __typename?: 'MealsOfDate', date: any, meals: Array<{ __typename?: 'MealForCalender', id: number, date: any, mealType: number, comment?: string | null, mealFrameEntryId?: number | null, mealFrameName?: string | null, dish: { __typename?: 'Dish', id: number, name: string, mealPosition: number, dishEffortLevelId?: number | null, comment?: string | null, evaluationScore?: number | null, dishSourceRelation?: { __typename?: 'DishSourceRelation', type: number, sourceName?: string | null, dishSourceId: number, recipeBookPage?: number | null, recipeWebsiteUrl?: string | null, recipeSourceMemo?: string | null } | null, tags?: Array<{ __typename?: 'DishTag', id: number, dishId: number, content: string }> | null } }>, frameEntries: Array<{ __typename?: 'FrameEntryForCalender', id: number, mealFrameId: number, mealFrameName: string, mealType: number }> }> };
+export type MealsForCalenderQuery = { __typename?: 'Query', mealsForCalender: Array<{ __typename?: 'MealsOfDate', date: any, meals: Array<{ __typename?: 'MealForCalender', id: number, date: any, mealType: number, comment?: string | null, mealFrameEntryId?: number | null, mealFrameName?: string | null, dish: { __typename?: 'Dish', id: number, name: string, mealPosition: number, comment?: string | null, evaluationScore?: number | null, dishSourceRelation?: { __typename?: 'DishSourceRelation', type: number, sourceName?: string | null, dishSourceId: number, recipeBookPage?: number | null, recipeWebsiteUrl?: string | null, recipeSourceMemo?: string | null } | null, tags?: Array<{ __typename?: 'DishTag', id: number, dishId: number, content: string }> | null } }>, frameEntries: Array<{ __typename?: 'FrameEntryForCalender', id: number, mealFrameId: number, mealFrameName: string, mealType: number }> }> };
 
 export type AddMealFrameEntryMutationVariables = Exact<{
   mealFrameEntry: MealFrameEntryForCreate;
@@ -1769,7 +1764,6 @@ export const DishDocument = gql`
     id
     name
     mealPosition
-    dishEffortLevelId
     comment
     dishSourceRelation {
       dishSourceId
@@ -2363,7 +2357,6 @@ export const MealsForCalenderDocument = gql`
         id
         name
         mealPosition
-        dishEffortLevelId
         comment
         evaluationScore
         dishSourceRelation {

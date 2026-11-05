@@ -1,8 +1,8 @@
 # FR-013: 料理編集で既存の手間レベルを消してしまう
 
 - 優先度: P1
-- 採否: 採用
-- 対応状況: 完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-011（現行コードで再確認）。
@@ -44,3 +44,10 @@ backendの共通料理出力へnullableな`dishEffortLevelId`を追加し、料�
 修正前のfrontend追加5件は3 failuresで表示欠落・無変更/名前変更のnull送信を再現した。backend追加2件は未定義出力fieldを再現した。修正後はfrontendの料理/食事フォーム10 suites / 52 tests成功、backendの料理詳細/カレンダー7 examples成功、TypeScript noEmit・frontend変更6ファイルlint・backend変更2ファイルRuboCop成功。ブラウザ確認は`requests/fr013-visual.json`と同名のresult JSONにより4項目成功を確認した。人工fixtureで表示・送信値を検証し、実DBへの保存は行っていない。
 
 ブラウザでは既存ID 17の初期表示、名前変更時の17送信、明示解除と位置づけ変更のnull送信を確認し、1920px幅の4画像を目視した。390px幅でも機能4項目は成功したが、入力フォーカス時の横はみ出しを観測した。変更前との比較がなくFR-013の回帰とは判定していない。画像と実行scriptはgitignore済みの`frontend/inspect/visual/tmp/fr013-effort-retention/`にある。
+
+## 適用取消と旧挙動の復元（2026-11-05）
+
+手間レベルの出力field/query追加・生成物と編集初期値保持をfb59312親版へ戻し、専用2specを除いた。
+[復元結果](../evidence/scope-repair/fr013-attempt-1/result.md)はRSpec7 examples / 0 failures、Jest47 tests、
+backend/frontend lintと型検査、10path旧比較、先行入力共通化・純抽出と利用者変更保持、diff checkが成功した。
+元の編集で手間レベルが消える問題と過去の検証は保存し、解消済みとは数えない。
