@@ -8,7 +8,7 @@ module Mutations::Dish
     field :dish_id, Int, null: false
     field :dish_source_id, Int, null: false
 
-    def resolve(dish:, dish_source:, dish_source_relation_detail: nil, dish_tags: nil)
+    def resolve(dish:, dish_source:, dish_source_relation_detail:, dish_tags: nil)
       ActiveRecord::Base.transaction do
         created_dish_source = ::Business::Food::Dish::Source::Usecase::AddCommand.call(
           user_id: context[:current_user_id],

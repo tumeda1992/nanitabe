@@ -477,3 +477,9 @@ Jest22 tests・lint3file・tsc、旧byte比較・先行入力共通化/モード
 scope-repair-fr013-1 / attempt1のpassed resultを消費し、取得query/output/生成物とフォーム初期値の10pathをfb59312親版へ戻した。
 RSpec7 examples / 0 failures、Jest47 tests・backend/frontend lint・tsc、旧比較・先行入力共通化/純抽出/利用者変更保持・diff check成功。
 [結果](evidence/scope-repair/fr013-attempt-1/result.md)。FR-014復元commitはeff9ffc。次はFR-012を戻す。
+
+## FR-012の範囲外適用取消（2026-11-05）
+
+scope-repair-fr012-1 / attempt1のpassed resultを消費し、2resolverと専用specの3pathをceb1da7親版へ戻した。
+RSpec13 examples / 0 failures、Ruby lint2 files / 0 offensesを逐次確認。旧比較・対象外Meal resolver不変・先行変換/純抽出と利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/fr012-attempt-1/result.md)。FR-013復元commitはa41c8f2。次はFR-011を戻す。

@@ -6,7 +6,7 @@ module Mutations::Dish
 
     field :dish_id, Int, null: false
 
-    def resolve(dish:, dish_source_relation: nil, dish_tags: nil)
+    def resolve(dish:, dish_source_relation:, dish_tags: nil)
       ActiveRecord::Base.transaction do
         ::Business::Food::Dish::Usecase::UpdateCommand.call(
           user_id: context[:current_user_id],

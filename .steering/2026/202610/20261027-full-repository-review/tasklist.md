@@ -278,10 +278,13 @@ DoD: 編集開始・時間帯変更時の手間レベル表示と送信値がbas
 
 ### 24. FR-012: GraphQL任意引数のRuby既定値追加を戻す
 
-- [ ] 元変更 `ceb1da7` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: 料理更新GraphQL resolver3箇所と省略引数spec。
+- [x] 元変更 `ceb1da7` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+  対象: 実差分の料理更新GraphQL resolver2箇所と省略引数spec（計3file）。
 
 DoD: 省略引数の例外契約がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr012-1 / attempt1 passed。RSpec13 examples / 0 failures→RuboCop2 files / 0 offensesを逐次確認。
+3path旧比較・対象外Meal resolver不変・先行変換/純抽出/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr012-attempt-1/result.md)。
 
 ### 25. FR-011: 料理評価の所有者照合を戻す
 

@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr012-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr012-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr012-attempt-1/result.md",
+  "summary": "RSpec13件/0failures後、RuboCop2file/0offensesを逐次実行。旧3path比較・非対象Meal resolver不変・先行入力変換/純抽出6file/user3hash保持・diff check成功。"
+}

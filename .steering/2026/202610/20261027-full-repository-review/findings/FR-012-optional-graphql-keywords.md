@@ -1,8 +1,8 @@
 # FR-012: 省略可能なGraphQL引数がRubyでは必須になっている
 
 - 優先度: P2
-- 採否: 採用
-- 対応状況: 完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-003（現行コードで再確認）。
@@ -40,3 +40,11 @@ resolve引数へnil既定値を付け、省略時の更新契約を明確にす�
 `updateDish`の`dish_source_relation`と`updateDishWithNewSource`の`dish_source_relation_detail`へ`nil`既定値を追加した。省略は明示nullと同じ既存更新契約とし、維持を表す別のpresence契約は導入しない。
 
 追加`spec/graphql/mutation/dish/optional_arguments_spec.rb`で両mutationの省略/null/有効値を検証した。修正前は6 examples / 2 failuresで省略だけ失敗し、保存されたエラーsnapshotの`missing keyword`も確認した。修正後は追加specと既存料理更新3 specで10 examples / 0 failures。変更3ファイルのRuboCopは違反なし。既存開発用Compose内で実行した。
+
+## 適用取消と旧挙動の復元（2026-11-05）
+
+Ruby keywordの既定値追加をceb1da7親版の2resolverへ戻し、専用optional specを除いた。
+実差分はresolver2fileと専用specの3fileであり、対象外のMeal resolverを追加で変更していない。
+[復元結果](../evidence/scope-repair/fr012-attempt-1/result.md)はRSpec13 examples / 0 failures、RuboCop2 files / 0 offensesを逐次確認し、
+3path旧比較・先行入力変換/純抽出/利用者変更保持・diff checkが成功した。
+元の省略時keyword不整合と過去の検証は保存し、解消済みとは数えない。
