@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr016-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr016-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr016-attempt-1/result.md",
+  "summary": "Jest1suite/4testsと1file lint成功。index.tsxは5319fbd^byte一致、debounce spec除去、純抽出6file/user3hash・diff check成功。fixture console警告は残る。"
+}

@@ -1,8 +1,8 @@
 # FR-016: 検索debounceが別パネルとアンマウントをまたいで残る
 
 - 優先度: P2
-- 採否: 採用
-- 対応状況: 完了
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-017（現行コードで再確認）。
@@ -45,3 +45,10 @@ fake timerで2パネルへの交互入力とunmountを検証する。片方の�
 - 同frontendの`yarn lint src/components/dish/DishSearchPanel/index.tsx src/components/dish/DishSearchPanel/debounce.spec.tsx`: 違反なし。
 
 表示構造の変更はなく、timerの時間境界・検索引数・cleanupをcomponentテストで検証した。適用commitはapplication.mdと本指摘のGit履歴で追跡する。
+
+## 適用取消と旧挙動の復元（2026-11-05）
+
+per-instance timerとunmount cleanupの追加を5319fbd親版の共有timerへ戻し、専用debounce specを除いた。
+[復元結果](../evidence/scope-repair/fr016-attempt-1/result.md)はJest4 tests、変更fileのlint、
+旧index byte一致、純抽出と利用者変更保持、diff checkが成功した。既存fixture警告は結果に保存した。
+元のpanel間timer干渉と過去の検証は保存し、解消済みとは数えない。

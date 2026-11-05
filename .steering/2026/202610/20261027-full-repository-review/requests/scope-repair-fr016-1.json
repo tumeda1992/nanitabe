@@ -1,0 +1,34 @@
+{
+  "request_id": "scope-repair-fr016-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.20 FR-016 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr016-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "料理検索パネルの既存Jest",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand src/components/dish/DishSearchPanel/index.spec.tsx",
+      "expected": "既存tests全成功。FR016専用の独立timer/unmount cleanup期待は除去し、検索とフィルタの既存操作を維持"
+    },
+    {
+      "operation": "検索パネルのlint",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn lint src/components/dish/DishSearchPanel/index.tsx",
+      "expected": "1fileのlint errorなし"
+    },
+    {
+      "operation": "旧timer全量比較と保持条件",
+      "expected": "index.tsxは5319fbd^とbyte一致、debounce.spec.tsxは除去。module共有timerとunmount cleanupなしの旧契約を保持し、元の複数panel干渉を解消したと報告しない。純抽出6file/userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "per-instance debounceとcleanup追加を共有timerの旧版へ戻した",
+    "既存検索パネルJestとlint・旧byte比較が成功した",
+    "既知のtimer干渉を残し、他の純粋な共通化を保持した"
+  ],
+  "data_preparation": "既存compose.dev.local.yml frontendの既存Jest/mock環境のみ。実DB/AWS/Webhook、新service起動・依存取得なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr016-attempt-1/result.json"
+}

@@ -238,10 +238,13 @@ d58c473元schemaとの120ケースがdata/issues順まで一致しshared schema�
 
 ### 20. FR-016: インスタンスごとのdebounce cleanupを戻す
 
-- [ ] 元変更 `5319fbd` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `5319fbd` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: DishSearchPanelと専用spec。
 
 DoD: 複数検索パネル・unmountのtimer挙動がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr016-1 / attempt1 passed。Jest4 tests・lint成功、旧index byte一致・専用spec除去・
+純抽出/利用者変更保持・diff check成功。既存fixture警告あり。[結果](evidence/scope-repair/fr016-attempt-1/result.md)。
 
 ### 21. FR-015: refresh待機と失敗時モード保持を戻す
 

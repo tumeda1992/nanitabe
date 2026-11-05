@@ -453,3 +453,9 @@ scope-repair-fr017-1 / attempt1のpassed resultを消費し、フォームとspe
 Jest19 tests・lint2file・tsc、旧byte比較が成功。d58c473元schemaとshared schemaを120ケースで実行比較しdata/issues順まで一致した。
 共有schemaは追加整数/正数拒否を含まず変更不要。純抽出6file/利用者変更保持とdiff check成功。
 [結果](evidence/scope-repair/fr017-attempt-1/result.md)。FR-018復元commitはb27bbaf。次はFR-016を戻す。
+
+## FR-016の範囲外適用取消（2026-11-05）
+
+scope-repair-fr016-1 / attempt1のpassed resultを消費し、検索timerを5319fbd親版へ戻した。
+Jest4 tests・lint、旧byte比較・専用spec除去・純抽出/利用者変更保持・diff check成功。既存fixture警告は結果に保存した。
+[結果](evidence/scope-repair/fr016-attempt-1/result.md)。FR-017復元commitは3c9ac6b。次はFR-015を戻す。
