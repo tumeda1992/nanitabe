@@ -206,10 +206,14 @@ DoD: Next遷移・push・popの論理URL更新条件がbaselineと同じにな�
 
 ### 17. FR-019: 一食一枠の制約とmigrationを戻す
 
-- [ ] 元変更 `01e5394 + 3dcad04` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
+- [x] 元変更 `01e5394 + 3dcad04` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
   対象: unique migration、schema、AssignMealPolicy、現行Fill、cardinality/migration spec、spec_mysql残部。
 
 DoD: 一つの食事の複数枠割当可否がbaselineに戻り、新migrationが不要になる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+
+検証: scope-repair-fr019-1 / attempt1 passed。二重guard後にtest SQLite限定schema load・再guard・unique不在確認。
+RSpec70 examples / 0 failures、RuboCop2 files / 0 offenses、9path旧比較・純抽出/利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/fr019-attempt-1/result.md)。
 
 ### 18. FR-018: 食事移動時の枠解除と交換transaction追加を戻す
 

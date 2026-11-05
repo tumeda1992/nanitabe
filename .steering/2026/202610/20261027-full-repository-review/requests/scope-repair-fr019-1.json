@@ -1,0 +1,39 @@
+{
+  "request_id": "scope-repair-fr019-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.17 FR-019 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr019-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "関連RSpec前にadapter/環境/設定と実接続fileをguardし、必要時だけtest schema load",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rails runner -e test 'require \"pathname\"\nexpected = Rails.root.join(\"db/test.sqlite3\").cleanpath\nverify = lambda do\n  config = ActiveRecord::Base.connection_db_config.configuration_hash\n  configured = Pathname.new(config.fetch(:database).to_s)\n  configured = Rails.root.join(configured) if configured.relative?\n  abort \"Refusing schema preparation outside the standard SQLite test DB\" unless Rails.env.test? && config[:adapter] == \"sqlite3\" && configured.cleanpath == expected\n  connection = ActiveRecord::Base.connection\n  actual = connection.select_all(\"PRAGMA database_list\").to_a.find { |row| row[\"name\"] == \"main\" }.fetch(\"file\")\n  abort \"SQLite connection does not match the guarded test DB\" unless Pathname.new(actual).realpath == expected.realpath\n  connection\nend\nunique_index = ->(connection) { connection.indexes(:meal_frame_entries).any? { |index| index.unique && index.columns == [\"meal_id\"] } }\nconnection = verify.call\nif unique_index.call(connection)\n  puts \"guard_passed: reloading standard test schema to remove the remaining unique index\"\n  connection.disconnect!\n  abort \"Test schema load failed\" unless system({ \"RAILS_ENV\" => \"test\" }, \"bundle\", \"exec\", \"rails\", \"db:schema:load\", \"RAILS_ENV=test\")\n  ActiveRecord::Base.establish_connection(:test)\n  connection = verify.call\nelse\n  puts \"guard_passed: schema reload unnecessary\"\nend\nabort \"Unique meal assignment index remains\" if unique_index.call(connection)\nputs \"standard_test_db_ready: unique meal assignment index absent\"\n'",
+      "expected": "RAILS_ENV=test、sqlite3、設定db/test.sqlite3と実SQLite main fileの両方が一致した時だけ続行。残存meal_id unique indexがある時だけ同じtest DBへschema loadし、再guardしてunique不在を確認。guard失敗時は後続RSpecを実行せずblocked。実DB/migrate/down操作なし"
+    },
+    {
+      "operation": "枠割当と未割当化の既存関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/meal/frame spec/graphql/mutation/meal/frame_entry",
+      "expected": "前提guard完了後、全examples成功。同一mealを複数枠へ置く旧unassign fixtureを含む。cardinality/migration/MySQL専用specは除去"
+    },
+    {
+      "operation": "復元Fillと既存unassign specのRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/food/meal/frame/entry/usecase/fill_with_meal_command.rb spec/graphql/mutation/meal/frame_entry/unassign_meal_from_frame_entry_spec.rb",
+      "expected": "2fileのoffenseなし"
+    },
+    {
+      "operation": "migration/schema/Policy/callerと補完profileの全量比較",
+      "expected": "restored-paths.jsonの9pathが01e5394^とbyte一致または不存在。schema versionとmeal_id非unique indexは旧版。AssignMealPolicy/追加migration/spec_mysql残部は除去し、FR008のowner検証はその項目まで保持。純抽出6file/userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "一食一枠の追加Command制約・DB unique・migration・補完MySQLprofileを元へ戻した",
+    "安全なtest DB準備後に既存関連RSpecとlint・9path旧比較が成功した",
+    "実DB migration/rollbackやAWSに触れず、同一mealの旧複数枠fixtureを検証した"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backendのみ。第一checkは事前許可済みの標準test SQLite限定schema load。アダプタ/環境/設定path/PRAGMA実fileの両guard必須。新MySQL service不要。実DB/AWS/Webhook操作禁止。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistと親からのtest DB限定準備許可を適用。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。第一checkによるguard済みtest DB再作成だけ許可。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr019-attempt-1/result.json"
+}

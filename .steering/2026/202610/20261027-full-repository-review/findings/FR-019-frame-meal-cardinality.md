@@ -1,8 +1,8 @@
 # FR-019: 1食事を複数枠へ割り当てられhas_one契約が破れる
 
 - 優先度: P2
-- 採否: 採用
-- 対応状況: 完了（SQLite/MySQL検証済み。実DB migrationは未適用）
+- 採否: 今回は見送り（挙動維持の制約により適用取消）
+- 対応状況: 適用取消・旧挙動の復元検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -61,3 +61,11 @@ CR-004用の隔離MySQL8.0.46/InnoDBを再利用し、既存backendからfixture
 - Commandを迂回した同時DB書込みも成功1・RecordNotUnique1・割当1件となる。
 
 specはbackend/spec_mysql/frame_assignment_spec.rb。RuboCopも成功。接続guard・setup/cleanupは[CR-004のMySQL evidence](../../20261030-exhaustive-review/evidence/cr004-mysql.md)と同じで、通常SQLite回帰へpendingを混ぜない。専用DBは全検証後に除去済み。開発/本番DBへmigrationを適用した結果ではない。これにより11月1日時点のMySQL検証保留を解消した。
+
+## 適用取消と旧挙動の復元（2026-11-05）
+
+一食一枠の拒否Policy・Command lock/transaction・DB unique・追加migrationを01e5394親版へ戻し、専用specとMySQL補完profileを除いた。
+[復元結果](../evidence/scope-repair/fr019-attempt-1/result.md)はadapter/環境/設定pathと実接続fileのguard後、
+標準test SQLiteだけへ旧schemaをloadし、再guardでmeal_id unique不在を確認した。実DBのmigration/downは行っていない。
+既存RSpec70 examples / 0 failures、RuboCop2 files / 0 offenses、9path旧byte一致/不存在、純抽出と利用者変更保持、diff checkが成功した。
+同一mealを複数枠へ置く旧fixtureも維持する。元の多重割当問題と過去のMySQL検証は履歴として保存し、解消済みとは数えない。

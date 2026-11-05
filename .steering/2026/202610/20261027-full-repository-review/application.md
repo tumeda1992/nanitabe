@@ -433,3 +433,10 @@ Jest8 tests・lint2file・tsc成功、helper/spec旧byte一致、先行共通化
 scope-repair-fr020-1 / attempt1のpassed resultを消費し、Providerをd8afcf0親版へ戻した。
 consumer Jest16 tests・lint・tsc成功、旧byte一致・専用spec除去・純抽出と利用者変更保持・diff check成功。
 [結果](evidence/scope-repair/fr020-attempt-1/result.md)。既知のNext同期漏れは残る。FR-021復元commitは29e3d49。次はFR-019を戻す。
+
+## FR-019の範囲外適用取消（2026-11-05）
+
+scope-repair-fr019-1 / attempt1のpassed resultを消費し、9pathの制約・migration・補完profileを旧版へ戻した。
+adapter/RAILS_ENV/設定pathと実SQLite fileの二重guard後、test DBだけへschema loadし再guardとmeal_id unique不在を確認。
+RSpec70 examples / 0 failures、Ruby lint2 files / 0 offenses、旧9path比較・純抽出/利用者変更保持・diff check成功。
+[結果](evidence/scope-repair/fr019-attempt-1/result.md)。実DBschemaは変更していない。FR-020復元commitは5788f15。次はFR-018を戻す。
