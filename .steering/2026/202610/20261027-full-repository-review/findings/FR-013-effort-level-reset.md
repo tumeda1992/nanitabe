@@ -1,8 +1,8 @@
 # FR-013: 料理編集で既存の手間レベルを消してしまう
 
 - 優先度: P1
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 採用
+- 対応状況: 再適用・検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-011（現行コードで再確認）。
@@ -51,3 +51,7 @@ backendの共通料理出力へnullableな`dishEffortLevelId`を追加し、料�
 [復元結果](../evidence/scope-repair/fr013-attempt-1/result.md)はRSpec7 examples / 0 failures、Jest47 tests、
 backend/frontend lintと型検査、10path旧比較、先行入力共通化・純抽出と利用者変更保持、diff checkが成功した。
 元の編集で手間レベルが消える問題と過去の検証は保存し、解消済みとは数えない。
+
+## 再適用（2026-11-06）
+
+保存済み手間を取得し編集初期値へ反映。Jest 68 tests、RSpec 2 examples、型検査と変更箇所lint成功。[自動検証](../evidence/scope-repair/fr013-retain-attempt-1/result.md)。人工fixture画面確認ではID17初期表示・名前変更時17送信・明示解除と位置づけ変更時nullの4項目成功。実DB未操作。初回visualは入力不足でblocked、attempt 2で確認。別観測として明示解除画像に横ずれと左ラベル欠けがあり旧確認画像にも同状態、導入前比較は未実施。

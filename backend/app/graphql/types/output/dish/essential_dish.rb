@@ -5,6 +5,7 @@ module Types::Output::Dish
     field :id, Int, null: false
     field :name, String, null: false
     field :meal_position, Int, null: false
+    field :dish_effort_level_id, Int, null: true
     field :comment, String, null: true
 
     field :evaluation_score, Float, null: true

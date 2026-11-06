@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr013-visual-1",
+  "attempt": 1,
+  "status": "blocked",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr013-visual-attempt-1",
+  "result": "frontend/inspect/visual/tmp/fr013-visual-attempt-1/result.md",
+  "summary": "許可済みcontextにauthenticationとrunCommandがないため4項目とも未測定。親に不足を通知した。スクリーンショットなし。"
+}

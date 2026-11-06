@@ -1,0 +1,16 @@
+{
+  "request_id": "scope-repair-fr013-visual-2",
+  "attempt": 2,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr013-visual-attempt-2",
+  "result": "frontend/inspect/visual/tmp/fr013-retain-attempt-2/result.md",
+  "summary": "4/4 checks passed: initial select value 17 (visible 20分 - 普通); name-only mutation 17; explicit clear mutation null; position change mutation null. Four screenshots visually inspected; all GraphQL mocked, unknown operations 0, no real DB operation.",
+  "observations": "明示解除の画像でフォームが横ずれし左側ラベルが欠けて見える。以前のFR-013確認画像にも同じ状態があり、今回の再適用に特有の差分とは確認されない。FR-013導入前との比較は未実施。指定4項目の表示・送信値とは別の観測。",
+  "screenshots": [
+    "frontend/inspect/visual/tmp/fr013-retain-attempt-2/01-existing-effort.png",
+    "frontend/inspect/visual/tmp/fr013-retain-attempt-2/02-name-only.png",
+    "frontend/inspect/visual/tmp/fr013-retain-attempt-2/03-explicit-clear.png",
+    "frontend/inspect/visual/tmp/fr013-retain-attempt-2/04-position-change.png"
+  ],
+  "execution": "frontend/inspect/visual/tmp/fr013-retain-attempt-2/execution.json"
+}

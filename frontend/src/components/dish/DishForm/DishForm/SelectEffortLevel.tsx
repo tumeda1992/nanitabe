@@ -14,7 +14,8 @@ const formatMinutes = (minutes: number): string => {
 };
 
 const SelectEffortLevel = ({ mealPosition }: Props) => {
-  const { register } = useFormContext();
+  const { register, watch } = useFormContext();
+  const selectedEffortLevel = watch('dish.dishEffortLevelId');
   const { dishEffortLevels, fetchDishEffortLevelsLoading } =
     useFetchDishEffortLevels({ mealPosition });
 
@@ -24,6 +25,7 @@ const SelectEffortLevel = ({ mealPosition }: Props) => {
 
   return (
     <select
+      value={selectedEffortLevel ?? ''}
       {...register('dish.dishEffortLevelId', { setValueAs: (v) => (v === '' || v == null) ? null : Number(v) })}
       data-testid="dishEffortLevelSelect"
     >

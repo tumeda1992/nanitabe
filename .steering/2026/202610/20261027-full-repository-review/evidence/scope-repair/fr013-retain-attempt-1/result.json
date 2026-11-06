@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr013-retain-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr013-retain-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr013-retain-attempt-1/result.md",
+  "summary": "Jest 13 suites/68 tests、RSpec 2 examples成功。TypeScript、frontend lint、backend RuboCop 2 files成功。fb59312のapplication 10 path実file一致、FR-002〜012と保護hash/Git mode保持、diff check成功。"
+}

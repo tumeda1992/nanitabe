@@ -1,0 +1,35 @@
+{
+  "request_id": "scope-repair-fr013-visual-1",
+  "kind": "visual-inspector",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "3 FR-013 手間の保持",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr013-visual-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "手間ID17設定済み料理の編集画面を開く",
+      "expected": "既存の手間ID17の選択肢を初期表示する"
+    },
+    {
+      "operation": "名前だけ編集して送信する",
+      "expected": "mutationに手間ID17を送る"
+    },
+    {
+      "operation": "手間を明示解除して送信する",
+      "expected": "mutationにnullを送る"
+    },
+    {
+      "operation": "位置づけを変更して送信する",
+      "expected": "既存の解除動作によりmutationにnullを送る"
+    }
+  ],
+  "dod": [
+    "各操作の表示・送信値を実ブラウザで確認しスクリーンショットを保存する",
+    "実DBへ変更しない"
+  ],
+  "data_preparation": "http://localhost:18100、既存helper再利用。GraphQLを人工fixtureでmockし、手間ID17の料理と選択肢を用意する。実DB操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md visual-inspectorと直接使う共通項目、既存compose.dev.local.ymlのみ。",
+  "write_boundary": "実装/tasklist/finding/applicationを変更せず証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr013-visual-attempt-1/result.json"
+}

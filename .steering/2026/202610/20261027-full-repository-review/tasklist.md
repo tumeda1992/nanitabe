@@ -36,9 +36,18 @@ DoD: GraphQL経由の省略/null/有効値で同じ既存更新処理へ到達�
 
 ## 3. FR-013: 料理名だけの編集で既存手間を保持する
 
-- [ ] 元commit `fb59312` の限定差分を読み、EssentialDish出力、fetchDish/fetchMeal queryと生成物、DishForm/SelectEffortLevel、対応specを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
-- [ ] `frontend yarn test --runInBand --silent DishForm EditMeal AddMeal`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] 元commit `fb59312` の限定差分を読み、EssentialDish出力、fetchDish/fetchMeal queryと生成物、DishForm/SelectEffortLevel、対応specを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] `frontend yarn test --runInBand --silent DishForm EditMeal AddMeal`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+  > 確認日時: 2026-11-06 10:01 JST以前
+  > 総合結果: ✅ 指定4項目正常（人工GraphQL fixture、実DB未操作）
+  > ログ: `frontend/inspect/visual/tmp/fr013-retain-attempt-2/result.md`
+  > 初期表示: 期待ID17、結果ID17（20分 - 普通）✅
+  > 名前変更: 期待ID17送信、結果17 ✅
+  > 明示解除: 期待null送信、結果null ✅
+  > 位置づけ変更: 期待null送信、結果null ✅
+  > 別観測: 明示解除画像に横ずれと左ラベル欠け。旧確認画像にも同状態があるが導入前比較は未実施。
+
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 手間ID17の初期表示と名前変更時17送信、明示解除と位置づけ変更のnull送信。
 
