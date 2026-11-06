@@ -19,3 +19,7 @@ feedback: Turbopackが一時copyからproject root外へ向くnode_modules symli
 [pending 001](pending-escalations/001-review-behavior-preservation.md)、[002](pending-escalations/002-model-division.md)、[003](pending-escalations/003-work-without-new-approval.md)の本文を再確認。いずれも利用者の明示的な保留解除が再開条件であり、解除は受けていない。pluginへの引渡しは未実施のまま保留する。
 
 公開記録のdocument-review: 前版の公開前表現を実測したPR更新に限定して訂正し、sourceと公開head、CI確認中、未実測・保留を区別した。記法・指示対象・前版保持・公開情報・暫定性を確認し指摘なし。
+
+## CI followup記録のdocument-review（2026-11-06）
+
+新sourceのlocal/CI実測、CIとlocalのfile数、旧sourceのoffenseとSetup Ruby失敗を区別し、元の履歴・FR-001認証機能の保留を保持した。記法・指示対象・公開情報・暫定性を確認し指摘なし。最終記録push後のCIは別に実測する。

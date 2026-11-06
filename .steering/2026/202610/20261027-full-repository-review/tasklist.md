@@ -302,7 +302,7 @@ DoD: 確定範囲の正常操作・内部修正と現在の採否が実装/test/
 - [x] 親Solをphysical ownerとするtest-runnerへ依頼し、既存backend container・`RAILS_ENV=test`の標準test DBで`bundle exec rspec spec/requests/admin spec/system/admin`、`bundle exec rspec`、`bundle exec rubocop`を実行する。
   管理認証/管理CRUDの期待を保って成功し、全RuboCopが0 offensesとなることを確認する。失敗は原因を特定して採用範囲内で修正・再実行し、新しい業務判断が必要なものだけ親Solへ戻す。
   実装5file限定、保護3fileのhash/mode保持、index混入なし、diff checkを確認し、認証lint記法とstub適応だけをrunnerとは別の追加commitにする。
-- [ ] 既承認の指示に従いfeature-287をpushし、既存PR #292の最新source SHAに対するCI Backend Test/CI Backend Rubocopを確認する。
+- [x] 既承認の指示に従いfeature-287をpushし、既存PR #292の最新source SHAに対するCI Backend Test/CI Backend Rubocopを確認する。
   Setup Rubyが通ったことに加え、RSpecとRuboCopの本体stepが実行され、両jobが成功するまで確認する。変更なしskip、旧SHAの成功、local結果を代替にしない。
   CI失敗時はlogで原因を特定し、この範囲の修正は追加commitで直して再確認する。履歴改変・mergeは行わない。
 - [ ] 新request/attemptに変更source SHA、local全RSpec/全RuboCop/YAML parse、CI本体の結果・URL・SHAを保存する。

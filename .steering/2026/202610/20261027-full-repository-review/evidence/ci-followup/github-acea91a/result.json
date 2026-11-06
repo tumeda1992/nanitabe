@@ -1,0 +1,43 @@
+{
+  "source_sha": "acea91aab7eac48b4f1d279ab9552ea910128df0",
+  "backend_test": {
+    "run_id": 42208284773,
+    "job_id": 127860298224,
+    "url": "https://github.com/tumeda1992/nanitabe/actions/runs/42208284773",
+    "result": "success",
+    "steps": {
+      "setup_ruby": "success",
+      "prepare_test_sqlite": "success",
+      "run_rspec_tests": "success",
+      "no_changes": "skipped"
+    },
+    "examples": 874,
+    "failures": 0
+  },
+  "backend_rubocop": {
+    "run_id": 42208286290,
+    "job_id": 127860301892,
+    "url": "https://github.com/tumeda1992/nanitabe/actions/runs/42208286290",
+    "result": "success",
+    "steps": {
+      "setup_ruby": "success",
+      "run_rubocop": "success"
+    },
+    "files": 480,
+    "offenses": 0
+  },
+  "runner": "ubuntu-24.04",
+  "ruby": "3.3.8",
+  "other_success": [
+    "Frontend Test 42208284723",
+    "Frontend Lint 42208284746",
+    "Frontend Build 42208284738",
+    "Terraform Plan prod 42208284719"
+  ],
+  "local_backend": {
+    "admin_examples": 29,
+    "rspec_examples": 874,
+    "rubocop_files": 481,
+    "rubocop_offenses": 0
+  }
+}

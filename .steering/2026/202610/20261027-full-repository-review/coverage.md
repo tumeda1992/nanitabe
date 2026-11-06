@@ -82,3 +82,7 @@ production buildは固定source `3d832f5` の一時copyで通常Turbopack compil
 ## 公開headのCI速報（97f6348）
 
 GitHub Actionsのbackend RuboCop run `42195119635` / job `127816323328` とbackend test run `42195119531` / job `127816322843` はSetup Rubyで `Unavailable version 3.3.8 for ruby on ubuntu-26.04` により失敗し、本体はskipされた。既存runner/Ruby指定はmainから不変で、ローカルRuboCopのFR-001由来2 offenseとは別原因。Terraform Plan (prod) run `42195119401` は成功。frontend test/lint/buildはこの速報時点で進行中。最終headのCIは親が別途確認する。
+
+## backend CI followup（source acea91a、2026-11-06）
+
+管理request/system 29 examples、backend全RSpec 874 examples、全RuboCop 481 files / 0 offensesがローカルで成功。CI Backend TestはRuby setup・SQLite準備・RSpec本体成功、874 examples / 0 failures。CI Backend RubocopはRuby setup・本体成功、480 files / 0 offenses。CIとlocalのfiles数は別実測。[CI証拠](evidence/ci-followup/github-acea91a/result.md)。旧source `3d832f5` の2 offenseと旧headのSetup Ruby失敗は当時の履歴。FR-001認証機能は保留を維持し、変更はlint記法と既存stubに限る。
