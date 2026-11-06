@@ -1,0 +1,14 @@
+[
+  {
+    "path": "backend/app/domain/business/dish/dish/evaluation/command/evaluate_command.rb",
+    "expected": "cdb8e27^"
+  },
+  {
+    "path": "backend/app/domain/business/dish/dish/evaluation/repository.rb",
+    "expected": "cdb8e27^"
+  },
+  {
+    "path": "backend/spec/domain/business/dish/dish/evaluation/command/ownership_spec.rb",
+    "expected": "absent"
+  }
+]

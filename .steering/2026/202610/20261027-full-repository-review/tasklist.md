@@ -15,14 +15,14 @@
 
 ## 1. FR-011の未commit取消を撤回し、認可を維持する
 
-- [ ] 現在HEADのFR-011実装がcdb8e27を保持することを確認し、次の3pathだけを現在HEADへ戻す。
+- [x] 現在HEADのFR-011実装がcdb8e27を保持することを確認し、次の3pathだけを現在HEADへ戻す。
   `backend/app/domain/business/dish/dish/evaluation/command/evaluate_command.rb`、
   `backend/app/domain/business/dish/dish/evaluation/repository.rb`、
   `backend/spec/domain/business/dish/dish/evaluation/command/ownership_spec.rb`。
   staged差分を作らず、他のworktree差分を巻き込まない。
-- [ ] `requests/scope-repair-fr011-1.json`と`evidence/scope-repair/fr011-attempt-1/result.json/result.md`を履歴として保存し、取消目的が失効したため`superseded`と現在の範囲を記録する。失敗/成功の実測結果を別の結果へ書き換えない。
-- [ ] `backend bundle exec rspec spec/domain/business/dish/dish/evaluation spec/models/dish_evaluation_spec.rb spec/graphql/mutation/dish/evaluation`と対象2RubyのRuboCopを実行する。3pathのHEAD一致、FR-002〜010の認可保持、保護対象のhash保持とdiff checkを確認する。
-- [ ] finding/applicationへ料理ownerに基づく認可の保持を記録し、取消撤回記録だけをFR-011の追加commitへまとめる。codeに差分がないことは正常である。
+- [x] `requests/scope-repair-fr011-1.json`と`evidence/scope-repair/fr011-attempt-1/result.json/result.md`を履歴として保存し、取消目的が失効したため`superseded`と現在の範囲を記録する。失敗/成功の実測結果を別の結果へ書き換えない。
+- [x] `backend bundle exec rspec spec/domain/business/dish/dish/evaluation spec/models/dish_evaluation_spec.rb spec/graphql/mutation/dish/evaluation`と対象2RubyのRuboCopを実行する。3pathのHEAD一致、FR-002〜010の認可保持、保護対象のhash保持とdiff checkを確認する。
+- [x] finding/applicationへ料理ownerに基づく認可の保持を記録し、取消撤回記録だけをFR-011の追加commitへまとめる。codeに差分がないことは正常である。
 
 DoD: 本人料理の評価は従来の操作で成功し、他人の料理への評価作成を拒否する。3pathがHEAD一致で、以降FR-002〜011を取消対象にしない。
 

@@ -1,0 +1,34 @@
+{
+  "request_id": "scope-repair-fr011-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.25 FR-011 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr011-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "評価Command/Repository/model/GraphQLの既存RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/dish/dish/evaluation spec/models/dish_evaluation_spec.rb spec/graphql/mutation/dish/evaluation",
+      "expected": "既存examples全成功。FR011専用ownership specを除き、評価record基準の更新認可とforce_updateの旧契約を維持"
+    },
+    {
+      "operation": "旧評価CommandとRepositoryのRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/dish/dish/evaluation/command/evaluate_command.rb app/domain/business/dish/dish/evaluation/repository.rb",
+      "expected": "2fileのoffenseなし"
+    },
+    {
+      "operation": "旧評価認可・owner保存の全量比較",
+      "expected": "restored-paths.jsonの3pathはcdb8e27^とbyte一致/不存在。料理ownerの新照合と評価owner修復を元へ戻す。純抽出6file/userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "料理の所有者を基準とする評価認可とowner修復追加を旧版へ戻した",
+    "既存評価関連RSpecとlint・3path旧比較が成功した",
+    "元の評価認可の問題を残し、他の共通化を保持した"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。checksを逐次実行。実DB/AWS/Webhook、新service起動なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr011-attempt-1/result.json"
+}

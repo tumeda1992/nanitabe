@@ -483,3 +483,7 @@ RSpec7 examples / 0 failures、Jest47 tests・backend/frontend lint・tsc、旧�
 scope-repair-fr012-1 / attempt1のpassed resultを消費し、2resolverと専用specの3pathをceb1da7親版へ戻した。
 RSpec13 examples / 0 failures、Ruby lint2 files / 0 offensesを逐次確認。旧比較・対象外Meal resolver不変・先行変換/純抽出と利用者変更保持・diff check成功。
 [結果](evidence/scope-repair/fr012-attempt-1/result.md)。FR-013復元commitはa41c8f2。次はFR-011を戻す。
+
+## FR-011 認可保持（2026-11-06）
+
+未commitの取消を撤回し、料理ownerによる認可と本人による評価操作を維持した。対象3 pathはHEADおよび `cdb8e27` と一致する。新検証はRSpec 9 examples / 0 failures、対象2 fileのRuboCop 0 offenses、FR-002〜010認可保持、保護fileの保存hash一致とdiff check成功。[結果](evidence/scope-repair/fr011-retain-attempt-1/result.md)。初回OS modeの独立snapshotはない。旧取消のpassedは当時の実測であり、[その目的は失効](evidence/scope-repair/fr011-superseded.md)した。

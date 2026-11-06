@@ -1,0 +1,33 @@
+{
+  "request_id": "scope-repair-fr011-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1 FR-011 認可の維持",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr011-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "評価Command/Repository/model/GraphQLのRSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/dish/dish/evaluation spec/models/dish_evaluation_spec.rb spec/graphql/mutation/dish/evaluation",
+      "expected": "全examples成功。本人料理の評価操作が成功し、他人料理への評価作成を拒否する"
+    },
+    {
+      "operation": "評価CommandとRepositoryのRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/dish/dish/evaluation/command/evaluate_command.rb app/domain/business/dish/dish/evaluation/repository.rb",
+      "expected": "2 fileにoffenseなし"
+    },
+    {
+      "operation": "3 path HEAD一致、FR-002〜010認可と保護対象の維持、diff check",
+      "expected": "3 pathはHEAD一致、FR-002〜010の認可を保持、保護3 fileのhashとmodeが保持され、git diff --check成功"
+    }
+  ],
+  "dod": [
+    "本人料理の評価は従来の操作で成功し、他人の料理への評価作成を拒否する",
+    "3 pathがHEAD一致し、FR-002〜010の認可を保持する"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。checksを逐次実行。実DB/AWS/Webhook、新service起動なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr011-retain-attempt-1/result.json"
+}
