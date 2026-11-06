@@ -1,8 +1,8 @@
 # FR-015: カレンダー更新完了を待つPromiseが途中で失われる
 
 - 優先度: P2
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 部分採用（Promise伝播）
+- 対応状況: 部分再適用・検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-018（現行コードで再確認）。
@@ -48,3 +48,7 @@ refresh待機・失敗時モード保持・retry表示の追加をc05d21d親版�
 [復元結果](../evidence/scope-repair/fr015-attempt-1/result.md)はJest17 tests、4fileのlint・型検査、
 7path旧byte一致/不存在、先行モード型・純抽出と利用者変更保持、diff checkが成功した。
 元のPromise欠落・refetch非待機の問題と旧検証は保存し、解消済みとは数えない。
+
+## 部分再適用（2026-11-06）
+
+既存再取得Promiseの2箇所のみ接続し、新retry UI/state machineは保留。Jest 8 tests、型検査とlint成功。人工fixtureの画面確認でcalendar保留中モード継続、解放後一覧再取得と終了を確認。内部失敗伝播はunitで確認し、実DB再保存は未実測。

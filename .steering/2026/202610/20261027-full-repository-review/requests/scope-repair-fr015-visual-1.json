@@ -1,0 +1,39 @@
+{
+  "request_id": "scope-repair-fr015-visual-1",
+  "kind": "visual-inspector",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "5 FR-015 calendar Promise",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr015-visual-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "既存の延期食事確定を通常UIで実行し、mutation後のcalendar refetchを人工的に保留",
+      "expected": "calendar再取得が保留の間、既存モードが早期終了しない"
+    },
+    {
+      "operation": "calendar refetchを解放する",
+      "expected": "既存の一覧再取得とモード終了へ進む"
+    }
+  ],
+  "dod": [
+    "到達可能な通常延期確定の待機順序を人工fixtureで確認",
+    "clearStore失敗とerror伝播は別unitで確認",
+    "実DB操作なし"
+  ],
+  "authorized_visual_context": {
+    "appUrl": "http://localhost:18100 (frontend container内)",
+    "authentication": "人工cookie at=visual-fixture-token, client=visual-fixture-client, uid=visual-fixture-user。全GraphQLは人工fixtureでfulfillし未知operationはerrors応答、外部originはabort",
+    "template": "frontend/inspect/visual/tmp/fr014-retain-attempt-2/inspect.mjs をコピー・適応し原版は上書きしない",
+    "browserHelper": "なし。templateのPlaywright chromium/headless設定を使用",
+    "setupCommand": "なし。依存installなし",
+    "artifactRoot": "frontend/inspect/visual/tmp",
+    "checkDir": "frontend/inspect/visual/tmp/fr015-retain-attempt-1",
+    "runCommand": "docker compose -f compose.dev.local.yml exec -T -w /root/nanitabe_front frontend node inspect/visual/tmp/fr015-retain-attempt-1/inspect.mjs",
+    "result": "matching result.jsonをartifact_directoryに、詳細resultと画像をcheckDirに保存し実pathを明記"
+  },
+  "data_preparation": "既存画面に人工GraphQL fixtureの延期食事と日付を用意。calendar refetchを人工保留し解放する。private API操作・実DB操作・新UIなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md visual-inspectorと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せず証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr015-visual-attempt-1/result.json"
+}

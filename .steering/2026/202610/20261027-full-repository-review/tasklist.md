@@ -68,10 +68,16 @@ DoD: 実Apollo状態のfalse→true→falseと同じerror、任意callback、未
 
 ## 5. FR-015: 既存カレンダー再取得のPromiseを接続する
 
-- [ ] 元commit `c05d21dの限定差分` の限定差分を読み、Calendar/index.tsxのonDataChanged、useRefreshCalendarData.tsxのawaitと両境界のspecを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] 元commit `c05d21dの限定差分` の限定差分を読み、Calendar/index.tsxのonDataChanged、useRefreshCalendarData.tsxのawaitと両境界のspecを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
   元commitの追加retry UI/state machineを復帰しない。useRefreshCalendarData.spec.tsxとCalendar/refreshContract.spec.tsxを境界testとして復帰・適応し、延期hookは現在の既存制御のままにする。
-- [ ] `frontend yarn test --runInBand --silent useRefreshCalendarData refreshContract useCalendarMode`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] `frontend yarn test --runInBand --silent useRefreshCalendarData refreshContract useCalendarMode`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+  > 確認日時: 2026-11-06（JST）
+  > 総合結果: ✅ 指定2画面項目正常、人工fixture・実DB未操作
+  > ログ: `frontend/inspect/visual/tmp/fr015-retain-attempt-1/result.md`
+  > calendar再取得保留: 期待モード継続と一覧再取得なし、結果一致 ✅
+  > 解放後: 期待一覧再取得とモード終了、結果一致 ✅
+
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: clearStore保留中はcalendar未取得、calendar保留中は既存callbackが未完了、失敗が呼出側へ伝播する。
 

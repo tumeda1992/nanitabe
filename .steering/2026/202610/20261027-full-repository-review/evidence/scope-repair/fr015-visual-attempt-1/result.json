@@ -1,0 +1,15 @@
+{
+  "request_id": "scope-repair-fr015-visual-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr015-visual-attempt-1",
+  "result": "frontend/inspect/visual/tmp/fr015-retain-attempt-1/result.md",
+  "summary": "2/2: ID77・1月2日で延期確定mutation 1回。calendar refetch保留中は日付選択モードを維持し一覧再取得なし。解放後calendar応答→postponedMeals要求・応答→モード終了。画像4枚目視、全GraphQL fixture、未知operation 0、実DB操作なし。clearStore失敗とerror伝播は別unitの範囲。",
+  "screenshots": [
+    "frontend/inspect/visual/tmp/fr015-retain-attempt-1/01-list.png",
+    "frontend/inspect/visual/tmp/fr015-retain-attempt-1/02-choose-date.png",
+    "frontend/inspect/visual/tmp/fr015-retain-attempt-1/03-calendar-held.png",
+    "frontend/inspect/visual/tmp/fr015-retain-attempt-1/04-completed.png"
+  ],
+  "execution": "frontend/inspect/visual/tmp/fr015-retain-attempt-1/execution.json"
+}

@@ -499,3 +499,7 @@ RSpec13 examples / 0 failures、Ruby lint2 files / 0 offensesを逐次確認。�
 ## FR-014 再適用（2026-11-06）
 
 送信状態・errorと任意callbackを既存callerへ返す。Jest 21 tests、型検査・lint成功。人工fixtureの画面確認で未選択0件、有効交換1件とpending→通常、人工失敗時pageerror 0と交換画面維持。画面内エラー表示は見えずconsoleにApolloError。内部契約はunitで検証。初回visual blockedとattempt 2 passedを保持、実DB未操作。
+
+## FR-015 部分再適用（2026-11-06）
+
+既存再取得Promiseの2箇所を接続。新retry UI/state machineは保留。Jest 8 tests、型検査・lintと人工fixture画面の待機順序を確認。内部失敗伝播はunit、実DB再保存は未実測。
