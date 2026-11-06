@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-cr001-retain-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr001-retain-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr001-retain-attempt-1/result.md",
+  "summary": "RSpec 43 examples/0 failures、RuboCop 2 files/0 offenses。対象2 pathはddfef5a一致、FR-007と保護hash/Git mode保持、diff check成功。"
+}

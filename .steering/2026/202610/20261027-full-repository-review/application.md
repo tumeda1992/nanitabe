@@ -551,3 +551,7 @@ frontend build workflow自身の変更を検出。filter 3 testsとYAML parse成
 ## FR-034 再適用（2026-11-06）
 
 旧枠入口を現行Commandへ委譲し旧返却class・本人属性・単一保存を保持。内部継承と他人削除拒否を許容し、旧Fill/FR-008を維持。RSpec 78 examples / 0 failures、4 file RuboCop 0 offenses。README reviewは移行台帳に記録。[結果](evidence/scope-repair/fr034-retain-attempt-1/result.md)。
+
+## CR-001 再適用（2026-11-06）
+
+同じ料理の別タグへまたがるAND検索を復帰し、別料理/他人のタグを組み合わせない。FR-007保持、RSpec 43 examples / 0 failures、2 file RuboCop 0 offenses。[結果](evidence/scope-repair/cr001-retain-attempt-1/result.md)。

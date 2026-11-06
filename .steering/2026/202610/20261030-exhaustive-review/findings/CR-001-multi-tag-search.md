@@ -5,8 +5,8 @@
 - 対象: `backend/app/domain/business/food/dish/usecase/dish_searcher.rb:32`
 - 観点: 検索の正確性
 - 由来: 全体レビュー・既存。既存未対応指摘とは原因・修正を分離。
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 採用
+- 対応状況: 再適用・検証完了
 - 適用枠: 挙動変更が必要
 - 依存する指摘: なし
 
@@ -48,3 +48,7 @@ SEARCH_BOTH_TAGS=false。Docker内のRails runnerで実測。異なるタグ、�
 [復元結果](../../20261027-full-repository-review/evidence/scope-repair/cr001-attempt-1/result.md)は
 RSpec36 examples / 0 failures、RuboCop2 files / 0 offenses、ddfef5a親版とのbyte一致、FR-007残部と利用者変更保持、diff checkが成功した。
 元の検索不具合の指摘と過去の実測は保存する。今回の復元は検索不具合の解消を意味しない。
+
+## 再適用（2026-11-06）
+
+料理単位で複数タグにまたがるAND検索を行う。別料理・他人のタグを組み合わせずFR-007を保持。RSpec 43 examples / 0 failures、2 file RuboCop 0 offenses。検証はfull-repository-reviewの `evidence/scope-repair/cr001-retain-attempt-1/result.md` に記録。

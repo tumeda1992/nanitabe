@@ -218,9 +218,9 @@ DoD: 本人操作の返却class・値・単一保存を維持し、他人の削�
 
 ## 18. CR-001: 複数タグに分かれた語で同じ料理を検索する
 
-- [ ] 元commit `ddfef5a` の限定差分を読み、food/dish/usecase/dish_searcher.rbとspecを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
-- [ ] `backend bundle exec rspec spec/domain/business/food/dish/usecase/dish_searcher_spec.rb spec/graphql/query/dish`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] 元commit `ddfef5a` の限定差分を読み、food/dish/usecase/dish_searcher.rbとspecを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] `backend bundle exec rspec spec/domain/business/food/dish/usecase/dish_searcher_spec.rb spec/graphql/query/dish`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 同じ料理の別タグalpha/betaへ一致するAND検索が成功し、別料理/他人のタグを組み合わせない。FR-007保持。
 

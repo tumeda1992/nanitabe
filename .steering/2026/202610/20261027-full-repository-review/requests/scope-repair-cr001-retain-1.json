@@ -1,0 +1,32 @@
+{
+  "request_id": "scope-repair-cr001-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "18 CR-001 複数タグAND検索",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr001-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/dish/usecase/dish_searcher_spec.rb spec/graphql/query/dish",
+      "expected": "全examples成功。同じ料理の別タグalpha/beta AND検索、別料理/他人タグを組み合わせない"
+    },
+    {
+      "operation": "変更箇所lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/food/dish/usecase/dish_searcher.rb spec/domain/business/food/dish/usecase/dish_searcher_spec.rb",
+      "expected": "成功"
+    },
+    {
+      "operation": "限定差分と保護範囲確認",
+      "expected": "対象2path ddfef5a一致、FR007認可と保護3file hash/Git mode保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "同じ料理の別タグalpha/betaへ一致するAND検索が成功し、別料理/他人のタグを組み合わせない。FR-007保持。"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。実DB migration/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr001-retain-attempt-1/result.json"
+}
