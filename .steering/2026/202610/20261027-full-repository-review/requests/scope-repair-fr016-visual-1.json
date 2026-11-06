@@ -1,0 +1,39 @@
+{
+  "request_id": "scope-repair-fr016-visual-1",
+  "kind": "visual-inspector",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "6 FR-016 検索timer",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr016-visual-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "通常UIで料理検索パネルを開き検索語を入力",
+      "expected": "400ms後に最終入力語のqueryを送信し人工fixtureの結果を表示する"
+    },
+    {
+      "operation": "検索語入力後400ms前にパネルを閉じ待つ",
+      "expected": "閉じたパネルから余計な検索queryが出ない"
+    }
+  ],
+  "dod": [
+    "到達可能な検索とcloseを人工fixtureでブラウザ確認",
+    "複数mounted panelの独立性とcleanup詳細はunitで確認",
+    "実DB操作なし"
+  ],
+  "authorized_visual_context": {
+    "appUrl": "http://localhost:18100 (frontend container内)",
+    "authentication": "人工cookie at=visual-fixture-token, client=visual-fixture-client, uid=visual-fixture-user。全GraphQLは人工fixtureでfulfillし未知operationはerrors応答、外部originはabort",
+    "template": "frontend/inspect/visual/tmp/fr015-retain-attempt-1/inspect.mjs をコピー・適応し原版は上書きしない",
+    "browserHelper": "なし。templateのPlaywright chromium/headless設定を使用",
+    "setupCommand": "なし。依存installなし",
+    "artifactRoot": "frontend/inspect/visual/tmp",
+    "checkDir": "frontend/inspect/visual/tmp/fr016-retain-attempt-1",
+    "runCommand": "docker compose -f compose.dev.local.yml exec -T -w /root/nanitabe_front frontend node inspect/visual/tmp/fr016-retain-attempt-1/inspect.mjs",
+    "result": "matching result.jsonをartifact_directoryに、詳細resultと画像をcheckDirに保存し実pathを明記"
+  },
+  "data_preparation": "既存の料理検索UIに人工GraphQL fixtureを用意しqueryを捕捉。private React stateや実DB操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md visual-inspectorと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr016-visual-attempt-1/result.json"
+}

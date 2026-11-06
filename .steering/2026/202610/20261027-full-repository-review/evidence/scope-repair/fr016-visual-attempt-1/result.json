@@ -1,0 +1,13 @@
+{
+  "request_id": "scope-repair-fr016-visual-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr016-visual-attempt-1",
+  "result": "frontend/inspect/visual/tmp/fr016-retain-attempt-1/result.md",
+  "summary": "2/2: 最終語query 1件を入力完了後431msで観測しfixture結果表示、中間語0件。別の語入力167ms後に既存の新規料理切替で検索パネルを取り外し、700ms待機中に該当query 0件。画像2枚目視、全GraphQL fixture、未知operation 0、実DBなし。複数panel独立性はunit範囲。",
+  "screenshots": [
+    "frontend/inspect/visual/tmp/fr016-retain-attempt-1/01-search-result.png",
+    "frontend/inspect/visual/tmp/fr016-retain-attempt-1/02-closed.png"
+  ],
+  "execution": "frontend/inspect/visual/tmp/fr016-retain-attempt-1/execution.json"
+}

@@ -1,8 +1,8 @@
 # FR-016: 検索debounceが別パネルとアンマウントをまたいで残る
 
 - 優先度: P2
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 採用
+- 対応状況: 再適用・検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-017（現行コードで再確認）。
@@ -52,3 +52,7 @@ per-instance timerとunmount cleanupの追加を5319fbd親版の共有timerへ�
 [復元結果](../evidence/scope-repair/fr016-attempt-1/result.md)はJest4 tests、変更fileのlint、
 旧index byte一致、純抽出と利用者変更保持、diff checkが成功した。既存fixture警告は結果に保存した。
 元のpanel間timer干渉と過去の検証は保存し、解消済みとは数えない。
+
+## 再適用（2026-11-06）
+
+検索timerをpanel単位にしunmountで解除。Jest 10 tests、型検査・lint成功。人工fixture画面で最終語が431ms後に送信され結果表示、167ms後の既存画面切替でpanel除去後700msはqueryなし。閉じるiconは不可視で操作できず別の通常操作で確認。複数panel独立性はunitで検証。実DB未操作。

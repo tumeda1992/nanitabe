@@ -83,9 +83,16 @@ DoD: clearStore保留中はcalendar未取得、calendar保留中は既存callbac
 
 ## 6. FR-016: 検索パネルごとの400ms timerを保持する
 
-- [ ] 元commit `5319fbd` の限定差分を読み、DishSearchPanel/index.tsx、debounce.spec.tsxを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
-- [ ] `frontend yarn test --runInBand --silent DishSearchPanel ExistingDishesForRegisteringWithMeal`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] 元commit `5319fbd` の限定差分を読み、DishSearchPanel/index.tsx、debounce.spec.tsxを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] `frontend yarn test --runInBand --silent DishSearchPanel ExistingDishesForRegisteringWithMeal`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+  > 確認日時: 2026-11-06（JST）
+  > 総合結果: ✅ 指定2画面項目正常、人工fixture・実DB未操作
+  > ログ: `frontend/inspect/visual/tmp/fr016-retain-attempt-1/result.md`
+  > 検索: 期待400ms後に最終語を送信し結果表示、結果431msで1件・結果表示 ✅
+  > 取消: 期待400ms前のpanel除去後にqueryなし、結果167msで既存画面切替後700msで0件 ✅
+  > 閉じるiconは不可視で操作できず、既存の新規料理切替でpanelを除去した。
+
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 別パネルの検索を取り消さずunmount後にcallbackを実行しない。同一パネルは最終入力から400ms。
 

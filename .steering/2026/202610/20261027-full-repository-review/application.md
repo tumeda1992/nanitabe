@@ -503,3 +503,7 @@ RSpec13 examples / 0 failures、Ruby lint2 files / 0 offensesを逐次確認。�
 ## FR-015 部分再適用（2026-11-06）
 
 既存再取得Promiseの2箇所を接続。新retry UI/state machineは保留。Jest 8 tests、型検査・lintと人工fixture画面の待機順序を確認。内部失敗伝播はunit、実DB再保存は未実測。
+
+## FR-016 再適用（2026-11-06）
+
+検索timerをpanel単位にしunmount時に解除。Jest 10 tests、型検査・lint成功。人工fixture画面で最終語431ms後送信・結果表示、167ms後の既存画面切替によるpanel除去後700ms queryなし。閉じるiconは不可視で操作できず。複数panelの独立性はunit、実DB未操作。
