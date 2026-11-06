@@ -58,7 +58,7 @@ backend全937件、frontend全283件、MySQL6件、運用系68件、型検査・
 | [FR-015: カレンダー更新完了を待つPromiseが途中で失われる](findings/FR-015-refresh-promise.md) | P2 | 対象外 | 静的 |
 | [FR-016: 検索debounceが別パネルとアンマウントをまたいで残る](findings/FR-016-search-timer.md) | P2 | 対象外 | 静的 |
 | [FR-017: パターンの枠を未選択へ戻すとNaNを送信する](findings/FR-017-pattern-placeholder.md) | P2 | 対象外 | 実測＋静的 |
-| [FR-018: 食事移動後も枠が旧日付の割当済み状態に残る](findings/FR-018-frame-meal-date.md) | P2 | 対象外 | 実測＋静的 |
+| [FR-018: 食事移動後も枠が旧日付の割当済み状態に残る](findings/FR-018-frame-meal-date.md) | P2 | 交換の原子的保存のみ採用、枠解除は保留 | 実測＋静的 |
 | [FR-019: 1食事を複数枠へ割り当てられhas_one契約が破れる](findings/FR-019-frame-meal-cardinality.md) | P2 | 対象外 | 実測＋静的 |
 | [FR-020: Nextの画面遷移で論理URLが更新されず日付がずれる](findings/FR-020-logical-history.md) | P2 | 対象外 | 実測＋静的 |
 | [FR-021: 日付URLが形式だけの検査で無効日付を画面へ渡す](findings/FR-021-calendar-invalid-date.md) | P2 | 対象外 | 静的 |

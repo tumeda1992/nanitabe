@@ -1,8 +1,8 @@
 # FR-018: 食事移動後も枠が旧日付の割当済み状態に残る
 
 - 優先度: P2
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 部分採用（交換の原子的保存）
+- 対応状況: 交換の原子的保存を再適用・検証、枠解除は保留
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -53,3 +53,7 @@ DB検証はtest用SQLite。実DBの既存割当を移行・削除していない
 [復元結果](../evidence/scope-repair/fr018-attempt-1/result.md)はRSpec81 examples / 0 failures、RuboCop4 files / 0 offenses、
 6path旧byte一致/不存在、解除method/Policy参照なし、FR-002/003残部・純抽出と利用者変更保持、diff checkが成功した。
 元の枠日付不整合と過去の検証は保存し、解消済みとは数えない。
+
+## 交換の原子的保存のみ再適用（2026-11-06）
+
+新旧Commandの交換全体をtransactionで囲み、取得・保存・返却順と枠属性を維持。後半保存失敗のredは各1例、修正後RSpec 30 examples / 0 failures、4 file RuboCop 0 offenses。初回green検証のlint指摘と再実行を含む[結果](../evidence/scope-repair/fr018-green-attempt-2/result.md)。枠解除は移動時に元枠を残すか食事と移すかの業務判断が必要なため保留し、その契約確定時に再評価する。枠不整合そのものは未解消。

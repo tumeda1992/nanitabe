@@ -1,0 +1,32 @@
+{
+  "request_id": "scope-repair-fr018-green-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "20A FR-018 transaction green",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr018-green-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/meal/usecase/swap_meals_between_days_command_spec.rb spec/domain/business/dish/meal/command/swap_meals_between_days_command_spec.rb spec/graphql/mutation/meal/swap_meals_between_days_spec.rb spec/graphql/mutation/meal/ownership_spec.rb",
+      "expected": "全examples成功。新旧Commandで実保存後の後半例外による全体rollbackと同一例外、正常返却class/順序/属性/枠・空/片側/同日・本人scope保持"
+    },
+    {
+      "operation": "変更箇所lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/food/meal/usecase/swap_meals_between_days_command.rb app/domain/business/dish/meal/command/swap_meals_between_days_command.rb spec/domain/business/food/meal/usecase/swap_meals_between_days_command_spec.rb spec/domain/business/dish/meal/command/swap_meals_between_days_command_spec.rb",
+      "expected": "成功"
+    },
+    {
+      "operation": "限定差分と保護範囲確認",
+      "expected": "production変更は2Command callのMeal.transaction wrapperのみ、取得/保存/concat順序と引数保持。枠解除・legacy取得scope・Meal/Root/Repository/Policy/Finder変更なし。保護3file hash/Git mode保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "新旧正常交換と返却class/順序・枠属性を保ち後半失敗で先行実保存をrollbackし元例外を返す"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。実DB migration/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr018-green-attempt-1/result.json"
+}

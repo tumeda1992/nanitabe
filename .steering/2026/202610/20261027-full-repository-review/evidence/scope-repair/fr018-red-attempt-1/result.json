@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr018-red-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr018-red-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr018-red-attempt-1/result.md",
+  "summary": "期待red確認: RSpec 23 examples/2 failures、他21成功。新旧Command各1例で先行実保存のdateが戻らない。RSpec終了コード1は期待どおり。"
+}

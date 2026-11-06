@@ -62,3 +62,7 @@ production buildはgit archiveで取得したcommitted sourceを使い、既存n
 公開head `b843000`のPR-triggered runではfrontend test/lint/buildとTerraform plan prod/reviewが成功した。backend test（[run 41364503462](https://github.com/tumeda1992/nanitabe/actions/runs/41364503462)）とbackend RuboCop（[run 41364503213](https://github.com/tumeda1992/nanitabe/actions/runs/41364503213)）はSetup Rubyで失敗し、RSpec/RuboCop本体は実行されていない。
 
 両jobの実ログは`Unavailable version 3.3.8 for ruby on ubuntu-26.04`を示す。両workflowの`ubuntu-latest`とRuby3.3.8指定はorigin/mainから変更しておらず、今回の修正によるテスト失敗とは区別する。既存の開発container内で成功したbackend937件/変更箇所lintを、GitHub CI成功とは読み替えない。runner/Ruby対応の改訂は今回のreview指摘の反映に追加せず、CI全greenとは報告しない。保留FR-001の既存RuboCop2件も別に残る。
+
+## FR-018 交換の原子的保存（2026-11-06）
+
+新旧Commandは正常返却class・順序・空/片側/同日・枠属性と後半失敗時の実保存rollback/同一例外を確認。RSpec 30 examples成功。枠解除は移動時の業務契約が未確定のため保留し、契約確定時に再評価する。枠不整合は未解消。

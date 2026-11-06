@@ -244,19 +244,19 @@ DoD: 逐次再送/他人を拒否し、変換失敗はrollback。row lockを保�
 
 ## 20A. FR-018: 日付交換の保存を原子的にする
 
-- [ ] 次の既存2specへtestを先に追加する。
+- [x] 次の既存2specへtestを先に追加する。
   `backend/spec/domain/business/food/meal/usecase/swap_meals_between_days_command_spec.rb`、
   `backend/spec/domain/business/dish/meal/command/swap_meals_between_days_command_spec.rb`。
   新旧Command直接呼出しでdate1集合→date2集合の返却順序と各返却class、日付以外の業務属性、関連枠の全attributes snapshotを確認する。
   空/片側空/同日（同じ食事を2回返す）を維持し、current本人scopeの既存testとlegacy既存認可を保持する。
   date1側の実保存後にdate2側の保存で特定の例外instanceをraiseし、全Meal/枠のreload結果が実行前snapshotと一致して同instanceが呼出元へ届く退行testのredを確認する。transaction呼出mockだけで済ませない。
-- [ ] 元commit `25471fd`の限定差分を読み、
+- [x] 元commit `25471fd`の限定差分を読み、
   `backend/app/domain/business/food/meal/usecase/swap_meals_between_days_command.rb`と
   `backend/app/domain/business/dish/meal/command/swap_meals_between_days_command.rb`の既存`call`全体を`::Meal.transaction`で囲む部分だけを復帰する。
   fetch/保存/concatの順序・引数を維持する。legacy取得scope、Meal/Root/reschedule/Repository/Policy/Finder/GraphQL resolverを変更せず、元`frame_release_spec.rb`全体を復帰しない。
-- [ ] `backend bundle exec rspec spec/domain/business/food/meal/usecase/swap_meals_between_days_command_spec.rb spec/domain/business/dish/meal/command/swap_meals_between_days_command_spec.rb spec/graphql/mutation/meal/swap_meals_between_days_spec.rb spec/graphql/mutation/meal/ownership_spec.rb`と、変更した2Command/2specのRuboCopを実行する。
+- [x] `backend bundle exec rspec spec/domain/business/food/meal/usecase/swap_meals_between_days_command_spec.rb spec/domain/business/dish/meal/command/swap_meals_between_days_command_spec.rb spec/graphql/mutation/meal/swap_meals_between_days_spec.rb spec/graphql/mutation/meal/ownership_spec.rb`と、変更した2Command/2specのRuboCopを実行する。
   共通契約の既存container・`RAILS_ENV=test`・標準test DBだけを使い、DoD、production限定2path、保護対象保持、diff checkを確認する。frontend変更/追加visualはない。
-- [ ] 共通契約に従い新request/attemptへ実測を保存し、finding/application/coverage/READMEの現在状態を「原子的保存は部分復帰、枠解除は親steeringで保留」へ訂正する。
+- [x] 共通契約に従い新request/attemptへ実測を保存し、finding/application/coverage/READMEの現在状態を「原子的保存は部分復帰、枠解除は親steeringで保留」へ訂正する。
   過去の全適用/取消結果を残し、元の枠不整合を解消済みとは数えない。文書をdocument-reviewへ通し、チェック更新後、この指摘の部分復帰だけを追加commitする。
 
 DoD: 新旧交換Commandが正常保存値・返却class/順序・空/片側空/同日とcurrent本人scopeを保つ。後半保存失敗では先行保存を全体rollbackして元例外が届く。枠attributes、legacy取得scope、Meal/Root/Repository/Policyを変えず、原子的保存の部分復帰と枠解除の保留を実測・現在状態記録で区別する。

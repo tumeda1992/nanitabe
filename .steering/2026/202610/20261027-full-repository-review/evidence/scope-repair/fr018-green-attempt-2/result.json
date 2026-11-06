@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr018-green-2",
+  "attempt": 2,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr018-green-attempt-2",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr018-green-attempt-2/result.md",
+  "summary": "RSpec 30 examples/0 failures、RuboCop 4 files/0 offenses。productionは2 transaction wrapperのみ、保護hash/Git mode保持、diff check成功。"
+}
