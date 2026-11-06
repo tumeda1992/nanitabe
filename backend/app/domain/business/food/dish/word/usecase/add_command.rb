@@ -7,11 +7,13 @@ module Business::Food::Dish::Word
     validates :destination, presence: false
 
     def call
-      normalize_word = NormalizeWord.create(Usecase::NormalizeWordAttributes.build(source:, destination:))
+      ::ActiveRecord::Base.transaction do
+        normalize_word = NormalizeWord.create(Usecase::NormalizeWordAttributes.build(source:, destination:))
 
-      Usecase::ReflectLatestNormalizeWordCommand.call
+        Usecase::ReflectLatestNormalizeWordCommand.call
 
-      normalize_word
+        normalize_word
+      end
     end
   end
 end

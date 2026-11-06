@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr024-retain-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr024-retain-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr024-retain-attempt-1/result.md",
+  "summary": "RSpec 60 examples/0 failures、RuboCop 5 files/0 offenses。指定5 pathは9b1df0a一致、FR-002〜022と保護hash/Git mode保持、diff check成功。"
+}

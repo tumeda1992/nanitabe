@@ -158,9 +158,9 @@ DoD: 省略/nullで出典なし新料理へ差替え、source/relation件数不�
 
 ## 11. FR-024: 一つの辞書更新を原子的に保存する
 
-- [ ] 元commit `9b1df0a` の限定差分を読み、food/dish/word/usecaseのAdd/Update/Remove/ReflectLatestNormalizeWordCommandとatomic_reflection_spec.rbを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
-- [ ] `backend bundle exec rspec spec/domain/business/food/dish/word/usecase`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] 元commit `9b1df0a` の限定差分を読み、food/dish/word/usecaseのAdd/Update/Remove/ReflectLatestNormalizeWordCommandとatomic_reflection_spec.rbを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] `backend bundle exec rspec spec/domain/business/food/dish/word/usecase`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 辞書更新後の反映失敗で辞書・料理・タグが全て元へ戻り、成功時は一括保存される。
 

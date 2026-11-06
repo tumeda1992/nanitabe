@@ -1,0 +1,32 @@
+{
+  "request_id": "scope-repair-fr024-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "11 FR-024 辞書更新transaction",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr024-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/dish/word/usecase",
+      "expected": "全examples成功。辞書更新後反映失敗で辞書・料理・タグをrollback、成功時一括保存"
+    },
+    {
+      "operation": "変更箇所lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/food/dish/word/usecase/add_command.rb app/domain/business/food/dish/word/usecase/reflect_latest_normalize_word_command.rb app/domain/business/food/dish/word/usecase/remove_command.rb app/domain/business/food/dish/word/usecase/update_command.rb spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb",
+      "expected": "成功"
+    },
+    {
+      "operation": "限定差分と保護範囲確認",
+      "expected": "対象5pathは9b1df0aと一致、FR002〜022と保護3file hash/Git mode保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "辞書更新後の反映失敗で辞書・料理・タグが全て元へ戻り、成功時は一括保存される"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。実DB migration/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr024-retain-attempt-1/result.json"
+}
