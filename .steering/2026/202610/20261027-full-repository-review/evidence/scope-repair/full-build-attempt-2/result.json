@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-full-build-2",
+  "attempt": 2,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/full-build-attempt-2",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/full-build-attempt-2/result.md",
+  "summary": "HEAD 3d832f5の隔離copy・依存実体copyで通常production build成功、19 static pages生成、終了0。作成一時物cleanup、保護hash/Git modeとdiff check成功。"
+}

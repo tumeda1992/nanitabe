@@ -1,0 +1,1920 @@
+{
+  "baseline": "d58c473",
+  "source_snapshot": "608ed3d",
+  "head": "3d832f5855ac969d1d3a06972ca046d1c0adcef0",
+  "comparison_scope": "tracked non-steering production/test/config/operational paths; protected worktree files excluded",
+  "method": "Commit path union only: candidates indicate commits touched the same file; they do not prove ownership of every hunk. Prior hunk review separately classified 608ed3d..f9a6359 differences; FR018 four-path delta read at 3d832f5. Partial adoption candidates are restricted to their accepted paths instead of the entire original commit path union; FR-001 held WIP is prebaseline.",
+  "commit_ledger": {
+    "FR-002": [
+      "affd7ec",
+      "03e4828"
+    ],
+    "FR-003": [
+      "f440ac4"
+    ],
+    "FR-004": [
+      "8adcbd6"
+    ],
+    "FR-005": [
+      "f7b3e68"
+    ],
+    "FR-006": [
+      "d34ce8c"
+    ],
+    "FR-007": [
+      "3751b09"
+    ],
+    "FR-008": [
+      "a2ca053"
+    ],
+    "FR-009": [
+      "9528fa1"
+    ],
+    "FR-010": [
+      "86ab57e"
+    ],
+    "FR-011": [
+      "cdb8e27",
+      "32d507f"
+    ],
+    "FR-012": [
+      "ceb1da7",
+      "2aae46f"
+    ],
+    "FR-013": [
+      "fb59312",
+      "afb5720"
+    ],
+    "FR-014": [
+      "601d722",
+      "8fbaf80"
+    ],
+    "FR-015 partial": [
+      "c05d21d",
+      "1cf58d6"
+    ],
+    "FR-016": [
+      "5319fbd",
+      "d1efd8f"
+    ],
+    "FR-017": [
+      "62359ad",
+      "ea3b9f1"
+    ],
+    "FR-018 partial": [
+      "25471fd",
+      "3d832f5"
+    ],
+    "FR-020": [
+      "d8afcf0",
+      "4f788d7"
+    ],
+    "FR-021": [
+      "c240b94",
+      "e21a44f"
+    ],
+    "FR-022": [
+      "5b54e45",
+      "6b6c473"
+    ],
+    "FR-024": [
+      "9b1df0a",
+      "5631105"
+    ],
+    "FR-025": [
+      "4a12564",
+      "9bf6c81"
+    ],
+    "FR-026": [
+      "df42ad7",
+      "6cbfee5"
+    ],
+    "FR-027 public-IP": [
+      "7772f90",
+      "a530b10"
+    ],
+    "FR-029": [
+      "d3e4515",
+      "b42acb9"
+    ],
+    "FR-030": [
+      "a871b4c",
+      "de54d5e"
+    ],
+    "FR-031 prebaseline": [
+      "ecfcb96",
+      "b24d899"
+    ],
+    "FR-032": [
+      "5a2fd44"
+    ],
+    "FR-033": [
+      "65dc499"
+    ],
+    "FR-034": [
+      "fcac860",
+      "b350923"
+    ],
+    "CR-001": [
+      "ddfef5a",
+      "8e14b47"
+    ],
+    "CR-002": [
+      "30c86bb",
+      "c29f76d"
+    ],
+    "CR-004": [
+      "02e2caf",
+      "f9a6359"
+    ],
+    "independent Codex rules": [
+      "cbfd10d"
+    ],
+    "RV-001 prebaseline": [
+      "a2191d3"
+    ],
+    "RV-012 prebaseline": [
+      "7452e09"
+    ],
+    "RV-013 prebaseline": [
+      "37272af"
+    ],
+    "RV-014 prebaseline": [
+      "63e8bda"
+    ],
+    "RV-015 prebaseline": [
+      "e432509"
+    ],
+    "RV-025 prebaseline": [
+      "e793c79"
+    ],
+    "RV-026 prebaseline": [
+      "b859f23"
+    ],
+    "RV-029 prebaseline": [
+      "e63166c"
+    ]
+  },
+  "rows": [
+    {
+      "path": ".codex/rules/default.rules",
+      "category": "config",
+      "path_level_candidates": [
+        {
+          "id": "independent Codex rules",
+          "commits_touching_path": [
+            "cbfd10d"
+          ]
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/backend-deploy.yml",
+      "category": "config",
+      "path_level_candidates": [
+        {
+          "id": "FR-029",
+          "commits_touching_path": [
+            "d3e4515",
+            "b42acb9"
+          ]
+        }
+      ]
+    },
+    {
+      "path": ".github/workflows/ci-frontend-build-verification.yml",
+      "category": "config",
+      "path_level_candidates": [
+        {
+          "id": "FR-030",
+          "commits_touching_path": [
+            "a871b4c",
+            "de54d5e"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/controllers/admin/food/dish/word/normalize_words_controller.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-025",
+          "commits_touching_path": [
+            "4a12564",
+            "9bf6c81"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/dish/dish/evaluation/command/evaluate_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-011",
+          "commits_touching_path": [
+            "cdb8e27"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/dish/dish/evaluation/repository.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-011",
+          "commits_touching_path": [
+            "cdb8e27"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/dish/meal/command/swap_meals_between_days_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-018 partial",
+          "commits_touching_path": [
+            "25471fd",
+            "3d832f5"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/README.md",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-034",
+          "commits_touching_path": [
+            "fcac860",
+            "b350923"
+          ]
+        },
+        {
+          "id": "RV-025 prebaseline",
+          "commits_touching_path": [
+            "e793c79"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/dish/source/usecase/update_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-004",
+          "commits_touching_path": [
+            "8adcbd6"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/dish/tag/usecase/add_tag_to_dish_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-004",
+          "commits_touching_path": [
+            "8adcbd6"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/dish/usecase/dish_searcher.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-007",
+          "commits_touching_path": [
+            "3751b09"
+          ]
+        },
+        {
+          "id": "CR-001",
+          "commits_touching_path": [
+            "ddfef5a",
+            "8e14b47"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/dish/usecase/update_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-004",
+          "commits_touching_path": [
+            "8adcbd6"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/dish/word/usecase/add_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-024",
+          "commits_touching_path": [
+            "9b1df0a",
+            "5631105"
+          ]
+        },
+        {
+          "id": "RV-014 prebaseline",
+          "commits_touching_path": [
+            "63e8bda"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/dish/word/usecase/reflect_latest_normalize_word_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-024",
+          "commits_touching_path": [
+            "9b1df0a",
+            "5631105"
+          ]
+        },
+        {
+          "id": "CR-002",
+          "commits_touching_path": [
+            "30c86bb",
+            "c29f76d"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/dish/word/usecase/remove_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-024",
+          "commits_touching_path": [
+            "9b1df0a",
+            "5631105"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/dish/word/usecase/update_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-024",
+          "commits_touching_path": [
+            "9b1df0a",
+            "5631105"
+          ]
+        },
+        {
+          "id": "RV-014 prebaseline",
+          "commits_touching_path": [
+            "63e8bda"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/factory.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-009",
+          "commits_touching_path": [
+            "9528fa1"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/frame/entry/usecase/add_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-008",
+          "commits_touching_path": [
+            "a2ca053"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/frame/entry/usecase/fill_with_meal_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-008",
+          "commits_touching_path": [
+            "a2ca053"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/frame/entry/usecase/remove_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-005",
+          "commits_touching_path": [
+            "f7b3e68"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/frame/pattern/entry/usecase/add_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-010",
+          "commits_touching_path": [
+            "86ab57e"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/frame/pattern/usecase/remove_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-006",
+          "commits_touching_path": [
+            "d34ce8c"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/frame/pattern/usecase/update_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-006",
+          "commits_touching_path": [
+            "d34ce8c"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/frame/usecase/remove_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-005",
+          "commits_touching_path": [
+            "f7b3e68"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/frame/usecase/update_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-005",
+          "commits_touching_path": [
+            "f7b3e68"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/frame_entry/root.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-034",
+          "commits_touching_path": [
+            "fcac860",
+            "b350923"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/frame_entry/usecase/add_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-008",
+          "commits_touching_path": [
+            "a2ca053"
+          ]
+        },
+        {
+          "id": "FR-034",
+          "commits_touching_path": [
+            "fcac860",
+            "b350923"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/frame_entry/usecase/fill_with_meal_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-008",
+          "commits_touching_path": [
+            "a2ca053"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/frame_entry/usecase/remove_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-034",
+          "commits_touching_path": [
+            "fcac860",
+            "b350923"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/policy/attach_dish_policy.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-009",
+          "commits_touching_path": [
+            "9528fa1"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/postponed/factory.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-009",
+          "commits_touching_path": [
+            "9528fa1"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/postponed/usecase/postponed_meals_finder.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-009",
+          "commits_touching_path": [
+            "9528fa1"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/postponed/usecase/remove_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "CR-004",
+          "commits_touching_path": [
+            "02e2caf",
+            "f9a6359"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/root.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-009",
+          "commits_touching_path": [
+            "9528fa1"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/usecase/date_meals_finder.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-009",
+          "commits_touching_path": [
+            "9528fa1"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/usecase/remove_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-003",
+          "commits_touching_path": [
+            "f440ac4"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/usecase/swap_meals_between_days_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-002",
+          "commits_touching_path": [
+            "affd7ec",
+            "03e4828"
+          ]
+        },
+        {
+          "id": "FR-018 partial",
+          "commits_touching_path": [
+            "25471fd",
+            "3d832f5"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/domain/business/food/meal/usecase/update_command.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-003",
+          "commits_touching_path": [
+            "f440ac4"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/mutations/dish/update_dish.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-012",
+          "commits_touching_path": [
+            "ceb1da7",
+            "2aae46f"
+          ]
+        },
+        {
+          "id": "RV-013 prebaseline",
+          "commits_touching_path": [
+            "37272af"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/mutations/dish/update_dish_with_new_source.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-012",
+          "commits_touching_path": [
+            "ceb1da7",
+            "2aae46f"
+          ]
+        },
+        {
+          "id": "RV-013 prebaseline",
+          "commits_touching_path": [
+            "37272af"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/mutations/meal/frame/pattern/add_meal_frame_pattern.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-033",
+          "commits_touching_path": [
+            "65dc499"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/mutations/meal/frame/pattern/delete_meal_frame_pattern.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-006",
+          "commits_touching_path": [
+            "d34ce8c"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/mutations/meal/frame/pattern/update_meal_frame_pattern.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-006",
+          "commits_touching_path": [
+            "d34ce8c"
+          ]
+        },
+        {
+          "id": "FR-033",
+          "commits_touching_path": [
+            "65dc499"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/mutations/meal/postponed/postpone_meal.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "CR-004",
+          "commits_touching_path": [
+            "02e2caf",
+            "f9a6359"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/mutations/meal/postponed/schedule_postponed_meal.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "CR-004",
+          "commits_touching_path": [
+            "02e2caf",
+            "f9a6359"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/mutations/meal/update_meal_with_new_dish.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-022",
+          "commits_touching_path": [
+            "5b54e45",
+            "6b6c473"
+          ]
+        },
+        {
+          "id": "RV-013 prebaseline",
+          "commits_touching_path": [
+            "37272af"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/sources/meal_frame_pattern_entries.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-010",
+          "commits_touching_path": [
+            "86ab57e"
+          ]
+        },
+        {
+          "id": "RV-026 prebaseline",
+          "commits_touching_path": [
+            "b859f23"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/sources/meal_frames.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-010",
+          "commits_touching_path": [
+            "86ab57e"
+          ]
+        },
+        {
+          "id": "RV-026 prebaseline",
+          "commits_touching_path": [
+            "b859f23"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/types/input/meal/frame/pattern/meal_frame_pattern_entry_input.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-033",
+          "commits_touching_path": [
+            "65dc499"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/types/output/dish/essential_dish.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-013",
+          "commits_touching_path": [
+            "fb59312",
+            "afb5720"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/types/output/meal/frame/pattern/meal_frame_pattern_entry_for_list.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-010",
+          "commits_touching_path": [
+            "86ab57e"
+          ]
+        },
+        {
+          "id": "RV-026 prebaseline",
+          "commits_touching_path": [
+            "b859f23"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/graphql/types/output/meal/frame/pattern/meal_frame_pattern_for_list.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-010",
+          "commits_touching_path": [
+            "86ab57e"
+          ]
+        },
+        {
+          "id": "RV-026 prebaseline",
+          "commits_touching_path": [
+            "b859f23"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/models/dish.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "CR-002",
+          "commits_touching_path": [
+            "30c86bb",
+            "c29f76d"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/models/dish_tag.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "CR-002",
+          "commits_touching_path": [
+            "30c86bb",
+            "c29f76d"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/models/meal.rb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-002",
+          "commits_touching_path": [
+            "03e4828"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/app/views/admin/food/dish/word/normalize_words/index.html.erb",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-025",
+          "commits_touching_path": [
+            "4a12564",
+            "9bf6c81"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/dish/dish/evaluation/command/ownership_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-011",
+          "commits_touching_path": [
+            "cdb8e27"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/dish/meal/command/swap_meals_between_days_command_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-018 partial",
+          "commits_touching_path": [
+            "3d832f5"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/food/dish/ownership_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-004",
+          "commits_touching_path": [
+            "8adcbd6"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/food/dish/usecase/dish_searcher_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-007",
+          "commits_touching_path": [
+            "3751b09"
+          ]
+        },
+        {
+          "id": "CR-001",
+          "commits_touching_path": [
+            "ddfef5a",
+            "8e14b47"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-024",
+          "commits_touching_path": [
+            "9b1df0a",
+            "5631105"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/food/meal/dish_ownership_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-009",
+          "commits_touching_path": [
+            "9528fa1"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/food/meal/frame/entry/ownership_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-008",
+          "commits_touching_path": [
+            "a2ca053"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/food/meal/frame/ownership_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-005",
+          "commits_touching_path": [
+            "f7b3e68"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/food/meal/frame/pattern/usecase/remove_command_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-006",
+          "commits_touching_path": [
+            "d34ce8c"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/food/meal/frame/pattern/usecase/update_command_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-006",
+          "commits_touching_path": [
+            "d34ce8c"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/food/meal/frame_entry/compatibility_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-034",
+          "commits_touching_path": [
+            "fcac860",
+            "b350923"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/food/meal/policy/attach_dish_policy_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-009",
+          "commits_touching_path": [
+            "9528fa1"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/domain/business/food/meal/usecase/swap_meals_between_days_command_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-002",
+          "commits_touching_path": [
+            "affd7ec"
+          ]
+        },
+        {
+          "id": "FR-018 partial",
+          "commits_touching_path": [
+            "3d832f5"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/mutation/dish/existing_tag_update_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "CR-002",
+          "commits_touching_path": [
+            "30c86bb",
+            "c29f76d"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/mutation/dish/optional_arguments_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-012",
+          "commits_touching_path": [
+            "ceb1da7",
+            "2aae46f"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/mutation/meal/frame/pattern/add_meal_frame_pattern_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-033",
+          "commits_touching_path": [
+            "65dc499"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/mutation/meal/frame/pattern/frame_ownership_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-010",
+          "commits_touching_path": [
+            "86ab57e"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/mutation/meal/frame/pattern/ownership_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-006",
+          "commits_touching_path": [
+            "d34ce8c"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/mutation/meal/frame/pattern/update_meal_frame_pattern_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-033",
+          "commits_touching_path": [
+            "65dc499"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/mutation/meal/frame_entry/fill_meal_frame_entry_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-008",
+          "commits_touching_path": [
+            "a2ca053"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/mutation/meal/frame_entry/registration_ownership_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-008",
+          "commits_touching_path": [
+            "a2ca053"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/mutation/meal/ownership_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-003",
+          "commits_touching_path": [
+            "f440ac4"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/mutation/meal/postponed/conversion_atomicity_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "CR-004",
+          "commits_touching_path": [
+            "02e2caf",
+            "f9a6359"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/mutation/meal/update_meal_without_source_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-022",
+          "commits_touching_path": [
+            "5b54e45",
+            "6b6c473"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/query/dish/effort_level_output_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-013",
+          "commits_touching_path": [
+            "fb59312",
+            "afb5720"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/graphql/types/input/meal/frame/pattern/meal_frame_pattern_entry_input_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-033",
+          "commits_touching_path": [
+            "65dc499"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/models/dish_tag_replacement_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "CR-002",
+          "commits_touching_path": [
+            "30c86bb",
+            "c29f76d"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec/requests/admin/food/dish/word/normalize_words_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-025",
+          "commits_touching_path": [
+            "4a12564",
+            "9bf6c81"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec_mysql/meal_conversion_concurrency_spec.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "CR-004",
+          "commits_touching_path": [
+            "02e2caf",
+            "f9a6359"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "backend/spec_mysql/mysql_spec_helper.rb",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "CR-004",
+          "commits_touching_path": [
+            "02e2caf",
+            "f9a6359"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/app/logical-history.spec.tsx",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-020",
+          "commits_touching_path": [
+            "d8afcf0",
+            "4f788d7"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/app/logical-history.tsx",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-020",
+          "commits_touching_path": [
+            "d8afcf0",
+            "4f788d7"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/calendar/calendarComponents/Calendar/index.tsx",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-015 partial",
+          "commits_touching_path": [
+            "c05d21d",
+            "1cf58d6"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/calendar/calendarComponents/Calendar/refreshContract.spec.tsx",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-015 partial",
+          "commits_touching_path": [
+            "c05d21d",
+            "1cf58d6"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/calendar/calendarComponents/operationComponents/SwapMeals/useSwapMealsMode.ts",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-014",
+          "commits_touching_path": [
+            "601d722",
+            "8fbaf80"
+          ]
+        },
+        {
+          "id": "RV-015 prebaseline",
+          "commits_touching_path": [
+            "e432509"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/calendar/calendarComponents/useCalendarMode.spec.ts",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-014",
+          "commits_touching_path": [
+            "601d722",
+            "8fbaf80"
+          ]
+        },
+        {
+          "id": "RV-015 prebaseline",
+          "commits_touching_path": [
+            "e432509"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/calendar/useRefreshCalendarData.spec.tsx",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-015 partial",
+          "commits_touching_path": [
+            "c05d21d",
+            "1cf58d6"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/calendar/useRefreshCalendarData.tsx",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-015 partial",
+          "commits_touching_path": [
+            "c05d21d",
+            "1cf58d6"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/dish/DishForm/DishForm/DishFormOfOnlyDishFields.tsx",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-013",
+          "commits_touching_path": [
+            "fb59312",
+            "afb5720"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/dish/DishForm/DishForm/SelectEffortLevel.tsx",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-013",
+          "commits_touching_path": [
+            "fb59312",
+            "afb5720"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/dish/DishForm/DishForm/index.tsx",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-013",
+          "commits_touching_path": [
+            "fb59312",
+            "afb5720"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/dish/DishForm/EditDish.spec/effortLevelRetention.spec.tsx",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-013",
+          "commits_touching_path": [
+            "fb59312",
+            "afb5720"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/dish/DishSearchPanel/debounce.spec.tsx",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-016",
+          "commits_touching_path": [
+            "5319fbd",
+            "d1efd8f"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/dish/DishSearchPanel/index.tsx",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-016",
+          "commits_touching_path": [
+            "5319fbd",
+            "d1efd8f"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/meal/MealForm/EditMeal.spec.tsx",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-022",
+          "commits_touching_path": [
+            "5b54e45",
+            "6b6c473"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/meal/frame/pattern/MealFramePatternEditor.spec.tsx",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-017",
+          "commits_touching_path": [
+            "62359ad",
+            "ea3b9f1"
+          ]
+        },
+        {
+          "id": "RV-012 prebaseline",
+          "commits_touching_path": [
+            "7452e09"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/components/meal/frame/pattern/MealFramePatternFields.tsx",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-017",
+          "commits_touching_path": [
+            "62359ad",
+            "ea3b9f1"
+          ]
+        },
+        {
+          "id": "RV-012 prebaseline",
+          "commits_touching_path": [
+            "7452e09"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/calendar/calendarDateFromPath.spec.ts",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-021",
+          "commits_touching_path": [
+            "c240b94",
+            "e21a44f"
+          ]
+        },
+        {
+          "id": "RV-029 prebaseline",
+          "commits_touching_path": [
+            "e63166c"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/calendar/calendarDateFromPath.ts",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-021",
+          "commits_touching_path": [
+            "c240b94",
+            "e21a44f"
+          ]
+        },
+        {
+          "id": "RV-029 prebaseline",
+          "commits_touching_path": [
+            "e63166c"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/dish/dishInputConversion.spec.ts",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-022",
+          "commits_touching_path": [
+            "5b54e45",
+            "6b6c473"
+          ]
+        },
+        {
+          "id": "RV-001 prebaseline",
+          "commits_touching_path": [
+            "a2191d3"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/dish/fetchDishQuery.ts",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-013",
+          "commits_touching_path": [
+            "fb59312",
+            "afb5720"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/dish/normalizeFunctions.ts",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-022",
+          "commits_touching_path": [
+            "5b54e45",
+            "6b6c473"
+          ]
+        },
+        {
+          "id": "RV-001 prebaseline",
+          "commits_touching_path": [
+            "a2191d3"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/meal/fetchMealQuery.ts",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-013",
+          "commits_touching_path": [
+            "fb59312",
+            "afb5720"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/meal/frame/pattern/addMealFramePatternMutation.ts",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-032",
+          "commits_touching_path": [
+            "5a2fd44"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/meal/frame/pattern/schema.spec.ts",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-032",
+          "commits_touching_path": [
+            "5a2fd44"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/meal/frame/pattern/schema.ts",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-032",
+          "commits_touching_path": [
+            "5a2fd44"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/meal/frame/pattern/updateMealFramePatternMutation.ts",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-032",
+          "commits_touching_path": [
+            "5a2fd44"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/meal/updateMealMutation.ts",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-022",
+          "commits_touching_path": [
+            "5b54e45",
+            "6b6c473"
+          ]
+        },
+        {
+          "id": "RV-001 prebaseline",
+          "commits_touching_path": [
+            "a2191d3"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/utils/mutationUtils.spec.tsx",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-014",
+          "commits_touching_path": [
+            "601d722",
+            "8fbaf80"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/features/utils/mutationUtils.ts",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-014",
+          "commits_touching_path": [
+            "601d722",
+            "8fbaf80"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/lib/graphql/generated/graphql.schema.json",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-013",
+          "commits_touching_path": [
+            "fb59312",
+            "afb5720"
+          ]
+        },
+        {
+          "id": "FR-022",
+          "commits_touching_path": [
+            "5b54e45",
+            "6b6c473"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "frontend/src/lib/graphql/generated/graphql.ts",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-013",
+          "commits_touching_path": [
+            "fb59312",
+            "afb5720"
+          ]
+        },
+        {
+          "id": "FR-022",
+          "commits_touching_path": [
+            "5b54e45",
+            "6b6c473"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "infrastructure/terraform/modules/github_oidc/main.tf",
+      "category": "config",
+      "path_level_candidates": [
+        {
+          "id": "FR-026",
+          "commits_touching_path": [
+            "df42ad7",
+            "6cbfee5"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "infrastructure/terraform/modules/github_oidc/plan_policy.spec.mjs",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-026",
+          "commits_touching_path": [
+            "df42ad7",
+            "6cbfee5"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "scripts/github/backend_deploy.spec.mjs",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-029",
+          "commits_touching_path": [
+            "d3e4515",
+            "b42acb9"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "scripts/github/frontend_build_filter.spec.mjs",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-030",
+          "commits_touching_path": [
+            "a871b4c",
+            "de54d5e"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "scripts/review_backend/start.sh",
+      "category": "production_or_operational",
+      "path_level_candidates": [
+        {
+          "id": "FR-027 public-IP",
+          "commits_touching_path": [
+            "7772f90",
+            "a530b10"
+          ]
+        }
+      ]
+    },
+    {
+      "path": "scripts/review_backend/start.spec.mjs",
+      "category": "test",
+      "path_level_candidates": [
+        {
+          "id": "FR-027 public-IP",
+          "commits_touching_path": [
+            "7772f90",
+            "a530b10"
+          ]
+        }
+      ]
+    }
+  ],
+  "unclassified_paths": [],
+  "missing_expected_id_at_path_level": [],
+  "prebaseline_only": "FR-031 and eight RV IDs use independent 608ed3d/current and baseline comparison; absence from branch diff is expected",
+  "fr018_wrapper_equal_to_25471fd": [
+    "backend/app/domain/business/dish/meal/command/swap_meals_between_days_command.rb",
+    "backend/app/domain/business/food/meal/usecase/swap_meals_between_days_command.rb"
+  ],
+  "limits": [
+    "No tests, DB, AWS, Playwright or Git mutation run by auditor.",
+    "FR018 full frame-release spec remains held; two current swap specs add transaction and existing-frame compatibility checks.",
+    "FR018 frame release, FR019 unique migration/rejection, FR023 literal replacement, FR028 private integration, CR003 linked type refusal, FR015 retry UI held.",
+    "FR032 S01-S08 and FR033 I01-I05 source files match 608ed3d; eight RV refactors retained subject to prior overlap analysis.",
+    "Path mapping is not formal per-hunk coverage or a substitute for whole-project verification."
+  ],
+  "partial_scope_filter": {
+    "FR-018 partial": [
+      "backend/app/domain/business/dish/meal/command/swap_meals_between_days_command.rb",
+      "backend/app/domain/business/food/meal/usecase/swap_meals_between_days_command.rb",
+      "backend/spec/domain/business/dish/meal/command/swap_meals_between_days_command_spec.rb",
+      "backend/spec/domain/business/food/meal/usecase/swap_meals_between_days_command_spec.rb"
+    ],
+    "FR-015 partial": [
+      "frontend/src/components/calendar/calendarComponents/Calendar/index.tsx",
+      "frontend/src/components/calendar/calendarComponents/Calendar/refreshContract.spec.tsx",
+      "frontend/src/components/calendar/useRefreshCalendarData.spec.tsx",
+      "frontend/src/components/calendar/useRefreshCalendarData.tsx"
+    ],
+    "FR-001 WIP": []
+  },
+  "fr001_note": "FR-001 WIP predates d58c473 and is held; affd7ec contains FR-002 work, not evidence of FR-001 scope, so no FR-001 candidate is inferred from that mixed commit."
+}

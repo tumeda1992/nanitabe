@@ -1,6 +1,6 @@
 # 指摘適用の合意と実行記録
 
-> **2026-11-04 訂正・修復中**: 「外部から観測できる振る舞いを維持する」という利用者の制約を有効とする。後続の全件修正指示を制約解除と扱ったのはassistantの誤解であり、挙動変更の合意として扱わない。対象外の変更を除去し、保持するrefactorを再検証する。以下の旧完了記録は修復前snapshotの履歴である。
+> **2026-11-06 現在**: 正常な利用者操作と業務仕様を維持し、認可・transaction・内部不具合の確定修正を再適用した。FR-018は交換の原子的保存のみ復帰し枠解除は保留。FR-019/023/028、CR-003、FR-015追加UIも個別判断待ち。FR-001 WIPは引き続き保留。現在の範囲と判断条件は[現行design](design.md)を正本とする。以下の旧完了・取消記録は各時点の履歴であり、全体検証の結果はcoverageに記録し、公開は未完了。
 
 ## 当時の誤った適用解釈（履歴）
 
@@ -16,7 +16,7 @@
 プラグインの取得は接続済みGitHub経由へ変更し復旧。消失した/tmpのcheckoutは/workspaceへ再配置した。
 Dockerへの通常接続は権限拒否。権限要求が返らないため、呼出し全体を55秒で打ち切る制御を入れて状態確認中。テストを未実行のまま完了とはしない。
 
-## 指摘ごとの状態
+## 2026-11-02時点の指摘ごとの状態（履歴）
 
 | 指摘 | 状態 | commit・検証 |
 | --- | --- | --- |
@@ -567,3 +567,7 @@ frontend build workflow自身の変更を検出。filter 3 testsとYAML parse成
 ## FR-018 原子的保存のみ再適用（2026-11-06）
 
 新旧交換Commandのcall全体をtransactionで囲み、正常返却・枠属性と後半失敗時rollbackを確認。修正前は2 rollback例がred、修正後RSpec 30 examples / 0 failures、4 file RuboCop 0 offenses。[結果](evidence/scope-repair/fr018-green-attempt-2/result.md)。枠解除は移動時の業務契約が未確定のため保留し、契約確定時に再評価する。元の枠不整合は未解消。
+
+## 確定範囲の全体検証（source 3d832f5、2026-11-06）
+
+全RSpec 874例、全Jest 278件、frontend lint・型検査、隔離copyのproduction buildが成功。backend全RuboCopは保留FR-001由来の2 offensesで失敗し新規0。人工fixtureの最終visualは5群成功、実DB未操作。画面の別観測と詳細・未実測は[coverage](coverage.md#全体検証source-3d832f52026-11-06)。FR-026のIAM更新は実AWSへ未applyで、有効化にはapplyが必要。

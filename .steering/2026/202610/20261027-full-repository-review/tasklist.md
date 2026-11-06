@@ -263,17 +263,27 @@ DoD: 新旧交換Commandが正常保存値・返却class/順序・空/片側空/
 
 ## 21. 全体差分・記録・検証を閉じる
 
-- [ ] `d58c473..HEAD`のproduction/test/config差分を採用指摘へ一件ずつ対応付け、逆方向にも確認する。未分類差分0、先行保持範囲不変を確認する。
+- [x] `d58c473..HEAD`のproduction/test/config差分を採用指摘へ一件ずつ対応付け、逆方向にも確認する。未分類差分0、先行保持範囲不変を確認する。
   FR-032 S01〜S08、FR-033 I01〜I05を現在の認可を含む採用状態で再照合する。
   FR-018枠解除、FR-019/023/028/CR-003とFR-015追加UIは現在の取消状態のままで、FR-018の復帰は20Aのtransaction部分だけ、FR-019 migration/uniqueとFR-028構成が入っていないことを確認する。
-- [ ] backend全体: `docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec`、
+- [x] backend全体: `docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec`、
   frontend全体: `docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand`を実行する。
   static checkは同backendの`bundle exec rubocop`、同frontendの`yarn lint`と`yarn tsc --noEmit --incremental false`を実行する。
   FR-001既存offenseを修正対象へ広げず、既存性/今回回帰/未実施を件数とpathで記録する。
-- [ ] 同frontend container内の一時source copyを使い、既存build手順でproduction buildする。常駐devの出力を上書きせず、必要なら既存検証と同じ生成済みCSSの`NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 yarn next build`を用いる。repositoryの設定や保護Dockerfileを変更しない。
-- [ ] visual-inspector childで、料理編集の手間保持、パターン未選択/再選択、出典なし食事編集、カレンダーの週/月遷移と延期後再取得を最終目視する。各phaseの目視の代替にはしない。実DB操作は行わない。
-- [ ] README/application/coverageと関連する旧RV/CRの現在採否・状態を照合して訂正する。個別findingの履歴を残し、旧「全関数契約保存」「6fileだけ」「認可も全取消」を現在の合意として読ませない。文書はdocument-reviewを通す。
-- [ ] 実装feedbackが出たら、受領ownerが同workdirのimplementation_review.mdで根本原因/コードから読める知識か/恒久記録先を整理する。永続知識はdoc-enricherの提案に留め、未承認のREADME変更を広げない。
+- [x] 同frontend container内の一時source copyを使い、既存build手順でproduction buildする。常駐devの出力を上書きせず、必要なら既存検証と同じ生成済みCSSの`NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 yarn next build`を用いる。repositoryの設定や保護Dockerfileを変更しない。
+- [x] visual-inspector childで、料理編集の手間保持、パターン未選択/再選択、出典なし食事編集、カレンダーの週/月遷移と延期後再取得を最終目視する。各phaseの目視の代替にはしない。実DB操作は行わない。
+  > 確認日時: 2026-11-06（JST）
+  > 総合結果: ✅ 指定5群正常、人工fixture・実DB未操作
+  > ログ: `frontend/inspect/visual/tmp/full-final-attempt-1/result.md`
+  > 料理手間: 期待17/17/null/null、結果一致 ✅
+  > パターン: 期待未選択0件・再選択ID1、結果一致 ✅
+  > 出典なし食事: 期待source/relation null送信とfixture成功、結果一致 ✅
+  > 週/月遷移: 期待URLと表示一致、結果8状態一致 ✅
+  > 延期後再取得: 期待calendar待機後一覧再取得・終了、結果一致 ✅
+  > 別観測: 手間明示解除画面の横ずれ・左ラベル欠け、再選択直後のエラー残存、開発環境issue表示。内部契約と永続化は自動testの範囲。
+
+- [x] README/application/coverageと関連する旧RV/CRの現在採否・状態を照合して訂正する。個別findingの履歴を残し、旧「全関数契約保存」「6fileだけ」「認可も全取消」を現在の合意として読ませない。文書はdocument-reviewを通す。
+- [x] 実装feedbackが出たら、受領ownerが同workdirのimplementation_review.mdで根本原因/コードから読める知識か/恒久記録先を整理する。永続知識はdoc-enricherの提案に留め、未承認のREADME変更を広げない。
   本設計外の有効な業務操作変更が必要になった項目だけを親Solへ戻し、独立した確定項目は続行する。
 - [ ] 全体訂正記録を追加commitする。既存の継続・公開指示に従いfeature-287をpushし、既存PR #292のtitle/bodyを最終採否・validation・未実測へ訂正する。新しいPR/mergeは行わない。
 - [ ] 親steeringへ確定先行範囲の実装結果と、FR-018枠解除、FR-019/023/028/CR-003、FR-015追加UIの個別判断を返す。全レビュー作業完了へ読み替えない。

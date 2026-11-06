@@ -1,0 +1,62 @@
+{
+  "request_id": "scope-repair-full-visual-1",
+  "kind": "visual-inspector",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "21 最終画面確認",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/full-visual-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "FR013 料理編集",
+      "expected": "ID17初期表示・名前変更17送信・明示解除/位置変更null"
+    },
+    {
+      "operation": "FR017 パターン作成/編集",
+      "expected": "未選択エラー・mutation0、再選択ID1送信"
+    },
+    {
+      "operation": "FR022 出典なし食事編集",
+      "expected": "meal10のsource/relation null送信1回、fixture応答後modal終了・calendar再取得"
+    },
+    {
+      "operation": "FR020 週/月遷移",
+      "expected": "週/月・前後・今週・browser戻る進むでURLと表示一致"
+    },
+    {
+      "operation": "FR015 延期後再取得",
+      "expected": "calendar refetch保留中mode維持、解放後一覧再取得とmode終了"
+    }
+  ],
+  "dod": [
+    "5操作を現在のsourceで新規実測し画像を目視",
+    "全GraphQL人工fixture、実DB操作なし。内部契約・DB永続化は各自動testと区別"
+  ],
+  "authorized_visual_context": {
+    "appUrl": "http://localhost:18100 (frontend container内)",
+    "authentication": "人工cookie at=visual-fixture-token, client=visual-fixture-client, uid=visual-fixture-user。全GraphQLは人工fixtureでfulfill、未知operationはerrors応答、外部originはabort",
+    "templates": [
+      "frontend/inspect/visual/tmp/fr013-retain-attempt-2/inspect.mjs",
+      "frontend/inspect/visual/tmp/fr017-retain-attempt-1/inspect.mjs",
+      "frontend/inspect/visual/tmp/fr022-retain-attempt-1/inspect.mjs",
+      "frontend/inspect/visual/tmp/fr020-retain-attempt-1/inspect.mjs",
+      "frontend/inspect/visual/tmp/fr015-retain-attempt-1/inspect.mjs"
+    ],
+    "setup": "各scriptをcheckDir内のfr013/fr017/fr022/fr020/fr015へcopy・適応し各画像/resultの出力先を新directoryへ変更。元script/result/imageは上書きしない。追加依存installなし。",
+    "browserHelper": "なし。各templateのPlaywright chromium/headless設定を使用",
+    "artifactRoot": "frontend/inspect/visual/tmp",
+    "checkDir": "frontend/inspect/visual/tmp/full-final-attempt-1",
+    "runCommands": [
+      "docker compose -f compose.dev.local.yml exec -T -w /root/nanitabe_front frontend node inspect/visual/tmp/full-final-attempt-1/fr013/inspect.mjs",
+      "docker compose -f compose.dev.local.yml exec -T -w /root/nanitabe_front frontend node inspect/visual/tmp/full-final-attempt-1/fr017/inspect.mjs",
+      "docker compose -f compose.dev.local.yml exec -T -w /root/nanitabe_front frontend node inspect/visual/tmp/full-final-attempt-1/fr022/inspect.mjs",
+      "docker compose -f compose.dev.local.yml exec -T -w /root/nanitabe_front frontend node inspect/visual/tmp/full-final-attempt-1/fr020/inspect.mjs",
+      "docker compose -f compose.dev.local.yml exec -T -w /root/nanitabe_front frontend node inspect/visual/tmp/full-final-attempt-1/fr015/inspect.mjs"
+    ],
+    "result": "matching result.jsonをartifact_directoryへ、詳細resultと画像はcheckDirに保存し実path明記"
+  },
+  "data_preparation": "各既存scriptの人工GraphQL fixtureを使用。5操作は逐次実行し過去resultを再利用しない。実DB/AWS/Webhookなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md visual-inspectorと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せず新artifactへ証拠を保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/full-visual-attempt-1/result.json"
+}

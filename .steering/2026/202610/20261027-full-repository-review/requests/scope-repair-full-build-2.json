@@ -1,0 +1,27 @@
+{
+  "request_id": "scope-repair-full-build-2",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "21 production build",
+  "attempt": 2,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/full-build-attempt-2",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "committed frontend sourceから隔離copyでproduction build",
+      "expected": "HEADのfrontend sourceのみを一時copyへ展開、copy内のnode_modules実体と生成済CSSを使いNODE_ENV=production NEXT_TELEMETRY_DISABLED=1 yarn next build成功。常駐devの.nextを変更しない。保護Dockerfile/APIOriginの未commit差分をcopyしない",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e NODE_ENV=production -e NEXT_TELEMETRY_DISABLED=1 -w /tmp/scope-repair-build-2/frontend frontend yarn next build"
+    },
+    {
+      "operation": "copy元・保護対象の確認",
+      "expected": "HEADのsource使用、保護3file hash/Git mode保持、作成した一時fileのみcleanup。実DB/AWS/Webhookなし"
+    }
+  ],
+  "dod": [
+    "既存frontend container内の一時source copyでproduction build成功"
+  ],
+  "data_preparation": "まず既存frontend container内で du -sk /root/nanitabe_front/node_modules と df -Pk /tmp をread-only実行しcopyとbuildに十分な空きを確認。不足なら停止しrootへ返す。git archive --output=frontend/tmp/scope-repair-build-source-2.tar 3d832f5 frontend を作成し /tmp/scope-repair-build-2 へ展開。node_modulesはsymlinkでなく /root/nanitabe_front/node_modules からcopy内へ実体copy。生成済CSSがHEADにない場合は既存 /root/nanitabe_front/src/app/tailwind-output.css をcopy。通常の next build commandを実行し、repo設定や常駐dev .nextを変えない。自分のarchive/copyのみcleanup。既存compose.dev.local.ymlのみ。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationや常駐dev .nextは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/full-build-attempt-2/result.json"
+}

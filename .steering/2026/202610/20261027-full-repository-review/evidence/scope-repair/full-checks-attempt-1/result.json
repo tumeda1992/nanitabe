@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-full-checks-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/full-checks-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/full-checks-attempt-1/result.md",
+  "summary": "5検査の実測・分類完了: RSpec 874/0、Jest 46 suites/278 tests成功、RuboCop 481 files/既存FR001 2 offensesで終了1、新規offense 0、ESLintと型検査成功。HEAD 3d832f5、保護hash/Git mode・diff check成功。"
+}

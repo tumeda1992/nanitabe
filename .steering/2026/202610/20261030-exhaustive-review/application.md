@@ -1,11 +1,9 @@
 # CR指摘の適用記録
 
-> 2026-11-04訂正: 挙動維持条件を解除したという旧適用合意はassistantの誤判断である。
-> 現在の実行状態は[復元tasklist](../20261027-full-repository-review/tasklist.md)が所有する。
-> 以下の2026-11-02の完了・検証は旧snapshotについての歴史である。
+> **2026-11-06 現在**: CR-001/002/004は正常操作を保つ内部修正として再適用済み。CR-003は出典種別変更時の業務契約が未確定のため保留し、契約確定時に再評価する。現在の範囲・進捗は[design](../20261027-full-repository-review/design.md)と[tasklist](../20261027-full-repository-review/tasklist.md)、最新検証は[coverage](../20261027-full-repository-review/coverage.md)を参照。以下は2026-11-02時点の履歴。
 
 
-## 適用合意と実行条件
+## 当時の適用合意と実行条件（履歴）
 
 利用者の全review指摘反映・継続指示によりCR-001〜004を反映する。[design](design.md)と[tasklist](tasklist.md)に従い、関連green・記録・1指摘1commitで進める。設計commitは`486811d`、FR-034のcommitは`fcac860`。FR-001保留と利用者由来の未commit3ファイルを維持する。実DB・AWS・Webhookは操作せず、既存開発Composeのアプリコンテナを使う。レビュー担当Astraと今回の適用担当は区別する。
 

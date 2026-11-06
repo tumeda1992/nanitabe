@@ -1,0 +1,43 @@
+{
+  "request_id": "scope-repair-full-checks-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "21 全体testとstatic check",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/full-checks-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "backend全RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec",
+      "expected": "全examples成功"
+    },
+    {
+      "operation": "frontend全Jest",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand",
+      "expected": "全tests成功"
+    },
+    {
+      "operation": "backend全RuboCop",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop",
+      "expected": "結果と全offense path/件数を記録。FR001既存offenseを今回回帰と区別"
+    },
+    {
+      "operation": "frontend全ESLint",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn lint",
+      "expected": "結果と全offense path/件数を記録"
+    },
+    {
+      "operation": "frontend型検査",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn tsc --noEmit --incremental false",
+      "expected": "成功"
+    }
+  ],
+  "dod": [
+    "全testとstatic checkを実測し既存FR001 offenseと今回回帰を件数/pathで区別する"
+  ],
+  "data_preparation": "既存compose.dev.local.ymlのみ。backend RAILS_ENV=testと標準test DB。各重い検査を必ず逐次実行し失敗時も残りを記録。実DB migration/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/full-checks-attempt-1/result.json"
+}

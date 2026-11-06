@@ -1,6 +1,6 @@
 # 確認範囲
 
-対象はREADME記載の現行HEAD全体。直近差分だけを対象としない。主要経路の静的追跡と、一部の問題の追加再現を行った。全558候補ファイルの逐行監査を意味しない。
+現在の再適用範囲は[design](design.md)、source `3d832f5` の最新結果は[全体検証](#全体検証source-3d832f52026-11-06)と[scope audit](evidence/scope-repair/final-scope-audit.md)を参照。以下の表は2026-10-27レビュー時点のsnapshotに対する確認であり、現在の未実施事項を示すものではない。主要経路の静的追跡と一部の追加再現であり、全558候補ファイルの逐行監査を意味しない。
 
 | 領域 | 確認した経路・観点 | 結果・限界 |
 | --- | --- | --- |
@@ -66,3 +66,15 @@ production buildはgit archiveで取得したcommitted sourceを使い、既存n
 ## FR-018 交換の原子的保存（2026-11-06）
 
 新旧Commandは正常返却class・順序・空/片側/同日・枠属性と後半失敗時の実保存rollback/同一例外を確認。RSpec 30 examples成功。枠解除は移動時の業務契約が未確定のため保留し、契約確定時に再評価する。枠不整合は未解消。
+
+## 全体検証（source 3d832f5、2026-11-06）
+
+backend全RSpec 874 examples / 0 failures、frontend全Jest 46 suites / 278 tests成功、frontend全ESLint・型検査成功。Jestはfixture等のconsole警告を出力。backend全RuboCopは481 files中、保留FR-001由来の `app/controllers/admin/base_controller.rb:9` / `:10` に `Style/FetchEnvVar` 2件で失敗し、新規offenseは0。全lint成功とは扱わない。[詳細](evidence/scope-repair/full-checks-attempt-1/result.md)。
+
+最終範囲照合は[scope audit](evidence/scope-repair/final-scope-audit.md)。124 pathの候補対応は完了したがpath対応自体は各hunkの形式的証明ではない。別の差分実読と個別DoD検証を併用する。
+
+production buildは固定source `3d832f5` の一時copyで通常Turbopack compile・型検査・静的19ページ生成が成功。[結果](evidence/scope-repair/full-build-attempt-2/result.md)。初回は依存symlinkがroot外となり失敗し、実体copyで再実行した。常駐dev出力は変更していない。
+
+最終visualは人工GraphQL fixtureで5群を新規確認し23画像を目視。料理手間、パターン、出典なし編集、週/月履歴、延期後再取得が指定期待に一致。実DBは操作せず、内部契約と永続化は自動testの範囲。別観測として手間明示解除画面の横ずれ・左ラベル欠け、再選択直後のエラー残存、開発環境issue表示がある。[結果](evidence/scope-repair/full-visual-attempt-1/result.json)。
+
+未実測: CR-004の今回MySQL並行再実測、実AWS IAM権限、実DBへの変更、実Webhook送信。FR-026の制限を実環境で有効にするには既存IAM policy更新のapplyが必要で、未実施。FR-018枠解除、FR-019/023/028、CR-003、FR-015追加UIは業務・構成判断待ち。
