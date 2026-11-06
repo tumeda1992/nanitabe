@@ -193,9 +193,9 @@ DoD: 起動後の各失敗/割込みでcleanupを試み、元終了codeを保持
 
 ## 15. FR-029: デプロイ依頼のHTTP失敗を返す
 
-- [ ] 元commit `d3e4515` の限定差分を読み、.github/workflows/backend-deploy.yml、scripts/github/backend_deploy.spec.mjsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
-- [ ] `node --test scripts/github/backend_deploy.spec.mjs`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] 元commit `d3e4515` の限定差分を読み、.github/workflows/backend-deploy.yml、scripts/github/backend_deploy.spec.mjsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] `node --test scripts/github/backend_deploy.spec.mjs`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: loopbackで200=0、401/404/500=22、timeout=28、各1request。production timeout10/30秒を保持する。
 

@@ -1,0 +1,31 @@
+{
+  "request_id": "scope-repair-fr029-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "15 FR-029 deploy HTTP error",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr029-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "loopback HTTP test",
+      "command": "node --test scripts/github/backend_deploy.spec.mjs",
+      "expected": "全tests成功。200=0、401/404/500=22、timeout=28、各1request。production timeout10/30秒保持"
+    },
+    {
+      "operation": "変更workflow検証",
+      "expected": "限定差分とworkflow構文を確認し利用可能なlintがあれば実行、利用不能は明記"
+    },
+    {
+      "operation": "限定差分と保護範囲確認",
+      "expected": "対象2pathはd3e4515一致。保護3file hash/Git mode保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "loopbackで200=0、401/404/500=22、timeout=28、各1request。production timeout10/30秒を保持する"
+  ],
+  "data_preparation": "loopback fixtureのみ。実Webhook、実AWS、実DB、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr029-retain-attempt-1/result.json"
+}

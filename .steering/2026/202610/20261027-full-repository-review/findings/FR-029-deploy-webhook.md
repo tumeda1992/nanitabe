@@ -1,8 +1,8 @@
 # FR-029: デプロイWebhookのHTTPエラーを成功扱いする
 
 - 優先度: P2
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 採用
+- 対応状況: 再適用・offline検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-020（現行コードで再確認）。
@@ -46,3 +46,7 @@ curlに--fail/--show-error/--silent、接続10秒・全体30秒のdeadlineを追
 [復元結果](../evidence/scope-repair/fr029-attempt-1/result.md)はNode5 cases / 0 failures、旧workflow byte一致、
 専用suite除去、利用者変更保持とdiff checkが成功した。loopback fixtureのHTTP200/401/404/500でexit0となる旧契約を確認した。
 実Webhookは呼び出していない。元のHTTPエラー扱いの問題と旧検証は保存し、解消済みとは数えない。
+
+## 再適用（2026-11-06）
+
+デプロイ依頼のHTTP失敗/timeoutを失敗として返す。loopback 6 tests成功、YAML parse成功。actionlint未導入。production timeoutは10/30秒を維持、実Webhook送信なし。[結果](../evidence/scope-repair/fr029-retain-attempt-1/result.md)。

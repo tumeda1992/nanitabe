@@ -539,3 +539,7 @@ plan権限を既存plans出力先に限定。offline policy test 3件とterrafor
 ## FR-027 再適用（2026-11-06）
 
 public-IP版の起動失敗時cleanupと再実行整合を復帰。人工env/stubのNode 31 tests、bash -n成功。実AWS操作なし。[結果](evidence/scope-repair/fr027-retain-attempt-1/result.md)。
+
+## FR-029 再適用（2026-11-06）
+
+デプロイ依頼のHTTP失敗/timeoutを返す。loopback 6 tests・YAML parse成功、actionlint未導入。production timeout10/30秒を保持し実Webhook送信なし。[結果](evidence/scope-repair/fr029-retain-attempt-1/result.md)。
