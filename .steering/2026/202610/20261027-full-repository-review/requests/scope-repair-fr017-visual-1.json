@@ -1,0 +1,39 @@
+{
+  "request_id": "scope-repair-fr017-visual-1",
+  "kind": "visual-inspector",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "7 FR-017 枠選択validation",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr017-visual-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "作成画面で枠選択後に未選択へ戻して送信",
+      "expected": "必須入力エラーを表示しmutation 0件。再選択でID1を1回送信"
+    },
+    {
+      "operation": "編集画面で枠選択後に未選択へ戻して送信",
+      "expected": "必須入力エラーを表示しmutation 0件。再選択でID1を1回送信"
+    }
+  ],
+  "dod": [
+    "通常UIで作成・編集の未選択エラーと再選択保存を人工fixtureで確認",
+    "不正数値のguardはunitで確認",
+    "実DB操作なし"
+  ],
+  "authorized_visual_context": {
+    "appUrl": "http://localhost:18100 (frontend container内)",
+    "authentication": "人工cookie at=visual-fixture-token, client=visual-fixture-client, uid=visual-fixture-user。全GraphQLは人工fixtureでfulfillし未知operationはerrors応答、外部originはabort",
+    "template": "frontend/inspect/visual/tmp/fr016-retain-attempt-1/inspect.mjs をコピー・適応し原版は上書きしない",
+    "browserHelper": "なし。templateのPlaywright chromium/headless設定を使用",
+    "setupCommand": "なし。依存installなし",
+    "artifactRoot": "frontend/inspect/visual/tmp",
+    "checkDir": "frontend/inspect/visual/tmp/fr017-retain-attempt-1",
+    "runCommand": "docker compose -f compose.dev.local.yml exec -T -w /root/nanitabe_front frontend node inspect/visual/tmp/fr017-retain-attempt-1/inspect.mjs",
+    "result": "matching result.jsonをartifact_directoryに、詳細resultと画像をcheckDirに保存し実pathを明記"
+  },
+  "data_preparation": "通常URL /mealframepatterns/new と /mealframepatterns/42/edit。mealFrames、mealFramePatterns、addMealFramePattern、updateMealFramePatternを人工fixtureで応答。実DB操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md visual-inspectorと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr017-visual-attempt-1/result.json"
+}

@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr017-retain-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr017-retain-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr017-retain-attempt-1/result.md",
+  "summary": "Jest 3 suites/20 tests、TypeScriptとlint成功。指定2 pathは62359ad一致、FR-002〜016と保護hash/Git mode保持、diff check成功。"
+}

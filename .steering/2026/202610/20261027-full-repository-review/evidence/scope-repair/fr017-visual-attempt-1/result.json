@@ -1,0 +1,15 @@
+{
+  "request_id": "scope-repair-fr017-visual-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr017-visual-attempt-1",
+  "result": "frontend/inspect/visual/tmp/fr017-retain-attempt-1/result.md",
+  "summary": "2/2: 作成・編集とも選択解除で必須エラーとmutation 0件、再選択後それぞれmutation 1件、mealFrameIdは数値1。画像4枚目視、全GraphQL fixture、未知operation 0、実DBなし。不正数値guardはunit範囲。",
+  "screenshots": [
+    "frontend/inspect/visual/tmp/fr017-retain-attempt-1/01-create-invalid.png",
+    "frontend/inspect/visual/tmp/fr017-retain-attempt-1/01-create-selected.png",
+    "frontend/inspect/visual/tmp/fr017-retain-attempt-1/02-edit-invalid.png",
+    "frontend/inspect/visual/tmp/fr017-retain-attempt-1/02-edit-selected.png"
+  ],
+  "execution": "frontend/inspect/visual/tmp/fr017-retain-attempt-1/execution.json"
+}

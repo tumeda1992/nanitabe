@@ -507,3 +507,7 @@ RSpec13 examples / 0 failures、Ruby lint2 files / 0 offensesを逐次確認。�
 ## FR-016 再適用（2026-11-06）
 
 検索timerをpanel単位にしunmount時に解除。Jest 10 tests、型検査・lint成功。人工fixture画面で最終語431ms後送信・結果表示、167ms後の既存画面切替によるpanel除去後700ms queryなし。閉じるiconは不可視で操作できず。複数panelの独立性はunit、実DB未操作。
+
+## FR-017 再適用（2026-11-06）
+
+未選択を既存入力エラーへ戻し無効ID送信を防止。Jest 20 tests、型検査・lint成功。人工fixture画面で作成/編集の未選択mutation 0、再選択後に数値ID1を各1回送信。エラーは再選択直後も残り送信時処理。実DB永続化未検証。

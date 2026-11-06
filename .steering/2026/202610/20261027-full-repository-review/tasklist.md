@@ -98,9 +98,16 @@ DoD: 別パネルの検索を取り消さずunmount後にcallbackを実行しな
 
 ## 7. FR-017: 未選択の枠を既存入力エラーへ戻す
 
-- [ ] 元commit `62359ad` の限定差分を読み、MealFramePatternFields.tsx、MealFramePatternEditor.spec.tsxを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
-- [ ] `frontend yarn test --runInBand --silent MealFramePattern`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] 元commit `62359ad` の限定差分を読み、MealFramePatternFields.tsx、MealFramePatternEditor.spec.tsxを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] `frontend yarn test --runInBand --silent MealFramePattern`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+  > 確認日時: 2026-11-06（JST）
+  > 総合結果: ✅ 指定2画面項目正常、人工fixture・実DB未操作
+  > ログ: `frontend/inspect/visual/tmp/fr017-retain-attempt-1/result.md`
+  > 作成: 期待未選択エラー・mutation 0、再選択でID1を1回送信、結果一致 ✅
+  > 編集: 期待未選択エラー・mutation 0、再選択でID1を1回送信、結果一致 ✅
+  > エラーは再選択直後も残り、送信時に処理される。永続化は未検証。
+
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 作成/編集で選択→未選択はAPI0回、再選択は正整数IDで1回。NaN/Infinity/0/負数/小数を送らず通常の選択肢は保存できる。
 
