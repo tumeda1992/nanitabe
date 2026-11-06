@@ -1,8 +1,8 @@
 # FR-012: 省略可能なGraphQL引数がRubyでは必須になっている
 
 - 優先度: P2
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 採用
+- 対応状況: 再適用・検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-003（現行コードで再確認）。
@@ -48,3 +48,7 @@ Ruby keywordの既定値追加をceb1da7親版の2resolverへ戻し、専用opti
 [復元結果](../evidence/scope-repair/fr012-attempt-1/result.md)はRSpec13 examples / 0 failures、RuboCop2 files / 0 offensesを逐次確認し、
 3path旧比較・先行入力変換/純抽出/利用者変更保持・diff checkが成功した。
 元の省略時keyword不整合と過去の検証は保存し、解消済みとは数えない。
+
+## 再適用（2026-11-06）
+
+省略可能な2引数にnil既定値を復帰し、GraphQLの省略/null/有効値を既存更新処理へ届ける。関連RSpec 19 examples / 0 failures、3 file RuboCop 0 offenses。[結果](../evidence/scope-repair/fr012-retain-attempt-1/result.md)。

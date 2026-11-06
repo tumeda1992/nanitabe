@@ -28,9 +28,9 @@ DoD: 本人料理の評価は従来の操作で成功し、他人の料理への
 
 ## 2. FR-012: 省略可能な料理更新引数を実際に省略できる
 
-- [ ] 元commit `ceb1da7` の限定差分を読み、backend/app/graphql/mutations/dish/update_dish.rb、update_dish_with_new_source.rb、optional_arguments_spec.rbを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
-- [ ] `backend bundle exec rspec spec/graphql/mutation/dish`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] 元commit `ceb1da7` の限定差分を読み、backend/app/graphql/mutations/dish/update_dish.rb、update_dish_with_new_source.rb、optional_arguments_spec.rbを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] `backend bundle exec rspec spec/graphql/mutation/dish`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: GraphQL経由の省略/null/有効値で同じ既存更新処理へ到達する。
 

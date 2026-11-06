@@ -1,0 +1,32 @@
+{
+  "request_id": "scope-repair-fr012-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "2 FR-012 省略可能な料理更新引数",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr012-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "料理GraphQL mutation RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/graphql/mutation/dish",
+      "expected": "全examples成功、2 mutationの省略/null/有効値の既存更新が成功"
+    },
+    {
+      "operation": "変更Ruby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/graphql/mutations/dish/update_dish.rb app/graphql/mutations/dish/update_dish_with_new_source.rb spec/graphql/mutation/dish/optional_arguments_spec.rb",
+      "expected": "3 files offenseなし"
+    },
+    {
+      "operation": "元commit限定差分と保護範囲確認",
+      "expected": "3 pathはceb1da7と一致、FR-002〜011認可と保護3 file hash/Git modeを保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "GraphQL経由の省略/null/有効値で同じ既存更新処理へ到達する"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。checksを逐次実行。実DB/AWS/Webhook、新service起動なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr012-retain-attempt-1/result.json"
+}

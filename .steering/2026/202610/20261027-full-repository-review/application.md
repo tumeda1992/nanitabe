@@ -487,3 +487,7 @@ RSpec13 examples / 0 failures、Ruby lint2 files / 0 offensesを逐次確認。�
 ## FR-011 認可保持（2026-11-06）
 
 未commitの取消を撤回し、料理ownerによる認可と本人による評価操作を維持した。対象3 pathはHEADおよび `cdb8e27` と一致する。新検証はRSpec 9 examples / 0 failures、対象2 fileのRuboCop 0 offenses、FR-002〜010認可保持、保護fileの保存hash一致とdiff check成功。[結果](evidence/scope-repair/fr011-retain-attempt-1/result.md)。初回OS modeの独立snapshotはない。旧取消のpassedは当時の実測であり、[その目的は失効](evidence/scope-repair/fr011-superseded.md)した。
+
+## FR-012 再適用（2026-11-06）
+
+料理更新の省略可能な引数にnil既定値を復帰。省略/null/有効値の6例を含むRSpec 19 examples / 0 failures、3 file lint 0 offenses。[結果](evidence/scope-repair/fr012-retain-attempt-1/result.md)。認可と保護fileのhashを保持。
