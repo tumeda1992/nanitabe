@@ -285,7 +285,7 @@ DoD: 新旧交換Commandが正常保存値・返却class/順序・空/片側空/
 - [x] README/application/coverageと関連する旧RV/CRの現在採否・状態を照合して訂正する。個別findingの履歴を残し、旧「全関数契約保存」「6fileだけ」「認可も全取消」を現在の合意として読ませない。文書はdocument-reviewを通す。
 - [x] 実装feedbackが出たら、受領ownerが同workdirのimplementation_review.mdで根本原因/コードから読める知識か/恒久記録先を整理する。永続知識はdoc-enricherの提案に留め、未承認のREADME変更を広げない。
   本設計外の有効な業務操作変更が必要になった項目だけを親Solへ戻し、独立した確定項目は続行する。
-- [ ] 全体訂正記録を追加commitする。既存の継続・公開指示に従いfeature-287をpushし、既存PR #292のtitle/bodyを最終採否・validation・未実測へ訂正する。新しいPR/mergeは行わない。
-- [ ] 親steeringへ確定先行範囲の実装結果と、FR-018枠解除、FR-019/023/028/CR-003、FR-015追加UIの個別判断を返す。全レビュー作業完了へ読み替えない。
+- [x] 全体訂正記録を追加commitする。既存の継続・公開指示に従いfeature-287をpushし、既存PR #292のtitle/bodyを最終採否・validation・未実測へ訂正する。新しいPR/mergeは行わない。
+- [x] 親steeringへ確定先行範囲の実装結果と、FR-018枠解除、FR-019/023/028/CR-003、FR-015追加UIの個別判断を返す。全レビュー作業完了へ読み替えない。
 
 DoD: 確定範囲の正常操作・内部修正と現在の採否が実装/test/記録/PRで一致し、未実測と親に残る判断を明記している。保護差分と実環境を変更していない。

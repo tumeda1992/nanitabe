@@ -1,6 +1,6 @@
 # 指摘適用の合意と実行記録
 
-> **2026-11-06 現在**: 正常な利用者操作と業務仕様を維持し、認可・transaction・内部不具合の確定修正を再適用した。FR-018は交換の原子的保存のみ復帰し枠解除は保留。FR-019/023/028、CR-003、FR-015追加UIも個別判断待ち。FR-001 WIPは引き続き保留。現在の範囲と判断条件は[現行design](design.md)を正本とする。以下の旧完了・取消記録は各時点の履歴であり、全体検証の結果はcoverageに記録し、公開は未完了。
+> **2026-11-06 現在**: 正常な利用者操作と業務仕様を維持し、認可・transaction・内部不具合の確定修正を再適用した。FR-018は交換の原子的保存のみ復帰し枠解除は保留。FR-019/023/028、CR-003、FR-015追加UIも個別判断待ち。FR-001 WIPは引き続き保留。現在の範囲と判断条件は[現行design](design.md)を正本とする。以下の旧完了・取消記録は各時点の履歴であり、全体検証の結果はcoverageに記録し、既存PRへ公開済み。
 
 ## 当時の誤った適用解釈（履歴）
 
@@ -571,3 +571,7 @@ frontend build workflow自身の変更を検出。filter 3 testsとYAML parse成
 ## 確定範囲の全体検証（source 3d832f5、2026-11-06）
 
 全RSpec 874例、全Jest 278件、frontend lint・型検査、隔離copyのproduction buildが成功。backend全RuboCopは保留FR-001由来の2 offensesで失敗し新規0。人工fixtureの最終visualは5群成功、実DB未操作。画面の別観測と詳細・未実測は[coverage](coverage.md#全体検証source-3d832f52026-11-06)。FR-026のIAM更新は実AWSへ未applyで、有効化にはapplyが必要。
+
+## 確定範囲の公開（2026-11-06）
+
+source `3d832f5` の検証結果と採否記録を含む `97f6348` をfeature-287へpushし、[既存PR #292](https://github.com/tumeda1992/nanitabe/pull/292)のtitle/bodyを更新、再取得で同head・open・未mergeを確認した。`3d832f5..97f6348` のsteering以外のsource差分は0。保護3 fileの保存hashを維持。公開時のCIは親が確認中で、全greenとは扱わない。FR-018枠解除等の個別判断、FR-001 WIP、CR-004の今回MySQL並行未実測、FR-026のIAM apply未実施は引き続き残る。

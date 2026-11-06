@@ -13,3 +13,9 @@ feedback: Turbopackが一時copyからproject root外へ向くnode_modules symli
 ## 最終記録のdocument-review（2026-11-06）
 
 3レビュー入口、application、coverage、tasklistと最終範囲証拠について、作成・更新の内容、記法、指示対象、前版からの削除、公開情報、暫定性を確認。旧結果は時点を明示して保持し、現行designと最新検証へ案内する。保留事項は理由と再評価条件をdesignに残す。scopeのpath候補をhunk完全証明と扱わず、実測・未実測とIAM apply依存を区別した。指摘なし。
+
+## 完了時の保留条件確認（2026-11-06）
+
+[pending 001](pending-escalations/001-review-behavior-preservation.md)、[002](pending-escalations/002-model-division.md)、[003](pending-escalations/003-work-without-new-approval.md)の本文を再確認。いずれも利用者の明示的な保留解除が再開条件であり、解除は受けていない。pluginへの引渡しは未実施のまま保留する。
+
+公開記録のdocument-review: 前版の公開前表現を実測したPR更新に限定して訂正し、sourceと公開head、CI確認中、未実測・保留を区別した。記法・指示対象・前版保持・公開情報・暫定性を確認し指摘なし。
