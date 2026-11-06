@@ -5,8 +5,8 @@
 - 対象: `backend/app/models/dish_tag.rb:40`
 - 観点: 保存契約
 - 由来: 全体レビュー・既存。既存未対応指摘とは原因・修正を分離。
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 採用
+- 対応状況: 再適用・検証完了
 - 適用枠: 挙動変更が必要
 - 依存する指摘: なし
 
@@ -49,3 +49,7 @@ UPDATED_TAG=alpha。変更後Rootを渡しても旧値が残ることをDocker�
 [復元結果](../../20261027-full-repository-review/evidence/scope-repair/cr002-attempt-1/result.md)は
 既存RSpec360 examples / 0 failures、RuboCop3 files / 0 offenses、production3file旧byte一致、FR-024/FR-004残部と利用者変更保持、diff checkが成功した。
 元のタグ更新不具合の指摘と過去の実測は保存する。今回の復元は不具合修正の保証ではない。
+
+## 再適用（2026-11-06）
+
+既存タグIDを保持して内容を更新し、不正所属を副作用前に拒否。辞書再正規化は同じRootを使いFR-024 transactionを保持。RSpec 70 examples / 0 failures、5 file RuboCop 0 offenses。検証はfull-repository-reviewの `evidence/scope-repair/cr002-retain-attempt-1/result.md` に記録。

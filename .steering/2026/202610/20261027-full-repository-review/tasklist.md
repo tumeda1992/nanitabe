@@ -226,10 +226,10 @@ DoD: 同じ料理の別タグalpha/betaへ一致するAND検索が成功し、�
 
 ## 19. CR-002: 既存タグの編集内容を原子的に保存する
 
-- [ ] 元commit `30c86bb` の限定差分を読み、Dish/DishTag、ReflectLatestNormalizeWordCommand、replacement/GraphQL spec、移行台帳を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] 元commit `30c86bb` の限定差分を読み、Dish/DishTag、ReflectLatestNormalizeWordCommand、replacement/GraphQL spec、移行台帳を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
   先に復帰したFR-024のtransactionを保持して再正規化callerを適応し、cr002-reflection-migration.mdへ現在の対応を追記する。
-- [ ] `backend bundle exec rspec spec/models/dish_tag_replacement_spec.rb spec/graphql/mutation/dish/existing_tag_update_spec.rb spec/domain/business/food/dish/word`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] `backend bundle exec rspec spec/models/dish_tag_replacement_spec.rb spec/graphql/mutation/dish/existing_tag_update_spec.rb spec/domain/business/food/dish/word`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 既存タグID不変でcontent更新・再取得が成功し、不正所属は副作用前に拒否。辞書再正規化で古いRootが上書きしない。
 

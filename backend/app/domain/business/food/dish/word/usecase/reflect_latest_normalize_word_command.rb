@@ -12,10 +12,7 @@ module Business::Food::Dish::Word
             dish_name = dish_root.name.value
             Rails.logger.info("#{log_prefix(i + 1, dish_ids.size, dish_id, dish_name)}の正規化を開始します")
 
-            ::DishTag.build_existing_roots_of_dish(dish_id).each do |dish_tag_root|
-              dish_tag_root.renormalize_content
-              ::DishTag.persist_from_root(dish_tag_root, dish_id)
-            end
+            dish_root.tags.each(&:renormalize_content)
 
             dish_root.renormalize_name
             ::Dish.persist_from_food_dish_root(dish_root)

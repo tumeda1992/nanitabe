@@ -21,8 +21,9 @@ class DishTag < ApplicationRecord
     end
 
     def persist_from_root(root, dish_id)
+      ::Dish.where(user_id: root.user_id).find(dish_id)
       tag_record = if root.id.present?
-                     find_by(id: root.id)
+                     where(dish_id: dish_id, user_id: root.user_id).find(root.id)
                    else
                      new(user_id: root.user_id, dish_id: dish_id)
                    end
@@ -32,29 +33,28 @@ class DishTag < ApplicationRecord
     end
 
     def replace_tags_of_dish(dish_id, tag_roots_for_replace)
-      existing_records = where(dish_id:)
+      transaction do
+        dish = ::Dish.find(dish_id) if tag_roots_for_replace.any?
+        existing_records = where(dish_id:).to_a
+        owned_ids = existing_records.select { |tag| tag.user_id == dish&.user_id }.map(&:id)
 
-      tag_ids_for_replace = tag_roots_for_replace.map(&:id)
-      existing_tag_ids = existing_records.map(&:id)
+        # 全入力の所属を先に検証し、不正IDで途中まで置き換えない。
+        tag_roots_for_replace.each do |tag_root|
+          tag_root.validate!
+          unless tag_root.user_id == dish.user_id && (tag_root.id.blank? || owned_ids.include?(tag_root.id))
+            raise ActiveRecord::RecordNotFound, "指定した料理のタグは存在しません。"
+          end
+        end
 
-      return existing_records if tag_ids_for_replace == existing_tag_ids
+        tag_ids_for_replace = tag_roots_for_replace.map(&:id)
+        tag_roots_for_replace.each do |tag_root|
+          tag_record = persist_from_root(tag_root, dish_id)
+          tag_root.set_id(tag_record.id) if tag_root.id.blank?
+        end
 
-      # 新規作成されたタグを追加
-      tag_roots_for_replace.select { |tag| tag.id.blank? }.map do |tag_root|
-        tag_record = persist_from_root(tag_root, dish_id)
-        tag_root.set_id(tag_record.id)
-        tag_root
+        existing_records.reject { |tag| tag_ids_for_replace.include?(tag.id) }.each(&:destroy!)
+        where(dish_id:)
       end
-
-      # 既存タグで、置き換え対象に含まれないものを削除
-      existing_tag_ids
-        .reject { |existing_tag_id| tag_ids_for_replace.include?(existing_tag_id) }
-        .map do |tag_id_needing_removed|
-        ::DishTag.find_by(id: tag_id_needing_removed)&.destroy!
-        tag_id_needing_removed
-      end
-
-      where(dish_id:)
     end
   end
 

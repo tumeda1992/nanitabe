@@ -555,3 +555,7 @@ frontend build workflow自身の変更を検出。filter 3 testsとYAML parse成
 ## CR-001 再適用（2026-11-06）
 
 同じ料理の別タグへまたがるAND検索を復帰し、別料理/他人のタグを組み合わせない。FR-007保持、RSpec 43 examples / 0 failures、2 file RuboCop 0 offenses。[結果](evidence/scope-repair/cr001-retain-attempt-1/result.md)。
+
+## CR-002 再適用（2026-11-06）
+
+既存タグの内容をID不変で原子的に更新し、不正所属を副作用前に拒否。辞書再正規化は同じRootを使いFR-024 transactionを保持。RSpec 70 examples / 0 failures、5 file RuboCop 0 offenses。[結果](evidence/scope-repair/cr002-retain-attempt-1/result.md)。

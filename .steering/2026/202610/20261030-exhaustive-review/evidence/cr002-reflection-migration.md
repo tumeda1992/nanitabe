@@ -31,3 +31,7 @@ sourceはbackend/app/domain/business/food/dish/word/usecase/基準。consumerは
 集計: 適合7（KEEP5/ADAPT1/MOVE1） / 合意済み追加0 / 合意済み変更0 / 明示廃止0 / 未監査0 / 未分類削除0 / 未分類追加0。
 
 既存の辞書反映6件とquery数1件が初回CR-002実装で失敗し、この依存を検出した。適応後は新規タグ10件、料理・タグ・GraphQL・辞書を含む204 examples / 0 failures、変更5ファイルRuboCop成功。5料理処理の60 query未満という既存基準も成功した。backend全体回帰も902 examples / 0 failures。
+
+## 再適用（2026-11-06）
+
+FR-024の辞書更新transactionを保持し、同じdish_rootのtagsを再正規化して保存する。旧時点の検証記録は履歴であり、今回の再実測はfull-repository-reviewのscope-repair結果に記録する。
