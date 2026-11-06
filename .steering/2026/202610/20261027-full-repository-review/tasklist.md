@@ -127,9 +127,16 @@ DoD: 週/月切替・今週・戻る/進むでURL/表示が一致し、独自pus
 
 ## 9. FR-021: カレンダーURLの既存日付解釈を整合する
 
-- [ ] 元commit `c240b94` の限定差分を読み、calendarDateFromPath.tsとspecを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
-- [ ] `frontend yarn test --runInBand --silent calendarDateFromPath`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] 元commit `c240b94` の限定差分を読み、calendarDateFromPath.tsとspecを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] `frontend yarn test --runInBand --silent calendarDateFromPath`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+  > 確認日時: 2026-11-06（JST）
+  > 総合結果: ✅ 指定2画面項目正常、人工fixture・実DB未操作
+  > ログ: `frontend/inspect/visual/tmp/fr021-retain-attempt-1/result.md`
+  > 閏日/query/hash: 期待URL維持と指定日の週/月表示、結果一致 ✅
+  > 不正日: 期待URL維持と実行日の週/月表示、結果一致 ✅
+  > 今日09:00はunitで確認。
+
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 有効な閏日/query/hashは同じ日を表示し、存在しない月日は既存方針の今日09:00へ戻る。
 

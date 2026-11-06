@@ -515,3 +515,7 @@ RSpec13 examples / 0 failures、Ruby lint2 files / 0 offensesを逐次確認。�
 ## FR-020 再適用（2026-11-06）
 
 Next遷移と表示日付の同期を復帰。Jest 20 tests、型検査・lint成功。人工fixtureの週/月、前後、今週、browser戻る/進む8状態でURLと表示一致、300ms後も維持。実DB未操作。
+
+## FR-021 再適用（2026-11-06）
+
+実在日付と既存fallbackを整合。Jest 21 tests、型検査・lint成功。人工fixture画面で閏日query/hashはURL維持し指定週/月、不正日はURL維持し実行日週/月を表示。今日09:00はunitで検証、実DB未操作。
