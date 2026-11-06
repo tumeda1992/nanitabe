@@ -166,10 +166,10 @@ DoD: 辞書更新後の反映失敗で辞書・料理・タグが全て元へ戻
 
 ## 12. FR-025: 辞書削除の元エラーを既存一覧に表示する
 
-- [ ] 元commit `4a12564` の限定差分を読み、normalize_words_controller.rb、一覧template、request spec（FR-001 WIP保持）を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] 元commit `4a12564` の限定差分を読み、normalize_words_controller.rb、一覧template、request spec（FR-001 WIP保持）を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
   controller全fileを古い版で上書きせず、既存FR-001の認証差分を保持して削除rescueの限定差分だけを復帰する。
-- [ ] `backend bundle exec rspec spec/requests/admin/food/dish/word/normalize_words_spec.rb spec/system/admin/food/dish/word/normalize_words_spec.rb spec/domain/business/food/dish/word/usecase`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] `backend bundle exec rspec spec/requests/admin/food/dish/word/normalize_words_spec.rb spec/system/admin/food/dish/word/normalize_words_spec.rb spec/domain/business/food/dish/word/usecase`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 本文なしDELETEの反映失敗でParameterMissingを起こさず元エラーを表示し、FR-024によって全属性を保持する。
 

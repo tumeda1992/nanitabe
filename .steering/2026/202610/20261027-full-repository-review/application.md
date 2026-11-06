@@ -527,3 +527,7 @@ Next遷移と表示日付の同期を復帰。Jest 20 tests、型検査・lint�
 ## FR-024 再適用（2026-11-06）
 
 辞書操作と料理反映をtransactionで一括保存。失敗時rollback・成功時保存を含むRSpec 60 examples / 0 failures、5 file RuboCop 0 offenses。[結果](evidence/scope-repair/fr024-retain-attempt-1/result.md)。
+
+## FR-025 再適用（2026-11-06）
+
+本文なしDELETEの反映失敗で元エラーを一覧表示し全属性を保持。RSpec 75 examples / 0 failures、指定2 file RuboCop 0 offenses。指定lintには既存FR-001 offenseは出ていない。FR-001 WIPは保持。[結果](evidence/scope-repair/fr025-retain-attempt-1/result.md)。
