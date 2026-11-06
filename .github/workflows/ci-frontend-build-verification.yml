@@ -33,7 +33,7 @@ jobs:
           echo "Changed files:"
           echo "$CHANGED_FILES"
 
-          if echo "$CHANGED_FILES" | grep -E '^frontend/|^\.github/workflows/ci-frontend-buid-verification\.yml$' > /dev/null; then
+          if echo "$CHANGED_FILES" | grep -E '^frontend/|^\.github/workflows/ci-frontend-build-verification\.yml$' > /dev/null; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           else
             echo "changed=false" >> "$GITHUB_OUTPUT"

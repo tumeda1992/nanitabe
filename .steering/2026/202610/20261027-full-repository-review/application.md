@@ -543,3 +543,7 @@ public-IP版の起動失敗時cleanupと再実行整合を復帰。人工env/stu
 ## FR-029 再適用（2026-11-06）
 
 デプロイ依頼のHTTP失敗/timeoutを返す。loopback 6 tests・YAML parse成功、actionlint未導入。production timeout10/30秒を保持し実Webhook送信なし。[結果](evidence/scope-repair/fr029-retain-attempt-1/result.md)。
+
+## FR-030 再適用（2026-11-06）
+
+frontend build workflow自身の変更を検出。filter 3 testsとYAML parse成功、actionlint未導入。[結果](evidence/scope-repair/fr030-retain-attempt-1/result.md)。

@@ -201,9 +201,9 @@ DoD: loopbackで200=0、401/404/500=22、timeout=28、各1request。production t
 
 ## 16. FR-030: build workflow自身の変更を検出する
 
-- [ ] 元commit `a871b4c` の限定差分を読み、.github/workflows/ci-frontend-build-verification.yml、scripts/github/frontend_build_filter.spec.mjsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
-- [ ] `node --test scripts/github/frontend_build_filter.spec.mjs`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] 元commit `a871b4c` の限定差分を読み、.github/workflows/ci-frontend-build-verification.yml、scripts/github/frontend_build_filter.spec.mjsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] `node --test scripts/github/frontend_build_filter.spec.mjs`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: frontend変更とworkflow自身変更がtrue、無関係変更はfalseになる。
 

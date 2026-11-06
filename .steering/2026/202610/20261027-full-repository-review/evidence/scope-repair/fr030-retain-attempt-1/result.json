@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr030-retain-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr030-retain-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr030-retain-attempt-1/result.md",
+  "summary": "offline filter 3 tests成功、YAML構文解析成功。actionlint未導入。対象2 pathはa871b4c一致、保護hash/Git modeとdiff check成功。"
+}

@@ -1,8 +1,8 @@
 # FR-030: ビルドworkflow自身だけの変更で検証をskipする
 
 - 優先度: P2
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 採用
+- 対応状況: 再適用・offline検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-019（現行コードで再確認）。
@@ -45,3 +45,7 @@ workflow自身の変更を検出する修正は挙動を変えるため、a871b4
 旧workflowのbyte一致、専用suite除去、利用者変更保持とdiff checkが成功した。
 frontend変更=true、workflow自身だけ=false、backend/README変更=falseの旧条件を維持する。
 元の検出漏れの指摘と旧検証は保存し、既知の不具合を直したとは報告しない。
+
+## 再適用（2026-11-06）
+
+frontend build workflow自身の変更を検出する。filter 3 testsとYAML parse成功、actionlint未導入。[結果](../evidence/scope-repair/fr030-retain-attempt-1/result.md)。
