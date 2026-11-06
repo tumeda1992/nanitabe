@@ -38,6 +38,8 @@ export default (args: CalendarModeControls) => {
     backToDateWhenModeStartedIfPresent(swapTargetDate1);
 
   const onDateClickForSwappingMeals = (swapTargetDate2: Date) => {
+    if (!swapTargetDate1) return;
+
     swapMealsBetweenDays(
       {
         date1: swapTargetDate1,

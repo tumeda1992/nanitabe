@@ -53,11 +53,18 @@ DoD: 手間ID17の初期表示と名前変更時17送信、明示解除と位置
 
 ## 4. FR-014: 送信状態とエラーを既存callerへ返す
 
-- [ ] 元commit `601d722` の限定差分を読み、frontend/src/features/utils/mutationUtils.tsとspec、useSwapMealsMode.ts、useCalendarMode.spec.tsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
-- [ ] `frontend yarn test --runInBand --silent mutationUtils useCalendarMode dishInputConversion`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] 元commit `601d722` の限定差分を読み、frontend/src/features/utils/mutationUtils.tsとspec、useSwapMealsMode.ts、useCalendarMode.spec.tsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] `frontend yarn test --runInBand --silent mutationUtils useCalendarMode dishInputConversion`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+  > 確認日時: 2026-11-06（JST）
+  > 総合結果: ✅ 指定3画面項目正常、人工fixture・実DB未操作
+  > ログ: `frontend/inspect/visual/tmp/fr014-retain-attempt-2/result.md`
+  > 未選択: 期待mutation 0件、結果0件 ✅
+  > 有効交換: 期待1回送信しpending後に通常画面、結果一致 ✅
+  > 人工失敗: 期待pageerror 0件と交換画面維持、結果一致 ✅（画面内エラー表示なし、consoleにApolloError）
 
-DoD: 実Apollo状態のfalse→true→falseと同じerror、任意callback、未選択から不正日付を送らない。
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+
+DoD: 実Apollo状態のfalse→true→falseと同じerror、任意callback、未選択から不正日付を送らない。内部handlerとerror object同一性はunitで確認し、visualは通常UIの未選択・成功・失敗画面を確認する。初回visual blockedは保持する。
 
 ## 5. FR-015: 既存カレンダー再取得のPromiseを接続する
 

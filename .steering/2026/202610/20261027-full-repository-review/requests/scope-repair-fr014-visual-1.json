@@ -1,0 +1,42 @@
+{
+  "request_id": "scope-repair-fr014-visual-1",
+  "kind": "visual-inspector",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "4 FR-014 mutation状態",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr014-visual-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "カレンダーの交換モードで日付未選択のまま操作",
+      "expected": "不正な日付の交換mutationが送信されない"
+    },
+    {
+      "operation": "有効な日付を選び既存交換を送信",
+      "expected": "既存の交換操作が実行でき、送信中・完了後に画面が破綻しない"
+    },
+    {
+      "operation": "人工GraphQL失敗を返す",
+      "expected": "既存画面がクラッシュせずエラーが既存callerへ伝播する（画面表示の有無は既存仕様を観測）"
+    }
+  ],
+  "dod": [
+    "既存交換操作と未選択guardを人工fixtureで実ブラウザ確認",
+    "実DB操作なし"
+  ],
+  "authorized_visual_context": {
+    "appUrl": "http://localhost:18100 (frontend container内)",
+    "authentication": "人工cookie at=visual-fixture-token, client=visual-fixture-client, uid=visual-fixture-user。全GraphQLは人工fixtureでfulfillし未知operationはerrors応答、外部originはabort",
+    "template": "frontend/inspect/visual/tmp/fr013-effort-retention/inspect.mjs をコピー・適応し原版は上書きしない",
+    "browserHelper": "なし。templateのPlaywright chromium/headless設定を使用",
+    "setupCommand": "なし。依存installなし",
+    "artifactRoot": "frontend/inspect/visual/tmp",
+    "checkDir": "frontend/inspect/visual/tmp/fr014-retain-attempt-1",
+    "runCommand": "docker compose -f compose.dev.local.yml exec -T -w /root/nanitabe_front frontend node inspect/visual/tmp/fr014-retain-attempt-1/inspect.mjs",
+    "result": "matching result.jsonをartifact_directoryに、詳細resultと画像をcheckDirに保存し実pathを明記"
+  },
+  "data_preparation": "既存カレンダー画面に人工fixtureの食事・日付を用意。人工GraphQLで送信を捕捉し成功・失敗を切替。実DB操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md visual-inspectorと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せず証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr014-visual-attempt-1/result.json"
+}

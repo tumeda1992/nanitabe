@@ -124,3 +124,7 @@ frontendの表示・入力・状態へ影響する各項目は`visual-inspector`
 2026-11-06、Solがユーザーの継続指示、既存finding、元commit、README、specとTerraの読取事実を照合して設計した。使用skillはtumeda-dev 8.2.5。親が元作業exact pathで取得したtemporary-overrides=noneを引き継いだ。task-designのrepository contextと直接利用する共通項目を使用した。
 
 本文は今回の先行実行範囲を確定し、親に残る個別判断はその範囲の設計判断として実装者へ委ねていない。設計担当はapplication/test/Git index/commit/pushを変更していない。文書reviewでは作成時・更新時観点、前版で保持していた保全・履歴・環境制約、採否全件の対応、暫定判断の再評価条件を通読確認した。
+
+### FR-014 検証層の訂正（2026-11-06）
+
+内部handlerのnull分岐とerror object同一性は通常UIから直接到達・観測できないため、real-Apollo unitで確認する。visualは未選択時mutation 0件、有効な2日で1回送信しpendingから成功後の通常画面、人工失敗後pageerror 0件で交換画面維持を確認する。機能DoDは変えず、初回visual blockedの実測を保持する。

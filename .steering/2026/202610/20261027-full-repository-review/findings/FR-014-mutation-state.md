@@ -1,8 +1,8 @@
 # FR-014: 共通mutationがloadingとerrorを取得できない
 
 - 優先度: P2
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 採用
+- 対応状況: 再適用・検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-002（現行コードで再確認）。
@@ -46,3 +46,7 @@ Apollo状態の読み取り修正、callback/公開型の強化と付随するsw
 [復元結果](../evidence/scope-repair/fr014-attempt-1/result.md)はJest22 tests、変更3fileのlint・型検査、
 4path旧byte一致/不存在、先行入力共通化・モード型・純抽出と利用者変更保持、diff checkが成功した。
 loading/error取得の元の問題と過去の検証は保存し、解消済みとは数えない。
+
+## 再適用（2026-11-06）
+
+Apollo loading/errorとcallbackを既存callerに返し未選択guardを復帰。Jest 21 tests、型検査・lint成功。画面確認は人工fixtureで未選択0件、有効交換1件とpending→通常、人工失敗時pageerror 0と交換画面維持を確認。画面内エラー表示は観測されずconsoleにApolloError。内部error同一性とnull guardはunit検証。初回visualは観測不能な内部条件を要求しblocked、attempt 2で画面範囲をfresh確認。実DB未操作。

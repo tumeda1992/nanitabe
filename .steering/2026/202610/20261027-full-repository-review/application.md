@@ -495,3 +495,7 @@ RSpec13 examples / 0 failures、Ruby lint2 files / 0 offensesを逐次確認。�
 ## FR-013 再適用（2026-11-06）
 
 編集時に保存済み手間を保持する。Jest 68 tests、RSpec 2 examples、型検査と変更箇所lint成功。[自動検証](evidence/scope-repair/fr013-retain-attempt-1/result.md)。人工GraphQL fixture画面でID17初期表示・名前変更時17送信・明示解除/位置づけ変更時nullを確認。実DB未操作。visual初回は入力不足blocked、attempt 2は4項目passed。明示解除画像に横ずれと左ラベル欠けを別観測、旧確認画像にも同状態があるが導入前比較は未実施。
+
+## FR-014 再適用（2026-11-06）
+
+送信状態・errorと任意callbackを既存callerへ返す。Jest 21 tests、型検査・lint成功。人工fixtureの画面確認で未選択0件、有効交換1件とpending→通常、人工失敗時pageerror 0と交換画面維持。画面内エラー表示は見えずconsoleにApolloError。内部契約はunitで検証。初回visual blockedとattempt 2 passedを保持、実DB未操作。
