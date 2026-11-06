@@ -184,10 +184,10 @@ DoD: plans配下へのPutObject、state読取、lock table操作を保ち、stat
 
 ## 14. FR-027: 起動失敗時に停止を試みる
 
-- [ ] 元commit `7772f90` の限定差分を読み、scripts/review_backend/start.sh、start.spec.mjsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] 元commit `7772f90` の限定差分を読み、scripts/review_backend/start.sh、start.spec.mjsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
   7772f90時点のpublic-IP integration版のみを復帰し、2bf938d以降のprivate用common/出力参照は取り込まない。人工envのNode harnessとbash -nで検査する。
-- [ ] `node --test scripts/review_backend/start.spec.mjs`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] `node --test scripts/review_backend/start.spec.mjs`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 起動後の各失敗/割込みでcleanupを試み、元終了codeを保持。起動済み再実行でintegrationと停止予定を整合する。
 

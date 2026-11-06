@@ -1,0 +1,32 @@
+{
+  "request_id": "scope-repair-fr027-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "14 FR-027 startup cleanup",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr027-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "人工env Node harness",
+      "command": "node --test scripts/review_backend/start.spec.mjs",
+      "expected": "全tests成功。起動後失敗/割込みcleanup、元終了code、起動済み再実行の整合"
+    },
+    {
+      "operation": "shell構文確認",
+      "command": "bash -n scripts/review_backend/start.sh",
+      "expected": "成功"
+    },
+    {
+      "operation": "限定差分と保護範囲確認",
+      "expected": "対象2pathは7772f90一致、public-IP integration版のみ。private common/参照を含まず保護3file hash/Git mode保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "起動後の各失敗/割込みでcleanupを試み、元終了codeを保持。起動済み再実行でintegrationと停止予定を整合する"
+  ],
+  "data_preparation": "人工envとstubのみ。実AWS query/apply/deploy、実DB/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr027-retain-attempt-1/result.json"
+}

@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr027-retain-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr027-retain-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr027-retain-attempt-1/result.md",
+  "summary": "人工env Node harness 31 tests成功、bash構文確認成功。対象2 pathは7772f90一致、public IP integration、保護hash/Git modeとdiff checkを確認。実AWS実行なし。"
+}

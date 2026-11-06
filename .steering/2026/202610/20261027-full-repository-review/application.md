@@ -535,3 +535,7 @@ Next遷移と表示日付の同期を復帰。Jest 20 tests、型検査・lint�
 ## FR-026 再適用（2026-11-06）
 
 plan権限を既存plans出力先に限定。offline policy test 3件とterraform fmt成功、README出力先一致。実AWS権限は未確認で、有効化には既存IAM更新のapplyが必要。applyは未実施。[結果](evidence/scope-repair/fr026-retain-attempt-1/result.md)。
+
+## FR-027 再適用（2026-11-06）
+
+public-IP版の起動失敗時cleanupと再実行整合を復帰。人工env/stubのNode 31 tests、bash -n成功。実AWS操作なし。[結果](evidence/scope-repair/fr027-retain-attempt-1/result.md)。
