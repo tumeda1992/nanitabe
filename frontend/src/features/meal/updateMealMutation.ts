@@ -40,7 +40,7 @@ export type UpdateMeal = z.infer<typeof UpdateMealSchema>;
 export const UPDATE_MEAL_WITH_NEW_DISH = gql`
   mutation updateMealWithNewDish(
     $dish: DishForCreate!
-    $dishSource: SourceForRead!
+    $dishSource: SourceForRead
     $dishSourceRelationDetail: DishSourceRelationDetail
     $dishTags: [Tag!]
     $meal: MealForUpdate!

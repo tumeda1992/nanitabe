@@ -142,10 +142,17 @@ DoD: 有効な閏日/query/hashは同じ日を表示し、存在しない月日�
 
 ## 10. FR-022: 既存の出典なし料理入力を編集APIへ届ける
 
-- [ ] 元commit `5b54e45` の限定差分を読み、update_meal_with_new_dish.rbとspec、normalizeFunctions/updateMealMutationとspec、生成物を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] 元commit `5b54e45` の限定差分を読み、update_meal_with_new_dish.rbとspec、normalizeFunctions/updateMealMutationとspec、生成物を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
   frontendでは`yarn test --runInBand --silent dishInputConversion EditMeal.spec AddMeal.spec AddDish.spec`も実行する。生成物は通常schemaのoffline出力で必要差分だけ生成し、開発DBへmigrationを実行しない。
-- [ ] `backend bundle exec rspec spec/graphql/mutation/meal/update_meal_without_source_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_and_new_source_spec.rb spec/graphql/mutation/meal/ownership_spec.rb`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] `backend bundle exec rspec spec/graphql/mutation/meal/update_meal_without_source_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_and_new_source_spec.rb spec/graphql/mutation/meal/ownership_spec.rb`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+  > 確認日時: 2026-11-06（JST）
+  > 総合結果: ✅ 指定2画面項目正常、人工fixture・実DB未操作
+  > ログ: `frontend/inspect/visual/tmp/fr022-retain-attempt-1/result.md`
+  > 出典なし送信: 期待meal10・source/relation null・tags []を1回、結果一致 ✅
+  > fixture成功後: 期待modal終了・calendar再取得・新料理名表示、結果一致 ✅
+  > 開発環境のissue表示を別観測。永続化と認可rollbackはbackend RSpecで検証。
+
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 省略/nullで出典なし新料理へ差替え、source/relation件数不変、認可失敗はrollback。既存出典ありも成功する。
 

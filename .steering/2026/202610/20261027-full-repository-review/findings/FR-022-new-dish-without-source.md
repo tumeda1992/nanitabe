@@ -1,8 +1,8 @@
 # FR-022: 食事編集で出典なしの新規料理を選ぶと送信契約に違反する
 
 - 優先度: P2
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 採用
+- 対応状況: 再適用・検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューには独立項目として記載されていなかった観点。
@@ -59,3 +59,7 @@ visual-inspectorも成功。updateMealWithNewDishを1回だけ送信し、source
 [復元結果](../evidence/scope-repair/fr022-attempt-1/result.md)はRSpec3 examples / 0 failures、Jest16 tests成功、
 backend/frontendの変更箇所lintと型検査成功、8path旧byte比較、純粋な共通化と利用者変更保持、diff checkが成功した。
 既存fixture警告は結果に保存した。出典なしで編集できない元の問題を解消したとは数えない。
+
+## 再適用（2026-11-06）
+
+既存の出典なし新料理を食事編集APIへ届ける。RSpec 11 examples、Jest 34 tests、型検査・両lint成功。通常schema offline codegenの2生成fileは完全一致。人工fixture画面でmeal10のsource/relation null・tags []を1回送信し、応答後modal終了とcalendar再取得・新料理名表示。開発環境issue表示を別観測。実DB未操作、永続化と認可rollbackはbackend RSpecで検証。

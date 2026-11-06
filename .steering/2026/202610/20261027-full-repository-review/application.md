@@ -519,3 +519,7 @@ Next遷移と表示日付の同期を復帰。Jest 20 tests、型検査・lint�
 ## FR-021 再適用（2026-11-06）
 
 実在日付と既存fallbackを整合。Jest 21 tests、型検査・lint成功。人工fixture画面で閏日query/hashはURL維持し指定週/月、不正日はURL維持し実行日週/月を表示。今日09:00はunitで検証、実DB未操作。
+
+## FR-022 再適用（2026-11-06）
+
+出典なし新料理を食事編集へ届ける。RSpec 11 examples、Jest 34 tests、型検査・両lint成功、通常schema offline codegenの2file一致。人工fixture画面でmeal10・source/relation null・tags []を1回送信し応答後modal終了、calendar再取得・新料理名表示。開発環境issue表示を別観測。実DB未操作、永続化と認可rollbackはbackend RSpecで検証。

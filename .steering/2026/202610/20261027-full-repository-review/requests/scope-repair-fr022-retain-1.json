@@ -1,0 +1,51 @@
+{
+  "request_id": "scope-repair-fr022-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "10 FR-022 出典なし料理",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr022-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "backend関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/graphql/mutation/meal/update_meal_without_source_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_and_new_source_spec.rb spec/graphql/mutation/meal/ownership_spec.rb",
+      "expected": "全examples成功、省略/nullでsourceなし、認可失敗rollbackとsourceあり成功"
+    },
+    {
+      "operation": "frontend関連Jest",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand --silent dishInputConversion EditMeal.spec AddMeal.spec AddDish.spec",
+      "expected": "全tests成功"
+    },
+    {
+      "operation": "型検査",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn tsc --noEmit --incremental false",
+      "expected": "成功"
+    },
+    {
+      "operation": "frontend変更箇所lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn lint src/components/meal/MealForm/EditMeal.spec.tsx src/features/dish/dishInputConversion.spec.ts src/features/dish/normalizeFunctions.ts src/features/meal/updateMealMutation.ts",
+      "expected": "成功"
+    },
+    {
+      "operation": "backend変更箇所lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/graphql/mutations/meal/update_meal_with_new_dish.rb spec/graphql/mutation/meal/update_meal_without_source_spec.rb",
+      "expected": "成功"
+    },
+    {
+      "operation": "offline schema/codegen生成物照合",
+      "expected": "通常schemaをbackend Rails runnerでoffline出力し一時codegen設定で生成、対象nullable差分を比較。test schemaは使わずmigrationを実行しない。source生成物を変更せず証拠へ結果を保存。手順はfinding FR022の過去記録参照"
+    },
+    {
+      "operation": "限定差分と保護範囲確認",
+      "expected": "対象8pathは5b54e45と一致、FR002〜021と保護3file hash/Git mode保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "省略/nullで出典なし新料理へ差替え、source/relation件数不変、認可失敗はrollback。既存出典ありも成功する"
+  ],
+  "data_preparation": "既存compose.dev.local.ymlのみ。RSpecはRAILS_ENV=testと標準test DB。schemaは通常schemaをoffline出力。重い検査は逐次。実DB migration/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せず、一時生成先とartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr022-retain-attempt-1/result.json"
+}
