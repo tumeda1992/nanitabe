@@ -242,11 +242,30 @@ DoD: 既存タグID不変でcontent更新・再取得が成功し、不正所属
 
 DoD: 逐次再送/他人を拒否し、変換失敗はrollback。row lockを保持し、新しいMySQL serviceを起動しない。
 
+## 20A. FR-018: 日付交換の保存を原子的にする
+
+- [ ] 次の既存2specへtestを先に追加する。
+  `backend/spec/domain/business/food/meal/usecase/swap_meals_between_days_command_spec.rb`、
+  `backend/spec/domain/business/dish/meal/command/swap_meals_between_days_command_spec.rb`。
+  新旧Command直接呼出しでdate1集合→date2集合の返却順序と各返却class、日付以外の業務属性、関連枠の全attributes snapshotを確認する。
+  空/片側空/同日（同じ食事を2回返す）を維持し、current本人scopeの既存testとlegacy既存認可を保持する。
+  date1側の実保存後にdate2側の保存で特定の例外instanceをraiseし、全Meal/枠のreload結果が実行前snapshotと一致して同instanceが呼出元へ届く退行testのredを確認する。transaction呼出mockだけで済ませない。
+- [ ] 元commit `25471fd`の限定差分を読み、
+  `backend/app/domain/business/food/meal/usecase/swap_meals_between_days_command.rb`と
+  `backend/app/domain/business/dish/meal/command/swap_meals_between_days_command.rb`の既存`call`全体を`::Meal.transaction`で囲む部分だけを復帰する。
+  fetch/保存/concatの順序・引数を維持する。legacy取得scope、Meal/Root/reschedule/Repository/Policy/Finder/GraphQL resolverを変更せず、元`frame_release_spec.rb`全体を復帰しない。
+- [ ] `backend bundle exec rspec spec/domain/business/food/meal/usecase/swap_meals_between_days_command_spec.rb spec/domain/business/dish/meal/command/swap_meals_between_days_command_spec.rb spec/graphql/mutation/meal/swap_meals_between_days_spec.rb spec/graphql/mutation/meal/ownership_spec.rb`と、変更した2Command/2specのRuboCopを実行する。
+  共通契約の既存container・`RAILS_ENV=test`・標準test DBだけを使い、DoD、production限定2path、保護対象保持、diff checkを確認する。frontend変更/追加visualはない。
+- [ ] 共通契約に従い新request/attemptへ実測を保存し、finding/application/coverage/READMEの現在状態を「原子的保存は部分復帰、枠解除は親steeringで保留」へ訂正する。
+  過去の全適用/取消結果を残し、元の枠不整合を解消済みとは数えない。文書をdocument-reviewへ通し、チェック更新後、この指摘の部分復帰だけを追加commitする。
+
+DoD: 新旧交換Commandが正常保存値・返却class/順序・空/片側空/同日とcurrent本人scopeを保つ。後半保存失敗では先行保存を全体rollbackして元例外が届く。枠attributes、legacy取得scope、Meal/Root/Repository/Policyを変えず、原子的保存の部分復帰と枠解除の保留を実測・現在状態記録で区別する。
+
 ## 21. 全体差分・記録・検証を閉じる
 
 - [ ] `d58c473..HEAD`のproduction/test/config差分を採用指摘へ一件ずつ対応付け、逆方向にも確認する。未分類差分0、先行保持範囲不変を確認する。
   FR-032 S01〜S08、FR-033 I01〜I05を現在の認可を含む採用状態で再照合する。
-  FR-018/019/023/028/CR-003とFR-015追加UIは現在の取消状態のままで、FR-019 migration/uniqueとFR-028構成が入っていないことを確認する。
+  FR-018枠解除、FR-019/023/028/CR-003とFR-015追加UIは現在の取消状態のままで、FR-018の復帰は20Aのtransaction部分だけ、FR-019 migration/uniqueとFR-028構成が入っていないことを確認する。
 - [ ] backend全体: `docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec`、
   frontend全体: `docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand`を実行する。
   static checkは同backendの`bundle exec rubocop`、同frontendの`yarn lint`と`yarn tsc --noEmit --incremental false`を実行する。
@@ -257,6 +276,6 @@ DoD: 逐次再送/他人を拒否し、変換失敗はrollback。row lockを保�
 - [ ] 実装feedbackが出たら、受領ownerが同workdirのimplementation_review.mdで根本原因/コードから読める知識か/恒久記録先を整理する。永続知識はdoc-enricherの提案に留め、未承認のREADME変更を広げない。
   本設計外の有効な業務操作変更が必要になった項目だけを親Solへ戻し、独立した確定項目は続行する。
 - [ ] 全体訂正記録を追加commitする。既存の継続・公開指示に従いfeature-287をpushし、既存PR #292のtitle/bodyを最終採否・validation・未実測へ訂正する。新しいPR/mergeは行わない。
-- [ ] 親steeringへ確定先行範囲の実装結果と、FR-018/019/023/028/CR-003、FR-015追加UIの個別判断を返す。全レビュー作業完了へ読み替えない。
+- [ ] 親steeringへ確定先行範囲の実装結果と、FR-018枠解除、FR-019/023/028/CR-003、FR-015追加UIの個別判断を返す。全レビュー作業完了へ読み替えない。
 
 DoD: 確定範囲の正常操作・内部修正と現在の採否が実装/test/記録/PRで一致し、未実測と親に残る判断を明記している。保護差分と実環境を変更していない。

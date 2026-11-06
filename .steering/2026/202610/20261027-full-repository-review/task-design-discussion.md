@@ -17,3 +17,48 @@ FR-015のPromise接続は既存callbackの意図に一致するが、追加retry
 design/tasklistのlifecycle更新だけを本担当が行う。application/test/stage/commit/pushは実行担当へ渡す。先行範囲に未確定判断を残さず、個別判断対象を条件付き未完了taskとして混ぜない。旧24取消の実測履歴はapplication/evidenceとGitに保存する。
 
 親から引き継いだ継続・指摘単位commit/publicationの許可を使い、形式的な再承認を追加しない。pluginの改善依頼は親の保留記録へ任せ、本体の実装再開を止める条件にしない。
+
+## 論点1: FR-018の日付交換transactionを独立復帰する
+
+**ステータス:** 決定
+
+**種別:** レビュー指摘
+
+### イテレーション1（論点1）: 枠の業務契約と原子的保存を分離する
+
+#### 提案1（論点1）
+
+元`25471fd`の新旧`SwapMealsBetweenDaysCommand`の`call`全体を囲む`::Meal.transaction`だけを復帰する。
+取得・保存・concatの順序、返却class、current本人scopeとlegacy既存認可を維持し、後半保存失敗時は全先行保存を戻して元の例外を伝える。
+枠attributesは保持し、Meal/Root/reschedule/Repository/Policy/Finderと枠解除のspecは復帰しない。
+tasklistはCR-004後・全体回帰前に20Aを置き、FR-018の個別判断対象を枠解除へ限定する。
+
+#### 検討記録（論点1・イテレーション1）
+
+元commitの対象2pathはtransactionの囲みだけを追加しており、枠解除とは分離できる。
+正常な交換の結果を変えず途中失敗の部分保存を防ぐため、既存の内部不具合修正を残す方針に一致する。
+枠の扱いは今回も暫定保留とし、移動・時間帯変更・日付交換における枠の業務契約が確定した時に親steeringで再評価する。
+上の初回判断でFR-018全体を取消状態とした範囲は、この決定以後、枠解除部分だけとなる。
+
+この回はread-only提案と親Solの正式委託を事後記録したもの。
+利用者が対象2pathを新たに個別承認したとの発言は補完せず、既存の正常操作維持・内部修正継続指示に対する適用判断を記録する。
+
+[内部検討記録: 論点1・イテレーション1](internal-records/task-design-discussion.md.topic-1.md#iteration-1)
+
+#### 提案1へのフィードバック（論点1）
+
+**結果:** 親Solが既存継続指示の範囲として限定反映を正式委託した。
+
+親Solのcheckpoint後の指示:
+
+> 既存FR018read-only案を正式にdesign+planへ反映してtasklist_readyを返して。
+> ユーザーの正常操作維持/内部transaction修正を採用し継続指示の範囲として既存合意を利用、再承認を新gateにしない。
+
+CR-004 `f9a6359`後に構造編集を引き渡され、既存完了phaseを保持して20Aを挿入する。
+実装・実測はexecutorへ渡し、finding/application/coverageの現在状態訂正は実測後に行う。
+
+### 決定（論点1）
+
+FR-018は日付交換の原子的保存だけを追加採用する。productionは新旧2Commandの`::Meal.transaction`wrapperに限定する。
+両Command specで正常返却・食事/枠属性保持・空/片側空/同日・current本人scope・後半保存失敗rollbackと元例外を検証する。
+枠解除は前記の業務契約確定まで親steeringで暫定保留とし、FR-019/023/028、CR-003、FR-015追加UIの保留は維持する。

@@ -36,6 +36,7 @@ FR-032の入力schema共有は[evidence/fr032-migration.md](evidence/fr032-migra
 | FR-015 | 延期確定後の既存callbackがclearStore、calendar再取得の完了を順に待ってから既存の一覧再取得・モード終了へ進む | 既存hookがすでに`await onDataChanged()`を持つ。失われたPromiseだけを接続する | `c05d21d`の2箇所のみ |
 | FR-016 | 検索パネルA/Bの入力が互いの検索を取り消さず、閉じたパネルの検索を実行しない。同じパネルの400msは維持する | module共有timerの不具合 | `5319fbd` |
 | FR-017 | 枠を選択後に未選択へ戻すと既存の必須入力エラーになり、再選択すれば同じ枠IDで送信できる | 対象は`mealFrameId`だけ。通常のoptionは保存済み枠の正整数PKであり、NaN/Infinity/0/負数/小数の拒否は有効な枠選択を制限しない | `62359ad`全体 |
+| FR-018 原子的保存 | 両日の食事交換は従来の取得・保存・返却順序と枠属性を保って完了し、途中保存失敗では先行保存も戻して元の例外を伝える | 一つの既存交換操作の部分保存を防ぐ内部transaction修正。枠の業務契約を選ばず独立適用できる | `25471fd`の新旧交換Command wrapperだけ |
 | FR-020 | 今週リンク、週/月切替、戻る/進むでURLと表示日付が一致し、履歴を重複追加しない | Next router更新を初期stateだけで読む内部同期不具合 | `d8afcf0` |
 | FR-021 | 有効日付にquery/hashが付いてもその日を表示し、存在しない日付は既存のfallback方針である今日09:00へ戻す | 既存parserの形式検査とfallbackを実在日付へ整合。新しい404画面は加えない | `c240b94` |
 | FR-022 | 食事編集画面で元から選べる出典なしの新規料理へ差し替えると、source/relationを作らず保存できる | UI/schema/normalizerがoptional、登録側もoptionalであるのに編集GraphQLだけ必須だった | `5b54e45` |
@@ -50,9 +51,24 @@ FR-032の入力schema共有は[evidence/fr032-migration.md](evidence/fr032-migra
 | CR-002 | 料理編集で既存タグの内容を変更すると新しい内容が保存・再取得される | 同じタグID集合なら保存を飛ばす不具合。本人scopeと原子保存も復帰 | `30c86bb` |
 | CR-004 | 同じ延期/予定食事を同時確定しても一度だけ消費し、本人の操作だけを処理する | 既存の変換操作の多重消費・認可不具合。業務操作を追加しない | `02e2caf` |
 
-この表の元commitにあるproduction/caller/testを単位として復帰する。元commitより後の別指摘の実装をsnapshotから丸ごと取り込まない。FR-025ではcontrollerのFR-001 WIPを保持し、FR-034では旧Fillの既存委譲を保持する。
+この表の元commitにあるproduction/caller/testを単位として復帰する。FR-015とFR-018は以下に記載する部分だけを復帰する。元commitより後の別指摘の実装をsnapshotから丸ごと取り込まない。FR-025ではcontrollerのFR-001 WIPを保持し、FR-034では旧Fillの既存委譲を保持する。
 
 FR-015は`Calendar/index.tsx`の`onDataChanged: refreshData`と`useRefreshCalendarData.tsx`の`await refetchMealsForCalendar()`だけを復帰する。`usePostponedMealMode.ts`と`ScheduleChosenPostponedMealForDate.tsx`は現在版を保ち、追加の再取得ボタン・エラーUI・状態機械を持ち込まない。既存callbackへ成功/失敗のPromiseを伝え、再取得完了前のモード終了を防ぐことをtestする。
+
+FR-018のproduction変更は次の2pathの`call`全体を`::Meal.transaction`で囲むだけとする。
+
+- `backend/app/domain/business/food/meal/usecase/swap_meals_between_days_command.rb`
+- `backend/app/domain/business/dish/meal/command/swap_meals_between_days_command.rb`
+
+food側をcurrent、dish側をlegacyと呼ぶ。各日のfetch・各食事の保存・date1集合へdate2集合をconcatする順序と引数を維持する。
+正常時はcurrentの`Business::Food::Meal::Root`、legacyの`Business::Dish::Meal::Meal`の配列を返し、`user_id/dish_id/meal_type/comment`と関連枠の全属性を保持する。
+currentは既存の`user_id:`付き取得で本人の食事だけを扱い、legacyは既存の日付取得と`Repository.update`の認可を維持する。
+空/片側空を許容し、同日の交換では同じ食事が返却配列へ2回現れる現行契約を保つ。
+
+後半保存で例外が発生した時は、前半の実保存も含めた交換対象Mealと関連枠のDB値を実行前へ戻し、元の例外instanceを呼出元へ伝える。
+両Commandの既存specへ退行testを追加し、reloadしたDB値でrollbackを確かめる。
+上記2Command以外のproductionは変更せず、元の`frame_release_spec.rb`全体は復帰しない。
+この部分採用で食事移動後の枠不整合を解消したとは報告しない。
 
 ### 親steeringで個別判断する対象
 
@@ -60,7 +76,7 @@ FR-015は`Calendar/index.tsx`の`onDataChanged: refreshData`と`useRefreshCalend
 
 | 指摘・部分 | 既存の根拠と判断が必要な内容 | 再評価の条件 |
 | --- | --- | --- |
-| FR-018 | 枠は日付・時間帯に属するが、食事移動時の解除は旧READMEに明記がない。移動元に枠を残して解除するか、食事とともに移動するかは本人操作の結果を変える | 食事の移動・時間帯変更・日付交換における枠の扱いが確定した時 |
+| FR-018 枠解除 | 枠は日付・時間帯に属するが、食事移動時の解除は旧READMEに明記がない。移動元に枠を残して解除するか、食事とともに移動するかは本人操作の結果を変える。交換全体のtransactionは採用表の範囲で独立復帰する | 食事の移動・時間帯変更・日付交換における枠の扱いが確定した時 |
 | FR-019 | `has_one`と単数出力は根拠になるが、別枠への再割当を拒否するか移すかは別の業務判断。unique追加は既存重複整理/migrationを必要とする | 再割当契約、既存重複の扱い、migrationの採否が確定した時 |
 | FR-023 | 旧実装はSQL LIKE候補選択とRegexp置換であり、文字列と正規表現のどちらが辞書仕様かを定めた既存文書が見つかっていない | 辞書のsource/targetの解釈と既存登録規則の扱いが確定した時 |
 | FR-028 | private integration化は接続経路、resource、費用、起動手順を変える。認可確認の追加とは範囲が異なる | この構成変更を採るという判断が確定した時 |
@@ -89,12 +105,12 @@ frontendの表示・入力・状態へ影響する各項目は`visual-inspector`
 
 旧全取消design/tasklistは`git show c6e07af:<path>`に保存される。完了した24取消commitとその証拠は履歴として残し、現在の採否・未反映・再適用済みを個別findingから辿れるように訂正する。採否の正本はfinding、現在の実行状態はtasklist、実測結果はapplication/coverageとする。
 
-復帰は一指摘一追加commitで行い、履歴改変・amend・rebase・force pushを行わない。FR-015は部分復帰として記録する。FR-011の未commit取消撤回はcode上の追加commitが不要であるため、結果の失効と記録を同指摘の追加commitへまとめる。保全対象をstageしない。既存のgit add/commit/push承認を使う。
+復帰は一指摘一追加commitで行い、履歴改変・amend・rebase・force pushを行わない。FR-015とFR-018は部分復帰として記録する。FR-018の原子的保存の復帰と枠解除の保留をfinding/application/coverage/READMEで区別し、過去の全適用・取消結果を今回の実測に流用しない。FR-011の未commit取消撤回はcode上の追加commitが不要であるため、結果の失効と記録を同指摘の追加commitへまとめる。保全対象をstageしない。既存のgit add/commit/push承認を使う。
 
 ## 受け入れ基準
 
 1. FR-011の3pathが再開時HEADと一致し、未取消FR-002〜010の認可を保持する。全関数の旧契約を保存する目的の取消を継続しない。
-2. 上表の各修正が指摘単位で復帰・検証され、FR-015の新UIと個別判断対象を持ち込まない。
+2. 上表の各修正が指摘単位で復帰・検証され、FR-015の新UI、FR-018の枠解除とその他の個別判断対象を持ち込まない。FR-018は正常交換・枠属性保持・途中保存失敗の全体rollbackと元例外を新旧Commandで確認する。
 3. 正常入力の保存・表示・既存操作をcaseごとに検証し、認可・型不正・多重送信・失敗時の差分は修正対象の期待としてtestする。
 4. 先行8件、FR-031〜033、FR-001 WIP、利用者変更、他作業を保持し、許可されていない差分が0件である。
 5. 既存containerの全RSpec/Jest、型検査、production build、全lintを確認し、既存FR-001由来のoffenseと今回回帰を分けて報告する。frontendの各確認と全体の目視を実施する。
