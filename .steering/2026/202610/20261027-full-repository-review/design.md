@@ -1,165 +1,111 @@
-# 挙動維持の適用範囲へ戻す設計
+# 正常な利用者操作と業務仕様を保つ適用範囲の修復
 
-## 目的と指示の訂正
+## 目的と判断基準
 
-レビュー後の反映を、外部から観測できる振る舞いを維持するリファクタリングへ戻す。
-元の契約は[最初のレビューの目的](../20261025-prepare-astra-code-review/README.md#目的と合意済み方針)にある
-「バグと思われる現状の挙動も、この工程では変更しない」である。
-2026-11-04、利用者は「挙動変えないと言ったのにmigration/AWS apply必要変更をしたのは目的放棄」と訂正した。
-この訂正に従い、実装の復元、テスト、記録と既存PRの訂正まで継続する。
+通常の利用者が行う操作、既存の業務仕様、運用構成を保ちながら、共通化・認可・内部の不具合修正を残す。正常操作を変えない所有者確認、型不整合の解消、保存・非同期処理の不具合修正は今回の適用対象である。既存の有効な業務操作を新たに拒否する条件、情報の扱いを選び直す処理、利用者へ追加する操作、環境構成や費用を変える変更は個別に判断する。
 
-過去のdesignとapplicationにある「全件修正指示が挙動維持制限を解除した」という記述はassistantの誤解である。
-これを利用者の合意として扱わない。このdesignは以前の全指摘適用設計を置き換える。
-履歴・レビュー証拠を保存しながら現在の採否と実装を訂正する。
-利用者による再開・訂正・公開の指示があるため、形式的な再承認や開始確認を追加しない。
+利用者の具体的な例は「IDOR対応とかは関数の挙動を変えているだけでユーザの挙動も変わらず内部だけの話だから問題ない」。この例と「共通化や認可・内部の不具合修正を残し、新しい業務制約や構成変更を個別判断」という方針への継続指示を根拠とする。正常操作とは、本人の対象を正しい型・値で操作する既存の業務操作を指す。他人の識別子へのアクセスや無効な識別子の受理を互換要件にはしない。既存の有効な操作を制限するかは、既存画面、README、schema、specを突き合わせて判定する。
+
+この先行実行範囲は以下の採否表で確定している。個別判断が必要な項目は先行範囲の対象外として残し、親steeringで再評価する。確定項目の実行は、その判断へ依存しない。合意経緯は[task-design-discussion.md](task-design-discussion.md)に記録する。
 
 ## 完成後の姿
 
-### contractの保存と明示差分
+### 比較基点と保持する範囲
 
-| 項目 | 固定する内容 |
+| 基点 | 用途 |
 | --- | --- |
-| 修復開始時点 | `608ed3d2e8c3a94a54bd8a43aa48ee7a2d777665`。既存の指摘適用と公開記録を含む |
-| 復元baseline | `d58c47364bc9c3774a1a4b3636938c9c83bd3abc`。先行8件、FR-031、明示保留のFR-001 WIPを含む |
-| 再開時checkpoint | `affd7ec1eb9105e27795bcc9ecbdd4f9071af628`。baselineにFR-002の途中変更とレビュー記録を加えた状態 |
-| 対象scope | 開始時点とbaseline間で変更されたapplication、実行test、schema、Terraform、起動停止script、workflow、対応する運用説明の全範囲 |
-| 残す純粋な共通化の証拠 | [FR-032の台帳](evidence/fr032-migration.md) S01〜S08、[FR-033の台帳](evidence/fr033-migration.md) I01〜I05 |
+| `d58c47364bc9c3774a1a4b3636938c9c83bd3abc` | 先行8件、FR-031、明示保留のFR-001 WIPを含む業務仕様の比較基点 |
+| `608ed3d2e8c3a94a54bd8a43aa48ee7a2d777665` | 元の全適用実装、test、証拠を復元できるsnapshot |
+| `c6e07af` | 24件の適用取消がcommit済みで、FR-011の取消だけがworktreeにある設計再開時点 |
 
-完成後の業務上の意味差分は、復元baselineに対して**なし**とする。
-入力の許容・拒否、返却値、例外、保存値、処理順序、副作用、ログ、非同期完了、表示、公開APIを全量保存する。
-認可強化や不具合修正も、改善であることを理由に残さない。
-FR-001の既存WIPは、利用者が明示保留した作業の保存としてそのまま残す。
-FR-001を検証済み・解消済みとは呼ばず、新たな変更も加えない。
+先行8件（RV-001/012/013/014/015/025/026/029）、FR-031、FR-032、FR-033と明示保留のFR-001 WIPを保持する。FR-002〜011の認可も保持する。FR-011のworktree取消は先に撤回し、料理の所有者に基づく評価認可を残す。
 
-先行8件はRV-001/012/013/014/015/025/026/029であり、baselineに入っている実装を保持する。
-FR-031の認証test helperも保持する。branch全体をmainや最初のレビュー前へ戻さない。
+利用者変更の`.gitignore`、`frontend/Dockerfile`、`frontend/src/lib/generateApiOrigin.ts`は内容・modeを保ち、stageしない。保全hashは`/tmp/nanitabe-scope-repair-preserved-hashes.json`。既存`.codex/rules/default.rules`と別作業`.steering/2026/202611/20261106-limit-user-checks-to-what-only-users-verify/`にも触れない。
 
-先行8件の反映完了点はb859f23である。そこからd58c473までのapplication/test差分のうち、
-FR-031はbackend/spec/graphql/graphql_auth_helper.rbとgraphql_auth_helper_spec.rbである。
-FR-001 WIPはbackend/app/controllers/admin/base_controller.rb、
-同food/dish/effort_level/dish_effort_levels_controller.rb、同food/dish/word/normalize_words_controller.rbの認証関連差分と、
-admin/README.md、authorization_spec.rb、admin_authentication.rb、および既存admin request/system specの認証適応である。
-これらは明示保留による残置であり、FR-001の認証変更は純粋なリファクタリングではない。
-完成報告とPRでは「今回の修復対象を挙動維持へ戻した」と「既存FR-001 WIPが残る」を別々に記載する。
-PR全体が純粋なリファクタリングになったとは報告しない。
+FR-032の入力schema共有は[evidence/fr032-migration.md](evidence/fr032-migration.md) S01〜S08、FR-033の入力値転記共有は[evidence/fr033-migration.md](evidence/fr033-migration.md) I01〜I05を保持する。FR-006の認可も維持するため、更新Commandのactorを共通化の混入として除去しない。
 
-FR-032は入力schemaの共通化だけを保持する。
-numberの許容範囲、空配列、unknown keyのstrip、非coerce、更新時のid→name→entriesの検査順、既存のerrorを変えない。
-FR-033は3必須Intの値をsymbol keyへ転記する共通化だけを保持する。
-入力順、空配列、独立hash、Command呼出しと返却値を保存する。
-FR-033より先に混入していた更新Commandへの必須user_idと認可は、共通化の一部として温存しない。
-両台帳の旧baselineと過去の検証は保存し、今回のd58c473との再照合を実行担当が追記する。
+### 操作から見た確定する修正
 
-FR-034は旧namespaceのRoot/Add/Fill/Removeをbaselineへ戻す。
-旧Rootの現行Root継承はis_a?と継承関係を変え、旧Commandの委譲には後続の認可・割当制約が流入している。
-返却class名だけの検証を完全互換の根拠にしない。重複解消の再実装を今回の復元へ追加しない。
+以下の正常操作を維持し、その操作を壊していた内部処理を復帰する。新しい業務上の選択肢や拒否規則はこの表に含まない。
 
-### codeの責務配置と依存構造
+| 指摘 | 完成後の操作と結果 | 既存仕様・根拠 | 復帰する元commit |
+| --- | --- | --- | --- |
+| FR-012 | 料理更新時にGraphQL上省略可能な出典関係引数を省略しても、明示nullと同じ既存更新処理へ届く | `required:false`とRuby keywordの不整合。省略を別の「現状維持」操作にはしない | `ceb1da7` |
+| FR-013 | 手間ID17の料理の名前だけを編集すると17が送信・保存される。明示解除や位置づけ変更の解除は既存どおり | フォームの初期値と取得queryが既存保存値を欠落させていた | `fb59312` |
+| FR-014 | 既存の送信操作でApolloのloading/errorが呼出側に届き、callback省略も許容される | Apolloの実プロパティ名との不整合。交換開始日未選択のguardは未成立操作から不正日付を送らない内部防御 | `601d722` |
+| FR-015 | 延期確定後の既存callbackがclearStore、calendar再取得の完了を順に待ってから既存の一覧再取得・モード終了へ進む | 既存hookがすでに`await onDataChanged()`を持つ。失われたPromiseだけを接続する | `c05d21d`の2箇所のみ |
+| FR-016 | 検索パネルA/Bの入力が互いの検索を取り消さず、閉じたパネルの検索を実行しない。同じパネルの400msは維持する | module共有timerの不具合 | `5319fbd` |
+| FR-017 | 枠を選択後に未選択へ戻すと既存の必須入力エラーになり、再選択すれば同じ枠IDで送信できる | 対象は`mealFrameId`だけ。通常のoptionは保存済み枠の正整数PKであり、NaN/Infinity/0/負数/小数の拒否は有効な枠選択を制限しない | `62359ad`全体 |
+| FR-020 | 今週リンク、週/月切替、戻る/進むでURLと表示日付が一致し、履歴を重複追加しない | Next router更新を初期stateだけで読む内部同期不具合 | `d8afcf0` |
+| FR-021 | 有効日付にquery/hashが付いてもその日を表示し、存在しない日付は既存のfallback方針である今日09:00へ戻す | 既存parserの形式検査とfallbackを実在日付へ整合。新しい404画面は加えない | `c240b94` |
+| FR-022 | 食事編集画面で元から選べる出典なしの新規料理へ差し替えると、source/relationを作らず保存できる | UI/schema/normalizerがoptional、登録側もoptionalであるのに編集GraphQLだけ必須だった | `5b54e45` |
+| FR-024 | 辞書の追加・更新・削除と全料理への反映が同時に確定し、途中失敗なら全体が戻る | 一つの既存管理操作の部分保存を防ぐtransaction | `9b1df0a` |
+| FR-025 | 辞書削除の内部反映が失敗すると元のエラーを既存一覧のalertへ出し、rescue内の別例外で隠さない | 本文なしDELETEで存在しないword paramsを読む不具合。新たな操作ボタンは加えない | `4a12564` |
+| FR-026 | planが既存の`plans/<root>/<run id>.txt`へログを保存でき、state本体の上書き権限を持たない | `infrastructure/README.md`の既存出力先と一致。IAM権限修正でありresource構成追加なし | `df42ad7` |
+| FR-027 | 既存の起動操作が途中失敗すると停止を試み、起動済み再実行でも既存の停止予定を整合する | 起動・自動停止という既存運用の失敗処理。private integration構成へは変えない | `7772f90` |
+| FR-029 | デプロイ依頼のHTTP失敗/timeoutを失敗として返す。成功時は従来どおり1回だけ送信する | 既存依頼の成功判定不具合。未確認の再試行は加えない | `d3e4515` |
+| FR-030 | frontend build workflow自身の変更でも既存build検証を実行する | 実ファイル名のtypo訂正 | `a871b4c` |
+| FR-034 | 旧枠入口をそのまま呼べ、本人操作の保存値・返却classを維持して現行Commandへ委譲する。他人の削除は拒否する | 旧定数を残した共通化と認可。内部の継承関係が変わることだけを取消理由にしない | `fcac860` |
+| CR-001 | 既存のAND検索で`alpha beta`が別々のタグへ一致する同じ料理を返す | 料理単位の語条件を一つのJOIN行へ誤って閉じた内部検索不具合 | `ddfef5a` |
+| CR-002 | 料理編集で既存タグの内容を変更すると新しい内容が保存・再取得される | 同じタグID集合なら保存を飛ばす不具合。本人scopeと原子保存も復帰 | `30c86bb` |
+| CR-004 | 同じ延期/予定食事を同時確定しても一度だけ消費し、本人の操作だけを処理する | 既存の変換操作の多重消費・認可不具合。業務操作を追加しない | `02e2caf` |
 
-baselineの責務配置を保持し、次の共通ownerだけを追加した状態にする。
+この表の元commitにあるproduction/caller/testを単位として復帰する。元commitより後の別指摘の実装をsnapshotから丸ごと取り込まない。FR-025ではcontrollerのFR-001 WIPを保持し、FR-034では旧Fillの既存委譲を保持する。
 
-```text
-frontend/src/features/meal/frame/pattern/schema.ts
-  ← パターン作成・更新の既存Zod validationの共通owner
-addMealFramePatternMutation.ts / updateMealFramePatternMutation.ts
-  → schema.tsを参照し、既存の公開型・hook・operationを維持
+FR-015は`Calendar/index.tsx`の`onDataChanged: refreshData`と`useRefreshCalendarData.tsx`の`await refetchMealsForCalendar()`だけを復帰する。`usePostponedMealMode.ts`と`ScheduleChosenPostponedMealForDate.tsx`は現在版を保ち、追加の再取得ボタン・エラーUI・状態機械を持ち込まない。既存callbackへ成功/失敗のPromiseを伝え、再取得完了前のモード終了を防ぐことをtestする。
 
-Types::Input::Meal::Frame::Pattern::MealFramePatternEntryInput#to_command_params
-  ← day_offset / meal_type / meal_frame_idの値転記の共通owner
-Mutations::Meal::Frame::Pattern::AddMealFramePattern / UpdateMealFramePattern
-  → entries.map(&:to_command_params) → baselineのCommand呼出し
-```
+### 親steeringで個別判断する対象
 
-最終的なproduction差分の許容リストは次の6fileである。
-各fileの差分はFR-032/033の抽出・参照変更だけとし、業務条件は加えない。
+以下は今回の先行実行範囲から暫定で外し、現在の取消済み状態を保つ。理由は内部実装差分の存在ではなく、有効な業務操作・情報解釈・構成の選択を要することにある。親steeringが記載の判断を得た時点で同じworkdirのdesignを再開し、独立に適用できる範囲を追加する。先行範囲の完了を全レビュー修復の完了とは呼ばない。
 
-- frontend/src/features/meal/frame/pattern/schema.ts
-- frontend/src/features/meal/frame/pattern/addMealFramePatternMutation.ts
-- frontend/src/features/meal/frame/pattern/updateMealFramePatternMutation.ts
-- backend/app/graphql/types/input/meal/frame/pattern/meal_frame_pattern_entry_input.rb
-- backend/app/graphql/mutations/meal/frame/pattern/add_meal_frame_pattern.rb
-- backend/app/graphql/mutations/meal/frame/pattern/update_meal_frame_pattern.rb
+| 指摘・部分 | 既存の根拠と判断が必要な内容 | 再評価の条件 |
+| --- | --- | --- |
+| FR-018 | 枠は日付・時間帯に属するが、食事移動時の解除は旧READMEに明記がない。移動元に枠を残して解除するか、食事とともに移動するかは本人操作の結果を変える | 食事の移動・時間帯変更・日付交換における枠の扱いが確定した時 |
+| FR-019 | `has_one`と単数出力は根拠になるが、別枠への再割当を拒否するか移すかは別の業務判断。unique追加は既存重複整理/migrationを必要とする | 再割当契約、既存重複の扱い、migrationの採否が確定した時 |
+| FR-023 | 旧実装はSQL LIKE候補選択とRegexp置換であり、文字列と正規表現のどちらが辞書仕様かを定めた既存文書が見つかっていない | 辞書のsource/targetの解釈と既存登録規則の扱いが確定した時 |
+| FR-028 | private integration化は接続経路、resource、費用、起動手順を変える。認可確認の追加とは範囲が異なる | この構成変更を採るという判断が確定した時 |
+| CR-003 | 旧Repository specに関連済み出典のtype変更後に詳細を上書きする成功例がある。一律拒否はその有効操作を制限する | 拒否/明示移行/旧情報保持の業務契約が確定した時 |
+| FR-015追加UI | 表示更新だけを再試行するボタンと失敗状態保持は、Promise伝播の修正に必須ではない新しい操作・画面状態である | この追加操作・失敗時の画面仕様を採るという判断が確定した時 |
 
-許容する追加testは、frontendのschema.spec.tsとbackendのmeal_frame_pattern_entry_input_spec.rb、
-およびパターン作成・更新の既存GraphQL specへの値・順序・空配列のassertionである。
-それ以外のapplication/test差分はbaselineへ戻す。
-FR-002はaffd7ecで既にCommandとspecを変更しているため、03e4828だけの取消で済ませない。
-backend/app/domain/business/food/meal/usecase/swap_meals_between_days_command.rbと対応specもd58c473へ戻す。
+FR-001はこれらと別に、以前からの利用者による明示保留を維持する。FR-001の既存WIPを解消・削除・改善したとは報告しない。
 
-実装の復元には変更されたpathの限定集合を使う。
-利用者変更3file（.gitignore、frontend/Dockerfile、frontend/src/lib/generateApiOrigin.ts）は内容・modeを保ち、stageに含めない。
-.codex/rules/default.rulesの既存の操作許可変更も今回の復元対象へ広げない。
-新しいpathの一括削除、git reset --hard、branch全体のcheckoutを行わない。
+### codeの責務配置と比較
 
-### runtime・設定・環境構築
+FR-032/033の共通owner、FR-034の現行Commandへの委譲、FR-002〜011のactor所有者確認を保持する。その他の責務配置は各元commitの限定差分を復帰する。対象file数を6fileに固定しない。
 
-新しいDB migrationやAWS構成の適用を、このbranchの利用に要求しない。
-FR-019が追加したmigration、unique index、割当Policyと呼出しを除き、backend/db/schema.rbをbaselineと一致させる。
-既存のmigrationは保持する。実環境でmigrationを実行・逆実行せず、保存済みの利用者データを変更しない。
-検証で残ったunique indexは、接続先を確認した専用test DBだけの再作成・schema loadで除く。
+最終差分は`d58c473`との差分に対して、先行保持範囲と上記の採用ID/部分採用へ一件ずつ対応付ける。採用されていない業務制約・migration・private integrationを含まないことを逆方向にも確認する。純粋な共通化は前記二層台帳で値・順序・空配列・既存validationを照合する。認可や不具合修正は、この表の正常操作と問題再現ケースで検証する。
 
-FR-026〜030で変えたTerraform、起動停止script、workflow、対応する運用説明はbaselineへ戻す。
-FR-028で追加した構成や出力を参照するscriptだけを残す状態を作らない。
-Terraform apply、実AWSへのquery・deploy、Webhook送信は実施しない。
-運用の復元は固定revisionとの全file比較、構文検査と外部I/Oをstubにした検証で確認する。
-実環境へ変更を反映したとは報告しない。
+### runtimeと検証条件
 
-アプリtestは既存のcompose.dev.local.ymlのbackend/frontendで行う。
-RailsはRAILS_ENV=testとrepositoryのtest DB設定を使用する。
-Cloud向けComposeや重複アプリcontainerを作らず、新たなMySQL serviceも起動しない。
-既存の開発DB、外部DB、AWS、Webhookをtestの接続先にしない。
+既存`compose.dev.local.yml`のbackend/frontendでアプリtestを実行する。Railsは`RAILS_ENV=test`と標準test DBだけを使う。新しいCompose、重複アプリcontainer、追加MySQL serviceを作らない。実DBのmigration/rollback、実AWS query/apply/deploy、実Webhook送信、mergeは実施しない。
 
-### 記録から判断できる状態
+FR-026はpolicy codeとoffline testの復帰までである。実環境で権限制限を有効にするには既存IAM policyの更新適用が必要であり、その適用actionは今回の実行範囲に含めない。実AWSへ適用済み、またはAWS apply不要とは報告しない。FR-027はpublic-IP integration版のcleanupを復帰し、FR-028由来のprivate用scriptやcommonを復帰しない。運用testは人工envとstub/loopback fixtureだけを用いる。
 
-各READMEから、維持した純粋な共通化、範囲外適用を取り消した指摘、FR-001の保留を区別できる。
-正しい指摘でも挙動を変えるため今回は適用しないものを、誤指摘・修正済みと数えない。
-元のfinding、再現証拠、red/green結果、元commitは消さない。
-applicationとcoverageの過去の結果は当時の実装の証拠として残し、現在の状態を先頭から辿れるよう訂正する。
+CR-004の通常testと専用MySQL spec/helperは復帰するが、新serviceを起動しない。現在のtest環境に許可済みの専用MySQLがない場合、今回の並行実測は未実施と明記する。以前のMySQL結果はそのsnapshotの証拠として保持し、現在の再実測と取り違えない。
 
-現在の採否のownerは各finding、現在の実行状態のownerはこのtasklist、実測結果のownerはapplication/coverageとする。
-旧RVの対応先とFR/CRのREADMEを同時に確認し、全件修正済みという過去の集計を現状説明として残さない。
-20261030-exhaustive-reviewのdesign/tasklistには今回の契約が優先され、CR-001〜004は再適用対象ではないことを明示する。
-運用説明で実装の復元により不正確になる本文も、対応する修復と同時にbaselineへ戻す。
+frontendの表示・入力・状態へ影響する各項目は`visual-inspector` childで確認する。自動testや人工GraphQL fixtureによる目視と、利用者だけが確かめられる業務判断を区別する。既存の継続・指摘単位commit・公開許可に従い、形式的な開始確認や再許可を追加しない。
 
-実行testで範囲外の新挙動を要求する追加specは実行対象のtreeから取り除き、既存specの変更はbaselineへ戻す。
-原版はgit show 608ed3d:<path>で再現できる。.steering/の証拠は残す。
-testをskip/pendingへ変えて成功数を維持せず、現在の収集対象と件数を測り直す。
-MySQL専用specも今回の完成版では要求しない。過去のMySQL実測を今回のbaseline保証へ流用しない。
+### 記録と履歴
 
-## 実行単位と依存
+旧全取消design/tasklistは`git show c6e07af:<path>`に保存される。完了した24取消commitとその証拠は履歴として残し、現在の採否・未反映・再適用済みを個別findingから辿れるように訂正する。採否の正本はfinding、現在の実行状態はtasklist、実測結果はapplication/coverageとする。
 
-追加commitで訂正し、既存commitのrebase、amend、force pushをしない。
-指摘単位でproduction・caller・test・関連する現在状態の記録をまとめる。
-順序はCR-004→003→002→001→FR-034→030〜002の逆順とし、FR-032/033と既存のFR-031は取り消さない。
-CR-003には補完commit852718f、FR-019にはMySQL補完3dcad04を同じ訂正単位へ含める。
-FR-028は後続scriptとの依存を先に取り除いてからFR-027を戻す。
-FR-006を戻すとき、FR-033の転記共通化を保持して更新actorの追加だけを取り除く。
-FR-002はWIP分も同じ訂正commitで戻す。
-
-復元はworktreeへの限定した逆patchまたは指定revisionからのfile再構成で行い、indexやHEADを一括で戻さない。
-git revertの新規権限要求は行わず、既存のgit add/commit/push許可を用いる。
-各commitの取り消す効果は対応する指摘が加えた挙動であり、他の純粋な共通化を巻き込まない。
-messageはrevert:に具体的な変更と指摘IDを付ける。
-記録全体の整合確認とPR訂正は、個別の復元結果が確定した後の追加commitにする。
+復帰は一指摘一追加commitで行い、履歴改変・amend・rebase・force pushを行わない。FR-015は部分復帰として記録する。FR-011の未commit取消撤回はcode上の追加commitが不要であるため、結果の失効と記録を同指摘の追加commitへまとめる。保全対象をstageしない。既存のgit add/commit/push承認を使う。
 
 ## 受け入れ基準
 
-1. baselineとのcommit済みproduction差分が前記6fileの純粋な共通化だけである。FR-002 WIPも残っていない。
-2. 先行8件、FR-031、FR-001 WIP、利用者変更3file、既存操作許可を保持し、FR-034の認可・継承変更を残していない。
-3. schema/migration、Terraform、起動停止script、workflowがbaselineと一致し、新migration/AWS applyを要求しない。
-4. FR-032/033をbaselineに対して二層台帳で再照合し、未監査・未分類追加・未分類削除が0である。
-5. 関連testと全体のRSpec/Jest、型検査、production build、lintを既存containerで実行し、baseline由来の失敗と今回の回帰を分離する。
-   baselineにあるFR-001 WIPを修正してlintを消さず、未実施・既存失敗は件数とpathを明記する。
-6. frontend復元の表示・入力影響をvisual-inspectorで確認する。検査対象は料理編集、カレンダーの延期・交換、パターン編集である。
-   自動検証と利用者による操作確認を区別し、既存の継続・公開許可の範囲でcommit/push/PR訂正を完了する。
-7. reviewの現在状態と既存PR #292が挙動維持の適用範囲を説明し、範囲外の指摘を修正完了と数えていない。
-8. 実環境DB/AWS/Webhook/mergeへの操作、履歴改変、利用者変更の巻込みがない。
+1. FR-011の3pathが再開時HEADと一致し、未取消FR-002〜010の認可を保持する。全関数の旧契約を保存する目的の取消を継続しない。
+2. 上表の各修正が指摘単位で復帰・検証され、FR-015の新UIと個別判断対象を持ち込まない。
+3. 正常入力の保存・表示・既存操作をcaseごとに検証し、認可・型不正・多重送信・失敗時の差分は修正対象の期待としてtestする。
+4. 先行8件、FR-031〜033、FR-001 WIP、利用者変更、他作業を保持し、許可されていない差分が0件である。
+5. 既存containerの全RSpec/Jest、型検査、production build、全lintを確認し、既存FR-001由来のoffenseと今回回帰を分けて報告する。frontendの各確認と全体の目視を実施する。
+6. 実環境DB/AWS/Webhook/mergeへの操作、新Compose/追加service起動、履歴改変がない。未実測はそのまま記録する。
+7. README/application/coverage/旧RV/CRの現在状態と既存PR #292を今回の採否へ訂正し、先行範囲完了と親steeringに残る個別判断を区別する。
 
 ## 付録: 変更の実行区分
 
 ### task-design内で対象成果物へ適用済み
 
-なし。今回のdesign/tasklist自身の改訂は設計のlifecycle更新である。
+なし。design/tasklist/discussionの変更は設計lifecycleの更新であり、application実装は実行担当へ渡す。
 
 ### task-design内の対象成果物反映待ち
 
@@ -167,18 +113,14 @@ messageはrevert:に具体的な変更と指摘IDを付ける。
 
 ### execution plan対象
 
-| 対象 | 掲載理由 | 参照するdesign section |
+| 対象 | 掲載理由 | 参照section |
 | --- | --- | --- |
-| FR/CRが加えた挙動の復元とtest適応 | 本番application codingと依存する段階的な取消 | contractの保存と明示差分、codeの責務配置と依存構造 |
-| migration・運用構成の復元 | 本番成果物とその起動・適用条件の復元 | runtime・設定・環境構築 |
-| 現在状態の記録、全体検証、既存PR訂正 | 復元結果に依存する複数段階の検証・公開 | 記録から判断できる状態、受け入れ基準 |
+| FR-011取消撤回と確定した各FR/CR復帰 | 本番application codingと指摘単位の独立検証 | 操作から見た確定する修正 |
+| 運用修正の復帰 | 本番runtime/workflowの修正とoffline検証 | runtimeと検証条件 |
+| 現在採否の訂正・全体検証・既存PR訂正 | 実装結果に依存する段階的な公開 | 記録と履歴、受け入れ基準 |
 
 ## 設計確認
 
-2026-11-04、Git履歴と実差分による読取りでbaseline・保持範囲・復元依存を確定した。
-今回の設計担当はコード変更、test実行、Git書込み、外部環境操作をしていない。
-暫定指示の取得対象はこの元作業directory、consumerはtask-design/think-through/document-review/plan-commits、
-実行元はtumeda-dev 8.2.4の配布skillであり、temporary-overridesは存在せずnoneである。
-許可されたrepository contextのtask-designと直接利用する共通sectionを使用し、context instanceは変更していない。
-文書reviewでは作成時・更新時観点、削除内容、参照先、baselineと保持差分、既存WIPの例外を通読確認した。
-技術的な検証結果は実行担当が観測後に記録し、過去のgreenを復元後のgreenとして扱わない。
+2026-11-06、Solがユーザーの継続指示、既存finding、元commit、README、specとTerraの読取事実を照合して設計した。使用skillはtumeda-dev 8.2.5。親が元作業exact pathで取得したtemporary-overrides=noneを引き継いだ。task-designのrepository contextと直接利用する共通項目を使用した。
+
+本文は今回の先行実行範囲を確定し、親に残る個別判断はその範囲の設計判断として実装者へ委ねていない。設計担当はapplication/test/Git index/commit/pushを変更していない。文書reviewでは作成時・更新時観点、前版で保持していた保全・履歴・環境制約、採否全件の対応、暫定判断の再評価条件を通読確認した。

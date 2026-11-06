@@ -1,400 +1,206 @@
-# 挙動維持へ戻すtasklist
+# 正常操作を保つ内部改善復帰tasklist
 
-仕様の正本は[design.md](design.md)。2026-11-04の利用者訂正に基づく修復の実行計画である。
-以前の全件適用tasklistの完了チェックは旧snapshotの実行履歴であり、今回の完了を意味しない。
-旧版はgit show 608ed3d:.steering/2026/202610/20261027-full-repository-review/tasklist.mdで参照できる。
-同directoryにroadmapは作らず、このtasklistだけを実行状態の正本とする。
+仕様は[design.md](design.md)。利用者の正常操作・業務仕様を基準に確定した先行範囲だけを実行する。旧全取消計画は`git show c6e07af:.steering/2026/202610/20261027-full-repository-review/tasklist.md`にある。24件の取消済み記録は履歴であり、この計画の復帰完了には流用しない。同workdirのplanはこのtasklistだけとする。
 
-## 0. 保持対象と記録の開始
+## 共通の実行・検証・commit契約
 
-- [x] 復元baseline d58c473、修復開始snapshot608ed3d、branch feature-287を照合し、修復前差分の対象pathを固定する。
-  .gitignore、frontend/Dockerfile、frontend/src/lib/generateApiOrigin.tsのbinary patchとhash保全を照合する。
-  親の保全先は/tmp/nanitabe-preserved-user-20261104.patchと/tmp/nanitabe-scope-repair-preserved-hashes.jsonである。
-  .codex/rules/default.rulesも復元対象に含めない。利用者変更をstageしない。
-- [x] 既存README/applicationの訂正noticeを確認し、実行開始とbaselineをapplicationへ記録する。
-  親が797a929でcommitしたnoticeを保持し、実行担当が以後のapplication/finding/tasklistのsingle writerになる。
-  旧designの制限解除は利用者の合意ではなかったことを記録する。
-  CR側のdesign/tasklistも、今回のdesignが優先され再適用しない状態へ訂正する。
+- 方針検討・実装feedbackの判断・結果監督はSol、実装・検証・記録作業はTerraとする。single writerを実行担当へ引き渡した後、別担当はdesign/tasklistを重ねて更新しない。
+- 各phaseは一指摘のproduction/caller/test/現在状態記録を閉じた単位で復帰する。元commitの非steering差分を読み、現在の採用範囲だけを限定patchで戻す。snapshot全fileの一括復帰・履歴改変は行わない。
+- `.gitignore`、frontend/Dockerfile、frontend/src/lib/generateApiOrigin.tsの既存hash/modeを毎phase確認しstageしない。FR-001 WIP、先行8件、FR-031〜033、別作業directory、操作許可を保持する。
+- アプリtest commandは下記の`backend ...`を`docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend ...`、`frontend ...`を`docker compose -f compose.dev.local.yml exec -T frontend ...`として実行する。アプリtestをhostで実行しない。標準test DB以外へ接続しない。
+- 各phaseで追加/復帰した退行testと関連test、変更箇所lint、frontend変更時はtscを実行する。表示/入力/状態へ影響するfrontend phaseはvisual-inspector childで人工fixtureの目視確認も行う。結果は新request/attemptへ保存し、旧取消testのgreenを流用しない。
+- 各phaseのDoDを実測後、findingの現在採否を訂正し、applicationに復帰範囲/正常操作case/検証/未実測を記録する。元の指摘・取消・red/green証拠は残す。チェックは実測直後に更新する。
+- 一指摘ごとにplan-commitsで実差分を確認し、一つの追加commitを作る。既存の指摘単位commit/publication指示とgit add/commit/push許可を使い、形式的な再承認を追加しない。保護fileはstageしない。
+- 実DB migration/down、実AWS query/apply/deploy、実Webhook送信、merge、新Compose/追加serviceは行わない。外部I/Oはstub/loopbackだけとする。
 
-DoD: baselineと利用者変更の保持先を実装担当が特定でき、旧完了表示を今回の許可・完了根拠として使わない。
+## 1. FR-011の未commit取消を撤回し、認可を維持する
 
-## 各復元項目に共通する実行契約
+- [ ] 現在HEADのFR-011実装がcdb8e27を保持することを確認し、次の3pathだけを現在HEADへ戻す。
+  `backend/app/domain/business/dish/dish/evaluation/command/evaluate_command.rb`、
+  `backend/app/domain/business/dish/dish/evaluation/repository.rb`、
+  `backend/spec/domain/business/dish/dish/evaluation/command/ownership_spec.rb`。
+  staged差分を作らず、他のworktree差分を巻き込まない。
+- [ ] `requests/scope-repair-fr011-1.json`と`evidence/scope-repair/fr011-attempt-1/result.json/result.md`を履歴として保存し、取消目的が失効したため`superseded`と現在の範囲を記録する。失敗/成功の実測結果を別の結果へ書き換えない。
+- [ ] `backend bundle exec rspec spec/domain/business/dish/dish/evaluation spec/models/dish_evaluation_spec.rb spec/graphql/mutation/dish/evaluation`と対象2RubyのRuboCopを実行する。3pathのHEAD一致、FR-002〜010の認可保持、保護対象のhash保持とdiff checkを確認する。
+- [ ] finding/applicationへ料理ownerに基づく認可の保持を記録し、取消撤回記録だけをFR-011の追加commitへまとめる。codeに差分がないことは正常である。
 
-以下を掲載順に実行する。一項目の関連testがgreenになる前に次項目へ進まない。
-各項目は、記載した挙動を加える前の実装へ戻す一つの検証・追加commit単位である。
+DoD: 本人料理の評価は従来の操作で成功し、他人の料理への評価作成を拒否する。3pathがHEAD一致で、以降FR-002〜011を取消対象にしない。
 
-1. 指定commitの実差分とcallerを読み、production・test・運用説明を閉じた範囲として限定する。
-   .steeringの元finding/evidenceを逆patchで消さない。保全対象3fileへ触れない。
-2. その項目で変更された既存testを戻し、新挙動専用の追加testを実行treeから除く。
-   原版はGit608ed3dで保存される。skip/pending化で件数を維持しない。
-   既存testが残す入力・出力・例外・副作用と実装の対応を確認する。
-3. worktreeへの限定した逆patchまたはrevisionからの再構成で実装を戻す。
-   git revert、reset、rebase、amend、force pushを使わない。
-   FR-032/033の純粋な抽出と先行8件、FR-031、FR-001 WIPを保持する。
-4. 変更した領域の既存関連test、変更箇所lint、diff checkを既存開発containerで実行する。
-   失敗は旧testとの比較から切り分け、新しい業務判断で修正しない。
-   運用系は外部I/Oをstubにした検査かbaselineとの全量比較・構文検査で検証し、AWS/Webhookは呼ばない。
-5. findingの現在状態を「挙動維持のため適用取消」に訂正し、元指摘・元実装・元検証は履歴として残す。
-   applicationへ復元範囲・検証・制約を記録し、tasklistを実測直後に更新する。
-6. plan-commitsで今回の実差分を再確認し、同じ指摘のproduction/caller/test/現在状態の記録だけを追加commitする。
-   commitはrevert:に対象効果と指摘IDを付ける。履歴・既存commitは書き換えない。
+## 2. FR-012: 省略可能な料理更新引数を実際に省略できる
 
-## 1. 依存の逆順で範囲外の挙動変更を戻す
+- [ ] 元commit `ceb1da7` の限定差分を読み、backend/app/graphql/mutations/dish/update_dish.rb、update_dish_with_new_source.rb、optional_arguments_spec.rbを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [ ] `backend bundle exec rspec spec/graphql/mutation/dish`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-### 1. CR-004: 延期・予定食事の変換に加えたrow lockと所有者絞込みを戻す
+DoD: GraphQL経由の省略/null/有効値で同じ既存更新処理へ到達する。
 
-- [x] 元変更 `02e2caf` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: 両GraphQL resolver、Business::Food::Meal::Postponed::Usecase::RemoveCommand、conversion_atomicity_spec、
-  spec_mysql/meal_conversion_concurrency_spec.rb。mysql_spec_helper.rbの変換用checkpointだけを戻し、
-  FR-019のframe_assignment_spec.rbが使う接続guard・cleanup・RSpec設定は項目FR-019まで保持する。
+## 3. FR-013: 料理名だけの編集で既存手間を保持する
 
-DoD: 食事延期・予定化がbaselineと同じ取得・例外・保存順になる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+- [ ] 元commit `fb59312` の限定差分を読み、EssentialDish出力、fetchDish/fetchMeal queryと生成物、DishForm/SelectEffortLevel、対応specを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [ ] `frontend yarn test --runInBand --silent DishForm EditMeal AddMeal`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-検証: scope-repair-cr004-1 / attempt1 passed。RSpec25 examples / 0 failures、RuboCop4 files / 0 offenses、
-production3file旧版byte一致とFR-019残部保持を確認。[結果](evidence/scope-repair/cr004-attempt-1/result.md)。
+DoD: 手間ID17の初期表示と名前変更時17送信、明示解除と位置づけ変更のnull送信。
 
-### 2. CR-003: 関連料理がある出典のtype変更拒否を戻す
+## 4. FR-014: 送信状態とエラーを既存callerへ返す
 
-- [x] 元変更 `45074dc + 852718f` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: DishSource validation、TypeChangePolicy、境界spec、後から変更したlegacy source spec。
+- [ ] 元commit `601d722` の限定差分を読み、frontend/src/features/utils/mutationUtils.tsとspec、useSwapMealsMode.ts、useCalendarMode.spec.tsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [ ] `frontend yarn test --runInBand --silent mutationUtils useCalendarMode dishInputConversion`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-DoD: 出典更新の許容条件と関連先の扱いがbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+DoD: 実Apollo状態のfalse→true→falseと同じerror、任意callback、未選択から不正日付を送らない。
 
-検証: scope-repair-cr003-1 / attempt1 passed。RSpec135 examples / 0 failures、RuboCop2 files / 0 offenses、
-旧版byte一致、保護対象の保持、diff check成功。[結果](evidence/scope-repair/cr003-attempt-1/result.md)。
+## 5. FR-015: 既存カレンダー再取得のPromiseを接続する
 
-### 3. CR-002: 既存タグ内容の保存と再正規化caller適応を戻す
+- [ ] 元commit `c05d21dの限定差分` の限定差分を読み、Calendar/index.tsxのonDataChanged、useRefreshCalendarData.tsxのawaitと両境界のspecを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+  元commitの追加retry UI/state machineを復帰しない。useRefreshCalendarData.spec.tsxとCalendar/refreshContract.spec.tsxを境界testとして復帰・適応し、延期hookは現在の既存制御のままにする。
+- [ ] `frontend yarn test --runInBand --silent useRefreshCalendarData refreshContract useCalendarMode`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-- [x] 元変更 `30c86bb` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: Dish/DishTag、ReflectLatestNormalizeWordCommand、タグ更新・置換spec。FR-024の既存transactionはその項目まで残す。
+DoD: clearStore保留中はcalendar未取得、calendar保留中は既存callbackが未完了、失敗が呼出側へ伝播する。
 
-DoD: 料理編集の既存タグと辞書再反映がCR-002以前の保存経路になる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+## 6. FR-016: 検索パネルごとの400ms timerを保持する
 
-検証: scope-repair-cr002-1 / attempt1 passed。RSpec360 examples / 0 failures、RuboCop3 files / 0 offenses、
-旧版byte一致、FR-024/FR-004と利用者変更保持、diff check成功。[結果](evidence/scope-repair/cr002-attempt-1/result.md)。
+- [ ] 元commit `5319fbd` の限定差分を読み、DishSearchPanel/index.tsx、debounce.spec.tsxを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [ ] `frontend yarn test --runInBand --silent DishSearchPanel ExistingDishesForRegisteringWithMeal`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-### 4. CR-001: 単語ごとの相関EXISTSによる検索結果変更を戻す
+DoD: 別パネルの検索を取り消さずunmount後にcallbackを実行しない。同一パネルは最終入力から400ms。
 
-- [x] 元変更 `ddfef5a` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: DishSearcherと既存検索spec。
+## 7. FR-017: 未選択の枠を既存入力エラーへ戻す
 
-DoD: 複数タグにまたがる語の検索結果がbaselineの条件へ戻る。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+- [ ] 元commit `62359ad` の限定差分を読み、MealFramePatternFields.tsx、MealFramePatternEditor.spec.tsxを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [ ] `frontend yarn test --runInBand --silent MealFramePattern`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-検証: scope-repair-cr001-1 / attempt1 passed。RSpec36 examples / 0 failures、RuboCop2 files / 0 offenses、
-旧版byte一致、FR-007と利用者変更保持、diff check成功。[結果](evidence/scope-repair/cr001-attempt-1/result.md)。
+DoD: 作成/編集で選択→未選択はAPI0回、再選択は正整数IDで1回。NaN/Infinity/0/負数/小数を送らず通常の選択肢は保存できる。
 
-### 5. FR-034: 旧Rootの継承と旧Add/Removeの委譲を戻す
+## 8. FR-020: Nextの遷移と表示日付を同期する
 
-- [x] 元変更 `fcac860` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: 旧frame_entryのRoot/Add/Remove、互換spec、food README。旧FillのFR-008由来変更はFR-008で戻す。
+- [ ] 元commit `d8afcf0` の限定差分を読み、frontend/src/app/logical-history.tsxと専用specを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [ ] `frontend yarn test --runInBand --silent logical-history CalendarHeader Calendar/index.spec useRefreshCalendarData`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-DoD: 旧Rootの継承関係と旧Add/Removeの認可・返却がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+DoD: 週/月切替・今週・戻る/進むでURL/表示が一致し、独自pushと古いNext snapshotで巻き戻さない。
 
-検証: scope-repair-fr034-1 / attempt1 passed。RSpec74 examples / 0 failures、RuboCop3 files / 0 offenses、
-eager load・旧継承・4file旧byte一致・旧Fill/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr034-attempt-1/result.md)。
+## 9. FR-021: カレンダーURLの既存日付解釈を整合する
 
-### 6. FR-030: frontend workflow自身のfilter変更を戻す
+- [ ] 元commit `c240b94` の限定差分を読み、calendarDateFromPath.tsとspecを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [ ] `frontend yarn test --runInBand --silent calendarDateFromPath`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-- [x] 元変更 `a871b4c` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: .github/workflows/ci-frontend-build-verification.yml、専用Node検査。
+DoD: 有効な閏日/query/hashは同じ日を表示し、存在しない月日は既存方針の今日09:00へ戻る。
 
-DoD: workflowの起動条件がbaselineと一致する。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+## 10. FR-022: 既存の出典なし料理入力を編集APIへ届ける
 
-検証: scope-repair-fr030-1 / attempt1 passed。Node3 cases / 0 failures、旧workflow byte一致・専用suite除去・
-利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr030-attempt-1/result.md)。
+- [ ] 元commit `5b54e45` の限定差分を読み、update_meal_with_new_dish.rbとspec、normalizeFunctions/updateMealMutationとspec、生成物を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+  frontendでは`yarn test --runInBand --silent dishInputConversion EditMeal.spec AddMeal.spec AddDish.spec`も実行する。生成物は通常schemaのoffline出力で必要差分だけ生成し、開発DBへmigrationを実行しない。
+- [ ] `backend bundle exec rspec spec/graphql/mutation/meal/update_meal_without_source_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_and_new_source_spec.rb spec/graphql/mutation/meal/ownership_spec.rb`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-### 7. FR-029: デプロイWebhookのHTTP失敗判定・timeout追加を戻す
+DoD: 省略/nullで出典なし新料理へ差替え、source/relation件数不変、認可失敗はrollback。既存出典ありも成功する。
 
-- [x] 元変更 `d3e4515` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: .github/workflows/backend-deploy.yml、専用Node検査。実Webhookは呼ばない。
+## 11. FR-024: 一つの辞書更新を原子的に保存する
 
-DoD: Webhook呼出しのcommandがbaselineと一致する。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+- [ ] 元commit `9b1df0a` の限定差分を読み、food/dish/word/usecaseのAdd/Update/Remove/ReflectLatestNormalizeWordCommandとatomic_reflection_spec.rbを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [ ] `backend bundle exec rspec spec/domain/business/food/dish/word/usecase`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-検証: scope-repair-fr029-1 / attempt1 passed。Node5 cases / 0 failures、旧curl byte一致・loopback限定・
-利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr029-attempt-1/result.md)。
+DoD: 辞書更新後の反映失敗で辞書・料理・タグが全て元へ戻り、成功時は一括保存される。
 
-### 8. FR-028: private integrationと新規AWS構成への依存を戻す
+## 12. FR-025: 辞書削除の元エラーを既存一覧に表示する
 
-- [x] 元変更 `2bf938d` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: backend/terraformの4module/env、start/stop/common、対応する運用説明、private integration検査とreadiness spec。
+- [ ] 元commit `4a12564` の限定差分を読み、normalize_words_controller.rb、一覧template、request spec（FR-001 WIP保持）を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+  controller全fileを古い版で上書きせず、既存FR-001の認証差分を保持して削除rescueの限定差分だけを復帰する。
+- [ ] `backend bundle exec rspec spec/requests/admin/food/dish/word/normalize_words_spec.rb spec/system/admin/food/dish/word/normalize_words_spec.rb spec/domain/business/food/dish/word/usecase`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-DoD: TerraformとscriptがFR-027時点の同じ契約で動作し、新規構成のapplyを要求しない。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+DoD: 本文なしDELETEの反映失敗でParameterMissingを起こさず元エラーを表示し、FR-024によって全属性を保持する。
 
-検証: scope-repair-fr028-1 / attempt1 passed。Node31 tests / 0 failures、bash構文、13path旧byte比較・
-FR-027保持・運用3doc訂正・利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr028-attempt-1/result.md)。
+## 13. FR-026: planの既存ログ保存だけに書込権限を限定する
 
-### 9. FR-027: 起動失敗時rollback拡張を戻す
+- [ ] 元commit `df42ad7` の限定差分を読み、infrastructure/terraform/modules/github_oidc/main.tf、plan_policy.spec.mjsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+  planのログ保存先が既存READMEのplans/<root>/<run id>.txtと一致することも照合する。offline policy評価までとし実AWSには適用しない。権限制限を実環境で有効にするには既存IAM更新の適用が必要で、適用actionは別であることを結果とPRへ明記する。
+- [ ] `node --test infrastructure/terraform/modules/github_oidc/plan_policy.spec.mjs`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-- [x] 元変更 `7772f90` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: scripts/review_backend/start.sh/stop.sh/common.shと専用stub/test、対応する運用説明。
+DoD: plans配下へのPutObject、state読取、lock table操作を保ち、state/applyログへの書込みを許可しない。
 
-DoD: 起動停止の入出力・失敗経路がbaselineと一致する。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+## 14. FR-027: 起動失敗時に停止を試みる
 
-検証: scope-repair-fr027-1 / attempt1 passed。Node7 cases / 0 failures、bash構文・start/stop旧byte一致・
-利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr027-attempt-1/result.md)。
+- [ ] 元commit `7772f90` の限定差分を読み、scripts/review_backend/start.sh、start.spec.mjsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+  7772f90時点のpublic-IP integration版のみを復帰し、2bf938d以降のprivate用common/出力参照は取り込まない。人工envのNode harnessとbash -nで検査する。
+- [ ] `node --test scripts/review_backend/start.spec.mjs`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-### 10. FR-026: plan用roleの権限縮小を戻す
+DoD: 起動後の各失敗/割込みでcleanupを試み、元終了codeを保持。起動済み再実行でintegrationと停止予定を整合する。
 
-- [x] 元変更 `df42ad7` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: infrastructure/terraform/modules/github_oidc/main.tfと専用検査。
+## 15. FR-029: デプロイ依頼のHTTP失敗を返す
 
-DoD: plan role定義がbaselineと一致する。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+- [ ] 元commit `d3e4515` の限定差分を読み、.github/workflows/backend-deploy.yml、scripts/github/backend_deploy.spec.mjsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [ ] `node --test scripts/github/backend_deploy.spec.mjs`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-検証: scope-repair-fr026-1 / attempt1 passed。静的Node3 cases / 0 failures、旧policy byte一致・専用suite除去・
-利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr026-attempt-1/result.md)。
+DoD: loopbackで200=0、401/404/500=22、timeout=28、各1request。production timeout10/30秒を保持する。
 
-### 11. FR-025: 辞書削除rescueのinstance変数修正を戻す
+## 16. FR-030: build workflow自身の変更を検出する
 
-- [x] 元変更 `4a12564` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: NormalizeWordsControllerとadmin request spec。FR-001の既存認証は保持。
+- [ ] 元commit `a871b4c` の限定差分を読み、.github/workflows/ci-frontend-build-verification.yml、scripts/github/frontend_build_filter.spec.mjsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [ ] `node --test scripts/github/frontend_build_filter.spec.mjs`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-DoD: 辞書削除の例外経路がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+DoD: frontend変更とworkflow自身変更がtrue、無関係変更はfalseになる。
 
-検証: scope-repair-fr025-1 / attempt1 passed。RSpec9 examples / 0 failures、RuboCop2 files / 0 offenses、
-3file旧byte一致・FR-001 WIP/FR-024と利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr025-attempt-1/result.md)。
+## 17. FR-034: 旧枠入口から共通Commandへ委譲する
 
-### 12. FR-024: 辞書CRUDと全料理反映をまとめるtransactionを戻す
+- [ ] 元commit `fcac860` の限定差分を読み、旧FrameEntryのRoot/Add/Remove、compatibility_spec.rb、food/README.md、移行台帳を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+  旧Fillは既存の委譲を保持する。移行台帳へ内部継承と認可を許容差分として追記し、旧定数/返却class/本人属性の照合を行う。
+- [ ] `backend bundle exec rspec spec/domain/business/food/meal/frame_entry spec/domain/business/food/meal/frame`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-- [x] 元変更 `9b1df0a` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: 辞書Add/Update/Remove、ReflectLatestNormalizeWordCommand、admin view、原子性spec。
+DoD: 本人操作の返却class・値・単一保存を維持し、他人の削除を拒否。旧Fill委譲とFR-008を保持する。
 
-DoD: 辞書保存と再反映の順序・失敗時副作用がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+## 18. CR-001: 複数タグに分かれた語で同じ料理を検索する
 
-検証: scope-repair-fr024-1 / attempt1 passed。RSpec86 examples / 0 failures、RuboCop4 files / 0 offenses、
-4Command旧byte一致・専用spec除去・既存WIP/利用者変更保持・diff check成功。起動済みsessionから回収し二重実行なし。
-[結果](evidence/scope-repair/fr024-attempt-1/result.md)。
+- [ ] 元commit `ddfef5a` の限定差分を読み、food/dish/usecase/dish_searcher.rbとspecを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [ ] `backend bundle exec rspec spec/domain/business/food/dish/usecase/dish_searcher_spec.rb spec/graphql/query/dish`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-### 13. FR-023: 辞書source/destinationのliteral処理を戻す
+DoD: 同じ料理の別タグalpha/betaへ一致するAND検索が成功し、別料理/他人のタグを組み合わせない。FR-007保持。
 
-- [x] 元変更 `73b8797` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: 新旧Normalizerと正規化spec。
+## 19. CR-002: 既存タグの編集内容を原子的に保存する
 
-DoD: 辞書置換の正規表現・置換文字列の扱いがbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+- [ ] 元commit `30c86bb` の限定差分を読み、Dish/DishTag、ReflectLatestNormalizeWordCommand、replacement/GraphQL spec、移行台帳を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+  先に復帰したFR-024のtransactionを保持して再正規化callerを適応し、cr002-reflection-migration.mdへ現在の対応を追記する。
+- [ ] `backend bundle exec rspec spec/models/dish_tag_replacement_spec.rb spec/graphql/mutation/dish/existing_tag_update_spec.rb spec/domain/business/food/dish/word`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-検証: scope-repair-fr023-1 / attempt1 passed。RSpec61 examples / 0 failures、RuboCop2 files / 0 offenses、
-新旧Normalizer旧byte一致・先行共通化/旧保存境界/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr023-attempt-1/result.md)。
+DoD: 既存タグID不変でcontent更新・再取得が成功し、不正所属は副作用前に拒否。辞書再正規化で古いRootが上書きしない。
 
-### 14. FR-022: 食事編集での出典なし新規料理許容を戻す
+## 20. CR-004: 延期/予定食事を一度だけ消費する
 
-- [x] 元変更 `5b54e45` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: GraphQL resolver、frontend入力変換/schema参照、生成物、関連spec。
+- [ ] 元commit `02e2caf` の限定差分を読み、両変換resolver、Postponed::RemoveCommand、conversion_atomicity_spec.rb、専用MySQL spec/helper（FR-019 specは戻さない）を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+  専用MySQLが現在利用可能でなければ新serviceを作らず、並行再実測は未実施と明記する。旧MySQL結果を今回の再実測へ流用しない。通常testと元commitとの差分照合は実施する。
+- [ ] `backend bundle exec rspec spec/graphql/mutation/meal/postponed spec/domain/business/food/meal/postponed`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
-DoD: 食事編集の出典必須契約と送信形式がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
+DoD: 逐次再送/他人を拒否し、変換失敗はrollback。row lockを保持し、新しいMySQL serviceを起動しない。
 
-検証: scope-repair-fr022-1 / attempt1 passed。RSpec3 examples / 0 failures、Jest16 tests、変更箇所lint・tsc成功。
-8path旧byte比較・純抽出と利用者変更保持・diff check成功。既存fixture警告あり。[結果](evidence/scope-repair/fr022-attempt-1/result.md)。
+## 21. 全体差分・記録・検証を閉じる
 
-### 15. FR-021: URL日付の実在日・境界検証を戻す
+- [ ] `d58c473..HEAD`のproduction/test/config差分を採用指摘へ一件ずつ対応付け、逆方向にも確認する。未分類差分0、先行保持範囲不変を確認する。
+  FR-032 S01〜S08、FR-033 I01〜I05を現在の認可を含む採用状態で再照合する。
+  FR-018/019/023/028/CR-003とFR-015追加UIは現在の取消状態のままで、FR-019 migration/uniqueとFR-028構成が入っていないことを確認する。
+- [ ] backend全体: `docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec`、
+  frontend全体: `docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand`を実行する。
+  static checkは同backendの`bundle exec rubocop`、同frontendの`yarn lint`と`yarn tsc --noEmit --incremental false`を実行する。
+  FR-001既存offenseを修正対象へ広げず、既存性/今回回帰/未実施を件数とpathで記録する。
+- [ ] 同frontend container内の一時source copyを使い、既存build手順でproduction buildする。常駐devの出力を上書きせず、必要なら既存検証と同じ生成済みCSSの`NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 yarn next build`を用いる。repositoryの設定や保護Dockerfileを変更しない。
+- [ ] visual-inspector childで、料理編集の手間保持、パターン未選択/再選択、出典なし食事編集、カレンダーの週/月遷移と延期後再取得を最終目視する。各phaseの目視の代替にはしない。実DB操作は行わない。
+- [ ] README/application/coverageと関連する旧RV/CRの現在採否・状態を照合して訂正する。個別findingの履歴を残し、旧「全関数契約保存」「6fileだけ」「認可も全取消」を現在の合意として読ませない。文書はdocument-reviewを通す。
+- [ ] 実装feedbackが出たら、受領ownerが同workdirのimplementation_review.mdで根本原因/コードから読める知識か/恒久記録先を整理する。永続知識はdoc-enricherの提案に留め、未承認のREADME変更を広げない。
+  本設計外の有効な業務操作変更が必要になった項目だけを親Solへ戻し、独立した確定項目は続行する。
+- [ ] 全体訂正記録を追加commitする。既存の継続・公開指示に従いfeature-287をpushし、既存PR #292のtitle/bodyを最終採否・validation・未実測へ訂正する。新しいPR/mergeは行わない。
+- [ ] 親steeringへ確定先行範囲の実装結果と、FR-018/019/023/028/CR-003、FR-015追加UIの個別判断を返す。全レビュー作業完了へ読み替えない。
 
-- [x] 元変更 `c240b94` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: calendarDateFromPathと既存spec。RV-029の日付パーサー共通化は保持。
-
-DoD: 無効日付とquery/hashの解釈がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-検証: scope-repair-fr021-1 / attempt1 passed。Jest8 tests・lint2file・tsc成功、helper/spec旧byte一致・
-先行共通化/FR-020残部/純抽出/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr021-attempt-1/result.md)。
-
-### 16. FR-020: Next pathname/searchとの論理履歴同期を戻す
-
-- [x] 元変更 `d8afcf0` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: logical-history.tsxと専用spec。
-
-DoD: Next遷移・push・popの論理URL更新条件がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-検証: scope-repair-fr020-1 / attempt1 passed。consumer Jest16 tests・Provider lint・tsc成功、旧byte一致・
-専用spec除去・純抽出/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr020-attempt-1/result.md)。
-
-### 17. FR-019: 一食一枠の制約とmigrationを戻す
-
-- [x] 元変更 `01e5394 + 3dcad04` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: unique migration、schema、AssignMealPolicy、現行Fill、cardinality/migration spec、spec_mysql残部。
-
-DoD: 一つの食事の複数枠割当可否がbaselineに戻り、新migrationが不要になる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-検証: scope-repair-fr019-1 / attempt1 passed。二重guard後にtest SQLite限定schema load・再guard・unique不在確認。
-RSpec70 examples / 0 failures、RuboCop2 files / 0 offenses、9path旧比較・純抽出/利用者変更保持・diff check成功。
-[結果](evidence/scope-repair/fr019-attempt-1/result.md)。
-
-### 18. FR-018: 食事移動時の枠解除と交換transaction追加を戻す
-
-- [x] 元変更 `25471fd` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: Meal保存、新旧Repository/Swap、ReleaseFrameOnReschedulePolicyと専用spec。
-
-DoD: 日付・時間帯変更と日付交換の枠状態・保存境界がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-検証: scope-repair-fr018-1 / attempt1 passed。RSpec81 examples / 0 failures、RuboCop4 files / 0 offenses、
-6path旧比較・解除参照なし・FR-002/003残部/純抽出/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr018-attempt-1/result.md)。
-
-### 19. FR-017: 未選択パターン枠のnull処理と拒否を戻す
-
-- [x] 元変更 `62359ad` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: MealFramePatternFields、フォームspec。FR-032のnumber schemaは保持。
-
-DoD: 未選択操作のフォーム値と送信条件がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-検証: scope-repair-fr017-1 / attempt1 passed。Jest19 tests・lint2file・tsc成功、旧form/spec byte一致。
-d58c473元schemaとの120ケースがdata/issues順まで一致しshared schemaの変更不要。純抽出/利用者変更保持・diff check成功。
-[結果](evidence/scope-repair/fr017-attempt-1/result.md)。
-
-### 20. FR-016: インスタンスごとのdebounce cleanupを戻す
-
-- [x] 元変更 `5319fbd` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: DishSearchPanelと専用spec。
-
-DoD: 複数検索パネル・unmountのtimer挙動がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-検証: scope-repair-fr016-1 / attempt1 passed。Jest4 tests・lint成功、旧index byte一致・専用spec除去・
-純抽出/利用者変更保持・diff check成功。既存fixture警告あり。[結果](evidence/scope-repair/fr016-attempt-1/result.md)。
-
-### 21. FR-015: refresh待機と失敗時モード保持を戻す
-
-- [x] 元変更 `c05d21d` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: カレンダーrefresh、延期・交換mode、表示retry、各関連spec。
-
-DoD: 延期・交換後の非同期完了とモード遷移がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-検証: scope-repair-fr015-1 / attempt1 passed。Jest17 tests・lint4file・tsc成功、7path旧比較・先行モード型/純抽出/
-利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr015-attempt-1/result.md)。
-
-### 22. FR-014: Apollo mutation tupleのloading/error返却修正を戻す
-
-- [x] 元変更 `601d722` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: mutationUtilsと専用spec。
-
-DoD: mutationの公開返却tupleがbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-検証: scope-repair-fr014-1 / attempt1 passed。Jest22 tests・lint3file・tsc成功、4path旧比較・先行入力共通化/
-モード型/純抽出/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr014-attempt-1/result.md)。
-
-### 23. FR-013: 料理編集のeffortId取得と初期値保持を戻す
-
-- [x] 元変更 `fb59312` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: 料理/食事query、フォーム初期値・選択component、GraphQL出力と生成物、関連spec。
-
-DoD: 編集開始・時間帯変更時の手間レベル表示と送信値がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-検証: scope-repair-fr013-1 / attempt1 passed。RSpec7 examples / 0 failures、Jest47 tests・両lint・tsc成功、
-10path旧比較・先行入力共通化/純抽出/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr013-attempt-1/result.md)。
-
-### 24. FR-012: GraphQL任意引数のRuby既定値追加を戻す
-
-- [x] 元変更 `ceb1da7` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: 実差分の料理更新GraphQL resolver2箇所と省略引数spec（計3file）。
-
-DoD: 省略引数の例外契約がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-検証: scope-repair-fr012-1 / attempt1 passed。RSpec13 examples / 0 failures→RuboCop2 files / 0 offensesを逐次確認。
-3path旧比較・対象外Meal resolver不変・先行変換/純抽出/利用者変更保持・diff check成功。[結果](evidence/scope-repair/fr012-attempt-1/result.md)。
-
-### 25. FR-011: 料理評価の所有者照合を戻す
-
-- [ ] 元変更 `cdb8e27` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: legacy評価Command/Repositoryと専用spec。
-
-DoD: 評価保存の対象と取得条件がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-### 26. FR-010: 関連枠の所有者検証と一覧取得絞込みを戻す
-
-- [ ] 元変更 `86ab57e` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: pattern entry Add、MealFramePatternEntries/MealFrames source、出力typeとspec。RV-026のbatch取得は保持。
-
-DoD: パターン登録・一覧の関連取得がbaselineと同じ条件になる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-### 27. FR-009: 関連料理の所有者必須条件を戻す
-
-- [ ] 元変更 `9528fa1` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: AttachDishPolicy、MealFactory/Root/Finders、関連spec。
-
-DoD: 食事登録時に関連料理へ適用する条件がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-### 28. FR-008: 枠割当の全入口の所有者照合を戻す
-
-- [ ] 元変更 `a2ca053` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: 現行Add/Fill、旧Fill、GraphQL割当spec。旧Fillはbaselineの独立classへ戻す。
-
-DoD: 旧新入口の割当可否と返却classがbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-### 29. FR-007: 検索先頭固定料理の所有者条件を戻す
-
-- [ ] 元変更 `3751b09` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: DishSearcherと既存検索spec。
-
-DoD: 固定IDに対する検索条件がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-### 30. FR-006: パターン更新削除の必須user_idを戻す
-
-- [ ] 元変更 `d34ce8c` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: Command・GraphQL両入口・既存Command spec。FR-033のmap共通化を保持する。
-
-DoD: パターン更新削除のsignature・取得・例外がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-### 31. FR-005: 枠・枠エントリの更新削除の所有者条件を戻す
-
-- [ ] 元変更 `f7b3e68` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: Frame Update/Removeと現行Entry Remove、関連spec。
-
-DoD: 枠更新削除の条件がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-### 32. FR-004: 料理・出典・タグ更新の所有者条件を戻す
-
-- [ ] 元変更 `8adcbd6` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: 料理/出典Update、AddTag、DishTag置換の関連照合とspec。
-
-DoD: 各更新と関連ID参照の取得・拒否条件がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-### 33. FR-003: 食事更新削除の所有者条件を戻す
-
-- [ ] 元変更 `f440ac4` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: Meal Update/Removeと専用spec。
-
-DoD: 食事更新削除の取得条件と例外がbaselineと同じになる。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-### 34. FR-002: 日付交換の利用者必須取得とWIPのscopeを戻す
-
-- [ ] 元変更 `03e4828 + affd7ecの2コード/spec path` を前記の共通手順で復元・検証・記録し、当該訂正だけを追加commitする。
-  対象: Meal.fetch_by_date、新旧Swap、food Swap specをd58c473へ。affd7ecには食事取得scope変更が既にある。
-
-DoD: 交換対象・公開取得API・返却順がd58c473と一致し、FR-002途中変更も残らない。関連testが成功し、元証拠を残した現在状態とcommitが対応する。
-
-## 2. 保持する共通化と全体の契約を確認する
-
-- [ ] d58c473とのcommit済み最終diffを照合する。production差分はdesignの6fileだけ、test差分はFR-032/033の検証だけである。
-  先行8件、FR-031、FR-001 WIPと利用者3file、既存操作許可が保たれたことをhash/diffで確認する。
-- [ ] FR-032の台帳S01〜S08とFR-033の台帳I01〜I05をd58c473との実差分に再対応付ける。
-  構造の全範囲とcontractの順逆照合を行い、未監査・未分類追加・未分類削除を0にする。
-  schema.spec.ts、InputObject spec、パターン作成更新GraphQL specで値・error順・空配列・独立hash・返却値を検証する。
-- [ ] backend/db/schema.rb、既存migration集合、Terraform、workflow、起動停止script、関連運用本文がbaselineと一致することを確認する。
-  追加migrationの消失だけでなく、呼出しや生成物に新契約が残らないことを調べる。
-- [ ] 既存test DBのadapter・接続先・RAILS_ENV=test・indexを確認し、追加unique indexが残る場合だけtest DB限定schema loadでbaselineへ戻す。
-  開発DB・実DBのmigration/down操作をしない。新たなMySQL serviceを起動しない。
-- [ ] 既存compose.dev.local.ymlのbackendで全体RSpecとRuboCopを実行する。
-  commandはdocker compose -f compose.dev.local.yml exec -T backend bundle exec rspecとbundle exec rubocopを使う。
-  失敗時はtest-runnerで原因を分離し、今回の回帰は復元範囲内で修正する。既存FR-001 lint2件は変更せず記録する。
-- [ ] 同じ既存Composeのfrontendでyarn test、yarn lint、repository既定の型検査とproduction buildを実行する。
-  既存DockerfileとgenerateApiOrigin.tsの利用者差分を改変せず、実測したcommand・件数・終了値を記録する。
-- [ ] UIの復元影響をvisual-inspector childで確認する。
-  料理編集、カレンダー延期・交換、パターン編集の初期値・操作・表示を対象とし、スクリーンショットと未確認範囲を報告する。
-  これは利用者自身の操作確認とは区別する。既存の継続・公開許可に形式的な再質問を加えない。
-
-DoD: 挙動変更を保持してgreenにすることなく、限定した共通化と復元baselineの対応、現在の検証結果が説明できる。
-
-## 3. 採否・検証結果と既存PRを訂正する
-
-- [ ] 旧RV/FR/CRのfinding・README・application・coverageを通読し、現在の実装と状態の対応を確認する。
-  取り消した指摘を適用済み集計から外す。過去の検証・MySQL実測・元commitは当時の結果として残す。
-  FR-034は適用取消、FR-001は既存WIP保留、FR-032/033と先行8件/FR-031は保持とする。
-  b859f23の先行8件完成点からFR-001 WIPが加わっていることを明記し、PR全体を純粋なリファクタリングと呼ばない。
-- [ ] implementation_reviewへ今回の修復結果と原因を記録する。
-  既存の挙動維持制約を解除したassistantの誤判断が原因であり、追加のrepository規範不足とは扱わない。
-  doc-enricherやplugin修正の新規作業を加えず、既存の未適用提案はその状態を保つ。
-- [ ] 全変更mdへdocument-reviewを適用し、作成時・更新時観点、削った情報、相対link、現在状態と歴史の区別を確認する。
-  検証件数を旧snapshotから転記せず、今回の実測と未実施・既存失敗を明記する。
-- [ ] 記録全体の訂正と残る純粋な共通化の照合結果を追加commitする。
-  実差分をplan-commitsで確認し、利用者3fileの未stageと保持を最終照合する。
-- [ ] feature-287に追加commitがあることを確認して通常pushし、既存PR #292のtitle/bodyを完成した挙動維持の差分へ書き直す。
-  修復中noticeは結果に更新し、先行8件・FR-031・FR-032/033保持、FR-001の既存認証WIP残置、範囲外適用取消、新migration/AWS apply不要を説明する。
-  今回の修復対象の挙動維持と、PR全体にFR-001の認証変更が残ることを分けて報告する。
-  履歴改変、force push、mainへの直接commit、merge、deployはしない。
-- [ ] 公開後のbranch/PRとtasklistを照合し、復元baseline・保持差分・test結果・残る制約を利用者へ報告する。
-
-DoD: 利用者が既存PRを読んで、何を残し何を戻したか、何を検証し何を検証していないかを把握できる。
+DoD: 確定範囲の正常操作・内部修正と現在の採否が実装/test/記録/PRで一致し、未実測と親に残る判断を明記している。保護差分と実環境を変更していない。
