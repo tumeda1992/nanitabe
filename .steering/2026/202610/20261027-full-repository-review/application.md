@@ -511,3 +511,7 @@ RSpec13 examples / 0 failures、Ruby lint2 files / 0 offensesを逐次確認。�
 ## FR-017 再適用（2026-11-06）
 
 未選択を既存入力エラーへ戻し無効ID送信を防止。Jest 20 tests、型検査・lint成功。人工fixture画面で作成/編集の未選択mutation 0、再選択後に数値ID1を各1回送信。エラーは再選択直後も残り送信時処理。実DB永続化未検証。
+
+## FR-020 再適用（2026-11-06）
+
+Next遷移と表示日付の同期を復帰。Jest 20 tests、型検査・lint成功。人工fixtureの週/月、前後、今週、browser戻る/進む8状態でURLと表示一致、300ms後も維持。実DB未操作。

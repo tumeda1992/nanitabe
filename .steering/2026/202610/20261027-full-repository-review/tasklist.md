@@ -113,9 +113,15 @@ DoD: 作成/編集で選択→未選択はAPI0回、再選択は正整数IDで1�
 
 ## 8. FR-020: Nextの遷移と表示日付を同期する
 
-- [ ] 元commit `d8afcf0` の限定差分を読み、frontend/src/app/logical-history.tsxと専用specを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
-- [ ] `frontend yarn test --runInBand --silent logical-history CalendarHeader Calendar/index.spec useRefreshCalendarData`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] 元commit `d8afcf0` の限定差分を読み、frontend/src/app/logical-history.tsxと専用specを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] `frontend yarn test --runInBand --silent logical-history CalendarHeader Calendar/index.spec useRefreshCalendarData`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+  > 確認日時: 2026-11-06（JST）
+  > 総合結果: ✅ 指定2画面項目正常、人工fixture・実DB未操作
+  > ログ: `frontend/inspect/visual/tmp/fr020-retain-attempt-1/result.md`
+  > 週/月切替: 期待URLと表示一致、結果一致 ✅
+  > 前後・今週・browser戻る/進む: 期待URLと表示一致、結果8状態で一致し300ms後も維持 ✅
+
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 週/月切替・今週・戻る/進むでURL/表示が一致し、独自pushと古いNext snapshotで巻き戻さない。
 
