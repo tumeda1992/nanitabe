@@ -289,3 +289,24 @@ DoD: 新旧交換Commandが正常保存値・返却class/順序・空/片側空/
 - [x] 親steeringへ確定先行範囲の実装結果と、FR-018枠解除、FR-019/023/028/CR-003、FR-015追加UIの個別判断を返す。全レビュー作業完了へ読み替えない。
 
 DoD: 確定範囲の正常操作・内部修正と現在の採否が実装/test/記録/PRで一致し、未実測と親に残る判断を明記している。保護差分と実環境を変更していない。
+
+## 22. CI followup: backendの両CIを本体実行・成功まで確認する
+
+- [ ] `.github/workflows/ci-backend-test.yml`と`.github/workflows/ci-backend-rubocop.yml`の`runs-on`だけを`ubuntu-24.04`へ固定する。
+  Ruby `3.3.8`、Gemfile/.ruby-version/lock、変更検出と本体実行stepを保持する。
+  両YAMLをstdinで順に渡し、既存backend containerの`ruby -rpsych -e 'Psych.parse($stdin.read)'`でparseする。
+  diffでrunner以外に変更がないことを確認してrunner修正だけを追加commitする。
+- [ ] `backend/app/controllers/admin/base_controller.rb`の2つの`ENV[]`を`ENV.fetch(key, nil)`へ置き換える。
+  `backend/spec/support/admin_authentication.rb`と`backend/spec/requests/admin/authorization_spec.rb`の対応stubを`fetch(key, nil)`へ適応する。
+  nil/空文字と正誤credentialの既存意味・認証機能のFR-001保留を保持する。lint抑制/除外、認証仕様変更、記法を写すだけの新testを追加しない。
+- [ ] 親Solをphysical ownerとするtest-runnerへ依頼し、既存backend container・`RAILS_ENV=test`の標準test DBで`bundle exec rspec spec/requests/admin spec/system/admin`、`bundle exec rspec`、`bundle exec rubocop`を実行する。
+  管理認証/管理CRUDの期待を保って成功し、全RuboCopが0 offensesとなることを確認する。失敗は原因を特定して採用範囲内で修正・再実行し、新しい業務判断が必要なものだけ親Solへ戻す。
+  実装5file限定、保護3fileのhash/mode保持、index混入なし、diff checkを確認し、認証lint記法とstub適応だけをrunnerとは別の追加commitにする。
+- [ ] 既承認の指示に従いfeature-287をpushし、既存PR #292の最新source SHAに対するCI Backend Test/CI Backend Rubocopを確認する。
+  Setup Rubyが通ったことに加え、RSpecとRuboCopの本体stepが実行され、両jobが成功するまで確認する。変更なしskip、旧SHAの成功、local結果を代替にしない。
+  CI失敗時はlogで原因を特定し、この範囲の修正は追加commitで直して再確認する。履歴改変・mergeは行わない。
+- [ ] 新request/attemptに変更source SHA、local全RSpec/全RuboCop/YAML parse、CI本体の結果・URL・SHAを保存する。
+  README/application/coverageとPR #292説明へ後続結果を追記し、source `3d832f5`の既存成功/既存offense/未実測は当時の履歴として保持する。
+  FR-001はlint記法だけの修正で認証機能は保留、その他保留と未実測も継続と明記する。文書をdocument-reviewへ通して記録訂正を追加commit/pushし、PRの最終SHAに対する両CI本体の成功を確認してチェックを更新する。
+
+DoD: 既存Rubyと認証仕様を保った限定5fileの修正で、local全RSpec・全RuboCop・YAML parseとPR #292の両CI本体が成功する。最新source/URLへ結び付く後続記録を残し、旧sourceの検証履歴、保留、保護差分、実環境を変更していない。

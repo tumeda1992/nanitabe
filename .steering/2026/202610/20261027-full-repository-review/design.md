@@ -83,7 +83,7 @@ currentは既存の`user_id:`付き取得で本人の食事だけを扱い、leg
 | CR-003 | 旧Repository specに関連済み出典のtype変更後に詳細を上書きする成功例がある。一律拒否はその有効操作を制限する | 拒否/明示移行/旧情報保持の業務契約が確定した時 |
 | FR-015追加UI | 表示更新だけを再試行するボタンと失敗状態保持は、Promise伝播の修正に必須ではない新しい操作・画面状態である | この追加操作・失敗時の画面仕様を採るという判断が確定した時 |
 
-FR-001はこれらと別に、以前からの利用者による明示保留を維持する。FR-001の既存WIPを解消・削除・改善したとは報告しない。
+FR-001の認証機能は、以前からの利用者による明示保留を維持する。既存WIPの機能を解消・削除・改善したとは報告しない。下記CI followupで行う環境変数取得のlint記法とtest stubの適応だけを限定採用する。
 
 ### codeの責務配置と比較
 
@@ -107,6 +107,32 @@ frontendの表示・入力・状態へ影響する各項目は`visual-inspector`
 
 復帰は一指摘一追加commitで行い、履歴改変・amend・rebase・force pushを行わない。FR-015とFR-018は部分復帰として記録する。FR-018の原子的保存の復帰と枠解除の保留をfinding/application/coverage/READMEで区別し、過去の全適用・取消結果を今回の実測に流用しない。FR-011の未commit取消撤回はcode上の追加commitが不要であるため、結果の失効と記録を同指摘の追加commitへまとめる。保全対象をstageしない。既存のgit add/commit/push承認を使う。
 
+### PRのbackend CI followup
+
+利用者の「PR見たらbackendのテストもrubocopも落ちてるけど」という指摘へ対応し、PR上の両CIを本体実行・成功まで確認する。
+先行範囲の検証source `3d832f5`と完了記録を履歴として保持し、このfollowupで変わるsourceの結果を後続記録に分ける。
+
+親Solが取得した両job logは、`ubuntu-26.04`で厳密指定のRuby `3.3.8`が利用できずSetup Rubyで停止していた。
+親Solが確認した[ruby/setup-ruby公式README](https://github.com/ruby/setup-ruby#readme)の旧patch対応に従い、次の2workflowの`runs-on`だけを`ubuntu-24.04`へ固定する。
+
+- `.github/workflows/ci-backend-test.yml`
+- `.github/workflows/ci-backend-rubocop.yml`
+
+Ruby `3.3.8`、`backend/Gemfile`、`.ruby-version`、lockfile、既存の変更検出・RSpec/RuboCop実行stepを保持する。
+CI Backend Testが変更なしとしてskipした結果、Setup Ruby成功だけ、local検証だけをCI成功の代替にしない。
+
+Setup Ruby通過後の全RuboCopで落ちる既知のStyle/FetchEnvVar 2件も修正する。
+`backend/app/controllers/admin/base_controller.rb`の2つの`ENV[]`だけを`ENV.fetch(key, nil)`へ置き換え、
+`backend/spec/support/admin_authentication.rb`と`backend/spec/requests/admin/authorization_spec.rb`の対応stubを同じ`fetch(key, nil)`へ適応する。
+未設定はnil、空文字は空文字のままとし、既存のpresent?判定・安全な比較・正誤credential・管理CRUDの期待を保つ。
+認証機能のFR-001保留は継続し、lint抑制/除外や新しい認証仕様は追加しない。
+この低impact記法修正を写すだけの新testは作らず、既存認証と管理CRUD request/system、全RSpec・全RuboCopで確認する。
+
+実装対象は上記5fileだけとし、runner固定と認証lint記法を別commitにする。
+検証と記録は新sourceへ結び付け、PR #292の両CI本体の成功結果・URL・対象SHAを保存する。
+README/application/coverageとPR説明には後続結果を追記し、旧sourceの成功・既存offense・未実測を別sourceの結果へ書き換えない。
+実装はTerra、test-runnerの実行管理は親Solとし、既承認のcommit/pushを用いる。その他の保留、保護3file、実環境/DB/AWS/Webhook/新Compose禁止は継続する。
+
 ## 受け入れ基準
 
 1. FR-011の3pathが再開時HEADと一致し、未取消FR-002〜010の認可を保持する。全関数の旧契約を保存する目的の取消を継続しない。
@@ -116,6 +142,7 @@ frontendの表示・入力・状態へ影響する各項目は`visual-inspector`
 5. 既存containerの全RSpec/Jest、型検査、production build、全lintを確認し、既存FR-001由来のoffenseと今回回帰を分けて報告する。frontendの各確認と全体の目視を実施する。
 6. 実環境DB/AWS/Webhook/mergeへの操作、新Compose/追加service起動、履歴改変がない。未実測はそのまま記録する。
 7. README/application/coverage/旧RV/CRの現在状態と既存PR #292を今回の採否へ訂正し、先行範囲完了と親steeringに残る個別判断を区別する。
+8. CI followupは実装5fileに限定し、YAML parse・既存認証/管理CRUD・backend全RSpec・全RuboCopが成功する。push後、PR #292でRSpecとRuboCopの本体が実行され成功し、そのsource/URLを新検証記録へ結び付ける。FR-001認証機能の保留と旧sourceの検証履歴を維持する。
 
 ## 付録: 変更の実行区分
 
@@ -134,6 +161,7 @@ frontendの表示・入力・状態へ影響する各項目は`visual-inspector`
 | FR-011取消撤回と確定した各FR/CR復帰 | 本番application codingと指摘単位の独立検証 | 操作から見た確定する修正 |
 | 運用修正の復帰 | 本番runtime/workflowの修正とoffline検証 | runtimeと検証条件 |
 | 現在採否の訂正・全体検証・既存PR訂正 | 実装結果に依存する段階的な公開 | 記録と履歴、受け入れ基準 |
+| backend CI runner固定と既存認証のlint記法修正・再検証・PR結果訂正 | 利用者が指摘した失敗の修復とpush後CI本体の確認 | PRのbackend CI followup |
 
 ## 設計確認
 

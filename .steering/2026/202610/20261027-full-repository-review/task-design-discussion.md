@@ -62,3 +62,49 @@ CR-004 `f9a6359`後に構造編集を引き渡され、既存完了phaseを保�
 FR-018は日付交換の原子的保存だけを追加採用する。productionは新旧2Commandの`::Meal.transaction`wrapperに限定する。
 両Command specで正常返却・食事/枠属性保持・空/片側空/同日・current本人scope・後半保存失敗rollbackと元例外を検証する。
 枠解除は前記の業務契約確定まで親steeringで暫定保留とし、FR-019/023/028、CR-003、FR-015追加UIの保留は維持する。
+
+## 論点2: PRのbackend CI失敗を限定修正する
+
+**ステータス:** 決定
+
+**種別:** レビュー指摘
+
+### イテレーション1（論点2）: Ruby実行環境と既存認証lintを修復する
+
+#### 提案1（論点2）
+
+両backend workflowのrunnerを`ubuntu-24.04`に固定し、Ruby `3.3.8`を保持する。
+既存の管理認証の`ENV[]`2箇所を`ENV.fetch(key, nil)`へ置き換え、既存2spec fileのstubだけを適応する。
+実装5fileに限定し、runnerとlint記法を別commitにする。local全RSpec/全RuboCop/YAML parseと、push後のPR上の両CI本体成功を確認する。
+
+#### 検討記録（論点2・イテレーション1）
+
+親Solが取得した両job logでは、Ruby `3.3.8`が`ubuntu-26.04`で利用できず、本体前に失敗していた。
+公式setup-rubyの旧patch対応に従いrunnerを固定すれば、既存Rubyと依存を変えずに実行可能となる。
+その後の既知lint 2件は既定nil付きfetchへ変えれば未設定/空文字・正誤credentialの意味を保てる。
+認証機能のFR-001保留、その他業務判断、保護3file、実環境禁止を保持する。
+記法修正を写すだけの新testは不要であり、既存認証/管理CRUDと全回帰で確認する。
+
+この回は親Solから受領した調査結果と限定方針の事後記録である。
+本担当は対象5fileを読み、追加の業務判断が不要なことを確認した。CI本体の成功は実装後に測定する。
+
+[内部検討記録: 論点2・イテレーション1](internal-records/task-design-discussion.md.topic-2.md#iteration-1)
+
+#### 提案1へのフィードバック（論点2）
+
+**結果:** 利用者の失敗指摘に対する限定followupとして親Solが設計反映を委託した。
+
+利用者の原文:
+
+> PR見たらbackendのテストもrubocopも落ちてるけど
+
+親Solの委託:
+
+> CIを本体実行/成功まで直すことを新ユーザーfeedbackの対応として進める。
+> 追加ユーザー承認gate不要、既承認gitadd/commit/push/dockercompose利用。
+
+### 決定（論点2）
+
+designのCI followupとtasklist末尾22へ限定5fileの修復、2原因別commit、local全回帰、PRの最新sourceに対する両CI本体成功を追加する。
+source `3d832f5`の旧検証と既存完了phaseは保持し、新sourceの検証結果をREADME/application/coverageとPR説明の後続記録へ結ぶ。
+実装はTerra、test-runnerのphysical ownerは親Sol。FR-001認証機能と他項目の保留、保護3file、実環境禁止を継続し、plugin保留3件の解除は含めない。
