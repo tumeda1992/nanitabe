@@ -78,3 +78,7 @@ production buildは固定source `3d832f5` の一時copyで通常Turbopack compil
 最終visualは人工GraphQL fixtureで5群を新規確認し23画像を目視。料理手間、パターン、出典なし編集、週/月履歴、延期後再取得が指定期待に一致。実DBは操作せず、内部契約と永続化は自動testの範囲。別観測として手間明示解除画面の横ずれ・左ラベル欠け、再選択直後のエラー残存、開発環境issue表示がある。[結果](evidence/scope-repair/full-visual-attempt-1/result.json)。
 
 未実測: CR-004の今回MySQL並行再実測、実AWS IAM権限、実DBへの変更、実Webhook送信。FR-026の制限を実環境で有効にするには既存IAM policy更新のapplyが必要で、未実施。FR-018枠解除、FR-019/023/028、CR-003、FR-015追加UIは業務・構成判断待ち。
+
+## 公開headのCI速報（97f6348）
+
+GitHub Actionsのbackend RuboCop run `42195119635` / job `127816323328` とbackend test run `42195119531` / job `127816322843` はSetup Rubyで `Unavailable version 3.3.8 for ruby on ubuntu-26.04` により失敗し、本体はskipされた。既存runner/Ruby指定はmainから不変で、ローカルRuboCopのFR-001由来2 offenseとは別原因。Terraform Plan (prod) run `42195119401` は成功。frontend test/lint/buildはこの速報時点で進行中。最終headのCIは親が別途確認する。
