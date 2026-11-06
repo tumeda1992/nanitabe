@@ -1,8 +1,8 @@
 # FR-026: Terraform plan roleがstate全体を書き換えられる
 
 - 優先度: P1
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 採用
+- 対応状況: コード再適用・offline検証完了
 - 振る舞い維持の適用枠: 対象外
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-023（現行コードで再確認）。
@@ -56,3 +56,7 @@ plan roleの書込みprefix制限は権限の挙動を変えるため、df42ad7�
 旧policy byte一致、専用suite除去、利用者変更保持とdiff checkが成功した。
 元のstate objectへのPutを含む契約を維持しており、指摘された権限不足ではなく過大権限の問題は残る。
 元指摘と過去の検証は保存する。実AWS/state/Terraform applyへ操作していない。
+
+## 再適用（2026-11-06）
+
+planの書込権限を既存plans出力先に限定。offline policy test 3件とterraform fmt成功、README出力先一致。実AWSの権限は未確認で、制限を有効にするには既存IAM更新のapplyが必要。applyは未実施。[結果](../evidence/scope-repair/fr026-retain-attempt-1/result.md)。

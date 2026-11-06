@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr026-retain-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr026-retain-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr026-retain-attempt-1/result.md",
+  "summary": "offline policy 3 tests成功、terraform fmt成功。対象2 pathはdf42ad7一致、README保存先・保護hash/Git mode・diff check確認。実AWSへの反映はIAM更新applyが必要で未実施。"
+}

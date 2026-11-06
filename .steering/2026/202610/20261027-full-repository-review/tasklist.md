@@ -175,10 +175,10 @@ DoD: 本文なしDELETEの反映失敗でParameterMissingを起こさず元エ�
 
 ## 13. FR-026: planの既存ログ保存だけに書込権限を限定する
 
-- [ ] 元commit `df42ad7` の限定差分を読み、infrastructure/terraform/modules/github_oidc/main.tf、plan_policy.spec.mjsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] 元commit `df42ad7` の限定差分を読み、infrastructure/terraform/modules/github_oidc/main.tf、plan_policy.spec.mjsを復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
   planのログ保存先が既存READMEのplans/<root>/<run id>.txtと一致することも照合する。offline policy評価までとし実AWSには適用しない。権限制限を実環境で有効にするには既存IAM更新の適用が必要で、適用actionは別であることを結果とPRへ明記する。
-- [ ] `node --test infrastructure/terraform/modules/github_oidc/plan_policy.spec.mjs`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] `node --test infrastructure/terraform/modules/github_oidc/plan_policy.spec.mjs`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: plans配下へのPutObject、state読取、lock table操作を保ち、state/applyログへの書込みを許可しない。
 
