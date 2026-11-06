@@ -292,7 +292,7 @@ DoD: 確定範囲の正常操作・内部修正と現在の採否が実装/test/
 
 ## 22. CI followup: backendの両CIを本体実行・成功まで確認する
 
-- [ ] `.github/workflows/ci-backend-test.yml`と`.github/workflows/ci-backend-rubocop.yml`の`runs-on`だけを`ubuntu-24.04`へ固定する。
+- [x] `.github/workflows/ci-backend-test.yml`と`.github/workflows/ci-backend-rubocop.yml`の`runs-on`だけを`ubuntu-24.04`へ固定する。
   Ruby `3.3.8`、Gemfile/.ruby-version/lock、変更検出と本体実行stepを保持する。
   両YAMLをstdinで順に渡し、既存backend containerの`ruby -rpsych -e 'Psych.parse($stdin.read)'`でparseする。
   diffでrunner以外に変更がないことを確認してrunner修正だけを追加commitする。
