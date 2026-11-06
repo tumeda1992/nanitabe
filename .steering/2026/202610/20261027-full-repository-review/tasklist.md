@@ -305,7 +305,7 @@ DoD: 確定範囲の正常操作・内部修正と現在の採否が実装/test/
 - [x] 既承認の指示に従いfeature-287をpushし、既存PR #292の最新source SHAに対するCI Backend Test/CI Backend Rubocopを確認する。
   Setup Rubyが通ったことに加え、RSpecとRuboCopの本体stepが実行され、両jobが成功するまで確認する。変更なしskip、旧SHAの成功、local結果を代替にしない。
   CI失敗時はlogで原因を特定し、この範囲の修正は追加commitで直して再確認する。履歴改変・mergeは行わない。
-- [ ] 新request/attemptに変更source SHA、local全RSpec/全RuboCop/YAML parse、CI本体の結果・URL・SHAを保存する。
+- [x] 新request/attemptに変更source SHA、local全RSpec/全RuboCop/YAML parse、CI本体の結果・URL・SHAを保存する。
   README/application/coverageとPR #292説明へ後続結果を追記し、source `3d832f5`の既存成功/既存offense/未実測は当時の履歴として保持する。
   FR-001はlint記法だけの修正で認証機能は保留、その他保留と未実測も継続と明記する。文書をdocument-reviewへ通して記録訂正を追加commit/pushし、PRの最終SHAに対する両CI本体の成功を確認してチェックを更新する。
 

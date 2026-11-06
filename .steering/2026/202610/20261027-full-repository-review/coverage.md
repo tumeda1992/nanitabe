@@ -86,3 +86,5 @@ GitHub Actionsのbackend RuboCop run `42195119635` / job `127816323328` とbacke
 ## backend CI followup（source acea91a、2026-11-06）
 
 管理request/system 29 examples、backend全RSpec 874 examples、全RuboCop 481 files / 0 offensesがローカルで成功。CI Backend TestはRuby setup・SQLite準備・RSpec本体成功、874 examples / 0 failures。CI Backend RubocopはRuby setup・本体成功、480 files / 0 offenses。CIとlocalのfiles数は別実測。[CI証拠](evidence/ci-followup/github-acea91a/result.md)。旧source `3d832f5` の2 offenseと旧headのSetup Ruby失敗は当時の履歴。FR-001認証機能は保留を維持し、変更はlint記法と既存stubに限る。
+
+記録head `07805b1c18b88265f1b0055cbd1708bfc62908ef` はsource `acea91a` とsteering外差分0。公開PRの[backend test run 42208656814](https://github.com/tumeda1992/nanitabe/actions/runs/42208656814) job 127861551957はSetup Ruby・SQLite準備・RSpec本体が成功、変更なし分岐はskip。[backend RuboCop run 42208656903](https://github.com/tumeda1992/nanitabe/actions/runs/42208656903) job 127861553570はSetup Ruby・RuboCop本体が成功。6 workflow全successを確認した。
