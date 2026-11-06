@@ -1,0 +1,32 @@
+{
+  "request_id": "scope-repair-fr034-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "17 FR-034 旧枠入口委譲",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr034-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/meal/frame_entry spec/domain/business/food/meal/frame",
+      "expected": "全examples成功。旧定数・本人返却class/値・単一保存、他人削除拒否、旧Fill/FR008認可保持"
+    },
+    {
+      "operation": "変更箇所lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/food/meal/frame_entry/root.rb app/domain/business/food/meal/frame_entry/usecase/add_command.rb app/domain/business/food/meal/frame_entry/usecase/remove_command.rb spec/domain/business/food/meal/frame_entry/compatibility_spec.rb",
+      "expected": "成功"
+    },
+    {
+      "operation": "限定差分と保護範囲確認",
+      "expected": "source/spec/READMEはfcac860一致、旧Fillは既存委譲のまま、FR008と保護3file hash/Git mode保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "本人操作の返却class・値・単一保存を維持し、他人の削除を拒否。旧Fill委譲とFR-008を保持する"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。実DB migration/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr034-retain-attempt-1/result.json"
+}

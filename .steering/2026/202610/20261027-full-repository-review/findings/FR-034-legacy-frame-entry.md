@@ -1,8 +1,8 @@
 # FR-034: 旧FrameEntryと現行Frame::Entryの実装が併存する
 
 - 優先度: P2
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 採用
+- 対応状況: 再適用・検証完了
 - 振る舞い維持の適用枠: 要調査
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-016（現行コードで再確認）。
@@ -52,3 +52,7 @@ food READMEも旧実装が残る説明へ戻し、全文と変更段落をdocume
 [復元結果](../evidence/scope-repair/fr034-attempt-1/result.md)は既存RSpec74 examples / 0 failures、
 RuboCop3 files / 0 offenses、eager loadと旧継承関係、4file旧byte一致、利用者変更保持、diff checkが成功した。
 元の二重実装の指摘と旧適用検証は履歴として保存する。
+
+## 再適用（2026-11-06）
+
+旧入口を現行Commandへ委譲し旧Root返却class・本人属性・単一保存を保持。他人削除拒否と内部継承は許容差分、旧Fill/FR-008も保持。RSpec 78 examples / 0 failures、4 file RuboCop 0 offenses。[結果](../evidence/scope-repair/fr034-retain-attempt-1/result.md)。READMEのdocument-reviewは移行台帳に記録。

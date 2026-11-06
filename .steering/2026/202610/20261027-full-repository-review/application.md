@@ -547,3 +547,7 @@ public-IP版の起動失敗時cleanupと再実行整合を復帰。人工env/stu
 ## FR-030 再適用（2026-11-06）
 
 frontend build workflow自身の変更を検出。filter 3 testsとYAML parse成功、actionlint未導入。[結果](evidence/scope-repair/fr030-retain-attempt-1/result.md)。
+
+## FR-034 再適用（2026-11-06）
+
+旧枠入口を現行Commandへ委譲し旧返却class・本人属性・単一保存を保持。内部継承と他人削除拒否を許容し、旧Fill/FR-008を維持。RSpec 78 examples / 0 failures、4 file RuboCop 0 offenses。README reviewは移行台帳に記録。[結果](evidence/scope-repair/fr034-retain-attempt-1/result.md)。

@@ -209,10 +209,10 @@ DoD: frontend変更とworkflow自身変更がtrue、無関係変更はfalseに�
 
 ## 17. FR-034: 旧枠入口から共通Commandへ委譲する
 
-- [ ] 元commit `fcac860` の限定差分を読み、旧FrameEntryのRoot/Add/Remove、compatibility_spec.rb、food/README.md、移行台帳を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] 元commit `fcac860` の限定差分を読み、旧FrameEntryのRoot/Add/Remove、compatibility_spec.rb、food/README.md、移行台帳を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
   旧Fillは既存の委譲を保持する。移行台帳へ内部継承と認可を許容差分として追記し、旧定数/返却class/本人属性の照合を行う。
-- [ ] `backend bundle exec rspec spec/domain/business/food/meal/frame_entry spec/domain/business/food/meal/frame`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] `backend bundle exec rspec spec/domain/business/food/meal/frame_entry spec/domain/business/food/meal/frame`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 本人操作の返却class・値・単一保存を維持し、他人の削除を拒否。旧Fill委譲とFR-008を保持する。
 

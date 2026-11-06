@@ -34,3 +34,9 @@ pathはbackend/app/domain/business/food/meal/基準。参照検索はbackend/app
 集計: 適合9（KEEP3/MOVE4/ADAPT2） / 合意済み追加0 / 合意済み変更1（L07） / 明示廃止0 / 未監査0 / 未分類削除0 / 未分類追加0。外部利用が不明な定数の削除・aliasによるclass名変更は行わない。
 
 互換9 examplesは修正前に本人scopeの1件だけred。他の8件で旧contractを固定し、変更後は新旧Command・認可・GraphQLを含む57 examples / 0 failures。変更4ファイルRuboCop成功。test設定のzeitwerk:checkも成功（既存のlibはeager_load対象外という警告は継続）。backend全体回帰も885 examples / 0 failures。diff check成功。
+
+## 再適用範囲（2026-11-06）
+
+旧入口の内部継承変更と他人削除拒否は今回の許容差分。旧定数・本人操作の返却classと属性・単一保存を維持し、旧Fillの現行委譲とFR-008認可を保持する。上記2026-11-02の検証は当時の記録であり、今回の再実測は新request/resultに記録する。
+
+README document-review（2026-11-06）: 全文と前版差分を通読し、内容・記法・指示対象・既存記述の保持・公開情報・暫定性を確認。現行/互換入口と旧返却class、削除前の利用確認を読者が辿れ、前版の外部利用確認条件も保持する。指摘なし。
