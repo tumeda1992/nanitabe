@@ -235,10 +235,10 @@ DoD: 既存タグID不変でcontent更新・再取得が成功し、不正所属
 
 ## 20. CR-004: 延期/予定食事を一度だけ消費する
 
-- [ ] 元commit `02e2caf` の限定差分を読み、両変換resolver、Postponed::RemoveCommand、conversion_atomicity_spec.rb、専用MySQL spec/helper（FR-019 specは戻さない）を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
+- [x] 元commit `02e2caf` の限定差分を読み、両変換resolver、Postponed::RemoveCommand、conversion_atomicity_spec.rb、専用MySQL spec/helper（FR-019 specは戻さない）を復帰する。元の追加退行testも現在の採用範囲へ復帰・適応する。
   専用MySQLが現在利用可能でなければ新serviceを作らず、並行再実測は未実施と明記する。旧MySQL結果を今回の再実測へ流用しない。通常testと元commitとの差分照合は実施する。
-- [ ] `backend bundle exec rspec spec/graphql/mutation/meal/postponed spec/domain/business/food/meal/postponed`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
-- [ ] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
+- [x] `backend bundle exec rspec spec/graphql/mutation/meal/postponed spec/domain/business/food/meal/postponed`、変更箇所lintと必要な型/目視確認を実施し、下記DoDと保持範囲を確認する。
+- [x] 共通契約に従いfinding/application/チェックを更新し、この指摘だけを追加commitする。
 
 DoD: 逐次再送/他人を拒否し、変換失敗はrollback。row lockを保持し、新しいMySQL serviceを起動しない。
 

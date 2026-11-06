@@ -559,3 +559,7 @@ frontend build workflow自身の変更を検出。filter 3 testsとYAML parse成
 ## CR-002 再適用（2026-11-06）
 
 既存タグの内容をID不変で原子的に更新し、不正所属を副作用前に拒否。辞書再正規化は同じRootを使いFR-024 transactionを保持。RSpec 70 examples / 0 failures、5 file RuboCop 0 offenses。[結果](evidence/scope-repair/cr002-retain-attempt-1/result.md)。
+
+## CR-004 再適用（2026-11-06）
+
+延期/予定食事変換のtransactionとrow lockを復帰。逐次再送・他人拒否と失敗rollbackを含むRSpec 34 examples / 0 failures、6 file RuboCop 0 offenses。許可済み専用MySQLが現在利用できず今回の並行再実測は未実施、新service起動なし。旧MySQL結果は当時の履歴。[結果](evidence/scope-repair/cr004-retain-attempt-1/result.md)。

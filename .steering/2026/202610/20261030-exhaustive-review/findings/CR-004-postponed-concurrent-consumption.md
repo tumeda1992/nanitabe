@@ -5,8 +5,8 @@
 - 対象: `backend/app/graphql/mutations/meal/postponed/schedule_postponed_meal.rb:10`
 - 観点: 並行処理・データ整合性
 - 由来: 全体レビュー・既存。既存未対応指摘とは原因・修正を分離。
-- 採否: 今回は見送り（挙動維持の制約により適用取消）
-- 対応状況: 適用取消・旧挙動の復元検証完了
+- 採否: 採用
+- 対応状況: 再適用・通常検証完了（今回のMySQL並行再実測なし）
 - 適用枠: 挙動変更が必要
 - 依存する指摘: なし
 
@@ -58,3 +58,7 @@ FR-019のMySQL helperの接続guard/cleanupと枠検証specは次の復元単位
 既存関連RSpec25 examples / 0 failures、変更Ruby4fileのRuboCop0 offenses、3fileの旧版byte一致とdiff checkが成功した。
 これは旧挙動への復元の検証であり、一回消費の保証ではない。実MySQL・実DB・AWS・Webhookは操作していない。
 復元commitはapplication.mdとGit履歴に記録する。
+
+## 再適用（2026-11-06）
+
+延期/予定食事の変換をtransactionとrow lockで保護し、逐次再送・他人を拒否する。RSpec 34 examples / 0 failures、6 file RuboCop 0 offenses。現在利用可能な専用MySQLがないため今回の並行再実測は未実施で、新serviceは起動していない。旧MySQL結果は当時の履歴。検証はfull-repository-reviewの `evidence/scope-repair/cr004-retain-attempt-1/result.md` に記録。

@@ -1,0 +1,36 @@
+{
+  "request_id": "scope-repair-cr004-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "20 CR-004 延期/予定食事消費",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr004-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/graphql/mutation/meal/postponed spec/domain/business/food/meal/postponed",
+      "expected": "全examples成功。逐次再送/他人拒否、変換失敗rollback"
+    },
+    {
+      "operation": "変更Ruby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/food/meal/postponed/usecase/remove_command.rb app/graphql/mutations/meal/postponed/postpone_meal.rb app/graphql/mutations/meal/postponed/schedule_postponed_meal.rb spec/graphql/mutation/meal/postponed/conversion_atomicity_spec.rb spec_mysql/meal_conversion_concurrency_spec.rb spec_mysql/mysql_spec_helper.rb",
+      "expected": "成功"
+    },
+    {
+      "operation": "専用MySQL可用性とrow lock照合",
+      "expected": "現在許可済み専用MySQLが利用可能なら並行再実測。なければ新serviceを起動せず未実施と明記。row lockと元commit差分を照合し旧結果を流用しない"
+    },
+    {
+      "operation": "限定差分と保護範囲確認",
+      "expected": "対象6path 02e2caf一致、FR019 specを戻さず保護3file hash/Git mode保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "逐次再送/他人を拒否し、変換失敗はrollback。row lockを保持し、新しいMySQL serviceを起動しない。"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。専用MySQLが利用可能でなければ新serviceなしで未実施記録。実DB migration/AWS/Webhookなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr004-retain-attempt-1/result.json"
+}
