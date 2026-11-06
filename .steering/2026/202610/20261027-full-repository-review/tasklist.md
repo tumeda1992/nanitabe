@@ -296,10 +296,10 @@ DoD: 確定範囲の正常操作・内部修正と現在の採否が実装/test/
   Ruby `3.3.8`、Gemfile/.ruby-version/lock、変更検出と本体実行stepを保持する。
   両YAMLをstdinで順に渡し、既存backend containerの`ruby -rpsych -e 'Psych.parse($stdin.read)'`でparseする。
   diffでrunner以外に変更がないことを確認してrunner修正だけを追加commitする。
-- [ ] `backend/app/controllers/admin/base_controller.rb`の2つの`ENV[]`を`ENV.fetch(key, nil)`へ置き換える。
+- [x] `backend/app/controllers/admin/base_controller.rb`の2つの`ENV[]`を`ENV.fetch(key, nil)`へ置き換える。
   `backend/spec/support/admin_authentication.rb`と`backend/spec/requests/admin/authorization_spec.rb`の対応stubを`fetch(key, nil)`へ適応する。
   nil/空文字と正誤credentialの既存意味・認証機能のFR-001保留を保持する。lint抑制/除外、認証仕様変更、記法を写すだけの新testを追加しない。
-- [ ] 親Solをphysical ownerとするtest-runnerへ依頼し、既存backend container・`RAILS_ENV=test`の標準test DBで`bundle exec rspec spec/requests/admin spec/system/admin`、`bundle exec rspec`、`bundle exec rubocop`を実行する。
+- [x] 親Solをphysical ownerとするtest-runnerへ依頼し、既存backend container・`RAILS_ENV=test`の標準test DBで`bundle exec rspec spec/requests/admin spec/system/admin`、`bundle exec rspec`、`bundle exec rubocop`を実行する。
   管理認証/管理CRUDの期待を保って成功し、全RuboCopが0 offensesとなることを確認する。失敗は原因を特定して採用範囲内で修正・再実行し、新しい業務判断が必要なものだけ親Solへ戻す。
   実装5file限定、保護3fileのhash/mode保持、index混入なし、diff checkを確認し、認証lint記法とstub適応だけをrunnerとは別の追加commitにする。
 - [ ] 既承認の指示に従いfeature-287をpushし、既存PR #292の最新source SHAに対するCI Backend Test/CI Backend Rubocopを確認する。

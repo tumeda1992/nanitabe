@@ -6,9 +6,9 @@ RSpec.describe "管理CRUDの認証", type: :request do
   let!(:word) { NormalizeWord.create!(entered_source: "test", entered_destination: "test", source: "test", destination: "test") }
 
   before do
-    allow(ENV).to receive(:[]).and_call_original
-    allow(ENV).to receive(:[]).with("ADMIN_USERNAME").and_return("review-admin")
-    allow(ENV).to receive(:[]).with("ADMIN_PASSWORD").and_return("test-only-admin-password")
+    allow(ENV).to receive(:fetch).and_call_original
+    allow(ENV).to receive(:fetch).with("ADMIN_USERNAME", nil).and_return("review-admin")
+    allow(ENV).to receive(:fetch).with("ADMIN_PASSWORD", nil).and_return("test-only-admin-password")
   end
 
   def operations
@@ -51,8 +51,8 @@ RSpec.describe "管理CRUDの認証", type: :request do
   end
 
   it "管理用認証が未設定なら空文字の認証も拒否する" do
-    allow(ENV).to receive(:[]).with("ADMIN_USERNAME").and_return(nil)
-    allow(ENV).to receive(:[]).with("ADMIN_PASSWORD").and_return(nil)
+    allow(ENV).to receive(:fetch).with("ADMIN_USERNAME", nil).and_return(nil)
+    allow(ENV).to receive(:fetch).with("ADMIN_PASSWORD", nil).and_return(nil)
     get operations.first[1], headers: { "Authorization" => ActionController::HttpAuthentication::Basic.encode_credentials("", "") }
     expect(response).to have_http_status(:unauthorized)
   end

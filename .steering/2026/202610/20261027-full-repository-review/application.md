@@ -575,3 +575,7 @@ frontend build workflow自身の変更を検出。filter 3 testsとYAML parse成
 ## 確定範囲の公開（2026-11-06）
 
 source `3d832f5` の検証結果と採否記録を含む `97f6348` をfeature-287へpushし、[既存PR #292](https://github.com/tumeda1992/nanitabe/pull/292)のtitle/bodyを更新、再取得で同head・open・未mergeを確認した。`3d832f5..97f6348` のsteering以外のsource差分は0。保護3 fileの保存hashを維持。公開時のCIは親が確認中で、全greenとは扱わない。FR-018枠解除等の個別判断、FR-001 WIP、CR-004の今回MySQL並行未実測、FR-026のIAM apply未実施は引き続き残る。
+
+## backend CI followupのlocal検証（2026-11-06）
+
+runnerをUbuntu 24.04へ固定しRuby 3.3.8を維持、2 YAML parse成功。管理認証の既存ENV参照を `fetch(key, nil)` へ変更し対応stubを適応、管理request/system 29 examples、全RSpec 874 examples成功、全RuboCop 481 files / 0 offenses。認証機能のFR-001は引き続き保留。source `3d832f5` でのRuboCop既存2件は当時の履歴として保持する。新sourceのCI本体結果はpush後に確認する。[結果](evidence/ci-followup/backend-attempt-1/result.md)。

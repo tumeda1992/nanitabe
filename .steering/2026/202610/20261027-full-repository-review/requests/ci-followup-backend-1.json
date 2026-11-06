@@ -1,0 +1,37 @@
+{
+  "request_id": "ci-followup-backend-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "22 backend認証既存動作と全検証",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/ci-followup/backend-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "管理認証/CRUD request・system",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/requests/admin spec/system/admin",
+      "expected": "全examples成功。未設定/空文字・正誤認証と既存管理CRUD維持"
+    },
+    {
+      "operation": "backend全RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec",
+      "expected": "全examples成功"
+    },
+    {
+      "operation": "backend全RuboCop",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop",
+      "expected": "全files 0 offenses"
+    },
+    {
+      "operation": "限定diffと保護確認",
+      "expected": "controller ENV.fetch(key,nil)2箇所と対応2 spec support/stubのみ、runner commitと合わせて実装5file限定。nil/空文字の意味維持。保護3file hash/Git mode保持、index空、diff check成功"
+    }
+  ],
+  "dod": [
+    "既存管理認証/CRUDと全RSpec成功、全RuboCop 0 offenses、限定5fileと保護保持"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。全checks逐次実行。実DB migration/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/ci-followup/backend-attempt-1/result.json"
+}
