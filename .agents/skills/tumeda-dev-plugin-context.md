@@ -52,7 +52,7 @@
 
 ### 検査環境
 
-- browser 設定: `.claude/mcp/playwright/config.jsonc`
+- browser 設定: `.claude/mcp/playwright/config.json`
 - script / screenshot / result の保存先: `frontend/inspect/visual/tmp/`
 
 ## tasklist-executor
