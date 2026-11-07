@@ -340,7 +340,7 @@ DoD: domainは現行入口に一本化され、旧4定数が消え、GraphQL/Act
   aggregate_failuresで辞書全行/2料理/各タグの全attributes rollbackを個別に識別できるようにする。位置依存の`observed.first[0]`等を残さず、4操作のcoverageを減らさない。
 - [x] 親Solのtest-runnerで`backend bundle exec rspec spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb`、`backend bundle exec rspec`、`backend bundle exec rubocop`を実行する。
   4操作とも先行実保存後の後半失敗と全属性rollbackを確認し、差分がspec整理だけであること・保護3file/評価Commandguard/他保留保持・diff checkを確認する。新sourceの結果を保存し、このspec整理だけを23と別の追加commitにする。
-- [ ] 既承認指示に従いfeature-287をpushし、PR #292の最終headでCIが成功すること、特に両backendのRSpec/RuboCop本体が実行され成功することを確認する。
+- [x] 既承認指示に従いfeature-287をpushし、PR #292の最終headでCIが成功すること、特に両backendのRSpec/RuboCop本体が実行され成功することを確認する。
   README/application/coverageとPR説明へ最新指示の対応・source/結果/CI URLを追記し、旧source結果は保持する。文書review後、記録を追加commit/pushした最終headでもCI成功を確認してチェックを閉じる。
   frontendコード変更/local frontend再実行、実DB migration/AWS/Webhook/新Compose service/merge、plugin保留3件解除は追加しない。
 
