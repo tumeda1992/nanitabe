@@ -331,14 +331,14 @@ DoD: domainは現行入口に一本化され、旧4定数が消え、GraphQL/Act
 
 ## 24. PR followup: 原子的な辞書反映specを操作ごとに整理する
 
-- [ ] `backend/spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb`を4つの具体Command describeへ分ける。
+- [x] `backend/spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb`を4つの具体Command describeへ分ける。
   編集前にbaseline `94623f6`の4操作と全期待の移管先を新attemptへ対応付け、期待の削除なしでshared_context/shared_examplesへ移す。
   `Business::Food::Dish::Word::Usecase::AddCommand`は辞書作成なし、`UpdateCommand`/`RemoveCommand`/`ReflectLatestNormalizeWordCommand`は各既存辞書letを持ち、各subjectはそのCommandを直接呼ぶ。
   共通shared_contextに2料理/各タグ、実行前全attributes snapshot、後半保存失敗注入を一定義にし、各操作の辞書fixtureと共通fixtureを生成した後・subject実行前にsnapshotを固定する。
   operationのeach/case/unlessによる選択や共通側でのsubject切替をなくし、個別describeへ固有事情だけを追加できる構造にする。production4Command/transactionは変更しない。
-- [ ] shared_examplesへ共通期待をまとめる。後半保存時の先行料理/先行タグの実保存観測を名前付きhashにし、観測一回・実行前から変更済み・既存例外typeと`late persistence failure`を維持する。
+- [x] shared_examplesへ共通期待をまとめる。後半保存時の先行料理/先行タグの実保存観測を名前付きhashにし、観測一回・実行前から変更済み・既存例外typeと`late persistence failure`を維持する。
   aggregate_failuresで辞書全行/2料理/各タグの全attributes rollbackを個別に識別できるようにする。位置依存の`observed.first[0]`等を残さず、4操作のcoverageを減らさない。
-- [ ] 親Solのtest-runnerで`backend bundle exec rspec spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb`、`backend bundle exec rspec`、`backend bundle exec rubocop`を実行する。
+- [x] 親Solのtest-runnerで`backend bundle exec rspec spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb`、`backend bundle exec rspec`、`backend bundle exec rubocop`を実行する。
   4操作とも先行実保存後の後半失敗と全属性rollbackを確認し、差分がspec整理だけであること・保護3file/評価Commandguard/他保留保持・diff checkを確認する。新sourceの結果を保存し、このspec整理だけを23と別の追加commitにする。
 - [ ] 既承認指示に従いfeature-287をpushし、PR #292の最終headでCIが成功すること、特に両backendのRSpec/RuboCop本体が実行され成功することを確認する。
   README/application/coverageとPR説明へ最新指示の対応・source/結果/CI URLを追記し、旧source結果は保持する。文書review後、記録を追加commit/pushした最終headでもCI成功を確認してチェックを閉じる。

@@ -23,3 +23,7 @@ feedback: Turbopackが一時copyからproject root外へ向くnode_modules symli
 ## CI followup記録のdocument-review（2026-11-06）
 
 新sourceのlocal/CI実測、CIとlocalのfile数、旧sourceのoffenseとSetup Ruby失敗を区別し、元の履歴・FR-001認証機能の保留を保持した。記法・指示対象・公開情報・暫定性を確認し指摘なし。最終記録push後のCIは別に実測する。
+
+## 辞書反映specのsnapshot規約（2026-11-07）
+
+feedback: `testing.md` は期待値のインスタンス変数参照を禁止する。attempt1は関連/全RSpec成功後に規約不適合で停止しlint未実行。原因は既存specのsnapshot記法を移管時に再利用したこと。規約は既存文書から読め、設計変更や恒久知識の追加は不要。fixture生成後にnamed letを明示評価してsnapshotを固定し、attempt2で検証する。

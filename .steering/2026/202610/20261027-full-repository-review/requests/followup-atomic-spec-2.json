@@ -1,0 +1,37 @@
+{
+  "request_id": "followup-atomic-spec-2",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "24 辞書反映spec整理",
+  "attempt": 2,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/pr-followup/atomic-spec-attempt-2",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "atomic reflection spec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb",
+      "expected": "4具体Command全examples成功。各先行実保存後に後半失敗、同じ例外type/message・辞書全行/2料理/各タグ全属性rollback"
+    },
+    {
+      "operation": "backend全RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec",
+      "expected": "全examples成功"
+    },
+    {
+      "operation": "全RuboCop",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop",
+      "expected": "0 offenses"
+    },
+    {
+      "operation": "変更範囲と保護確認",
+      "expected": "production辞書4Command不変、spec整理のみ。4直接describe・fixture後snapshot・名前付き観測・共通期待、保護3file hash/Git mode・評価Command guard・他保留保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "4操作の先行実保存/後半失敗と全属性rollbackを分岐・位置依存なしで維持"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test標準test SQLite。重い検査を逐次実行。実DB migration/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationを変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/pr-followup/atomic-spec-attempt-2/result.json"
+}
