@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr014-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr014-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr014-attempt-1/result.md",
+  "summary": "Jest3suites/22tests、3file lint/tsc成功。旧4path比較、先行入力共通化/モード型/純抽出6file/user3hash保持、diff check成功。"
+}

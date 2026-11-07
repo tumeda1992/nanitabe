@@ -1,6 +1,11 @@
 require "rails_helper"
+require Rails.root.join("spec/support/admin_authentication")
 
 RSpec.describe "Admin::Food::Dish::EffortLevel::DishEffortLevels", type: :request do
+  include AuthenticatedAdminRequests
+
+  before { stub_admin_credentials }
+
   describe "GET /admin/food/dish/effort_level/dish_effort_levels" do
     it "returns http success" do
       get admin_food_dish_effort_level_dish_effort_levels_path

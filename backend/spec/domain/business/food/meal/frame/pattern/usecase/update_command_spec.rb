@@ -19,6 +19,7 @@ RSpec.describe Business::Food::Meal::Frame::Pattern::Usecase::UpdateCommand do
     context "名前変更" do
       it "パターン名が更新される" do
         described_class.call(
+          user_id: user_record.id,
           meal_frame_pattern_id: pattern.id,
           name: "新しいパターン名",
           entries: [{ day_offset: 1, meal_type: 1, meal_frame_id: meal_frame1.id }],
@@ -36,6 +37,7 @@ RSpec.describe Business::Food::Meal::Frame::Pattern::Usecase::UpdateCommand do
         ]
 
         described_class.call(
+          user_id: user_record.id,
           meal_frame_pattern_id: pattern.id,
           name: "更新パターン",
           entries: new_entries,
@@ -50,6 +52,7 @@ RSpec.describe Business::Food::Meal::Frame::Pattern::Usecase::UpdateCommand do
 
       it "空エントリに更新できる" do
         described_class.call(
+          user_id: user_record.id,
           meal_frame_pattern_id: pattern.id,
           name: "空エントリパターン",
           entries: [],

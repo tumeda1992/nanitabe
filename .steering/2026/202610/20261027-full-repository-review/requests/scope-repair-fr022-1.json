@@ -1,0 +1,49 @@
+{
+  "request_id": "scope-repair-fr022-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.14 FR-022 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr022-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "食事更新GraphQLの既存関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/graphql/mutation/meal/update_meal_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_spec.rb spec/graphql/mutation/meal/update_meal_with_new_dish_and_new_source_spec.rb",
+      "expected": "全examples成功。FR022専用update_meal_without_source_specは除去し、出典入力required契約を維持"
+    },
+    {
+      "operation": "既存食事編集・共通料理入力変換のJest",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand src/components/meal/MealForm/EditMeal.spec.tsx src/features/dish/dishInputConversion.spec.ts",
+      "expected": "全tests成功。selectedDishSource undefinedの追加許容期待と出典なし送信追加期待を除き、先行RV001共通変換を保持"
+    },
+    {
+      "operation": "復元GraphQL resolverのRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/graphql/mutations/meal/update_meal_with_new_dish.rb",
+      "expected": "1fileのoffenseなし"
+    },
+    {
+      "operation": "変更frontendのlint",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn lint src/components/meal/MealForm/EditMeal.spec.tsx src/features/dish/dishInputConversion.spec.ts src/features/dish/normalizeFunctions.ts src/features/meal/updateMealMutation.ts",
+      "expected": "変更4fileにlint errorなし。生成物を手整形しない"
+    },
+    {
+      "operation": "GraphQL必須契約・生成型の型検査",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn tsc --noEmit",
+      "expected": "型検査成功。失敗時は同条件baselineを根拠に既存性と復元回帰を分離し、新たな業務修正を加えない"
+    },
+    {
+      "operation": "8pathの全量と保持条件",
+      "expected": "restored-paths.jsonの8pathが5b54e45^とbyte一致/不存在。GraphQL inputとfrontend operation/生成型はdishSource requiredで一致。FR013のeffort取得と先行料理入力共通化、FR032/033を保持。userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "食事編集での出典なし新規料理の追加許容を旧GraphQL/form契約へ戻した",
+    "既存backend/frontend関連test・lint・型検査・8path旧byte比較が成功した",
+    "既知の出典なし編集不具合は残し、他の純粋な共通化を保持した"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend/frontendのみ。RailsはRAILS_ENV=test、標準test DB。frontend Jestは既存mock。実DB/AWS/Webhook、新service起動/依存取得なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr022-attempt-1/result.json"
+}

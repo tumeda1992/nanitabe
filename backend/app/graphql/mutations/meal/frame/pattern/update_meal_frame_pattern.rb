@@ -5,15 +5,10 @@ module Mutations::Meal::Frame::Pattern
     field :meal_frame_pattern_id, Int, null: false
 
     def resolve(meal_frame_pattern:)
-      entries = meal_frame_pattern.entries.map do |entry|
-        {
-          day_offset: entry.day_offset,
-          meal_type: entry.meal_type,
-          meal_frame_id: entry.meal_frame_id,
-        }
-      end
+      entries = meal_frame_pattern.entries.map(&:to_command_params)
 
       updated_pattern = ::Business::Food::Meal::Frame::Pattern::Usecase::UpdateCommand.call(
+        user_id: context[:current_user_id],
         meal_frame_pattern_id: meal_frame_pattern.id,
         name: meal_frame_pattern.name,
         entries:,

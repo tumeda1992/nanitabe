@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-full-build-1",
+  "attempt": 1,
+  "status": "failed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/full-build-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/full-build-attempt-1/result.md",
+  "summary": "production build終了1。指定node_modules symlinkがTurbopack filesystem root外として拒否され、sourceのbuild成否は未判定。作成した一時物をcleanupし保護hash/Git mode保持。"
+}

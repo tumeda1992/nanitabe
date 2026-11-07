@@ -11,7 +11,7 @@ module Business::Food::Dish::Tag::Usecase
 
     def call
       dish_root = Business::Food::Dish::Factory.build_existing_from_id(dish_id)
-      raise "指定した料理(id=#{dish_id})は存在しません。" if dish_root.blank?
+      raise "指定した料理(id=#{dish_id})は存在しません。" if dish_root.blank? || dish_root.user_id != user_id
 
       new_tag = Business::Food::Dish::Tag::Root.new(
         user_id: user_id,

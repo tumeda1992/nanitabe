@@ -1,0 +1,8 @@
+{
+  "request_id": "ci-followup-runner-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/ci-followup/runner-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/ci-followup/runner-attempt-1/result.md",
+  "summary": "2 workflow Psych parse成功。各runner 1行のみ変更、Ruby 3.3.8保持、index空、保護hash/Git modeとdiff check成功。"
+}

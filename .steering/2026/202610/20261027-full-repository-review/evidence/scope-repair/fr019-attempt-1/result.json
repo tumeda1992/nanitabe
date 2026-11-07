@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr019-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr019-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr019-attempt-1/result.md",
+  "summary": "二重guard成功後、残存unique indexのある標準test SQLiteだけschema loadし再guard/unique不在確認。RSpec70件/0failures、RuboCop2file/0offenses、旧9path比較・純抽出6file/user3hash・diff check成功。実DB/MySQL起動なし。"
+}

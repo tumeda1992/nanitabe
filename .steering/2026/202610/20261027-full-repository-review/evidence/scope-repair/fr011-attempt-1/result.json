@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr011-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr011-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr011-attempt-1/result.md",
+  "summary": "RSpec5件/0failures後、RuboCop2file/0offensesを逐次実行。旧3path比較・旧評価record/force_update契約・純抽出6file/user3hash保持・diff check成功。skill8.2.5適用、二重実行なし。"
+}

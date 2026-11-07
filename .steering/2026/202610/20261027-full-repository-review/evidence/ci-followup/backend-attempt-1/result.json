@@ -1,0 +1,8 @@
+{
+  "request_id": "ci-followup-backend-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/ci-followup/backend-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/ci-followup/backend-attempt-1/result.md",
+  "summary": "管理RSpec 29/0、全RSpec 874/0、全RuboCop 481 files/0 offenses。限定3 fileとrunner 2 file、保護hash/Git mode・index空・diff check確認。"
+}

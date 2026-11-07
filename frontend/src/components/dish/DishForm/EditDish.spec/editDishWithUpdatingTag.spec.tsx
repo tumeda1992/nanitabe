@@ -142,7 +142,7 @@ describe('<EditDish>', () => {
         const registeredDishWithOneTag = {
           ...registeredDish,
           tags: [
-            { id: 1, content: newDishTag.content },
+            { id: 1, dishId: registeredDish.id, content: newDishTag.content },
           ]
         };
 
@@ -189,8 +189,8 @@ describe('<EditDish>', () => {
   });
 
   describe('when update update with removing existing tag and appending new tag', () => {
-    const existingTag1 = {id: 4, content: '1個目のターグ'};
-    const existingTag2 = {id: 7, content: '2個目のたぐんちゅ'};
+    const existingTag1 = {id: 4, dishId: registeredDish.id, content: '1個目のターグ'};
+    const existingTag2 = {id: 7, dishId: registeredDish.id, content: '2個目のたぐんちゅ'};
     const registeredDishWithTwoTag = {
       ...registeredDish,
       tags: [existingTag1, existingTag2]
@@ -237,7 +237,7 @@ describe('<EditDish>', () => {
         },
         dishSourceRelation: null,
         dishTags: [
-          existingTag2,
+          { id: existingTag2.id, content: existingTag2.content },
           { content: newDishTag.content },
         ],
       });

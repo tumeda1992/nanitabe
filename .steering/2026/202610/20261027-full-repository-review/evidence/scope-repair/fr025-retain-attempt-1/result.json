@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr025-retain-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr025-retain-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr025-retain-attempt-1/result.md",
+  "summary": "RSpec 75 examples/0 failures、指定RuboCop 2 files/0 offenses。既存Style/FetchEnvVarは今回出力なし。限定patchは4a12564一致、FR-001 WIP・FR-024・保護hash/Git mode保持、diff check成功。"
+}

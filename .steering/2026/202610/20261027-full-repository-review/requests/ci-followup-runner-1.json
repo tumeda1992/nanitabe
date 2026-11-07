@@ -1,0 +1,30 @@
+{
+  "request_id": "ci-followup-runner-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "22 backend CI runner YAML",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/ci-followup/runner-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "2 workflow YAML parse",
+      "commands": [
+        "docker compose -f compose.dev.local.yml exec -T backend ruby -rpsych -e 'Psych.parse_file(ARGV.fetch(0))' tmp/ci-followup-runner-1/ci-backend-test.yml",
+        "docker compose -f compose.dev.local.yml exec -T backend ruby -rpsych -e 'Psych.parse_file(ARGV.fetch(0))' tmp/ci-followup-runner-1/ci-backend-rubocop.yml"
+      ],
+      "expected": "両file正常parse"
+    },
+    {
+      "operation": "限定diffと保護確認",
+      "expected": "両workflowはruns-on ubuntu-latest→ubuntu-24.04のみ、Ruby 3.3.8と他step維持。保護3file hash/Git mode保持、index空、diff check成功"
+    }
+  ],
+  "dod": [
+    "2 YAML parse成功、runner以外変更なし"
+  ],
+  "data_preparation": "backend mount外のworkflow 2fileをbackend/tmp/ci-followup-runner-1/へ自分でcopyし順にparse、作成分のみcleanup。既存compose.dev.local.ymlのみ、実DB/AWS/Webhookなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationを変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/ci-followup/runner-attempt-1/result.json"
+}

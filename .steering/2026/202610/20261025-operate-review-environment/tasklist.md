@@ -1,5 +1,7 @@
 # Tasklist: frontend の動作確認環境を Amplify で立てて運用する
 
+> 2026-11-04訂正: [FR-028](../20261027-full-repository-review/findings/FR-028-host-not-access-control.md)のコード適用を挙動維持の範囲へ戻した。現在のコードと手順は当初方式へ復元し、private integrationへの新規適用を要求しない。2026-11-02のコード変更・隔離検証は旧snapshotの履歴であり、実AWSへの適用は行っていない。現在のコード仕様は[infrastructure README](../../../../infrastructure/README.md)を参照する。
+
 設計参照: `./design.md`
 
 前提:

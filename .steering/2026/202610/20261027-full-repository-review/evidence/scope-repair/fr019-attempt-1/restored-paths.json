@@ -1,0 +1,38 @@
+[
+  {
+    "path": "backend/app/domain/business/food/meal/frame/entry/policy/assign_meal_policy.rb",
+    "expected": "absent"
+  },
+  {
+    "path": "backend/app/domain/business/food/meal/frame/entry/usecase/fill_with_meal_command.rb",
+    "expected": "01e5394^"
+  },
+  {
+    "path": "backend/db/migrate/20261101000000_ensure_one_frame_per_meal.rb",
+    "expected": "absent"
+  },
+  {
+    "path": "backend/db/schema.rb",
+    "expected": "01e5394^"
+  },
+  {
+    "path": "backend/spec/domain/business/food/meal/frame/entry/usecase/cardinality_spec.rb",
+    "expected": "absent"
+  },
+  {
+    "path": "backend/spec/graphql/mutation/meal/frame_entry/unassign_meal_from_frame_entry_spec.rb",
+    "expected": "01e5394^"
+  },
+  {
+    "path": "backend/spec/migrations/ensure_one_frame_per_meal_spec.rb",
+    "expected": "absent"
+  },
+  {
+    "path": "backend/spec_mysql/frame_assignment_spec.rb",
+    "expected": "absent"
+  },
+  {
+    "path": "backend/spec_mysql/mysql_spec_helper.rb",
+    "expected": "absent"
+  }
+]

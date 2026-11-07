@@ -1,0 +1,34 @@
+{
+  "request_id": "scope-repair-fr025-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.11 FR-025 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr025-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "辞書管理CRUDの既存request spec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/requests/admin/food/dish/word/normalize_words_spec.rb",
+      "expected": "全examples成功。FR025専用DELETEエラーredirect期待だけを除き、FR001の認証WIPと既存CRUD期待を保持"
+    },
+    {
+      "operation": "復元したcontrollerとrequest specのRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/controllers/admin/food/dish/word/normalize_words_controller.rb spec/requests/admin/food/dish/word/normalize_words_spec.rb",
+      "expected": "2fileのoffenseなし。既存FR001由来の対象外lintを修正しない"
+    },
+    {
+      "operation": "旧rescue/view/specの全量比較",
+      "expected": "controller/index.html.erb/request specが4a12564^とbyte一致。追加のredirect+alertとindex alert表示を元へ戻し、FR024 transactionとFR001認証WIPは保持。userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "削除エラー時のredirectとalert表示追加を旧rescueへ戻した",
+    "既存admin request specとRuby lint・3file旧byte比較が成功した",
+    "FR001認証WIPと後で戻すFR024の変更を巻き込まない"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBとspec内fixture認証だけ。実DB/AWS/Webhook、新service操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr025-attempt-1/result.json"
+}

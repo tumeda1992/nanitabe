@@ -18,8 +18,8 @@ class Meal < ApplicationRecord
       )
     end
 
-    def fetch_by_date(date)
-      meal_records = where(date:)
+    def fetch_by_date(date, user_id:)
+      meal_records = where(date: date, user_id: user_id)
       return [] if meal_records.blank?
 
       meal_records.map { |meal_record| build_existing_root_from_id(meal_record.id) }

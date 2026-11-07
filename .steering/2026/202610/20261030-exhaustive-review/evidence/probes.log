@@ -1,0 +1,5 @@
+RAILS_ENV=test / Docker / rails runner / exit=0
+SEARCH_BOTH_TAGS=false
+UPDATED_TAG=alpha
+SOURCE_LOCATOR=nil; STORED_PAGE=42
+全書込みはtransaction末尾でrollback。

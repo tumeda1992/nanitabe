@@ -1,0 +1,52 @@
+{
+  "request_id": "followup-legacy-retire-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "23 旧FrameEntry domain削除",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/pr-followup/legacy-retire-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/meal/frame/entry spec/graphql/mutation/meal/frame_entry",
+      "expected": "全examples成功、現行Root/Add/Fill/Remove/Unassignと認可"
+    },
+    {
+      "operation": "backend全RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec",
+      "expected": "全examples成功"
+    },
+    {
+      "operation": "全RuboCop",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop",
+      "expected": "0 offenses"
+    },
+    {
+      "operation": "zeitwerk",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bin/rails zeitwerk:check",
+      "expected": "成功"
+    },
+    {
+      "operation": "test eager loadと定数確認",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rails runner 'Rails.application.eager_load!; abort if Business::Food::Meal.const_defined?(:FrameEntry, false); [Business::Food::Meal::Frame::Entry::Root, Business::Food::Meal::Frame::Entry::Usecase::AddCommand, Business::Food::Meal::Frame::Entry::Usecase::FillWithMealCommand, Business::Food::Meal::Frame::Entry::Usecase::RemoveCommand, Business::Food::Meal::Frame::Entry::Usecase::UnassignMealCommand].each(&:name)'",
+      "expected": "成功、旧Business domain定数なし・現行Root/Commandあり"
+    },
+    {
+      "operation": "参照分類",
+      "command": "rg -n 'Business::Food::Meal::FrameEntry|Meal::FrameEntry|FrameEntry::Root|meal/frame_entry' backend/app backend/spec backend/docs scripts .github",
+      "expected": "旧domain参照0、GraphQL/ActiveRecordの別名を保持し分類"
+    },
+    {
+      "operation": "保護確認",
+      "expected": "保護3file hash/Git mode、評価Command所有者guard、他保留、diff check保持"
+    }
+  ],
+  "dod": [
+    "旧domain4定数を廃止、現行の正常保存/認可とGraphQL/ActiveRecord名保持、全backend検証成功"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test標準test SQLite。重い検査を逐次実行。実DB migration/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationを変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/pr-followup/legacy-retire-attempt-1/result.json"
+}

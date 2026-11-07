@@ -11,6 +11,11 @@ module Business::Food::Meal::Frame::Entry
 
     def call
       root = ::MealFrameEntry.build_existing_root_from_id(meal_frame_entry_id)
+      raise ActiveRecord::RecordNotFound, "MealFrameEntry with id #{meal_frame_entry_id} not found" if root.user_id != user_id
+
+      ::MealFrame.where(user_id: user_id).find(root.meal_frame_id)
+      ::Meal.where(user_id: user_id).find(meal_id)
+
       root.assign_meal(meal_id)
       ::MealFrameEntry.persist_from_food_meal_frame_entry_root(root)
       root

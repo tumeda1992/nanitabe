@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr025-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr025-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr025-attempt-1/result.md",
+  "summary": "RSpec 9 examples / 0 failures、RuboCop 2 files / 0 offenses。controller/view/specは4a12564^byte一致、FR001WIP・FR024保持、user3hash/diff check成功。"
+}

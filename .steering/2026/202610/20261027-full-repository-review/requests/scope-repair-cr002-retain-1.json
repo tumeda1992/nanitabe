@@ -1,0 +1,32 @@
+{
+  "request_id": "scope-repair-cr002-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "19 CR-002 既存タグ更新",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr002-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/models/dish_tag_replacement_spec.rb spec/graphql/mutation/dish/existing_tag_update_spec.rb spec/domain/business/food/dish/word",
+      "expected": "全examples成功。既存タグID不変で更新・再取得、不正所属を副作用前拒否、辞書再正規化で古いRootが上書きしない"
+    },
+    {
+      "operation": "変更箇所lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/food/dish/word/usecase/reflect_latest_normalize_word_command.rb app/models/dish.rb app/models/dish_tag.rb spec/graphql/mutation/dish/existing_tag_update_spec.rb spec/models/dish_tag_replacement_spec.rb",
+      "expected": "成功"
+    },
+    {
+      "operation": "限定差分と保護範囲確認",
+      "expected": "対象5path 30c86bb一致、FR024 transaction維持、保護3file hash/Git mode保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "既存タグID不変でcontent更新・再取得が成功し、不正所属は副作用前に拒否。辞書再正規化で古いRootが上書きしない。"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。実DB migration/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr002-retain-attempt-1/result.json"
+}

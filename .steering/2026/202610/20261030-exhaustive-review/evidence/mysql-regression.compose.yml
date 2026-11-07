@@ -1,0 +1,25 @@
+# 既存compose.dev.local.ymlと併用する一時DB fixture。単独projectとして起動しない。
+# 認証値はこの破棄可能なfixture専用であり、実環境から取得しない。
+services:
+  mysql-regression:
+    image: mysql:8.0.46-oraclelinux9
+    profiles: [regression]
+    environment:
+      MYSQL_ROOT_PASSWORD: regression-root-only
+      MYSQL_DATABASE: nanitabe_concurrency_test
+      MYSQL_USER: regression
+      MYSQL_PASSWORD: regression-test-only
+    command:
+      - --performance-schema=OFF
+      - --innodb-buffer-pool-size=33554432
+      - --innodb-redo-log-capacity=67108864
+      - --max-connections=12
+    tmpfs:
+      - /var/lib/mysql:size=512m
+    mem_limit: 1g
+    healthcheck:
+      test: [CMD, mysqladmin, ping, -h, 127.0.0.1, -uroot, -pregression-root-only]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 15s

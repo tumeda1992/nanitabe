@@ -6,13 +6,13 @@ module Mutations::Dish
 
     field :dish_id, Int, null: false
 
-    def resolve(dish:, dish_source_relation:, dish_tags: nil)
+    def resolve(dish:, dish_source_relation: nil, dish_tags: nil)
       ActiveRecord::Base.transaction do
         ::Business::Food::Dish::Usecase::UpdateCommand.call(
           user_id: context[:current_user_id],
           dish_params: dish.convert_to_command_param(use_food_module: true),
           dish_source_relation: dish_source_relation&.convert_to_command_param(use_food_module: true),
-          dish_tags: (dish_tags || [])&.map { |dish_tag| dish_tag.convert_to_command_param(use_food_module: true) },
+          dish_tags: ::Mutations::Dish::FoodDishInput.tags(dish_tags),
         )
 
         {

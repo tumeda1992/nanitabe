@@ -1,0 +1,39 @@
+{
+  "request_id": "scope-repair-fr020-visual-1",
+  "kind": "visual-inspector",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "8 FR-020 logical history",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr020-visual-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "週表示から月表示・週表示へ切替",
+      "expected": "各URLと表示日付が一致する"
+    },
+    {
+      "operation": "前後移動、今週リンク、browser back/forward",
+      "expected": "URLと表示日付が各遷移で一致し巻き戻らない"
+    }
+  ],
+  "dod": [
+    "通常UIの週/月切替・前後・今週・browser back/forwardでURLと表示日付を確認",
+    "内部Next snapshotの競合はunitで確認",
+    "実DB操作なし"
+  ],
+  "authorized_visual_context": {
+    "appUrl": "http://localhost:18100 (frontend container内)",
+    "authentication": "人工cookie at=visual-fixture-token, client=visual-fixture-client, uid=visual-fixture-user。全GraphQLは人工fixtureでfulfillし未知operationはerrors応答、外部originはabort",
+    "template": "frontend/inspect/visual/tmp/fr017-retain-attempt-1/inspect.mjs をコピー・適応し原版は上書きしない",
+    "browserHelper": "なし。templateのPlaywright chromium/headless設定を使用",
+    "setupCommand": "なし。依存installなし",
+    "artifactRoot": "frontend/inspect/visual/tmp",
+    "checkDir": "frontend/inspect/visual/tmp/fr020-retain-attempt-1",
+    "runCommand": "docker compose -f compose.dev.local.yml exec -T -w /root/nanitabe_front frontend node inspect/visual/tmp/fr020-retain-attempt-1/inspect.mjs",
+    "result": "matching result.jsonをartifact_directoryに、詳細resultと画像をcheckDirに保存し実pathを明記"
+  },
+  "data_preparation": "人工GraphQL fixture。初期URL /calendar/week/2026-01-01 は12/27–1/2表示、月間リンクは /calendar/month/2025-12-27 で2025年12月、週リンクは月初 /calendar/week/2025-12-01。今週/月は実行日時。前後はpushHistory。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md visual-inspectorと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr020-visual-attempt-1/result.json"
+}

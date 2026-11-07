@@ -1,0 +1,34 @@
+{
+  "request_id": "scope-repair-fr027-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.9 FR-027 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr027-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "旧起動scriptの成功・既起動・初期失敗・schedule失敗",
+      "command": "node --test .steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr027-attempt-1/baseline-start.spec.mjs",
+      "expected": "7 tests成功。通常成功はschedule2、既起動は修復せず終了、wait/IP/integration失敗はdesired1のまま、schedule作成失敗は旧rollbackとexit1。すべてaws/jq/date/envはfixture stub"
+    },
+    {
+      "operation": "起動停止scriptの構文",
+      "command": "bash -n scripts/review_backend/start.sh scripts/review_backend/stop.sh",
+      "expected": "構文検査成功。実scriptは起動しない"
+    },
+    {
+      "operation": "旧byte比較と範囲確認",
+      "expected": "start.shは7772f90^とbyte一致、start.spec.mjsは実行treeから除去。stop.shは元々FR027未変更で既にbaseline一致、common.shはFR028で除去済み。fixtureは元stub/runを保持し旧期待だけへ適応。userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "起動失敗の全経路rollback拡張を元へ戻した",
+    "通常起動・既起動の早期return・失敗副作用とexitを旧契約で検証した",
+    "既存停止scriptと他のsource変更を巻き込まず、実AWS操作しない"
+  ],
+  "data_preparation": "repository rootのNode suiteは一時envファイルとaws/jq/date stubのみ。実env/外部AWS/DB/Webhookを一切使用しない。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr027-attempt-1/result.json"
+}

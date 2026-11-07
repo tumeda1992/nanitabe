@@ -1,0 +1,20 @@
+{
+  "request_id": "fr015-visual-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": "frontend/inspect/visual/tmp/fr015-refresh-retry",
+  "result": "frontend/inspect/visual/tmp/fr015-refresh-retry/result.md",
+  "summary": "FR-015の3項目が実ブラウザで成功。登録後の更新失敗時に選択・alert・再取得ボタンを保持。日付再クリックと表示再取得を含め登録mutationは合計1回。再取得成功後はエラーが消えて表示モードへ戻った。5画像を目視確認。全GraphQLモック、実DB変更なし。",
+  "mutation_count": 1,
+  "calendar_failure_count": 1,
+  "screenshots": [
+    "01-selected-postponed-meal.png",
+    "02-processing.png",
+    "03-refresh-failed.png",
+    "04-date-click-keeps-state.png",
+    "05-retry-succeeded.png"
+  ],
+  "unverified": [
+    "実backendへの登録・DB永続化"
+  ]
+}

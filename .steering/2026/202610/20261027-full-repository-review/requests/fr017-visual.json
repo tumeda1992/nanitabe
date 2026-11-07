@@ -1,0 +1,25 @@
+{
+  "request_id": "fr017-visual-1",
+  "kind": "visual-inspector",
+  "attempt": 1,
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "FR-017",
+  "artifact_directory": "frontend/inspect/visual/tmp/fr017-pattern-placeholder",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "作成・編集の両方で有効枠から--へ戻して送信",
+      "expected": "選択は--、エラーが出てmutationは0回"
+    },
+    {
+      "operation": "有効枠を再選択して送信",
+      "expected": "正しい数値IDで1回だけ送信される"
+    }
+  ],
+  "dod": [
+    "人工fixtureで全GraphQLをmock",
+    "実DB変更なし",
+    "各状態の画像目視と送信payload検証",
+    "追加承認要求なし"
+  ]
+}

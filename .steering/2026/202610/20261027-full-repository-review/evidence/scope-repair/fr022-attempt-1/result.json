@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr022-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr022-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr022-attempt-1/result.md",
+  "summary": "RSpec3件/0failures、Jest2suites/16tests成功、Ruby lint1file/0offenses、frontend4file lintとtsc成功。旧8path byte一致/不存在、FR032/033純抽出6file・user3hash保持、diff check成功。Jest fixture console警告は残る。"
+}

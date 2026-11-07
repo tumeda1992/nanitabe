@@ -24,7 +24,7 @@ module Business::Food::Meal
     end
 
     def assign_dish(new_dish_id)
-      Policy::AttachDishPolicy.ensure!(new_dish_id)
+      Policy::AttachDishPolicy.ensure!(new_dish_id, user_id: user_id)
 
       self.dish_id = new_dish_id
     end

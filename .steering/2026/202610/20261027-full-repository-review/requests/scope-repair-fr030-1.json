@@ -1,0 +1,29 @@
+{
+  "request_id": "scope-repair-fr030-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.6 FR-030 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr030-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "旧workflow filterの実scriptをgit stubで実行",
+      "command": "node --test .steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr030-attempt-1/baseline-filter.spec.mjs",
+      "expected": "3 tests成功。frontend変更=true、workflow自身だけの変更=false、backend/README変更=falseという旧契約を確認する。既知のtypoを修正してtrueにしない"
+    },
+    {
+      "operation": "workflow全量とtest退避の確認",
+      "expected": "workflowはa871b4c^とbyte一致。scripts/github/frontend_build_filter.spec.mjsは除去。artifactのtestは元suiteの読取pathとworkflow自身期待値falseだけ適応している。全実行はgit stub、実外部service呼出しなし。userdirty3hash保持、git diff --check成功"
+    }
+  ],
+  "dod": [
+    "workflow自身だけではfrontend changedにならない旧条件を復元した",
+    "実workflowの検出scriptの3fixtureケースと旧byte比較が成功した",
+    "FR032/033その他のsource変更を巻き込まない"
+  ],
+  "data_preparation": "repository rootでNodeの運用検査だけを実行。アプリtestや実GitHub API、AWS、Webhook、DB操作なし。workflow中git commandはfixture stub。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationを変更せずartifact_directoryへcommand結果・result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr030-attempt-1/result.json"
+}

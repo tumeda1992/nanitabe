@@ -1,0 +1,30 @@
+[
+  {
+    "path": "frontend/src/components/calendar/calendarComponents/Calendar/index.tsx",
+    "expected": "c05d21d^"
+  },
+  {
+    "path": "frontend/src/components/calendar/calendarComponents/Calendar/refreshContract.spec.tsx",
+    "expected": "absent"
+  },
+  {
+    "path": "frontend/src/components/calendar/calendarComponents/operationComponents/PostponeMeal/ScheduleChosenPostponedMealForDate.tsx",
+    "expected": "c05d21d^"
+  },
+  {
+    "path": "frontend/src/components/calendar/calendarComponents/operationComponents/PostponeMeal/postponedRefresh.spec.tsx",
+    "expected": "absent"
+  },
+  {
+    "path": "frontend/src/components/calendar/calendarComponents/operationComponents/PostponeMeal/usePostponedMealMode.ts",
+    "expected": "c05d21d^"
+  },
+  {
+    "path": "frontend/src/components/calendar/useRefreshCalendarData.spec.tsx",
+    "expected": "absent"
+  },
+  {
+    "path": "frontend/src/components/calendar/useRefreshCalendarData.tsx",
+    "expected": "c05d21d^"
+  }
+]

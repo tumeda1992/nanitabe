@@ -1,0 +1,44 @@
+{
+  "request_id": "scope-repair-fr017-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.19 FR-017 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr017-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "旧フォームと保持する共有schemaのJest",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand src/components/meal/frame/pattern/MealFramePatternEditor.spec.tsx src/features/meal/frame/pattern/schema.spec.ts",
+      "expected": "旧フォームと純粋な共通schemaの既存tests全成功。FR017のNaN/Infinity/0/負数/少数やplaceholder再選択の追加拒否期待を除く"
+    },
+    {
+      "operation": "d58c473から抽出した元schemaとの実行比較",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend node -e 'const assert = require('\"'\"'node:assert/strict'\"'\"');\nconst fs = require('\"'\"'node:fs'\"'\"');\nconst z = require('\"'\"'zod'\"'\"');\nconst blocks = {\"add\": \"const mealFramePatternEntrySchema = z.object({\\n  dayOffset: z.number().min(1, '\"'\"'日数は1以上で指定してください。'\"'\"'),\\n  mealType: z.number(),\\n  mealFrameId: z.number(),\\n});\\n\\nconst addMealFramePatternSchema = z.object({\\n  mealFramePattern: z.object({\\n    name: z\\n      .string({\\n        required_error: '\"'\"'必須項目です。'\"'\"',\\n      })\\n      .min(1, '\"'\"'パターン名を入力してください。'\"'\"'),\\n    entries: z.array(mealFramePatternEntrySchema),\\n  }),\\n});\\n\", \"update\": \"const mealFramePatternEntrySchema = z.object({\\n  dayOffset: z.number().min(1, '\"'\"'日数は1以上で指定してください。'\"'\"'),\\n  mealType: z.number(),\\n  mealFrameId: z.number(),\\n});\\n\\nconst updateMealFramePatternSchema = z.object({\\n  mealFramePattern: z.object({\\n    id: z.number(),\\n    name: z\\n      .string({\\n        required_error: '\"'\"'必須項目です。'\"'\"',\\n      })\\n      .min(1, '\"'\"'パターン名を入力してください。'\"'\"'),\\n    entries: z.array(mealFramePatternEntrySchema),\\n  }),\\n});\\n\"};\nconst baseline = {\n  add: new Function('\"'\"'z'\"'\"', blocks.add + '\"'\"'; return addMealFramePatternSchema;'\"'\"')(z),\n  update: new Function('\"'\"'z'\"'\"', blocks.update + '\"'\"'; return updateMealFramePatternSchema;'\"'\"')(z),\n};\nconst currentSource = fs.readFileSync('\"'\"'src/features/meal/frame/pattern/schema.ts'\"'\"', '\"'\"'utf8'\"'\"')\n  .replace(/^import \\* as z from '\"'\"'zod'\"'\"';\\s*/, '\"'\"''\"'\"').replace(/export const /g, '\"'\"'const '\"'\"');\nconst current = new Function('\"'\"'z'\"'\"', currentSource + '\"'\"'; return { add: addMealFramePatternSchema, update: updateMealFramePatternSchema };'\"'\"')(z);\nconst normalize = (schema, value) => {\n  const result = schema.safeParse(value);\n  return result.success ? { success: true, data: result.data } : { success: false, issues: result.error.issues };\n};\nlet comparisons = 0;\nfor (const mode of ['\"'\"'add'\"'\"', '\"'\"'update'\"'\"']) {\n  const body = () => ({ ...(mode === '\"'\"'update'\"'\"' ? { id: 7 } : {}), name: '\"'\"'週末'\"'\"', entries: [{ dayOffset: 1, mealType: 2, mealFrameId: 3 }] });\n  const cases = [undefined, null, {}, { mealFramePattern: undefined }, { mealFramePattern: null }, { mealFramePattern: {} }, { mealFramePattern: body() }];\n  for (const value of [undefined, null, '\"'\"''\"'\"', '\"'\"' '\"'\"', '\"'\"'有効'\"'\"']) cases.push({ mealFramePattern: { ...body(), name: value } });\n  for (const value of [undefined, null, [], {}]) cases.push({ mealFramePattern: { ...body(), entries: value } });\n  for (const field of ['\"'\"'dayOffset'\"'\"', '\"'\"'mealType'\"'\"', '\"'\"'mealFrameId'\"'\"']) {\n    for (const value of [undefined, null, '\"'\"''\"'\"', '\"'\"'3'\"'\"', NaN, Infinity, -Infinity, 0, -1, 1, 1.5]) {\n      cases.push({ mealFramePattern: { ...body(), entries: [{ ...body().entries[0], [field]: value }] } });\n    }\n  }\n  for (const id of [undefined, null, '\"'\"''\"'\"', '\"'\"'7'\"'\"', NaN, Infinity, -Infinity, 0, -1, 1.5]) cases.push({ mealFramePattern: { ...body(), id } });\n  cases.push({ ignored: true, mealFramePattern: { ...body(), ignored: true, entries: [{ ...body().entries[0], ignored: true }, { dayOffset: 2, mealType: 3, mealFrameId: 4 }] } });\n  cases.forEach((value, index) => {\n    assert.deepEqual(normalize(current[mode], value), normalize(baseline[mode], value), `${mode} case ${index}`);\n    comparisons += 1;\n  });\n}\nconsole.log(`d58c473 schema comparisons: ${comparisons} passed`);\n'",
+      "expected": "baseline-schema-blocks.jsonの元作成/更新schemaと現在shared schemaで全caseのsuccess/data/error path/code/message/orderが一致。NaN/Infinity/0/負数/少数/null/undefined/空文字/空配列/unknown key/entry順を含む。schemaは静的にも同じnumber契約で追加整数/正数制約なし。差がなければshared schemaを変更しない"
+    },
+    {
+      "operation": "復元フォームとspecのlint",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn lint src/components/meal/frame/pattern/MealFramePatternFields.tsx src/components/meal/frame/pattern/MealFramePatternEditor.spec.tsx",
+      "expected": "2fileのlint errorなし"
+    },
+    {
+      "operation": "旧UIと共有schemaの型検査",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn tsc --noEmit",
+      "expected": "型検査成功。baseline由来の失敗と復元回帰を分離する"
+    },
+    {
+      "operation": "旧component/spec全量と保持条件",
+      "expected": "MealFramePatternFields/Editor specは62359ad^とbyte一致。FR032/033の6fileは保持し、S01〜S08の元d58c473 schema条件を全量照合。userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "未選択枠のnull化と追加の整数/正数拒否を旧フォームへ戻した",
+    "旧フォームJest・lint・tscと2filebyte比較が成功した",
+    "保持shared schemaがd58c473の許容値/変換/エラー順と一致し、FR017の追加制約を温存していない"
+  ],
+  "data_preparation": "既存compose.dev.local.yml frontendと既存Zod/Jestのみ。比較CJSはcommandへ実改行で渡し、現在schema.tsを読む。実DB/AWS/Webhook、新service/依存取得なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr017-attempt-1/result.json"
+}

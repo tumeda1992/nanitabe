@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr030-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr030-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr030-attempt-1/result.md",
+  "summary": "Node 3 tests / 0 failures。実workflow検出scriptの旧3条件を確認。workflow a871b4c^ byte一致、専用suite除去、証拠suite適応2箇所のみ、user3hash/diff check成功。"
+}

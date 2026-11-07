@@ -13,6 +13,9 @@ module Business::Food::Meal::Frame::Pattern::Entry
     validates :meal_frame_id, presence: true
 
     def call
+      pattern = ::MealFramePattern.find(meal_frame_pattern_id)
+      ::MealFrame.where(user_id: pattern.user_id).find(meal_frame_id)
+
       entry_root = Business::Food::Meal::Frame::Pattern::Entry::Root.new(
         meal_frame_pattern_id:,
         day_offset:,

@@ -1,0 +1,32 @@
+{
+  "request_id": "scope-repair-fr026-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "13 FR-026 plan IAM",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr026-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "offline policy test",
+      "command": "node --test infrastructure/terraform/modules/github_oidc/plan_policy.spec.mjs",
+      "expected": "全tests成功。plans配下PutObject/state読取/lock操作を保ちstate/applyログ書込みを拒否"
+    },
+    {
+      "operation": "Terraform format確認",
+      "command": "terraform fmt -check infrastructure/terraform/modules/github_oidc/main.tf",
+      "expected": "成功。利用できない場合は事実を明記"
+    },
+    {
+      "operation": "限定差分・README保存先・保護範囲確認",
+      "expected": "対象2path df42ad7一致、plans/<root>/<run id>.txtが既存READMEに一致。保護3file hash/Git mode保持、diff check成功。実AWS適用には既存IAM更新apply必要で未実施"
+    }
+  ],
+  "dod": [
+    "plans配下へのPutObject、state読取、lock table操作を保ち、state/applyログへの書込みを許可しない"
+  ],
+  "data_preparation": "offline policy評価のみ。実AWS query/apply/deploy、実DB/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr026-retain-attempt-1/result.json"
+}

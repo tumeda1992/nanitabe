@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr023-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr023-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr023-attempt-1/result.md",
+  "summary": "RSpec 61 examples / 0 failures、RuboCop 2 files / 0 offenses。Normalizerは73b8797^byte一致、literal spec除去、先行属性共通化・旧4Command/user3hash保持、diff check成功。"
+}

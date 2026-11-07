@@ -210,6 +210,25 @@ describe('<EditMeal>', () => {
     });
 
     describe('when update meal with new dish with existing source', () => {
+      it('accepts a new dish without selecting a source', async () => {
+        const { getLatestMutationVariables, mutationInterceptor } = registerMutationHandler(
+          UpdateMealWithNewDishDocument,
+          { updateMealWithNewDish: { mealId: registeredMeal.id, dishId: 1 } },
+        );
+        await userClick(screen, 'optionOfRegisteringNewDish');
+        await userType(screen, 'dishname', newDishWithRequiredParams.name);
+        await userClick(screen, `mealPositionOption-${newDishWithRequiredParams.mealPosition}`);
+        await clickSubmitButton();
+        expect(mutationInterceptor).toHaveBeenCalledTimes(1);
+        expect(getLatestMutationVariables()).toEqual({
+          dish: newDishWithRequiredParams,
+          dishSource: null,
+          dishSourceRelationDetail: null,
+          dishTags: [],
+          meal: buildGraphQLMeal(registeredMealWithoutDish),
+        });
+      });
+
       it('succeeds with expected required graphql params', async () => {
         const { getLatestMutationVariables } = registerMutationHandler(
           UpdateMealWithNewDishDocument,

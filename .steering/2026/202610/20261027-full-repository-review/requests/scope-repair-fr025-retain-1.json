@@ -1,0 +1,32 @@
+{
+  "request_id": "scope-repair-fr025-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "12 FR-025 辞書削除エラー",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr025-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/requests/admin/food/dish/word/normalize_words_spec.rb spec/system/admin/food/dish/word/normalize_words_spec.rb spec/domain/business/food/dish/word/usecase",
+      "expected": "全examples成功。本文なしDELETE反映失敗で元エラー表示、全属性rollback"
+    },
+    {
+      "operation": "変更箇所lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/controllers/admin/food/dish/word/normalize_words_controller.rb spec/requests/admin/food/dish/word/normalize_words_spec.rb",
+      "expected": "変更箇所のoffenseなし。既存FR001 WIP offenseは区別して報告"
+    },
+    {
+      "operation": "限定差分と保護範囲確認",
+      "expected": "4a12564のrescue・template・specのみ復帰しFR001 WIPを保持、FR024 transactionと保護3file hash/Git mode保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "本文なしDELETEの反映失敗でParameterMissingを起こさず元エラーを表示し、FR-024によって全属性を保持する"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。実DB migration/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr025-retain-attempt-1/result.json"
+}

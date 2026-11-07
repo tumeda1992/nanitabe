@@ -1,0 +1,19 @@
+{
+  "request_id": "scope-repair-fr020-visual-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr020-visual-attempt-1",
+  "result": "frontend/inspect/visual/tmp/fr020-retain-attempt-1/result.md",
+  "summary": "2/2: 週→月→週、次週・前週・今週・browser back/forwardの8状態でURLと表示期間一致、300ms後維持。8画像目視、全GraphQL fixture、未知operation/pageerror 0、実DBなし。内部snapshot競合はunit範囲。",
+  "screenshots": [
+    "frontend/inspect/visual/tmp/fr020-retain-attempt-1/01-week.png",
+    "frontend/inspect/visual/tmp/fr020-retain-attempt-1/02-month.png",
+    "frontend/inspect/visual/tmp/fr020-retain-attempt-1/03-week-return.png",
+    "frontend/inspect/visual/tmp/fr020-retain-attempt-1/04-next.png",
+    "frontend/inspect/visual/tmp/fr020-retain-attempt-1/05-previous.png",
+    "frontend/inspect/visual/tmp/fr020-retain-attempt-1/06-current.png",
+    "frontend/inspect/visual/tmp/fr020-retain-attempt-1/07-back.png",
+    "frontend/inspect/visual/tmp/fr020-retain-attempt-1/08-forward.png"
+  ],
+  "execution": "frontend/inspect/visual/tmp/fr020-retain-attempt-1/execution.json"
+}

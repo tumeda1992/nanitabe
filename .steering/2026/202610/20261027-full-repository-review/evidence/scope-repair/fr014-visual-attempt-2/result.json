@@ -1,0 +1,16 @@
+{
+  "request_id": "scope-repair-fr014-visual-2",
+  "attempt": 2,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr014-visual-attempt-2",
+  "result": "frontend/inspect/visual/tmp/fr014-retain-attempt-2/result.md",
+  "summary": "3/3 UI checks: 未選択時mutation 0件、有効な1月1日・2日の交換は1回送信しpendingから通常画面へ、人工失敗はpageerror 0件で交換画面を維持。画面内エラー表示は見えずconsoleにApolloError。画像5枚目視、全GraphQL fixture、未知operation 0、実DB操作なし。内部契約は別unit testの範囲。",
+  "screenshots": [
+    "frontend/inspect/visual/tmp/fr014-retain-attempt-2/01-no-source.png",
+    "frontend/inspect/visual/tmp/fr014-retain-attempt-2/02-await-target.png",
+    "frontend/inspect/visual/tmp/fr014-retain-attempt-2/03-pending.png",
+    "frontend/inspect/visual/tmp/fr014-retain-attempt-2/04-completed.png",
+    "frontend/inspect/visual/tmp/fr014-retain-attempt-2/05-error.png"
+  ],
+  "execution": "frontend/inspect/visual/tmp/fr014-retain-attempt-2/execution.json"
+}

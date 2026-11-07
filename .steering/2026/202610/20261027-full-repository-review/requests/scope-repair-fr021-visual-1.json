@@ -1,0 +1,39 @@
+{
+  "request_id": "scope-repair-fr021-visual-1",
+  "kind": "visual-inspector",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "9 FR-021 calendar日付",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr021-visual-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "有効な閏日URLにquery/hashを付け週/月表示",
+      "expected": "URLを保ち指定日の週/月を表示"
+    },
+    {
+      "operation": "存在しない2月29日と4月31日URLを開く",
+      "expected": "URLを保ち実行日の週/月へfallback表示"
+    }
+  ],
+  "dod": [
+    "通常UIで有効日と不正日のURL・表示期間を人工fixtureで確認",
+    "今日09:00とprefix等の内部条件はunitで確認",
+    "実DB操作なし"
+  ],
+  "authorized_visual_context": {
+    "appUrl": "http://localhost:18100 (frontend container内)",
+    "authentication": "人工cookie at=visual-fixture-token, client=visual-fixture-client, uid=visual-fixture-user。全GraphQLは人工fixtureでfulfillし未知operationはerrors応答、外部originはabort",
+    "template": "frontend/inspect/visual/tmp/fr020-retain-attempt-1/inspect.mjs をコピー・適応し原版は上書きしない",
+    "browserHelper": "なし。templateのPlaywright chromium/headless設定を使用",
+    "setupCommand": "なし。依存installなし",
+    "artifactRoot": "frontend/inspect/visual/tmp",
+    "checkDir": "frontend/inspect/visual/tmp/fr021-retain-attempt-1",
+    "runCommand": "docker compose -f compose.dev.local.yml exec -T -w /root/nanitabe_front frontend node inspect/visual/tmp/fr021-retain-attempt-1/inspect.mjs",
+    "result": "matching result.jsonをartifact_directoryに、詳細resultと画像をcheckDirに保存し実pathを明記"
+  },
+  "data_preparation": "人工GraphQL fixture。/calendar/week/2024-02-29?view=all#meal は2/24-3/1、month同日は2024年2月。week/2025-02-29 と month/2024-04-31 は実行日の週/月へfallbackしURL維持。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md visual-inspectorと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr021-visual-attempt-1/result.json"
+}

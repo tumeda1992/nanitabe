@@ -1,0 +1,7 @@
+{
+  "revision": "d58c473",
+  "blocks": {
+    "add": "const mealFramePatternEntrySchema = z.object({\n  dayOffset: z.number().min(1, '日数は1以上で指定してください。'),\n  mealType: z.number(),\n  mealFrameId: z.number(),\n});\n\nconst addMealFramePatternSchema = z.object({\n  mealFramePattern: z.object({\n    name: z\n      .string({\n        required_error: '必須項目です。',\n      })\n      .min(1, 'パターン名を入力してください。'),\n    entries: z.array(mealFramePatternEntrySchema),\n  }),\n});\n",
+    "update": "const mealFramePatternEntrySchema = z.object({\n  dayOffset: z.number().min(1, '日数は1以上で指定してください。'),\n  mealType: z.number(),\n  mealFrameId: z.number(),\n});\n\nconst updateMealFramePatternSchema = z.object({\n  mealFramePattern: z.object({\n    id: z.number(),\n    name: z\n      .string({\n        required_error: '必須項目です。',\n      })\n      .min(1, 'パターン名を入力してください。'),\n    entries: z.array(mealFramePatternEntrySchema),\n  }),\n});\n"
+  }
+}

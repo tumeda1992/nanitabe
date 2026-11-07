@@ -1,0 +1,14 @@
+[
+  {
+    "path": "backend/app/graphql/mutations/dish/update_dish.rb",
+    "expected": "ceb1da7^"
+  },
+  {
+    "path": "backend/app/graphql/mutations/dish/update_dish_with_new_source.rb",
+    "expected": "ceb1da7^"
+  },
+  {
+    "path": "backend/spec/graphql/mutation/dish/optional_arguments_spec.rb",
+    "expected": "absent"
+  }
+]

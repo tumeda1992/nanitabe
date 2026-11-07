@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr011-retain-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr011-retain-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr011-retain-attempt-1/result.md",
+  "summary": "RSpec 9 examples/0 failures、RuboCop 2 files/0 offenses。3 pathはHEADおよびcdb8e27と一致し、FR-002〜010認可を保持。保護3 fileの保存hash一致、Git mode変更なし、diff check成功。初回OS modeの独立snapshotはない。"
+}

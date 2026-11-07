@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr029-retain-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr029-retain-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr029-retain-attempt-1/result.md",
+  "summary": "loopback 6 tests成功、YAML構文解析成功。actionlintは未導入。対象2 pathはd3e4515一致、保護hash/Git modeとdiff check成功。実Webhook接続なし。"
+}

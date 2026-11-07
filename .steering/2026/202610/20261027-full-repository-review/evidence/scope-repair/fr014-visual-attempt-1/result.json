@@ -1,0 +1,16 @@
+{
+  "request_id": "scope-repair-fr014-visual-1",
+  "attempt": 1,
+  "status": "blocked",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr014-visual-attempt-1",
+  "result": "frontend/inspect/visual/tmp/fr014-retain-attempt-1/result.md",
+  "summary": "有効交換の送信・待機・完了画面と失敗後の画面を実測。通常表示で未選択のクリックはmutation 0件、交換モードでは元日付が既にあるためnull guard分岐は通常UIから到達不能。GraphQL失敗はconsoleにApolloError、画面は維持されたがcallerへの伝播はブラウザで未確認。実DB操作なし。",
+  "screenshots": [
+    "frontend/inspect/visual/tmp/fr014-retain-attempt-1/01-no-source.png",
+    "frontend/inspect/visual/tmp/fr014-retain-attempt-1/02-await-target.png",
+    "frontend/inspect/visual/tmp/fr014-retain-attempt-1/03-pending.png",
+    "frontend/inspect/visual/tmp/fr014-retain-attempt-1/04-completed.png",
+    "frontend/inspect/visual/tmp/fr014-retain-attempt-1/05-error.png"
+  ],
+  "execution": "frontend/inspect/visual/tmp/fr014-retain-attempt-1/execution.json"
+}

@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr024-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr024-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr024-attempt-1/result.md",
+  "summary": "起動済みセッションからRSpec 86 examples / 0 failures、RuboCop 4 files / 0 offensesを回収。4Commandは9b1df0a^とbyte一致、atomic spec除去・既存WIP/user3hash保持、diff check成功。二重実行なし。"
+}

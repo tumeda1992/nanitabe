@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr018-green-1",
+  "attempt": 1,
+  "status": "failed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr018-green-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr018-green-attempt-1/result.md",
+  "summary": "RSpec 30 examples/0 failures。RuboCop 4 files/2 Lint/AmbiguousBlockAssociation offenses（両specのraise_error block）で終了1。production wrapperと保護条件、diff check確認。matcher括弧修正後の再検証を推奨。"
+}

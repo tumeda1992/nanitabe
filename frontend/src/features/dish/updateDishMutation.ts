@@ -1,3 +1,4 @@
+import { normalizeDishInputWithNewSource } from './normalizeFunctions';
 import { gql } from '@apollo/client';
 import * as z from 'zod';
 import _ from 'lodash';
@@ -22,7 +23,6 @@ import {
   useUpdateDishWithNewSourceMutation,
 } from '../../lib/graphql/generated/graphql';
 import { newDishSourceSchema } from './source/schema';
-import { normalizeDishSourceRelationDetail } from './normalizeFunctions';
 
 export const UPDATE_DISH = gql`
   mutation updateDish(
@@ -115,18 +115,8 @@ export type UpdateDishWithNewSource = z.infer<
   typeof UpdateDishWithNewSourceSchema
 >;
 
-const convertFromUpdateDishWithNewSourceInputToGraphqlInput = (
-  input: UpdateDishWithNewSource,
-): UpdateDishWithNewSource => {
-  const normalizedInput = _.cloneDeep(input);
-  const { dishSource } = input;
-
-  normalizedInput.dishSourceRelationDetail = normalizeDishSourceRelationDetail(
-    dishSource.type,
-    normalizedInput.dishSourceRelation.dishSourceRelationDetail,
-  );
-  return normalizedInput;
-};
+const convertFromUpdateDishWithNewSourceInputToGraphqlInput =
+  normalizeDishInputWithNewSource<UpdateDishWithNewSource>;
 
 export type UpdateDishInput = UpdateDishWithNewSource | UpdateDish;
 export type UpdateDishOutput =

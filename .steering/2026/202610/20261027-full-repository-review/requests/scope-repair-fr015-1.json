@@ -1,0 +1,39 @@
+{
+  "request_id": "scope-repair-fr015-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.21 FR-015 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr015-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "カレンダー・モード・延期操作の既存Jest",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand src/components/calendar/calendarComponents/Calendar/index.spec.tsx src/components/calendar/calendarComponents/useCalendarMode.spec.ts src/components/calendar/calendarComponents/operationComponents/PostponeMeal",
+      "expected": "既存tests全成功。FR015のrefreshContract/postponedRefresh/useRefreshCalendarData専用specは除去し、旧モード遷移とonCompleted経路の既存期待を保持"
+    },
+    {
+      "operation": "復元した4frontend fileのlint",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn lint src/components/calendar/calendarComponents/Calendar/index.tsx src/components/calendar/calendarComponents/operationComponents/PostponeMeal/ScheduleChosenPostponedMealForDate.tsx src/components/calendar/calendarComponents/operationComponents/PostponeMeal/usePostponedMealMode.ts src/components/calendar/useRefreshCalendarData.tsx",
+      "expected": "4fileのlint errorなし"
+    },
+    {
+      "operation": "旧hook/表示contractの型検査",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn tsc --noEmit",
+      "expected": "型検査成功。失敗時は同条件baselineと比較し、新しいrefresh待機/エラー保持を再投入しない"
+    },
+    {
+      "operation": "旧非同期境界・表示状態の全量照合",
+      "expected": "restored-paths.jsonの7pathがc05d21d^とbyte一致/不存在。Calendar wrapperのPromise欠落・非await refetch・旧Postponed hook/表示を保持。純抽出6file/userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "refresh Promiseの保持・失敗時モード保持・retry表示追加を旧版へ戻した",
+    "既存カレンダー/延期Jestとlint・tsc・7path旧比較が成功した",
+    "既知の待機欠落を残し、先行カレンダーモード型と純抽出を保持した"
+  ],
+  "data_preparation": "既存compose.dev.local.yml frontendの既存Jest/mock環境のみ。実DB/AWS/Webhook、新service起動・依存取得なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr015-attempt-1/result.json"
+}

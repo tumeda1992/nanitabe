@@ -1,0 +1,8 @@
+{
+  "request_id": "followup-atomic-spec-1",
+  "attempt": 1,
+  "status": "failed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/pr-followup/atomic-spec-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/pr-followup/atomic-spec-attempt-1/result.md",
+  "summary": "関連RSpec 4/0、全RSpec 862/0。specにinstance variableを期待値参照する規約違反が判明し中断。RuboCop・残る保護確認は未実行。修正後の新attemptを推奨。"
+}

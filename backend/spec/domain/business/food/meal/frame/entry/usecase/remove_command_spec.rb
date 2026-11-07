@@ -48,4 +48,12 @@ RSpec.describe Business::Food::Meal::Frame::Entry::Usecase::RemoveCommand do
       end
     end
   end
+  it "rejects another user's entry without changing its attributes" do
+    other = FactoryBot.create(:user, id_param: "remove-other")
+    snapshot = meal_frame_entry.attributes
+    expect {
+      described_class.call(user_id: other.id, meal_frame_entry_id: meal_frame_entry.id)
+    }.to raise_error(ActiveRecord::RecordNotFound)
+    expect(meal_frame_entry.reload.attributes).to eq(snapshot)
+  end
 end

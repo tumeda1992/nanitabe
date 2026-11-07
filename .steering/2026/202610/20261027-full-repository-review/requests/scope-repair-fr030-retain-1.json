@@ -1,0 +1,31 @@
+{
+  "request_id": "scope-repair-fr030-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "16 FR-030 frontend workflow filter",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr030-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "filter test",
+      "command": "node --test scripts/github/frontend_build_filter.spec.mjs",
+      "expected": "全tests成功。frontend変更とworkflow自身変更true、無関係変更false"
+    },
+    {
+      "operation": "変更workflow検証",
+      "expected": "限定差分とworkflow構文を確認し利用可能なlintがあれば実行、利用不能は明記"
+    },
+    {
+      "operation": "限定差分と保護範囲確認",
+      "expected": "対象2pathはa871b4c一致。保護3file hash/Git mode保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "frontend変更とworkflow自身変更がtrue、無関係変更はfalseになる"
+  ],
+  "data_preparation": "offline fixtureのみ。実AWS/Webhook/DB、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr030-retain-attempt-1/result.json"
+}

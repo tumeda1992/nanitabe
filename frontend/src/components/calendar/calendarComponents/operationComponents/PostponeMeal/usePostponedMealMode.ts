@@ -1,19 +1,12 @@
 import { useEffect, useState } from 'react';
 import usePostponedMeal from '../../../../../features/meal/postponed/usePostponedMeal';
 
-export const POSTPONED_MEAL_MODES = {
-  CHOOSING_POSTPONED_MEAL_MODE: 'CHOOSING_POSTPONED_MEAL_MODE',
-  SCHEDULING_POSTPONED_MEAL_MODE: 'SCHEDULING_POSTPONED_MEAL_MODE',
-};
-export type PostponedMealMode =
-  (typeof POSTPONED_MEAL_MODES)[keyof typeof POSTPONED_MEAL_MODES];
+import { POSTPONED_MEAL_MODES } from '../../calendarMode';
+import type { CalendarModeControls } from '../../calendarMode';
+export { POSTPONED_MEAL_MODES } from '../../calendarMode';
+export type { PostponedMealMode } from '../../calendarMode';
 
-export default (args: {
-  calendarMode: any;
-  updateCalendarMode: any;
-  changeCalendarModeToDisplayCalendarMode: any;
-  onDataChanged?: any;
-}) => {
+export default (args: CalendarModeControls) => {
   const {
     calendarMode,
     updateCalendarMode,

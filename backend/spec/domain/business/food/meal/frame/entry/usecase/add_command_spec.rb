@@ -61,4 +61,14 @@ RSpec.describe Business::Food::Meal::Frame::Entry::Usecase::AddCommand do
       end
     end
   end
+  it "persists exactly once and returns saved attributes" do
+    expect(MealFrameEntry).to receive(:persist_from_food_meal_frame_entry_root).once.and_call_original
+    result = described_class.call(user_id: user_record.id, meal_frame_id: meal_frame.id, date: Date.today, meal_type: 1)
+    expect(MealFrameEntry.count).to eq(1)
+    expect(MealFrameEntry.build_existing_root_from_id(result.id).attributes).to eq(result.attributes)
+  end
+
+  it "keeps direct construction private" do
+    expect { described_class.new({}) }.to raise_error(NoMethodError, /private method/)
+  end
 end

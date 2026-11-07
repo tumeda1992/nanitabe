@@ -22,7 +22,7 @@ export default (args: { refetchMealsForCalendar: any }) => {
     if (apolloClient?.clearStore !== undefined) {
       await apolloClient.clearStore();
     }
-    refetchMealsForCalendar();
+    await refetchMealsForCalendar();
   };
 
   return {

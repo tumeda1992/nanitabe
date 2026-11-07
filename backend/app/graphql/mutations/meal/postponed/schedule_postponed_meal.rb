@@ -7,7 +7,7 @@ module Mutations::Meal::Postponed
 
     def resolve(postponed_meal_id:, date:)
       ActiveRecord::Base.transaction do
-        postponed_meal_record = ::PostponedMeal.find_by(
+        postponed_meal_record = ::PostponedMeal.lock.find_by(
           id: postponed_meal_id,
           user_id: context[:current_user_id],
         )

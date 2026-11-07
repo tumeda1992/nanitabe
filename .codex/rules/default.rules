@@ -9,3 +9,46 @@ prefix_rule(
     decision = "allow",
     justification = "テスト実行は常に許可する",
 )
+
+# .claude/settings.json の Bash allow と対応するコマンド許可。
+prefix_rule(
+    pattern = ["node"],
+    decision = "allow",
+    justification = ".claude/settings.json の許可をCodexにも適用する（利用者指示）",
+)
+
+prefix_rule(
+    pattern = ["git", "add"],
+    decision = "allow",
+    justification = ".claude/settings.json の許可をCodexにも適用する（利用者指示）",
+)
+
+prefix_rule(
+    pattern = ["git", "commit"],
+    decision = "allow",
+    justification = ".claude/settings.json の許可をCodexにも適用する（利用者指示）",
+)
+
+prefix_rule(
+    pattern = ["git", "push"],
+    decision = "allow",
+    justification = ".claude/settings.json の許可をCodexにも適用する（利用者指示）",
+)
+
+prefix_rule(
+    pattern = ["git", "fetch"],
+    decision = "allow",
+    justification = ".claude/settings.json の許可をCodexにも適用する（利用者指示）",
+)
+
+prefix_rule(
+    pattern = ["git", "checkout"],
+    decision = "allow",
+    justification = ".claude/settings.json の許可をCodexにも適用する（利用者指示）",
+)
+
+prefix_rule(
+    pattern = ["bash", "scripts/github/create_pr_from_branch_name.sh"],
+    decision = "allow",
+    justification = ".claude/settings.json の許可をCodexにも適用する（利用者指示）",
+)

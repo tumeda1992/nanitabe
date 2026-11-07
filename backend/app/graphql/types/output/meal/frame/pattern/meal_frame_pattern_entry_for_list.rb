@@ -7,7 +7,7 @@ module Types::Output::Meal::Frame::Pattern
     field :meal_frame_name, String, null: false
 
     def meal_frame_name
-      ::MealFrame.find_by(id: object[:meal_frame_id])&.name || ""
+      context.dataloader.with(::Sources::MealFrames, context[:current_user_id]).load(object[:meal_frame_id])&.name || ""
     end
   end
 end

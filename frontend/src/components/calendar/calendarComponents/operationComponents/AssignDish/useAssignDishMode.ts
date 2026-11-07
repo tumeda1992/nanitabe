@@ -5,18 +5,19 @@ import useDish from '../../../../../features/dish/useDish';
 import { parseBoolOrNull } from '../../../../../features/utils/booleanUtils';
 import { Dish } from '../../../../../lib/graphql/generated/graphql';
 
-export const ASSIGNING_DISH_MODES = {
-  CHOOSING_DISH_MODE: 'CHOOSING_DISH_MODE',
-  ASSIGNING_SELECTED_DISH_MODE: 'ASSIGNING_SELECTED_DISH_MODE',
-};
-export type AssigningDishMode =
-  (typeof ASSIGNING_DISH_MODES)[keyof typeof ASSIGNING_DISH_MODES];
+import { ASSIGNING_DISH_MODES } from '../../calendarMode';
+import type { CalendarModeControls } from '../../calendarMode';
+export { ASSIGNING_DISH_MODES } from '../../calendarMode';
+export type { AssigningDishMode } from '../../calendarMode';
 
-const useOnlyAssigningDishMode = (args: {
-  calendarMode: any;
-  updateCalendarMode: any;
-  changeCalendarModeToDisplayCalendarMode: any;
-}) => {
+const useOnlyAssigningDishMode = (
+  args: Pick<
+    CalendarModeControls,
+    | 'calendarMode'
+    | 'updateCalendarMode'
+    | 'changeCalendarModeToDisplayCalendarMode'
+  >,
+) => {
   const {
     calendarMode,
     updateCalendarMode,
@@ -144,12 +145,7 @@ const useSearchedDish = (args: { selectedDish }) => {
   };
 };
 
-export default (args: {
-  calendarMode: any;
-  updateCalendarMode: any;
-  changeCalendarModeToDisplayCalendarMode: any;
-  onDataChanged?: any;
-}) => {
+export default (args: CalendarModeControls) => {
   const { onDataChanged } = args;
 
   const useOnlyAssigningDishModeResult = useOnlyAssigningDishMode(args);

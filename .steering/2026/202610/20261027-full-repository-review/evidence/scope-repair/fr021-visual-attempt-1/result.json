@@ -1,0 +1,15 @@
+{
+  "request_id": "scope-repair-fr021-visual-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr021-visual-attempt-1",
+  "result": "frontend/inspect/visual/tmp/fr021-retain-attempt-1/result.md",
+  "summary": "2/2: 閏日query/hash付URL維持し週2/24–3/1・月2024年2月を表示。不正2025-02-29週と2024-04-31月はURL維持し実行日の週10/31–11/6・月2026年11月を表示。4画像目視、全GraphQL fixture、未知operation/pageerror 0、実DBなし。内部09:00等はunit範囲。",
+  "screenshots": [
+    "frontend/inspect/visual/tmp/fr021-retain-attempt-1/01-leap-week.png",
+    "frontend/inspect/visual/tmp/fr021-retain-attempt-1/02-leap-month.png",
+    "frontend/inspect/visual/tmp/fr021-retain-attempt-1/03-invalid-week.png",
+    "frontend/inspect/visual/tmp/fr021-retain-attempt-1/04-invalid-month.png"
+  ],
+  "execution": "frontend/inspect/visual/tmp/fr021-retain-attempt-1/execution.json"
+}

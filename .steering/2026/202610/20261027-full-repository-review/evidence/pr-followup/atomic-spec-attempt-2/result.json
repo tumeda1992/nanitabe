@@ -1,0 +1,8 @@
+{
+  "request_id": "followup-atomic-spec-2",
+  "attempt": 2,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/pr-followup/atomic-spec-attempt-2",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/pr-followup/atomic-spec-attempt-2/result.md",
+  "summary": "関連RSpec 4/0、全RSpec 862/0、RuboCop 474 files/0 offenses。4直接describe・fixture後snapshot・共通rollback期待、production不変、評価guardと保護hash/Git mode・diff check確認。"
+}

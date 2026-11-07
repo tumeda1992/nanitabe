@@ -1,0 +1,20 @@
+{
+  "request_id": "fr022-visual-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": "frontend/inspect/visual/tmp/fr022-meal-without-source",
+  "result": "frontend/inspect/visual/tmp/fr022-meal-without-source/result.md",
+  "summary": "出典なし新規料理への既存食事編集が成功。updateMealWithNewDishを1回、meal.id: 10を保持しdishSource/detailはnull。modalが閉じ、同じ食事カードに新料理名を表示。3画像目視、全GraphQL人工fixture、実DB変更なし。",
+  "check_count": 2,
+  "mutation_count": 1,
+  "meal_id": 10,
+  "dish_source": null,
+  "dish_source_relation_detail": null,
+  "page_error_count": 0,
+  "screenshots": [
+    "01-existing-meal-edit.png",
+    "02-new-dish-without-source.png",
+    "03-saved-new-dish-on-existing-meal.png"
+  ],
+  "unverified": ["実backendへの登録・DB永続化"]
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "path": "backend/app/graphql/types/output/dish/essential_dish.rb",
+    "expected": "fb59312^"
+  },
+  {
+    "path": "backend/spec/graphql/query/dish/effort_level_output_spec.rb",
+    "expected": "absent"
+  },
+  {
+    "path": "frontend/src/components/dish/DishForm/DishForm/DishFormOfOnlyDishFields.tsx",
+    "expected": "fb59312^"
+  },
+  {
+    "path": "frontend/src/components/dish/DishForm/DishForm/SelectEffortLevel.tsx",
+    "expected": "fb59312^"
+  },
+  {
+    "path": "frontend/src/components/dish/DishForm/DishForm/index.tsx",
+    "expected": "fb59312^"
+  },
+  {
+    "path": "frontend/src/components/dish/DishForm/EditDish.spec/effortLevelRetention.spec.tsx",
+    "expected": "absent"
+  },
+  {
+    "path": "frontend/src/features/dish/fetchDishQuery.ts",
+    "expected": "fb59312^"
+  },
+  {
+    "path": "frontend/src/features/meal/fetchMealQuery.ts",
+    "expected": "fb59312^"
+  },
+  {
+    "path": "frontend/src/lib/graphql/generated/graphql.schema.json",
+    "expected": "fb59312^"
+  },
+  {
+    "path": "frontend/src/lib/graphql/generated/graphql.ts",
+    "expected": "fb59312^"
+  }
+]

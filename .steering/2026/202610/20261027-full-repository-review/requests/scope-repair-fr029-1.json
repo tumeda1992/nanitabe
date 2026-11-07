@@ -1,0 +1,29 @@
+{
+  "request_id": "scope-repair-fr029-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.7 FR-029 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr029-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "旧workflow curlをloopback HTTP fixtureへ実行",
+      "command": "node --test .steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr029-attempt-1/baseline-deploy.spec.mjs",
+      "expected": "5 tests成功。元commandがtimeout/retry/fail optionを追加せず、HTTP200/401/404/500でcurl exit0となる旧契約。外部のWebhookは絶対に呼ばない"
+    },
+    {
+      "operation": "workflowと専用testの旧版照合",
+      "expected": "backend-deploy.ymlはd3e4515^とbyte一致。scripts/github/backend_deploy.spec.mjsは除去し、artifactでは元suiteを旧HTTP応答期待へ適応した。実HTTP timeoutケースは旧commandを無期限待機させないため起動しない。userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "Webhook commandの追加HTTP失敗判定・timeoutを旧版へ戻した",
+    "loopback fixtureで旧HTTP exit codeとcommand byte一致を検証した",
+    "実Webhook/AWS/GitHubサービスを呼び出さない"
+  ],
+  "data_preparation": "Nodeで127.0.0.1の一時HTTP fixtureだけを起動する。子processへ渡すenvはfixture URLとtest-tokenだけで実envを継承しない。実DB/AWS/外部Webhook/新service操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの旧挙動維持を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr029-attempt-1/result.json"
+}

@@ -1,0 +1,25 @@
+{
+  "request_id": "fr020-visual-1",
+  "kind": "visual-inspector",
+  "attempt": 1,
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "FR-020",
+  "artifact_directory": "frontend/inspect/visual/tmp/fr020-logical-history",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "今日以外の週から月→週とNext Linkで移動",
+      "expected": "同じ対象日の月・週が表示され、今日へ戻らない"
+    },
+    {
+      "operation": "前後移動、今週/今月リンク、戻る・進むを実行",
+      "expected": "URLと表示期間が一致し、履歴が重複しない"
+    }
+  ],
+  "dod": [
+    "全GraphQLを人工fixtureでmock",
+    "実DB変更なし",
+    "遷移先のURL/表示期間を記録し画像目視",
+    "追加承認要求なし"
+  ]
+}

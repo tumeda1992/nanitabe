@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-cr001-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr001-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr001-attempt-1/result.md",
+  "summary": "36 examples / 0 failures、RuboCop 2 files / 0 offenses。検索実装/specはddfef5a^byte一致、FR007の先頭固定owner条件と回帰を保持。user3hash/diff check成功。"
+}

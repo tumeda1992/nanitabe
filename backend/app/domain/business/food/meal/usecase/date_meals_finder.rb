@@ -11,6 +11,7 @@ module Business::Food::Meal
       meals = ::Meal.where(user_id: access_user_id)
                     .where(date: start_date..last_date)
                     .left_joins(:dish)
+                    .where(dishes: { user_id: access_user_id })
                     .left_joins(meal_frame_entry: :meal_frame)
                     .eager_load(
                       dish: [

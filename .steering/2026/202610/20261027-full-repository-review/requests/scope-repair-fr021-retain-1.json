@@ -1,0 +1,37 @@
+{
+  "request_id": "scope-repair-fr021-retain-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "9 FR-021 calendar日付",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr021-retain-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "関連Jest",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand --silent calendarDateFromPath",
+      "expected": "全tests成功。有効閏日/query/hash、存在しない月日の今日09:00 fallback"
+    },
+    {
+      "operation": "型検査",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn tsc --noEmit",
+      "expected": "成功"
+    },
+    {
+      "operation": "変更箇所lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn lint src/features/calendar/calendarDateFromPath.ts src/features/calendar/calendarDateFromPath.spec.ts",
+      "expected": "成功"
+    },
+    {
+      "operation": "限定差分と保護範囲確認",
+      "expected": "対象2pathはc240b94と一致、FR002〜020と保護3file hash/Git mode保持、diff check成功"
+    }
+  ],
+  "dod": [
+    "有効な閏日/query/hashは同じ日を表示し、存在しない月日は既存方針の今日09:00へ戻る"
+  ],
+  "data_preparation": "既存compose.dev.local.yml frontendのみ。重い検査は逐次。実DB/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr021-retain-attempt-1/result.json"
+}

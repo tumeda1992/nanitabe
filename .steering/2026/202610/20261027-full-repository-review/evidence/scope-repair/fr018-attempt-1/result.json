@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr018-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr018-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr018-attempt-1/result.md",
+  "summary": "RSpec81件/0failures、RuboCop4file/0offenses。旧6path比較・解除Policy/caller参照不存在・FR002/003残部/純抽出6file/user3hash保持・diff check成功。"
+}

@@ -1,0 +1,24 @@
+{
+  "request_id": "scope-repair-fr018-red-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "20A FR-018 transaction red",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr018-red-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "新旧Command specの修正前red確認",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/meal/usecase/swap_meals_between_days_command_spec.rb spec/domain/business/dish/meal/command/swap_meals_between_days_command_spec.rb",
+      "expected": "意図的red: 各Commandで後半保存時に先行実保存のrollbackを期待する2例が失敗し、原因は先行Mealのdateが戻らないこと。他の正常互換例は成功。setupや例外注入など別原因はfailedで返す。期待された2件のみのredはrequest自体passedで保存する。"
+    }
+  ],
+  "dod": [
+    "後半保存失敗時の実保存rollback欠落を両Commandでred確認",
+    "正常契約testは成功"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。実DB migration/AWS/Webhook、新serviceなし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへ証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr018-red-attempt-1/result.json"
+}

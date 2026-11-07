@@ -18,7 +18,7 @@ module Business::Food::Dish
                             .search_output
 
       registered_dish_with_meal = if dish_id_registered_with_meal.present?
-                                    ::Dish.where(id: dish_id_registered_with_meal)
+                                    ::Dish.for_user(access_user_id).where(id: dish_id_registered_with_meal)
                                           .with_search_relations
                                           .search_output
                                           .to_a
@@ -30,11 +30,15 @@ module Business::Food::Dish
       if search_string.present?
         normalized_search_string = ::Business::Food::Dish::Word::Usecase::Normalizer.call(string_sequence: search_string)
         dish_relation = normalized_search_string.split.reduce(dish_relation) do |relation, word|
-          relation.merge(
-            Dish.matching_normalized_name(word)
-                .or(::DishSource.matching_normalized_name(word))
-                .or(::DishTag.matching_normalized_content(word)),
-          )
+          relation.where(<<~SQL, pattern: "%#{word}%")
+            COALESCE(dishes.normalized_name, dishes.name) LIKE :pattern
+            OR dish_sources.name LIKE :pattern
+            OR EXISTS (
+              SELECT 1 FROM dish_tags AS matching_tags
+              WHERE matching_tags.dish_id = dishes.id
+                AND COALESCE(matching_tags.normalized_content, matching_tags.content) LIKE :pattern
+            )
+          SQL
         end
       end
 

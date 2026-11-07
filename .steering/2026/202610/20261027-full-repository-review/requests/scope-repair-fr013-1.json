@@ -1,0 +1,49 @@
+{
+  "request_id": "scope-repair-fr013-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.23 FR-013 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr013-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "料理取得GraphQLの既存RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/graphql/query/dish",
+      "expected": "既存examples全成功。追加effort_level_output_specは除去し、旧出力field集合を保持"
+    },
+    {
+      "operation": "料理・食事フォームの既存Jest",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn test --runInBand src/components/dish/DishForm src/components/meal/MealForm",
+      "expected": "既存tests全成功。effortLevelRetention専用specは除去し、既存手間レベルを編集初期値へ復元する追加期待を残さない"
+    },
+    {
+      "operation": "旧GraphQL出力typeのRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/graphql/types/output/dish/essential_dish.rb",
+      "expected": "1fileのoffenseなし"
+    },
+    {
+      "operation": "変更frontendのlint",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn lint src/components/dish/DishForm/DishForm/DishFormOfOnlyDishFields.tsx src/components/dish/DishForm/DishForm/SelectEffortLevel.tsx src/components/dish/DishForm/DishForm/index.tsx src/features/dish/fetchDishQuery.ts src/features/meal/fetchMealQuery.ts",
+      "expected": "5fileのlint errorなし。生成物を手整形しない"
+    },
+    {
+      "operation": "旧query/生成物とフォームの型検査",
+      "command": "docker compose -f compose.dev.local.yml exec -T frontend yarn tsc --noEmit",
+      "expected": "型検査成功。同条件baseline由来の失敗と復元回帰を分離し、effort保持修正を再投入しない"
+    },
+    {
+      "operation": "手間取得・初期値の旧版全量比較",
+      "expected": "restored-paths.jsonの10pathがfb59312^とbyte一致/不存在。EssentialDish追加fieldとquery/generated変更、defaultValues/選択制御/初回effect区別を旧版へ戻した。先行入力変換とFR032/033純抽出6file/userdirty3hash保持・git diff --check成功"
+    }
+  ],
+  "dod": [
+    "既存の手間レベル取得・初期値保持・時間帯effect変更を旧版へ戻した",
+    "既存GraphQL/Jest・両lint・tscと10path旧比較が成功した",
+    "元の編集による手間レベル消失問題を残し、先行共通化と純抽出を保持した"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend/frontendのみ。RailsはRAILS_ENV=test、標準test DB。Jestは既存mock。実DB/AWS/Webhook、新service/依存取得なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへcommand証拠/result.md/result.jsonを保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr013-attempt-1/result.json"
+}

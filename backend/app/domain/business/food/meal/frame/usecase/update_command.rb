@@ -11,6 +11,8 @@ module Business::Food::Meal::Frame
 
     def call
       frame_root = ::MealFrame.build_existing_root_from_id(meal_frame_id)
+      raise ActiveRecord::RecordNotFound, "MealFrame with id #{meal_frame_id} not found" if frame_root.user_id != user_id
+
       frame_root.rename(name)
 
       ::MealFrame.persist_from_food_meal_frame_root(frame_root)

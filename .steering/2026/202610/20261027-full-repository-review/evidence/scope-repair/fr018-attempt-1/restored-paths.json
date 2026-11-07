@@ -1,0 +1,26 @@
+[
+  {
+    "path": "backend/app/domain/business/dish/meal/command/swap_meals_between_days_command.rb",
+    "expected": "25471fd^"
+  },
+  {
+    "path": "backend/app/domain/business/dish/meal/repository.rb",
+    "expected": "25471fd^"
+  },
+  {
+    "path": "backend/app/domain/business/food/meal/policy/release_frame_on_reschedule_policy.rb",
+    "expected": "absent"
+  },
+  {
+    "path": "backend/app/domain/business/food/meal/usecase/swap_meals_between_days_command.rb",
+    "expected": "25471fd^"
+  },
+  {
+    "path": "backend/app/models/meal.rb",
+    "expected": "25471fd^"
+  },
+  {
+    "path": "backend/spec/domain/business/food/meal/usecase/frame_release_spec.rb",
+    "expected": "absent"
+  }
+]

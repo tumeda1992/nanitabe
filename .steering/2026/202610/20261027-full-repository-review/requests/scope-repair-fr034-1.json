@@ -1,0 +1,39 @@
+{
+  "request_id": "scope-repair-fr034-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.5 FR-034 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr034-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "現行枠とGraphQL枠エントリの既存関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/domain/business/food/meal/frame spec/graphql/mutation/meal/frame_entry",
+      "expected": "全examples成功。FR034専用compatibility_specだけ除去。FR005/008/019の現行変更は各復元単位まで保持"
+    },
+    {
+      "operation": "旧Root/Add/RemoveのRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/food/meal/frame_entry/root.rb app/domain/business/food/meal/frame_entry/usecase/add_command.rb app/domain/business/food/meal/frame_entry/usecase/remove_command.rb",
+      "expected": "3fileのoffenseなし"
+    },
+    {
+      "operation": "旧namespaceのロードと継承契約確認",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rails runner -e test \"Rails.application.eager_load!; raise unless Business::Food::Meal::FrameEntry::Root.superclass == Business::Base::Entity; raise unless Business::Food::Meal::FrameEntry::Usecase::AddCommand.superclass == Business::Base::Command; raise unless Business::Food::Meal::FrameEntry::Usecase::RemoveCommand.superclass == Business::Base::Command; puts :legacy_inheritance_restored\"",
+      "expected": "eager load成功、旧Root/Add/Removeの独立した継承関係を確認"
+    },
+    {
+      "operation": "旧版全量照合と保持条件",
+      "expected": "旧Root/Add/Removeとfood READMEがfcac860^とbyte一致、compatibility_spec除去。旧FillのFR008由来委譲はこの項目では保持。userdirty3hash保持、git diff --check成功"
+    }
+  ],
+  "dod": [
+    "FR034の旧Root継承と旧Add/Remove委譲・認可混入を旧版へ戻した",
+    "既存関連RSpecとlint・ロード・旧byte比較が成功した",
+    "旧Fillと現行認可/割当制約は各後続の復元単位まで保持した"
+  ],
+  "data_preparation": "既存compose.dev.local.yml backend、RAILS_ENV=test、標準test DBのみ。MySQL/new service/実DB/AWS/Webhook操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md test-runnerと直接使う共通項目。design/tasklistの既存Compose・挙動維持制約を優先。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せずartifact_directoryへresult.md/result.jsonとcommand証拠を保存。request_id/attempt一致。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr034-attempt-1/result.json"
+}

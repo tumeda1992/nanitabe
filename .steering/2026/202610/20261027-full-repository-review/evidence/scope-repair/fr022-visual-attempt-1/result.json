@@ -1,0 +1,14 @@
+{
+  "request_id": "scope-repair-fr022-visual-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr022-visual-attempt-1",
+  "result": "frontend/inspect/visual/tmp/fr022-retain-attempt-1/result.md",
+  "summary": "2/2: 出典--の新規料理でupdateMealWithNewDish 1回、meal.id 10、dishSource null、dishSourceRelationDetail null、dishTags []。fixture成功後modal終了、calendar再取得・新料理名表示。3画像目視、未知operation/pageerror 0、実DBなし。永続化と認可rollbackはbackend RSpec範囲。",
+  "screenshots": [
+    "frontend/inspect/visual/tmp/fr022-retain-attempt-1/01-existing-meal-edit.png",
+    "frontend/inspect/visual/tmp/fr022-retain-attempt-1/02-new-dish-without-source.png",
+    "frontend/inspect/visual/tmp/fr022-retain-attempt-1/03-saved-new-dish-on-existing-meal.png"
+  ],
+  "execution": "frontend/inspect/visual/tmp/fr022-retain-attempt-1/execution.json"
+}

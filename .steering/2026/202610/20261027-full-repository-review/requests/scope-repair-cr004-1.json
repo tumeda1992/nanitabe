@@ -1,0 +1,35 @@
+{
+  "request_id": "scope-repair-cr004-1",
+  "kind": "test-runner",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "1.1 CR-004 restoration",
+  "attempt": 1,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr004-attempt-1",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "既存の延期・予定化・round tripと延期Commandの関連RSpec",
+      "command": "docker compose -f compose.dev.local.yml exec -T -e RAILS_ENV=test backend bundle exec rspec spec/graphql/mutation/meal/postponed spec/domain/business/food/meal/postponed/usecase",
+      "expected": "全examples成功。変換の追加spec除去に伴う収集件数を実測し、失敗をskip/pendingに変更しない"
+    },
+    {
+      "operation": "復元した3productionfileとMySQL helper残部のRuby lint",
+      "command": "docker compose -f compose.dev.local.yml exec -T backend bundle exec rubocop app/domain/business/food/meal/postponed/usecase/remove_command.rb app/graphql/mutations/meal/postponed/postpone_meal.rb app/graphql/mutations/meal/postponed/schedule_postponed_meal.rb spec_mysql/mysql_spec_helper.rb",
+      "expected": "4fileのoffenseなし。lintだけなのでMySQL helperをrequireしない"
+    },
+    {
+      "operation": "CR004の復元差分と残存MySQL検証profileの静的確認",
+      "expected": "3productionfileは02e2caf親版と一致。conversion_atomicity_specとmeal_conversion_concurrency_specは除去。mysql_spec_helperは接続guard/cleanup/RSpec設定を保持し、SourceDeletionCheckpoint/competing_consumers/prependは除去。frame_assignment_specは保持。git diff --check成功"
+    }
+  ],
+  "dod": [
+    "延期・予定化の取得にFOR UPDATEを追加しない旧契約を復元した",
+    "延期RemoveCommandはid取得の旧版へ戻った",
+    "既存関連RSpec・変更Ruby lint・差分検査が成功した",
+    "FR019用MySQL guard/cleanupを壊していない。実MySQL実行は不要"
+  ],
+  "data_preparation": "既存開発Composeのbackendのみ使用。Rails標準のtest DB設定。実DB/開発DBへのschema操作なし。今回のchecksにMySQL service起動・AWS・Webhook・新依存取得は不要。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md のtest-runner sectionと直接利用する共通プロジェクト指示・test方針・test command。tasklist/designのRAILS_ENV=testと既存compose条件を優先。",
+  "write_boundary": "実装・tasklist・finding・applicationを変更しない。artifact_directoryへstdout/exit/result.mdとresult.jsonだけ保存。request_id/attemptを一致させる。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/cr004-attempt-1/result.json"
+}

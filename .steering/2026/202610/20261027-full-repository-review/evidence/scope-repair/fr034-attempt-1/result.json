@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr034-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr034-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr034-attempt-1/result.md",
+  "summary": "74 examples / 0 failures、RuboCop 3 files / 0 offenses。eager loadと旧Root/Add/Removeの独立継承を実測。4fileはfcac860^とbyte一致、旧Fill/user3hash保持、compatibility spec除去、diff check成功。"
+}

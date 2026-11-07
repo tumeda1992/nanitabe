@@ -5,18 +5,12 @@ import { updateMealSchema } from '../../../../../features/meal/schema';
 import { useBackToDateWhenModeStarted } from '../../useCalendarMode';
 import { Meal } from '../../../../../lib/graphql/generated/graphql';
 
-export const MOVING_MEAL_MODES = {
-  MOVING_MEAL_MODE: 'MOVING_MEAL_MODE',
-};
-export type MovingMealMode =
-  (typeof MOVING_MEAL_MODES)[keyof typeof MOVING_MEAL_MODES];
+import { MOVING_MEAL_MODES } from '../../calendarMode';
+import type { CalendarModeControls } from '../../calendarMode';
+export { MOVING_MEAL_MODES } from '../../calendarMode';
+export type { MovingMealMode } from '../../calendarMode';
 
-export default (args: {
-  calendarMode: any;
-  updateCalendarMode: any;
-  changeCalendarModeToDisplayCalendarMode: any;
-  onDataChanged?: any;
-}) => {
+export default (args: CalendarModeControls) => {
   const {
     calendarMode,
     updateCalendarMode,

@@ -1,0 +1,8 @@
+{
+  "request_id": "fr002-green",
+  "attempt": 1,
+  "status": "blocked",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/requests",
+  "result": ".steering/2026/202610/20261027-full-repository-review/requests/fr002-green-result.md",
+  "summary": "exec_commandが45秒以内に応答せずsession/exit/stdout未取得。RSpec成否は不明。重複再送していない。"
+}

@@ -1,0 +1,100 @@
+# 確認範囲
+
+現在の再適用範囲は[design](design.md)、source `3d832f5` の最新結果は[全体検証](#全体検証source-3d832f52026-11-06)と[scope audit](evidence/scope-repair/final-scope-audit.md)を参照。以下の表は2026-10-27レビュー時点のsnapshotに対する確認であり、現在の未実施事項を示すものではない。主要経路の静的追跡と一部の追加再現であり、全558候補ファイルの逐行監査を意味しない。
+
+| 領域 | 確認した経路・観点 | 結果・限界 |
+| --- | --- | --- |
+| 方針・設計 | AGENTS、backend/frontend指示、food/meal README、旧レビューの記録形式 | 現行namespaceと設計契約を確認。文書全体の監査ではない |
+| backend入口 | routes、ApplicationController、GraphqlController、Schema、BaseField、QueryType/MutationType、登録/ログイン補助 | 認証と所有者認可を区別。管理GETの未認証アクセスを実測 |
+| 食事 | 登録3経路、更新、削除、交換、延期/確定、root/policy/model、カレンダーFinder | 所有者・関連先・移動時の整合性を追跡。越境料理参照と移動時不整合を実測 |
+| 料理・出典・タグ | CRUD、検索固定ID、検索scope、関連付け、手間レベル、評価旧Command/Repository、出典別Finder | IDの伝播と保存処理まで確認。全検索条件の組合せや実MySQL実行は未検証 |
+| 辞書・管理 | CRUD controller、正規化・全件反映、モデル、関連spec | RegexpErrorを実測。途中失敗の原子性とrescue経路は静的確認 |
+| 枠・パターン | CRUD、適用、fill/unassign、親子入力、Dataloader、モデル・FK/index、旧namespace | 越境枠参照と同じ食事の二重割当を実測。同時リクエストの実験は未実施 |
+| frontend基盤 | layout、Apollo provider/client、認証hook、共通mutation/query、論理history、warmup | history同期欠落をProvider単体で実測。SSR多利用者・実ブラウザ通信は未確認 |
+| frontend入力 | 料理/食事フォームと変換、手間select、パターン作成編集、schema、検索panel | placeholder再選択のNaNを実測。全UI部品の見た目・アクセシビリティは未監査 |
+| カレンダー | 週/月route、日付解釈、共通Calendar、移動/交換/延期hook、FrameCard/MealCard、refresh | 日付/関連ID/Promiseの流れを確認。ブラウザの遅延・モバイル操作は未検証 |
+| テスト | frontend全Jest、backend food domain/GraphQL、認証helper、追加probe | 既存215件/568件成功。追加probe 2件/6件で問題挙動を実測。backend全体RSpecと新しい型検査は完了結果なし |
+| CI | frontend build/test、backend test/deploy、review Terraform plan/apply、terraform-run action | 変更検出・HTTP失敗判定・権限を確認。GitHub Actionsの実行はしていない |
+| インフラ運用 | OIDC role、ECS、API Gateway、CodeBuild/CodePipeline、scheduler、alarm、起動停止script | state書込み範囲、公開経路、起動失敗時cleanupを確認。AWS実設定・Terraform plan/apply・通知/Webhook送信は未実施 |
+
+生成GraphQLの全内容、lockfile依存脆弱性、画像/CSS全体、全テストの逐行確認、prod Terraform root全体、実運用ネットワーク到達性は未監査。これらについて問題なしとは判定しない。
+
+## 前回適用8件の現状
+
+入力変換（frontend/backend）、辞書属性生成、モードliteral型、共通パターンフォーム、日付パーサー、一覧のbatch取得、food責務文書の変更を現行コードと旧コードで照合した。今回、これらの抽出自体による確定的な新規回帰は発見していない。ただし元から残る不正入力・認可・画面状態の問題は別途指摘した。batch取得のSQL応答順はORDER BY契約がないためDBをまたぐ厳密保証まではしていない。
+
+## 適用時の確認追加（2026-11-01、FR-013まで）
+
+FR-002〜012の反映後、既存開発用Compose内でbackend全体821 examples / 0 failuresを確認した。frontend変更前のJestは39 suites / 215 tests、型検査も成功した。
+
+FR-013の変更後は料理/食事フォーム10 suites / 52 tests、backend料理詳細/カレンダー7 examples、型検査と変更箇所lintに成功。実ブラウザは人工データのGraphQLモックで手間の表示・送信4項目を検証し、画像4枚を目視した。実DB保存の再読込は含まない。390px幅の横はみ出しは別観測であり、変更前比較は未確認。既存専用Composeを追加せず、開発用`compose.dev.local.yml`を使用する。
+
+FR-014は実ApolloのObservableを保留してloading/error、callback省略、6 mutation経路の集約を検証し、最終14 testsと型検査/lintが成功。FR-015はclearStore/refetchを個別保留・拒否するtestと、実ブラウザの更新失敗→再取得を確認した。実ブラウザは全GraphQLモック、登録mutation1回、5画像目視であり、実DBへの登録確認は含まない。
+
+
+## 最終検証（2026-11-02）
+
+source/testの固定点は`3dcad04`。当初のAstraレビューを入力にした適用工程であり、新しいAstra全体レビューを実施済みとは扱わない。
+
+| 検証 | 結果 |
+| --- | --- |
+| backend全RSpec | 937 examples / 0 failures |
+| frontend全Jest | 47 suites / 283 tests成功（fixture由来のconsole警告は残る） |
+| TypeScript | tsc --noEmit成功 |
+| frontend全ESLint | src 239 files、0 errors / 0 warnings |
+| backend全RuboCop | 492 files、保留FR-001の既存2 offensesのみ。今回の変更fileは0 offenses |
+| 運用・Terraform/IAM・CI条件 | Node 68 tests成功、bash syntax/diff check成功 |
+| MySQL並行・migration | CR-004の2件＋FR-019の4件、すべて成功。独立接続・専用fixture DBで実測 |
+| eager load | test設定のzeitwerk:check成功。既存libはeager_load対象外という警告は継続 |
+| Next production build | 最終commitのsourceを既存container内の一時copyでbuildし、静的19ページ生成まで成功 |
+| Terraform | 変更5ファイルfmt、固定依存の隔離copyでreview/prod root init/validate成功 |
+
+RuboCopの残りはapp/controllers/admin/base_controller.rbのStyle/FetchEnvVar 2件。利用者が保留したFR-001の既存WIPであり、作業開始時affd7ecとbyte一致を確認したため今回変更しない。一時検証Rubyの名前/書式も整理済みで、生成artifactを既存source違反として混ぜていない。全体lintが完全greenとは報告しない。
+
+production buildはgit archiveで取得したcommitted sourceを使い、既存node_modulesと生成済みCSSを再利用した。常駐CSS watcherは重複起動していない。外部dependency symlinkを解決するTurbopack root指定は一時copyにだけ設定し、repository/dev設定は変更しない。通常テスト時の作業treeには利用者由来3差分を維持しており、それらはcommit対象外である。
+
+ブラウザ確認は各FRのrequestsにある人工fixture/GraphQL mockで行ったもので、実DBへのUI保存を証明しない。実DB migration、AWS apply/実効IAM権限/Host偽装の直アクセス拒否、実Webhookは今回未実施。FR-019のunique index導入は実データに既存重複があれば停止する設計である。TerraformのARM h1追加は検証copyだけで、repository lockfileのversion/constraint/hashは変更していない。
+
+一時MySQLは検証後にservice/dataを除去済み。既存の開発backend/frontendは継続稼働している。再発防止の恒久documentは提案のみで、未承認の追加規範を適用しない。
+
+## 公開後のCI（2026-11-02）
+
+公開head `b843000`のPR-triggered runではfrontend test/lint/buildとTerraform plan prod/reviewが成功した。backend test（[run 41364503462](https://github.com/tumeda1992/nanitabe/actions/runs/41364503462)）とbackend RuboCop（[run 41364503213](https://github.com/tumeda1992/nanitabe/actions/runs/41364503213)）はSetup Rubyで失敗し、RSpec/RuboCop本体は実行されていない。
+
+両jobの実ログは`Unavailable version 3.3.8 for ruby on ubuntu-26.04`を示す。両workflowの`ubuntu-latest`とRuby3.3.8指定はorigin/mainから変更しておらず、今回の修正によるテスト失敗とは区別する。既存の開発container内で成功したbackend937件/変更箇所lintを、GitHub CI成功とは読み替えない。runner/Ruby対応の改訂は今回のreview指摘の反映に追加せず、CI全greenとは報告しない。保留FR-001の既存RuboCop2件も別に残る。
+
+## FR-018 交換の原子的保存（2026-11-06）
+
+新旧Commandは正常返却class・順序・空/片側/同日・枠属性と後半失敗時の実保存rollback/同一例外を確認。RSpec 30 examples成功。枠解除は移動時の業務契約が未確定のため保留し、契約確定時に再評価する。枠不整合は未解消。
+
+## 全体検証（source 3d832f5、2026-11-06）
+
+backend全RSpec 874 examples / 0 failures、frontend全Jest 46 suites / 278 tests成功、frontend全ESLint・型検査成功。Jestはfixture等のconsole警告を出力。backend全RuboCopは481 files中、保留FR-001由来の `app/controllers/admin/base_controller.rb:9` / `:10` に `Style/FetchEnvVar` 2件で失敗し、新規offenseは0。全lint成功とは扱わない。[詳細](evidence/scope-repair/full-checks-attempt-1/result.md)。
+
+最終範囲照合は[scope audit](evidence/scope-repair/final-scope-audit.md)。124 pathの候補対応は完了したがpath対応自体は各hunkの形式的証明ではない。別の差分実読と個別DoD検証を併用する。
+
+production buildは固定source `3d832f5` の一時copyで通常Turbopack compile・型検査・静的19ページ生成が成功。[結果](evidence/scope-repair/full-build-attempt-2/result.md)。初回は依存symlinkがroot外となり失敗し、実体copyで再実行した。常駐dev出力は変更していない。
+
+最終visualは人工GraphQL fixtureで5群を新規確認し23画像を目視。料理手間、パターン、出典なし編集、週/月履歴、延期後再取得が指定期待に一致。実DBは操作せず、内部契約と永続化は自動testの範囲。別観測として手間明示解除画面の横ずれ・左ラベル欠け、再選択直後のエラー残存、開発環境issue表示がある。[結果](evidence/scope-repair/full-visual-attempt-1/result.json)。
+
+未実測: CR-004の今回MySQL並行再実測、実AWS IAM権限、実DBへの変更、実Webhook送信。FR-026の制限を実環境で有効にするには既存IAM policy更新のapplyが必要で、未実施。FR-018枠解除、FR-019/023/028、CR-003、FR-015追加UIは業務・構成判断待ち。
+
+## 公開headのCI速報（97f6348）
+
+GitHub Actionsのbackend RuboCop run `42195119635` / job `127816323328` とbackend test run `42195119531` / job `127816322843` はSetup Rubyで `Unavailable version 3.3.8 for ruby on ubuntu-26.04` により失敗し、本体はskipされた。既存runner/Ruby指定はmainから不変で、ローカルRuboCopのFR-001由来2 offenseとは別原因。Terraform Plan (prod) run `42195119401` は成功。frontend test/lint/buildはこの速報時点で進行中。最終headのCIは親が別途確認する。
+
+## backend CI followup（source acea91a、2026-11-06）
+
+管理request/system 29 examples、backend全RSpec 874 examples、全RuboCop 481 files / 0 offensesがローカルで成功。CI Backend TestはRuby setup・SQLite準備・RSpec本体成功、874 examples / 0 failures。CI Backend RubocopはRuby setup・本体成功、480 files / 0 offenses。CIとlocalのfiles数は別実測。[CI証拠](evidence/ci-followup/github-acea91a/result.md)。旧source `3d832f5` の2 offenseと旧headのSetup Ruby失敗は当時の履歴。FR-001認証機能は保留を維持し、変更はlint記法と既存stubに限る。
+
+記録head `07805b1c18b88265f1b0055cbd1708bfc62908ef` はsource `acea91a` とsteering外差分0。公開PRの[backend test run 42208656814](https://github.com/tumeda1992/nanitabe/actions/runs/42208656814) job 127861551957はSetup Ruby・SQLite準備・RSpec本体が成功、変更なし分岐はskip。[backend RuboCop run 42208656903](https://github.com/tumeda1992/nanitabe/actions/runs/42208656903) job 127861553570はSetup Ruby・RuboCop本体が成功。6 workflow全successを確認した。
+
+## FR-034 旧domain削除の検証（2026-11-07）
+
+旧4定数の廃止と現行case移管は[台帳](evidence/fr034-migration.md)を参照。関連RSpec 41、全RSpec 862、全RuboCop 474 files / 0 offenses、Zeitwerk/eager load成功。旧Business domain参照なし、残る14件はGraphQL別名。[結果](evidence/pr-followup/legacy-retire-attempt-1/result.md)。
+
+## PR followupのlocal検証（2026-11-07）
+
+旧domain削除後は関連41例・全RSpec 862例・全RuboCop 474 files / 0 offenses、Zeitwerk/eager load成功。辞書反映spec整理後は関連4例・全RSpec 862例・全RuboCop 474 files / 0 offenses。前sourceの874例・CI 480 filesとは別の実測。[旧domain結果](evidence/pr-followup/legacy-retire-attempt-1/result.md)、[spec整理結果](evidence/pr-followup/atomic-spec-attempt-2/result.md)。新head `b31e854` は6 workflow成功。backend test本体862 examples / 0 failures、backend RuboCop本体473 files / 0 offenses。[CI結果](evidence/pr-followup/ci-b31e854/result.md)。frontendは変更しておらず今回local再実行なし。
+
+記録head `c488387b4016fac5f588a85c00348d1ada7723b6` の6 workflowも成功。[backend test](https://github.com/tumeda1992/nanitabe/actions/runs/42355518797) job 128352642755はRSpec本体862 examples / 0 failures、変更なし分岐はskipped。[backend RuboCop](https://github.com/tumeda1992/nanitabe/actions/runs/42355518811) job 128352642894は本体473 files / 0 offenses。

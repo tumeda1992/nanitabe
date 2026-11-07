@@ -1,0 +1,18 @@
+[
+  {
+    "path": "frontend/src/components/calendar/calendarComponents/operationComponents/SwapMeals/useSwapMealsMode.ts",
+    "expected": "601d722^"
+  },
+  {
+    "path": "frontend/src/components/calendar/calendarComponents/useCalendarMode.spec.ts",
+    "expected": "601d722^"
+  },
+  {
+    "path": "frontend/src/features/utils/mutationUtils.spec.tsx",
+    "expected": "absent"
+  },
+  {
+    "path": "frontend/src/features/utils/mutationUtils.ts",
+    "expected": "601d722^"
+  }
+]

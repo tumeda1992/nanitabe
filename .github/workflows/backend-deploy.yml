@@ -25,4 +25,4 @@ jobs:
           N8N_WORKFLOW_ORIGIN: ${{ secrets.N8N_WORKFLOW_ORIGIN }}
           N8N_WORKFLOW_TOKEN: ${{ secrets.N8N_WORKFLOW_TOKEN_OF_NANITABE_BACKEND_DEPLOY }}
         run: |
-          curl -X GET "${N8N_WORKFLOW_ORIGIN}/webhook/${N8N_WORKFLOW_TOKEN}"
+          curl --fail --show-error --silent --connect-timeout 10 --max-time 30 -X GET "${N8N_WORKFLOW_ORIGIN}/webhook/${N8N_WORKFLOW_TOKEN}"

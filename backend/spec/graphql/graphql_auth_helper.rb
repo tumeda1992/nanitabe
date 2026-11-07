@@ -1,7 +1,7 @@
 require_relative "./graphql_helper"
 
 def fetch_auth_header_values(existing_user_id: nil)
-  existing_login_user = LoginUser.where(uid: auth_variables[:email]).joins(:user)
+  existing_login_user = LoginUser.where(uid: auth_variables(existing_user_id)[:email]).joins(:user)
   credential = if existing_login_user.present?
                  fetch_exisiting_login_user_credential(existing_user_id)
                else
@@ -22,8 +22,8 @@ end
 
 def fetch_exisiting_login_user_credential(existing_user_id)
   login_mutation = <<~GRAPHQL
-    mutation login($email: String!, $password: String!, $userid: Int) {
-      loginUserLogin(email: $email, password: $password, userid: $userid) {
+    mutation login($email: String!, $password: String!) {
+      loginUserLogin(email: $email, password: $password) {
         credentials {
           accessToken
           client
@@ -32,7 +32,7 @@ def fetch_exisiting_login_user_credential(existing_user_id)
       }
     }
   GRAPHQL
-  variables = auth_variables.merge(userid: existing_user_id)
+  variables = auth_variables(existing_user_id)
   fetch_mutation(login_mutation, variables)["loginUserLogin"]["credentials"]
 end
 
@@ -57,13 +57,13 @@ def fetch_new_login_user_credential(existing_user_id)
       }
     }
   GRAPHQL
-  variables = auth_variables.merge(userid: existing_user_id)
+  variables = auth_variables(existing_user_id).merge(userid: existing_user_id)
   fetch_mutation(signup_mutation, variables)["loginUserRegister"]["credentials"]
 end
 
-def auth_variables
+def auth_variables(existing_user_id = nil)
   {
-    email: "default_test_user@example.com",
+    email: existing_user_id ? "test_user_#{existing_user_id}@example.com" : "default_test_user@example.com",
     password: "default_test_user",
   }
 end

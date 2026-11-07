@@ -1,0 +1,43 @@
+{
+  "request_id": "scope-repair-fr014-visual-2",
+  "kind": "visual-inspector",
+  "tasklist": ".steering/2026/202610/20261027-full-repository-review/tasklist.md",
+  "task": "4 FR-014 mutation状態",
+  "attempt": 2,
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr014-visual-attempt-2",
+  "status": "requested",
+  "checks": [
+    {
+      "operation": "通常UIで交換元または相手未選択の状態",
+      "expected": "交換mutation 0件"
+    },
+    {
+      "operation": "有効な2日を選び交換する",
+      "expected": "1回送信しpendingから成功後の既存通常画面へ戻る"
+    },
+    {
+      "operation": "人工GraphQL失敗を返す",
+      "expected": "pageerror 0件で既存交換画面を維持する。error表示の有無を観測する"
+    }
+  ],
+  "dod": [
+    "通常UIで到達可能な3操作を人工fixtureで実ブラウザ確認",
+    "内部loading/error/callback/null guardはpassed unitで確認",
+    "実DB操作なし"
+  ],
+  "authorized_visual_context": {
+    "appUrl": "http://localhost:18100 (frontend container内)",
+    "authentication": "人工cookie at=visual-fixture-token, client=visual-fixture-client, uid=visual-fixture-user。全GraphQLは人工fixtureでfulfillし未知operationはerrors応答、外部originはabort",
+    "template": "frontend/inspect/visual/tmp/fr014-retain-attempt-1/inspect.mjs をコピー・適応し原版は上書きしない",
+    "browserHelper": "なし。templateのPlaywright chromium/headless設定を使用",
+    "setupCommand": "なし。依存installなし",
+    "artifactRoot": "frontend/inspect/visual/tmp",
+    "checkDir": "frontend/inspect/visual/tmp/fr014-retain-attempt-2",
+    "runCommand": "docker compose -f compose.dev.local.yml exec -T -w /root/nanitabe_front frontend node inspect/visual/tmp/fr014-retain-attempt-2/inspect.mjs",
+    "result": "matching result.jsonをartifact_directoryに、詳細resultと画像をcheckDirに保存し実pathを明記"
+  },
+  "data_preparation": "既存カレンダー画面に人工fixtureの食事・日付を用意。人工GraphQLで送信を捕捉し成功・失敗を切替。実DB操作なし。",
+  "allowed_context": ".agents/skills/tumeda-dev-plugin-context.md visual-inspectorと直接使う共通項目。",
+  "write_boundary": "実装/tasklist/finding/applicationは変更せず証拠/result.md/result.jsonを保存。",
+  "result_path": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr014-visual-attempt-2/result.json"
+}

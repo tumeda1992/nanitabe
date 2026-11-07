@@ -1,0 +1,8 @@
+{
+  "request_id": "scope-repair-fr026-1",
+  "attempt": 1,
+  "status": "passed",
+  "artifact_directory": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr026-attempt-1",
+  "result": ".steering/2026/202610/20261027-full-repository-review/evidence/scope-repair/fr026-attempt-1/result.md",
+  "summary": "Node静的3 tests / 0 failures。旧bucket全域Get/Put、Delete不可、lock操作/ReadOnlyAccess接続を確認。policy df42ad7^ byte一致、専用suite除去、user3hash/diff check成功。実AWS APIなし。"
+}
