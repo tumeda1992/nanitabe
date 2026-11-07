@@ -46,12 +46,12 @@ FR-032の入力schema共有は[evidence/fr032-migration.md](evidence/fr032-migra
 | FR-027 | 既存の起動操作が途中失敗すると停止を試み、起動済み再実行でも既存の停止予定を整合する | 起動・自動停止という既存運用の失敗処理。private integration構成へは変えない | `7772f90` |
 | FR-029 | デプロイ依頼のHTTP失敗/timeoutを失敗として返す。成功時は従来どおり1回だけ送信する | 既存依頼の成功判定不具合。未確認の再試行は加えない | `d3e4515` |
 | FR-030 | frontend build workflow自身の変更でも既存build検証を実行する | 実ファイル名のtypo訂正 | `a871b4c` |
-| FR-034 | 旧枠入口をそのまま呼べ、本人操作の保存値・返却classを維持して現行Commandへ委譲する。他人の削除は拒否する | 旧定数を残した共通化と認可。内部の継承関係が変わることだけを取消理由にしない | `fcac860` |
+| FR-034 | 枠エントリのdomain入口を`Business::Food::Meal::Frame::Entry`に一本化し、通常保存・返却・認可を維持する | 利用者の最新指示で旧domain削除を採用。旧定数の互換維持は終了し、公開GraphQL/ActiveRecord名は維持する | `fcac860`の委譲復帰履歴を保持し、下記PR followupで旧domainを削除 |
 | CR-001 | 既存のAND検索で`alpha beta`が別々のタグへ一致する同じ料理を返す | 料理単位の語条件を一つのJOIN行へ誤って閉じた内部検索不具合 | `ddfef5a` |
 | CR-002 | 料理編集で既存タグの内容を変更すると新しい内容が保存・再取得される | 同じタグID集合なら保存を飛ばす不具合。本人scopeと原子保存も復帰 | `30c86bb` |
 | CR-004 | 同じ延期/予定食事を同時確定しても一度だけ消費し、本人の操作だけを処理する | 既存の変換操作の多重消費・認可不具合。業務操作を追加しない | `02e2caf` |
 
-この表の元commitにあるproduction/caller/testを単位として復帰する。FR-015とFR-018は以下に記載する部分だけを復帰する。元commitより後の別指摘の実装をsnapshotから丸ごと取り込まない。FR-025ではcontrollerのFR-001 WIPを保持し、FR-034では旧Fillの既存委譲を保持する。
+この表の元commitにあるproduction/caller/testを単位として復帰する。FR-015とFR-018は以下に記載する部分だけを復帰する。元commitより後の別指摘の実装をsnapshotから丸ごと取り込まない。FR-025ではcontrollerのFR-001 WIPを保持する。FR-034の旧入口委譲は完了履歴として残し、現在の完成形は最新指示による下記の一本化とする。
 
 FR-015は`Calendar/index.tsx`の`onDataChanged: refreshData`と`useRefreshCalendarData.tsx`の`await refetchMealsForCalendar()`だけを復帰する。`usePostponedMealMode.ts`と`ScheduleChosenPostponedMealForDate.tsx`は現在版を保ち、追加の再取得ボタン・エラーUI・状態機械を持ち込まない。既存callbackへ成功/失敗のPromiseを伝え、再取得完了前のモード終了を防ぐことをtestする。
 
@@ -87,7 +87,7 @@ FR-001の認証機能は、以前からの利用者による明示保留を維�
 
 ### codeの責務配置と比較
 
-FR-032/033の共通owner、FR-034の現行Commandへの委譲、FR-002〜011のactor所有者確認を保持する。その他の責務配置は各元commitの限定差分を復帰する。対象file数を6fileに固定しない。
+FR-032/033の共通owner、FR-034の現行`Business::Food::Meal::Frame::Entry`への一本化、FR-002〜011のactor所有者確認を保持する。その他の責務配置は各元commitの限定差分を復帰する。対象file数を6fileに固定しない。
 
 最終差分は`d58c473`との差分に対して、先行保持範囲と上記の採用ID/部分採用へ一件ずつ対応付ける。採用されていない業務制約・migration・private integrationを含まないことを逆方向にも確認する。純粋な共通化は前記二層台帳で値・順序・空配列・既存validationを照合する。認可や不具合修正は、この表の正常操作と問題再現ケースで検証する。
 
@@ -133,6 +133,62 @@ Setup Ruby通過後の全RuboCopで落ちる既知のStyle/FetchEnvVar 2件も�
 README/application/coverageとPR説明には後続結果を追記し、旧sourceの成功・既存offense・未実測を別sourceの結果へ書き換えない。
 実装はTerra、test-runnerの実行管理は親Solとし、既承認のcommit/pushを用いる。その他の保留、保護3file、実環境/DB/AWS/Webhook/新Compose禁止は継続する。
 
+### PR followup: 旧domain入口の削除と原子的保存specの整理
+
+利用者の「1:ok。2:いらない方消して。3:直して」に従い、評価Commandの所有者guardは保持し、次の2変更を別commitで実行する。
+開始時HEADは`94623f6`。前の完了phase・source別の実測・CI成功は当時の履歴として保持し、新sourceの結果を後続記録へ結ぶ。
+
+#### 枠エントリのdomain入口を一本化する
+
+旧`Business::Food::Meal::FrameEntry`のRoot/AddCommand/FillWithMealCommand/RemoveCommandの4fileを、
+`backend/app/domain/business/food/meal/frame_entry/`配下から削除する。
+現行`Business::Food::Meal::Frame::Entry`のproductionと通常の保存値・返却class・認可は保持する。
+旧domainのclass identityと旧Rootのunassign非公開だけを廃止し、外部script利用の不存在を断定することを削除許可の前提にしない。
+これは従来の互換維持からの変更であり、利用者が不要側の削除を明示したことを根拠とする。
+GraphQLの`Mutations::Meal::FrameEntry`、`Types::Input::Meal::FrameEntry`、ActiveRecordの`MealFrameEntry`、table名は別の公開名として維持する。
+
+旧specの完成形は次のとおりとする。pathは`backend/spec/domain/business/food/meal/`基準。
+
+| 既存path | 完成後の配置とcoverage |
+| --- | --- |
+| `frame_entry/usecase/add_command_spec.rb` | 4例は現行`frame/entry/usecase/add_command_spec.rb`と重複するため削除 |
+| `frame_entry/usecase/fill_with_meal_command_spec.rb` | 2例は現行Fill specと重複するため削除 |
+| `frame_entry/usecase/remove_command_spec.rb` | 3例は現行Remove specと重複するため削除 |
+| `frame_entry/usecase/unassign_meal_command_spec.rb` | 現行Commandの3例を`frame/entry/usecase/unassign_meal_command_spec.rb`へ全移動。supportへのrequire_relativeを1階層深くし、説明も現行Root名へ揃える |
+| `frame_entry/compatibility_spec.rb` | 現行に必要な下記契約を移管後に削除。旧class名とunassign非公開の期待は廃止。旧Fillの現行Root返却/保存は現行Fill specで保持 |
+| `frame/entry/ownership_spec.rb` | namespace loopを現行だけへ整理し、他人meal/他人entry/他人frame/不存在meal/他人frameへのAdd拒否の5例を保持 |
+
+`frame/entry/root_spec.rb`を作り、6属性の型変換と全attributes、assign_meal、set_id初回成功/再設定拒否、必須4属性のInvalidAttributeErrorを移管する。
+現行Add specへpersist一回・DB件数一件・保存属性一致・private constructorを追加し、現行Remove specへ他人削除拒否と全attributes不変を追加する。
+現在の業務契約を担う例は残し、削除/移動/統合した各caseをFR-034台帳の後続記録へ対応付ける。
+
+`backend/app/domain/business/food/README.md`の旧互換入口説明を現行domainだけの説明へ置き換え、
+`backend/docs/ai_guideline/development_standard/application_architecture.md`の属性同期例を`Business::Food::Meal::Frame::Entry::Root`へ正す。
+FR-034台帳/findingの現在判断とREADME/application/coverageを最新指示による削除へ整合させる。
+過去の互換維持・取消・復帰の原文と実測は、時点を明示して保持する。
+
+#### 原子的な辞書反映specを操作ごとに読める形にする
+
+変更するtestは`backend/spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb`だけ。
+`Business::Food::Dish::Word::Usecase::AddCommand`、`UpdateCommand`、`RemoveCommand`、`ReflectLatestNormalizeWordCommand`の4つの具体describeへ分ける。
+各subjectは対応するCommandだけを直接呼び、Addでは辞書行を作らず、他3操作では既存辞書を個別letで用意する。
+操作固有の辞書の有無・初期値・呼出引数・subjectだけを各describeへ閉じる。
+2料理と各料理のタグ、全attributes snapshot、後半保存失敗の注入は共通shared_contextに一度だけ定義する。
+各describeでは辞書fixtureを先に生成し、共通fixtureも生成した後、subject実行前にsnapshotを固定する。
+operationのeach/case/unlessや、その値による実行/setup分岐を残さない。productionの4Commandとtransactionは変更しない。
+
+shared_examplesは4操作共通の期待だけとし、操作の選択・fixture作成・subject切替を持たせない。
+操作ごとに同じ料理/タグや失敗注入を複製せず、個別事情を各describeへ足せば共通検証を使える構造にする。
+後半料理の保存に達した時に、先行料理と先行タグの保存済み正規化値を名前付きhashへ記録して失敗させる。
+観測件数1件、先行料理/タグが実行前値から変わっていたこと、`Business::Food::Dish::Word::Errors::ReflectLatestNormalizeWordError`と`late persistence failure`を保持する。
+辞書全行・2料理・各タグの全attributesが実行前へ戻る期待をaggregate_failuresで区別して示す。
+観測の配列添字や位置に依存せず、4操作すべての実保存後rollbackを維持する。
+
+両変更は既存backend containerの`RAILS_ENV=test`・SQLiteだけで関連/全RSpec、全RuboCop、zeitwerk check/eager loadと参照検索を行う。
+旧domain定数が消えたことと、別の公開GraphQL/ActiveRecord名と現行入口が残ることを確認する。
+frontendは変更せずlocal frontend再実行を追加しない。push後は最終headのCI、少なくとも両backend本体を含む成功を確認しPR説明を訂正する。
+その他の保留・保護3file・操作許可・plugin保留3件を維持し、実DB migration/AWS/Webhook/新Compose service/mergeは行わない。
+
 ## 受け入れ基準
 
 1. FR-011の3pathが再開時HEADと一致し、未取消FR-002〜010の認可を保持する。全関数の旧契約を保存する目的の取消を継続しない。
@@ -143,6 +199,7 @@ README/application/coverageとPR説明には後続結果を追記し、旧source
 6. 実環境DB/AWS/Webhook/mergeへの操作、新Compose/追加service起動、履歴改変がない。未実測はそのまま記録する。
 7. README/application/coverage/旧RV/CRの現在状態と既存PR #292を今回の採否へ訂正し、先行範囲完了と親steeringに残る個別判断を区別する。
 8. CI followupは実装5fileに限定し、YAML parse・既存認証/管理CRUD・backend全RSpec・全RuboCopが成功する。push後、PR #292でRSpecとRuboCopの本体が実行され成功し、そのsource/URLを新検証記録へ結び付ける。FR-001認証機能の保留と旧sourceの検証履歴を維持する。
+9. PR followupで旧domain4fileと旧互換専用caseだけを廃止し、現行固有coverageを移管する。4つの辞書操作の先行実保存/後半失敗/全属性rollbackを分岐なしのspecで確認し、関連/全backend検証と最終headのCIが成功する。
 
 ## 付録: 変更の実行区分
 
@@ -162,6 +219,7 @@ README/application/coverageとPR説明には後続結果を追記し、旧source
 | 運用修正の復帰 | 本番runtime/workflowの修正とoffline検証 | runtimeと検証条件 |
 | 現在採否の訂正・全体検証・既存PR訂正 | 実装結果に依存する段階的な公開 | 記録と履歴、受け入れ基準 |
 | backend CI runner固定と既存認証のlint記法修正・再検証・PR結果訂正 | 利用者が指摘した失敗の修復とpush後CI本体の確認 | PRのbackend CI followup |
+| 旧枠エントリdomain削除とcoverage移管・辞書反映spec整理 | 利用者の明示削除/修正指示に対する実装と新source検証 | PR followup: 旧domain入口の削除と原子的保存specの整理 |
 
 ## 設計確認
 

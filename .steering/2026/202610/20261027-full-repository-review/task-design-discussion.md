@@ -108,3 +108,81 @@ FR-018は日付交換の原子的保存だけを追加採用する。production�
 designのCI followupとtasklist末尾22へ限定5fileの修復、2原因別commit、local全回帰、PRの最新sourceに対する両CI本体成功を追加する。
 source `3d832f5`の旧検証と既存完了phaseは保持し、新sourceの検証結果をREADME/application/coverageとPR説明の後続記録へ結ぶ。
 実装はTerra、test-runnerのphysical ownerは親Sol。FR-001認証機能と他項目の保留、保護3file、実環境禁止を継続し、plugin保留3件の解除は含めない。
+
+## 論点3: 旧枠エントリdomainの互換維持を終了する
+
+**ステータス:** 決定
+
+**種別:** レビュー指摘
+
+### イテレーション1（論点3）: 旧domain削除と有効coverageの移管
+
+#### 提案1（論点3）
+
+旧`Business::Food::Meal::FrameEntry`の4fileを削除し、現行`Business::Food::Meal::Frame::Entry`だけにする。
+旧Add/Fill/Remove specの重複は削除、現行Commandをdescribeする旧配置Unassign3例は現行pathへ移動する。
+旧compatibility specのRoot型変換/validation/操作、Add単一保存/private constructor、Remove他人拒否は現行specへ移管する。
+旧class identity/unassign非公開だけを廃止し、現行ownership5例とGraphQL/ActiveRecord/tableの公開名を保持する。
+
+#### 検討記録（論点3・イテレーション1）
+
+旧/現行spec全文の対比で、Add4例/Fill2例/Remove3例は重複し、Unassign3例には移動先が必要と確認した。
+compatibility specを一括削除すると現行にも必要な契約を失うため、designの表へMOVE/KEEP先を確定した。
+Terra retained_auditの独立照合もこの分類と一致する。旧参照はappでは旧4file自身だけで、公開GraphQL名は別のnamespaceである。
+baseline `94623f6`の構造/contractを実装編集前にFR-034台帳へ追加し、明示RETIREと保存する能力を逆引きする。
+従来の旧定数互換維持は、今回の明示削除指示を受けて終了する。過去の判断と実測はその時点の履歴として残す。
+
+[内部検討記録: 論点3・イテレーション1](internal-records/task-design-discussion.md.topic-3.md#iteration-1)
+
+#### 提案1へのフィードバック（論点3）
+
+**結果:** 親SolのPR説明に対し利用者が削除を明示した。
+
+> 1:ok。2:いらない方消して。3:直して
+
+親Solは2を旧domain削除への実行指示として引き継ぎ、追加承認なしで限定設計の反映を委託した。
+続く「上限復活したから続けて」は同じ作業の再開であり、削除範囲やplugin保留の変更として扱わない。
+
+### 決定（論点3）
+
+tasklist23で旧domain4fileを削除し、designの対比どおり有効coverageを移管する。
+食事枠の正常保存/認可と別の公開名を保持し、READMEの現行説明・FR-034の現在採否を訂正する。
+旧互換維持の判断を最新指示で置換し、他保留と評価Commandの所有者guardは維持する。
+
+## 論点4: 辞書反映specの操作選択分岐をなくす
+
+**ステータス:** 決定
+
+**種別:** レビュー指摘
+
+### イテレーション1（論点4）: 個別操作と共通fixture/期待を分離する
+
+#### 提案1（論点4）
+
+atomic_reflection_specを4つの具体Command describeへ分け、各subjectを直接のCommand呼出しとする。
+操作固有の辞書setup/引数だけを個別に持ち、2料理/タグ・後半失敗注入・snapshotはshared_contextへ一定義にする。
+shared_examplesには名前付きの先行実保存観測、既存例外type/message、辞書/料理/タグ全attributes rollbackの共通期待を置く。
+操作fixtureを生成してからsnapshotを固定し、operation条件分岐と位置依存をなくす。productionは変更しない。
+
+#### 検討記録（論点4・イテレーション1）
+
+既存4例は途中で実保存した後の全体rollbackを確認しており、期待を減らさず構造を整理する。
+当初の本担当案は各describeへ共通fixture/失敗注入も置く記述だったが、親Solは同じ定義の複製を避けるよう訂正した。
+最終案は共有側からoperationを選ばず、各describeへ固有事情だけを追加して共通検証を使える形である。
+4操作の期待移管表と新source検証で、例外と先行保存/rollbackの取り落しを確認する。
+
+[内部検討記録: 論点4・イテレーション1](internal-records/task-design-discussion.md.topic-4.md#iteration-1)
+
+#### 提案1へのフィードバック（論点4）
+
+**結果:** 利用者はPR説明の3について「直して」と指示し、親Solが共通部分の境界を明確にした。
+
+親Solの訂正:
+
+> 操作ごとのdescribeへ閉じるのは辞書の有無/初期値・呼出引数・subject等の固有事情。
+> 2料理/タグ・第2保存への共通失敗注入はshared_context等の一定義を利用し、shared_examplesに共通期待をまとめる形にして。
+
+### 決定（論点4）
+
+tasklist24でatomic_reflection_specだけを整理し、4操作の有効期待と原子的保存のproductionを保持する。
+23とは別commitにし、関連/全backend検証と最終headのCI成功・source別の結果記録まで閉じる。

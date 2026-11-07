@@ -310,3 +310,38 @@ DoD: 確定範囲の正常操作・内部修正と現在の採否が実装/test/
   FR-001はlint記法だけの修正で認証機能は保留、その他保留と未実測も継続と明記する。文書をdocument-reviewへ通して記録訂正を追加commit/pushし、PRの最終SHAに対する両CI本体の成功を確認してチェックを更新する。
 
 DoD: 既存Rubyと認証仕様を保った限定5fileの修正で、local全RSpec・全RuboCop・YAML parseとPR #292の両CI本体が成功する。最新source/URLへ結び付く後続記録を残し、旧sourceの検証履歴、保留、保護差分、実環境を変更していない。
+
+## 23. PR followup: 旧枠エントリdomainを削除し現行coverageへ集約する
+
+- [ ] baseline `94623f6`の旧4file/旧5spec/現行specをdesignの対比へ照合し、編集前に`evidence/fr034-migration.md`へ新時点の構造/機能台帳を追記する。
+  利用者の「2:いらない方消して」により旧4定数・旧返却class・旧Rootのunassign非公開をRETIRE、現行の通常保存/認可と有効testをKEEP/MOVEとする。旧台帳・実測は上書きしない。
+- [ ] `backend/app/domain/business/food/meal/frame_entry/`のRoot/Add/Fill/Removeの4fileを削除する。現行`Business::Food::Meal::Frame::Entry`、GraphQLの`Mutations::Meal::FrameEntry`と`Types::Input::Meal::FrameEntry`、ActiveRecordの`MealFrameEntry`とtable名を維持する。
+  旧specのAdd4例/Fill2例/Remove3例は現行と重複するため削除し、旧pathのUnassign3例は`backend/spec/domain/business/food/meal/frame/entry/usecase/unassign_meal_command_spec.rb`へ全移動する。supportへのrequire_relativeを1階層深くし説明を現行Root名へ揃える。
+- [ ] 旧compatibility specから現行に必要な契約を移管する。新`backend/spec/domain/business/food/meal/frame/entry/root_spec.rb`へ全6属性/型変換・assign_meal・set_id初回成功/再設定拒否・必須4属性を残す。
+  現行Add specへ単一persist/DB一件/保存属性一致/private constructor、現行Remove specへ他人削除拒否/全attributes不変を追加してから旧compatibility specを削除する。
+  現行ownership specは旧namespace loop分だけ除き、current5例を維持する。旧class identity/unassign非公開は削除許可に基づく廃止、旧Fillの現行Root返却/保存は現行Fillで保持する。
+- [ ] `backend/app/domain/business/food/README.md`の旧compat説明を現行domainの説明へ置換し、`backend/docs/ai_guideline/development_standard/application_architecture.md`の属性同期例を`Business::Food::Meal::Frame::Entry::Root`へ正す。
+  FR-034台帳/finding、README/application/coverageへ最新削除判断とcase移管の対応を記録し、過去の互換維持/取消/復帰は当時の履歴として保持する。文書をdocument-reviewへ通す。
+- [ ] 親Solをphysical ownerとするtest-runnerで`backend bundle exec rspec spec/domain/business/food/meal/frame/entry spec/graphql/mutation/meal/frame_entry`、`backend bundle exec rspec`、`backend bundle exec rubocop`、`backend bin/rails zeitwerk:check`を実行する。
+  test設定でeager loadし旧domain定数が定義されず現行Root/Commandが存在することを確認する。
+  `rg -n 'Business::Food::Meal::FrameEntry|Meal::FrameEntry|FrameEntry::Root|meal/frame_entry' backend/app backend/spec backend/docs scripts .github`の結果を分類し、旧domain参照0と別の公開GraphQL/ActiveRecord名保持を確認する。`.steering`の旧履歴は消さない。
+  共通契約の既存backend・`RAILS_ENV=test`・SQLiteだけを使用し、保護3file hash/mode、評価Command所有者guard、他保留、diff checkを確認する。結果を新request/attemptへ保存し、この削除/移管だけを追加commitする。
+
+DoD: domainは現行入口に一本化され、旧4定数が消え、GraphQL/ActiveRecord名と通常保存/認可を維持する。旧互換専用期待だけが廃止され、有効caseのKEEP/MOVE先と削除行が台帳で対応し、関連/全backend検証とautoload確認が成功する。
+
+## 24. PR followup: 原子的な辞書反映specを操作ごとに整理する
+
+- [ ] `backend/spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb`を4つの具体Command describeへ分ける。
+  編集前にbaseline `94623f6`の4操作と全期待の移管先を新attemptへ対応付け、期待の削除なしでshared_context/shared_examplesへ移す。
+  `Business::Food::Dish::Word::Usecase::AddCommand`は辞書作成なし、`UpdateCommand`/`RemoveCommand`/`ReflectLatestNormalizeWordCommand`は各既存辞書letを持ち、各subjectはそのCommandを直接呼ぶ。
+  共通shared_contextに2料理/各タグ、実行前全attributes snapshot、後半保存失敗注入を一定義にし、各操作の辞書fixtureと共通fixtureを生成した後・subject実行前にsnapshotを固定する。
+  operationのeach/case/unlessによる選択や共通側でのsubject切替をなくし、個別describeへ固有事情だけを追加できる構造にする。production4Command/transactionは変更しない。
+- [ ] shared_examplesへ共通期待をまとめる。後半保存時の先行料理/先行タグの実保存観測を名前付きhashにし、観測一回・実行前から変更済み・既存例外typeと`late persistence failure`を維持する。
+  aggregate_failuresで辞書全行/2料理/各タグの全attributes rollbackを個別に識別できるようにする。位置依存の`observed.first[0]`等を残さず、4操作のcoverageを減らさない。
+- [ ] 親Solのtest-runnerで`backend bundle exec rspec spec/domain/business/food/dish/word/usecase/atomic_reflection_spec.rb`、`backend bundle exec rspec`、`backend bundle exec rubocop`を実行する。
+  4操作とも先行実保存後の後半失敗と全属性rollbackを確認し、差分がspec整理だけであること・保護3file/評価Commandguard/他保留保持・diff checkを確認する。新sourceの結果を保存し、このspec整理だけを23と別の追加commitにする。
+- [ ] 既承認指示に従いfeature-287をpushし、PR #292の最終headでCIが成功すること、特に両backendのRSpec/RuboCop本体が実行され成功することを確認する。
+  README/application/coverageとPR説明へ最新指示の対応・source/結果/CI URLを追記し、旧source結果は保持する。文書review後、記録を追加commit/pushした最終headでもCI成功を確認してチェックを閉じる。
+  frontendコード変更/local frontend再実行、実DB migration/AWS/Webhook/新Compose service/merge、plugin保留3件解除は追加しない。
+
+DoD: 各操作の固有setupとsubject、一定義の共通fixture/失敗注入、共通rollback期待が分かれ、操作条件分岐と位置依存なく4操作の原子性coverageを維持する。関連/全backend検証と最終headのCIが成功し、23/24は別commit・記録から辿れる。
