@@ -92,3 +92,7 @@ GitHub Actionsのbackend RuboCop run `42195119635` / job `127816323328` とbacke
 ## FR-034 旧domain削除の検証（2026-11-07）
 
 旧4定数の廃止と現行case移管は[台帳](evidence/fr034-migration.md)を参照。関連RSpec 41、全RSpec 862、全RuboCop 474 files / 0 offenses、Zeitwerk/eager load成功。旧Business domain参照なし、残る14件はGraphQL別名。[結果](evidence/pr-followup/legacy-retire-attempt-1/result.md)。
+
+## PR followupのlocal検証（2026-11-07）
+
+旧domain削除後は関連41例・全RSpec 862例・全RuboCop 474 files / 0 offenses、Zeitwerk/eager load成功。辞書反映spec整理後は関連4例・全RSpec 862例・全RuboCop 474 files / 0 offenses。前sourceの874例・CI 480 filesとは別の実測。[旧domain結果](evidence/pr-followup/legacy-retire-attempt-1/result.md)、[spec整理結果](evidence/pr-followup/atomic-spec-attempt-2/result.md)。新head `b31e854` は6 workflow成功。backend test本体862 examples / 0 failures、backend RuboCop本体473 files / 0 offenses。[CI結果](evidence/pr-followup/ci-b31e854/result.md)。frontendは変更しておらず今回local再実行なし。

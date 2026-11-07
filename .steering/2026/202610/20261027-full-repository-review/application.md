@@ -587,3 +587,7 @@ runnerをUbuntu 24.04へ固定しRuby 3.3.8を維持、2 YAML parse成功。管�
 ## FR-034 旧domain削除（2026-11-07）
 
 利用者指示により旧4定数を削除し、現行Frame::Entryへ有効testを移管。GraphQL/ActiveRecord名は保持。関連RSpec 41、全RSpec 862、全RuboCop 474 files / 0 offenses、Zeitwerk/eager load成功。過去の互換維持は当時の履歴。
+
+## PR followup 実装結果（2026-11-07）
+
+`e5eab3e` で旧FrameEntry domainを削除し現行入口へ有効testを移管。`b31e854` で辞書反映specを4操作の直接describeと共通rollback検証へ整理した。関連testはそれぞれ41例、4例、各変更後の全RSpecは862例成功、全RuboCopは474 files / 0 offenses。旧sourceの874例・CI 480 filesは当時の履歴として保持する。新head `b31e854` は6 workflow成功。backend test本体862 examples / 0 failures、backend RuboCop本体473 files / 0 offenses。[CI結果](evidence/pr-followup/ci-b31e854/result.md)。評価Commandの所有者guard、GraphQL/ActiveRecord名と既存保留は保持。

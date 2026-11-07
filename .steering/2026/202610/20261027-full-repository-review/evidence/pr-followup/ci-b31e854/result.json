@@ -1,0 +1,31 @@
+{
+  "source_sha": "b31e8544b4e377872a4d88df443287c6407a3fef",
+  "backend_test": {
+    "run": 42355341410,
+    "job": 128352094121,
+    "url": "https://github.com/tumeda1992/nanitabe/actions/runs/42355341410",
+    "run_rspec": "success",
+    "no_changes": "skipped",
+    "examples": 862,
+    "failures": 0
+  },
+  "backend_rubocop": {
+    "run": 42355341389,
+    "job": 128352094096,
+    "url": "https://github.com/tumeda1992/nanitabe/actions/runs/42355341389",
+    "run_rubocop": "success",
+    "files": 473,
+    "offenses": 0
+  },
+  "local": {
+    "rspec_examples": 862,
+    "rubocop_files": 474,
+    "offenses": 0
+  },
+  "other_success": {
+    "frontend_test": 42355341283,
+    "frontend_lint": 42355341387,
+    "frontend_build": 42355341401,
+    "terraform_plan_prod": 42355341392
+  }
+}

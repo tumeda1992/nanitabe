@@ -27,3 +27,9 @@ feedback: Turbopackが一時copyからproject root外へ向くnode_modules symli
 ## 辞書反映specのsnapshot規約（2026-11-07）
 
 feedback: `testing.md` は期待値のインスタンス変数参照を禁止する。attempt1は関連/全RSpec成功後に規約不適合で停止しlint未実行。原因は既存specのsnapshot記法を移管時に再利用したこと。規約は既存文書から読め、設計変更や恒久知識の追加は不要。fixture生成後にnamed letを明示評価してsnapshotを固定し、attempt2で検証する。
+
+## PR followup記録のdocument-review（2026-11-07）
+
+現在の2実装commitと新local結果を旧source実測と区別し、旧domain廃止と現行入口・保留を照合。記法、指示対象、前版の履歴、公開情報、暫定性を確認。CIは実測待ちとして記載し、指摘なし。
+
+source `b31e854` のCI実測を追加後に文書を再照合。backend本体862例・RuboCop473 filesとlocal474 filesを区別し、6 workflow成功と過去結果の時点を明示。指摘なし。
