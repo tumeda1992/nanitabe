@@ -1,6 +1,6 @@
 require "rails_helper"
-require_relative "../../../../../../support/factories/user_repository"
-require_relative "../../../../../../support/factories/meal_repository"
+require_relative "../../../../../../../support/factories/user_repository"
+require_relative "../../../../../../../support/factories/meal_repository"
 
 RSpec.describe Business::Food::Meal::Frame::Entry::Usecase::UnassignMealCommand do
   let(:user_record) { find_or_create_user }
@@ -18,7 +18,7 @@ RSpec.describe Business::Food::Meal::Frame::Entry::Usecase::UnassignMealCommand 
 
   describe "#call" do
     context "with valid parameters" do
-      it "returns a FrameEntry::Root with meal_id nil" do
+      it "returns a Frame::Entry::Root with meal_id nil" do
         result = described_class.call(
           user_id: user_record.id,
           meal_frame_entry_id: meal_frame_entry.id,

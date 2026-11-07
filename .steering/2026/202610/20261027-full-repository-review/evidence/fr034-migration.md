@@ -40,3 +40,23 @@ pathはbackend/app/domain/business/food/meal/基準。参照検索はbackend/app
 旧入口の内部継承変更と他人削除拒否は今回の許容差分。旧定数・本人操作の返却classと属性・単一保存を維持し、旧Fillの現行委譲とFR-008認可を保持する。上記2026-11-02の検証は当時の記録であり、今回の再実測は新request/resultに記録する。
 
 README document-review（2026-11-06）: 全文と前版差分を通読し、内容・記法・指示対象・既存記述の保持・公開情報・暫定性を確認。現行/互換入口と旧返却class、削除前の利用確認を読者が辿れ、前版の外部利用確認条件も保持する。指摘なし。
+
+## 旧domain削除前の台帳（baseline 94623f6、2026-11-07）
+
+利用者の「いらない方消して」により旧 `Meal::FrameEntry` Root/Add/Fill/Remove の4定数と4file、旧Root返却class、旧Rootのunassign非公開をRETIREする。GraphQLのFrameEntry名、ActiveRecord `MealFrameEntry` とtable、現行 `Meal::Frame::Entry` はKEEP。
+
+| 旧構造・機能 | 分類・移管先 |
+| --- | --- |
+| 旧Root/Add/Fill/Removeと旧compat identity | RETIRE。現行Root/Add/Fill/RemoveをKEEP |
+| 旧Add 4、Fill 2、Remove 3例 | 現行specと重複のためRETIRE |
+| 旧path Unassign 3例 | 現行entry/usecaseへMOVE、require階層を適応 |
+| compat Root属性・変換・assign/set_id・4必須 | 現行root_specへMOVE |
+| compat Add単一保存・属性・private constructor | 現行Add specへMOVE |
+| compat Remove他人拒否・属性不変 | 現行Remove specへMOVE |
+| ownership namespace loop | 旧側RETIRE、現行5例KEEP |
+| 旧Fillの現行Root返却・保存 | 現行Fill specにKEEP |
+| food README・architecture例 | 現行domainへADAPT |
+
+上記は編集前の対応。過去の互換保持と実測は当時の履歴として残す。
+
+2026-11-07 document-review: food README・architecture例・findingと作業記録の変更前後を照合。現行入口と削除された旧domain、維持するGraphQL/ActiveRecord名、旧履歴の時点を明示し、記法・指示対象・公開情報・暫定性を確認。指摘なし。検証結果は新attemptへ記録する。

@@ -1,8 +1,8 @@
 # FR-034: 旧FrameEntryと現行Frame::Entryの実装が併存する
 
 - 優先度: P2
-- 採否: 採用
-- 対応状況: 再適用・検証完了
+- 採否: 旧domain削除を採用
+- 対応状況: 旧domain削除・現行coverage移管と検証完了
 - 振る舞い維持の適用枠: 要調査
 - 対象コミット: `a3982e9e777070915b2337fbcaa6cfdac032b3df`
 - 旧レビューとの対応: RV-016（現行コードで再確認）。
@@ -56,3 +56,9 @@ RuboCop3 files / 0 offenses、eager loadと旧継承関係、4file旧byte一致�
 ## 再適用（2026-11-06）
 
 旧入口を現行Commandへ委譲し旧Root返却class・本人属性・単一保存を保持。他人削除拒否と内部継承は許容差分、旧Fill/FR-008も保持。RSpec 78 examples / 0 failures、4 file RuboCop 0 offenses。[結果](../evidence/scope-repair/fr034-retain-attempt-1/result.md)。READMEのdocument-reviewは移行台帳に記録。
+
+## 旧domain削除（2026-11-07）
+
+利用者指示により旧4定数・旧返却classを廃止し、現行Frame::Entryへ一本化する。GraphQL/ActiveRecord名は保持。旧有効caseの移管先は[移行台帳](../evidence/fr034-migration.md)を参照。過去の互換維持は当時の履歴。
+
+関連RSpec 41 examples、全RSpec 862 examples、全RuboCop 474 files / 0 offenses。Zeitwerk/eager load成功、旧Business domain定数なし、現行定数とGraphQL別名を保持。[結果](../evidence/pr-followup/legacy-retire-attempt-1/result.md)。

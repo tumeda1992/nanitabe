@@ -88,3 +88,7 @@ GitHub Actionsのbackend RuboCop run `42195119635` / job `127816323328` とbacke
 管理request/system 29 examples、backend全RSpec 874 examples、全RuboCop 481 files / 0 offensesがローカルで成功。CI Backend TestはRuby setup・SQLite準備・RSpec本体成功、874 examples / 0 failures。CI Backend RubocopはRuby setup・本体成功、480 files / 0 offenses。CIとlocalのfiles数は別実測。[CI証拠](evidence/ci-followup/github-acea91a/result.md)。旧source `3d832f5` の2 offenseと旧headのSetup Ruby失敗は当時の履歴。FR-001認証機能は保留を維持し、変更はlint記法と既存stubに限る。
 
 記録head `07805b1c18b88265f1b0055cbd1708bfc62908ef` はsource `acea91a` とsteering外差分0。公開PRの[backend test run 42208656814](https://github.com/tumeda1992/nanitabe/actions/runs/42208656814) job 127861551957はSetup Ruby・SQLite準備・RSpec本体が成功、変更なし分岐はskip。[backend RuboCop run 42208656903](https://github.com/tumeda1992/nanitabe/actions/runs/42208656903) job 127861553570はSetup Ruby・RuboCop本体が成功。6 workflow全successを確認した。
+
+## FR-034 旧domain削除の検証（2026-11-07）
+
+旧4定数の廃止と現行case移管は[台帳](evidence/fr034-migration.md)を参照。関連RSpec 41、全RSpec 862、全RuboCop 474 files / 0 offenses、Zeitwerk/eager load成功。旧Business domain参照なし、残る14件はGraphQL別名。[結果](evidence/pr-followup/legacy-retire-attempt-1/result.md)。

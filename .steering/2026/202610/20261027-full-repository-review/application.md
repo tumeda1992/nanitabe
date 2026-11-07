@@ -583,3 +583,7 @@ runnerをUbuntu 24.04へ固定しRuby 3.3.8を維持、2 YAML parse成功。管�
 ## backend CI followupの公開検証（source acea91a）
 
 [CI Backend Test](https://github.com/tumeda1992/nanitabe/actions/runs/42208284773)はSetup Ruby・SQLite準備・RSpec本体が成功し874 examples / 0 failures。[CI Backend Rubocop](https://github.com/tumeda1992/nanitabe/actions/runs/42208286290)はSetup Ruby・RuboCop本体が成功し480 files / 0 offenses。いずれもUbuntu 24.04 / Ruby 3.3.8。ローカルは全RSpec874・RuboCop481 files / 0 offensesであり、CIのfile数と区別する。FR-001認証機能は保留のまま。
+
+## FR-034 旧domain削除（2026-11-07）
+
+利用者指示により旧4定数を削除し、現行Frame::Entryへ有効testを移管。GraphQL/ActiveRecord名は保持。関連RSpec 41、全RSpec 862、全RuboCop 474 files / 0 offenses、Zeitwerk/eager load成功。過去の互換維持は当時の履歴。

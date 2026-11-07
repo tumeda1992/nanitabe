@@ -183,5 +183,5 @@ Root に属性を追加するときは以下の2箇所も必ず連動して変�
 - `persist_from_xxx_root`（Root → DB の保存）
 
 やってしまいがちな失敗: `root.rb` に attribute を追加したが persist を更新し忘れ、属性が保存されない（エラーも出ない）。
-例: `FrameEntry::Root` に `meal_id` attribute を追加する際、`persist_from_food_meal_frame_entry_root` を更新しないと `meal_id` が DB に保存されない。
+例: `Business::Food::Meal::Frame::Entry::Root` に `meal_id` attribute を追加する際、`persist_from_food_meal_frame_entry_root` を更新しないと `meal_id` が DB に保存されない。
 

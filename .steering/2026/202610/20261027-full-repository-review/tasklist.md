@@ -313,16 +313,16 @@ DoD: 既存Rubyと認証仕様を保った限定5fileの修正で、local全RSpe
 
 ## 23. PR followup: 旧枠エントリdomainを削除し現行coverageへ集約する
 
-- [ ] baseline `94623f6`の旧4file/旧5spec/現行specをdesignの対比へ照合し、編集前に`evidence/fr034-migration.md`へ新時点の構造/機能台帳を追記する。
+- [x] baseline `94623f6`の旧4file/旧5spec/現行specをdesignの対比へ照合し、編集前に`evidence/fr034-migration.md`へ新時点の構造/機能台帳を追記する。
   利用者の「2:いらない方消して」により旧4定数・旧返却class・旧Rootのunassign非公開をRETIRE、現行の通常保存/認可と有効testをKEEP/MOVEとする。旧台帳・実測は上書きしない。
-- [ ] `backend/app/domain/business/food/meal/frame_entry/`のRoot/Add/Fill/Removeの4fileを削除する。現行`Business::Food::Meal::Frame::Entry`、GraphQLの`Mutations::Meal::FrameEntry`と`Types::Input::Meal::FrameEntry`、ActiveRecordの`MealFrameEntry`とtable名を維持する。
+- [x] `backend/app/domain/business/food/meal/frame_entry/`のRoot/Add/Fill/Removeの4fileを削除する。現行`Business::Food::Meal::Frame::Entry`、GraphQLの`Mutations::Meal::FrameEntry`と`Types::Input::Meal::FrameEntry`、ActiveRecordの`MealFrameEntry`とtable名を維持する。
   旧specのAdd4例/Fill2例/Remove3例は現行と重複するため削除し、旧pathのUnassign3例は`backend/spec/domain/business/food/meal/frame/entry/usecase/unassign_meal_command_spec.rb`へ全移動する。supportへのrequire_relativeを1階層深くし説明を現行Root名へ揃える。
-- [ ] 旧compatibility specから現行に必要な契約を移管する。新`backend/spec/domain/business/food/meal/frame/entry/root_spec.rb`へ全6属性/型変換・assign_meal・set_id初回成功/再設定拒否・必須4属性を残す。
+- [x] 旧compatibility specから現行に必要な契約を移管する。新`backend/spec/domain/business/food/meal/frame/entry/root_spec.rb`へ全6属性/型変換・assign_meal・set_id初回成功/再設定拒否・必須4属性を残す。
   現行Add specへ単一persist/DB一件/保存属性一致/private constructor、現行Remove specへ他人削除拒否/全attributes不変を追加してから旧compatibility specを削除する。
   現行ownership specは旧namespace loop分だけ除き、current5例を維持する。旧class identity/unassign非公開は削除許可に基づく廃止、旧Fillの現行Root返却/保存は現行Fillで保持する。
-- [ ] `backend/app/domain/business/food/README.md`の旧compat説明を現行domainの説明へ置換し、`backend/docs/ai_guideline/development_standard/application_architecture.md`の属性同期例を`Business::Food::Meal::Frame::Entry::Root`へ正す。
+- [x] `backend/app/domain/business/food/README.md`の旧compat説明を現行domainの説明へ置換し、`backend/docs/ai_guideline/development_standard/application_architecture.md`の属性同期例を`Business::Food::Meal::Frame::Entry::Root`へ正す。
   FR-034台帳/finding、README/application/coverageへ最新削除判断とcase移管の対応を記録し、過去の互換維持/取消/復帰は当時の履歴として保持する。文書をdocument-reviewへ通す。
-- [ ] 親Solをphysical ownerとするtest-runnerで`backend bundle exec rspec spec/domain/business/food/meal/frame/entry spec/graphql/mutation/meal/frame_entry`、`backend bundle exec rspec`、`backend bundle exec rubocop`、`backend bin/rails zeitwerk:check`を実行する。
+- [x] 親Solをphysical ownerとするtest-runnerで`backend bundle exec rspec spec/domain/business/food/meal/frame/entry spec/graphql/mutation/meal/frame_entry`、`backend bundle exec rspec`、`backend bundle exec rubocop`、`backend bin/rails zeitwerk:check`を実行する。
   test設定でeager loadし旧domain定数が定義されず現行Root/Commandが存在することを確認する。
   `rg -n 'Business::Food::Meal::FrameEntry|Meal::FrameEntry|FrameEntry::Root|meal/frame_entry' backend/app backend/spec backend/docs scripts .github`の結果を分類し、旧domain参照0と別の公開GraphQL/ActiveRecord名保持を確認する。`.steering`の旧履歴は消さない。
   共通契約の既存backend・`RAILS_ENV=test`・SQLiteだけを使用し、保護3file hash/mode、評価Command所有者guard、他保留、diff checkを確認する。結果を新request/attemptへ保存し、この削除/移管だけを追加commitする。
