@@ -108,3 +108,33 @@ URL を書かない指示は含まれておらず、直す必要はない。
 一方で、リポジトリ名を `tumeda1992/nanitabe` と誤記していた。
 `git remote -v` の origin は `setsumaru1992/nanitabe` である。
 Phase 7 の README 更新の task へ、修正を足した。
+
+<a id="iteration-0-record-4"></a>
+
+### 訂正: リポジトリ名は `tumeda1992/nanitabe` が正しかった
+
+2026-11-14 に、PR を作った後で分かった訂正である。
+
+#### 何を訂正するか
+
+[記録3](#iteration-0-record-3) の「反映と同時に見つけたこと」は、Design System の `tumeda1992/nanitabe` を誤記とし、`setsumaru1992/nanitabe` へ直す task を足した。
+Phase 7 でそのとおり直した。
+これは誤りであり、元の `tumeda1992/nanitabe` が正しかった。
+
+#### 根拠
+
+- `gh repo view` の `nameWithOwner` は `tumeda1992/nanitabe` である。
+- push の応答と PR #304 の URL も `github.com/tumeda1992/nanitabe` を指す。
+- origin の URL `setsumaru1992/nanitabe` は古い名前である。GitHub が今の名前へ転送しているため、push できていた。
+
+#### 原因
+
+リポジトリの今の名前を、手元の `git remote -v` だけで判断した。
+origin の URL は clone した時の名前のまま残り、GitHub 側で名前が変わっても更新されない。
+今の名前は、GitHub に問い合わせて確かめる必要があった。
+
+#### 直したもの
+
+- Design System の `project/README.md` の2か所と、`project/tokens.json` の `meta.repo` を `tumeda1992/nanitabe` に戻した。
+- キャンバスの `project/ds/nanitabe/tokens.json` を写し直し、`canvas.json` の Design System の記録を新しい版にした。
+- `tasklist.md` の Phase 7 の該当 task に訂正を追記した。過去の記述は書き換えていない。

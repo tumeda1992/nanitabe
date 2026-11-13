@@ -375,6 +375,7 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
   - [x] 適用前の注意を消す
   - [x] 写した commit と日付を更新する（2026-11-13 22:32 JST、`feature-297@414dfcd`）
   - [x] リポジトリ名を `setsumaru1992/nanitabe` へ直す（「これは何か」と「写した元と最新化」で `tumeda1992/nanitabe` と誤記している）
+    > 訂正（2026-11-14）: この task は誤りだった。リポジトリの今の名前は `tumeda1992/nanitabe` であり（`gh repo view`、PR #304 の URL）、origin の URL `setsumaru1992/nanitabe` は GitHub が今の名前へ転送している古い名前である。Design System の README と `tokens.json`、キャンバスの `tokens.json` の写しを `tumeda1992/nanitabe` に戻した。原因は `internal-records/task-design-discussion.md.topic-18.md` の記録4。
   - [x] 最新化の command を、squash merge の後も使える形へ変える
     > `git log --since="2026-11-13 22:32 +0900" -- …` とした。日付だけ（`--since=2026-11-13`）では git が今の時刻を補い、当日の commit が出ないことを実行して確かめたため、時刻まで書いた。
     > これに合わせ、`ui_design_management.md` の「README に書いた commit から」を「README に書いた写した日時から」へ直した（一意に導ける変更として報告）。
@@ -429,12 +430,13 @@ Design System の `rating-text` は `#b45309`（Tailwind v3 の amber-700）で�
 
 ## 完了後のaction（公開）
 
-- [ ] current branchをpushしてPRを作成する
+- [x] current branchをpushしてPRを作成する
   - [x] commit taskの結果としてlocal commitが実際に一件以上あることを確認する。一件もなければpush・PRを実行しない
   - [x] Phase 7 と Phase 8 で増えた `.steering/` の記録を commit する
   - [x] current branch が `feature-297` であることを確認する
-  - [ ] `git push -u origin feature-297`を実行する
-  - [ ] pluginのskills directory配下にある `scripts/github/create_or_get_pr.sh` を実行する
+  - [x] `git push -u origin feature-297`を実行する
+  - [x] pluginのskills directory配下にある `scripts/github/create_or_get_pr.sh` を実行する
+    > PR #304 を作った。本文に `Closes #297`、変更の要約、既知の制約（390px より狭い端末で期間ラベルが切れる）、確認していないこと（`/dishes` のチェック枠）を書いた。
     - issue #297 の作業が終わる merge であるため、PR は `Closes #297` を持つ
     - merge はユーザーが判断する。`main` への merge で本番へ適用される
 
