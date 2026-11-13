@@ -16,6 +16,13 @@ type FrameCardProps = {
   onDeleted: () => void;
   onAddSucceeded?: () => void;
   date?: string;
+  canDelete?: boolean;
+};
+
+const mealTypeMarkClass: Record<number, string> = {
+  [MEAL_TYPE.BREAKFAST]: 'bg-breakfast/15 text-breakfast-foreground',
+  [MEAL_TYPE.LUNCH]: 'bg-lunch/15 text-lunch-foreground',
+  [MEAL_TYPE.DINNER]: 'bg-dinner/15 text-dinner-foreground',
 };
 
 const mealTypeLabel: Record<number, string> = {
@@ -32,6 +39,7 @@ const FrameCard = ({
   onDeleted,
   onAddSucceeded,
   date,
+  canDelete = true,
 }: FrameCardProps) => {
   const label = mealTypeLabel[frameEntry.mealType] ?? '';
   const { removeMealFrameEntry, fillMealFrameEntry } = useMealFrame({
@@ -86,39 +94,34 @@ const FrameCard = ({
   return (
     <>
       <div
-        className="rounded-lg overflow-hidden border bg-muted/30 mb-1 cursor-pointer"
+        className="mb-1 cursor-pointer"
         data-testid={`frameCard-${frameEntry.id}`}
         onClick={handleCardClick}
       >
-        <div className="flex w-full">
-          {/* 左端カラーバー（枠用の識別色） */}
-          <div className="w-1 shrink-0 bg-violet-400" />
-
-          <div className="flex-1 px-2 py-1.5 min-w-0">
-            <div className="flex items-center gap-1">
-              <span className="text-xs text-violet-600 shrink-0">枠</span>
-              <span className="font-medium text-sm leading-snug flex-1 truncate text-muted-foreground">
-                {frameEntry.mealFrameName}
-              </span>
-              {label && (
-                <span className="text-[10px] font-bold shrink-0 px-1 rounded bg-muted text-muted-foreground">
-                  {label}
-                </span>
-              )}
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDelete();
-                }}
-                aria-label="枠エントリ削除"
-                data-testid={`frameCard-deleteBtn-${frameEntry.id}`}
-                className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors [&>svg]:size-3 shrink-0"
-              >
-                <Trash2 />
-              </button>
-            </div>
-          </div>
+        <div className="flex w-full items-center gap-2 pl-1">
+          {label && (
+            <span className={`flex size-[22px] shrink-0 items-center justify-center rounded-md text-[11px] font-bold ${mealTypeMarkClass[frameEntry.mealType] ?? 'bg-muted text-muted-foreground'}`}>
+              {label}
+            </span>
+          )}
+          <span className="text-xs text-violet-600 shrink-0">枠</span>
+          <span className="flex-1 min-w-0 py-2.5 text-sm font-medium leading-snug truncate text-muted-foreground">
+            {frameEntry.mealFrameName}
+          </span>
+          {canDelete && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDelete();
+              }}
+              aria-label="枠エントリ削除"
+              data-testid={`frameCard-deleteBtn-${frameEntry.id}`}
+              className="inline-flex size-11 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors [&>svg]:size-5"
+            >
+              <Trash2 />
+            </button>
+          )}
         </div>
       </div>
       <FullScreenModal title="食事登録">

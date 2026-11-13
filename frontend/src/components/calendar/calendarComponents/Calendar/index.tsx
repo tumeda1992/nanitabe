@@ -70,7 +70,7 @@ export default (props: Props) => {
       })}
 
       {/* DateCard を縦に並べる */}
-      <div className="flex flex-col gap-1.5 px-2 py-2">
+      <div className="flex flex-col">
         {dateMealsList.map(({ date, dayLabel, meals, frameEntries }, dayIndex) => (
           <div
             key={`key_${dayIndex}`}

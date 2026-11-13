@@ -29,40 +29,36 @@ type MealCardProps = {
   canAnythingExceptDisplayDishName: boolean;
   calendarModeChangers: any;
   startSwappingMealsMode: (date: Date) => void;
+  isToday?: boolean;
 };
 
 type MealConfig = {
   label: string;
-  bg: string;
-  bar: string;
+  mark: string;
   text: string;
 };
 
 const mealConfig: Record<number, MealConfig> = {
   [MEAL_TYPE.LUNCH]: {
     label: '昼',
-    bg: 'bg-lunch-bg',
-    bar: 'bg-lunch',
+    mark: 'bg-lunch/15',
     text: 'text-lunch-foreground',
   },
   [MEAL_TYPE.DINNER]: {
     label: '夜',
-    bg: 'bg-dinner-bg',
-    bar: 'bg-dinner',
+    mark: 'bg-dinner/15',
     text: 'text-dinner-foreground',
   },
   [MEAL_TYPE.BREAKFAST]: {
     label: '朝',
-    bg: 'bg-breakfast-bg',
-    bar: 'bg-breakfast',
+    mark: 'bg-breakfast/15',
     text: 'text-breakfast-foreground',
   },
 };
 
 const defaultMealConfig: MealConfig = {
   label: '',
-  bg: 'bg-card',
-  bar: 'bg-muted',
+  mark: 'bg-muted',
   text: 'text-muted-foreground',
 };
 
@@ -86,7 +82,7 @@ const QuickBtn = ({
       }}
       title={label}
       aria-label={label}
-      className={`inline-flex size-7 items-center justify-center rounded-md transition-colors [&>svg]:size-3 ${
+      className={`inline-flex size-11 items-center justify-center rounded-md transition-colors [&>svg]:size-5 ${
         active
           ? 'text-foreground'
           : 'text-muted-foreground hover:text-foreground hover:bg-black/5'
@@ -121,7 +117,7 @@ const ActionBtn = ({
       className={`flex flex-col items-center justify-center gap-0.5 rounded-md py-2 transition-colors text-[10px] font-medium leading-none ${
         danger
           ? 'text-destructive hover:bg-destructive/10'
-          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+          : 'text-zinc-700 hover:bg-background hover:text-foreground'
       } ${disabled ? 'opacity-30 pointer-events-none' : ''}`}
     >
       <span className="[&>svg]:size-4">{icon}</span>
@@ -136,6 +132,7 @@ const MealCard = ({
   canAnythingExceptDisplayDishName,
   calendarModeChangers,
   startSwappingMealsMode,
+  isToday = false,
 }: MealCardProps) => {
   const { dish } = meal;
   const cfg = mealConfig[meal.mealType] ?? defaultMealConfig;
@@ -213,127 +210,131 @@ const MealCard = ({
   const hasEvaluation =
     dish.evaluationScore != null && dish.evaluationScore > 0;
   const hasSource = !!dishSourceRelation?.sourceName;
-  const hasSecondRow = hasEvaluation || hasSource;
 
   const sourceText = (() => {
     if (!dishSourceRelation?.sourceName) return null;
     const name = dishSourceRelation.sourceName;
     const page = dishSourceRelation.recipeBookPage;
-    const displayName = name.length <= 10 ? name : `${name.slice(0, 10)}…`;
-    return page ? `${displayName} P${page}` : displayName;
+    return page ? `${name} P${page}` : name;
   })();
+
+  const showEvaluateButton = isToday && canAnythingExceptDisplayDishName;
 
   return (
     <>
       <div
-        className={`rounded-lg overflow-hidden border ${cfg.bg} mb-1 cursor-pointer`}
+        className="mb-1 cursor-pointer"
         data-testid={`mealCard-${meal.id}`}
         onClick={() => setActionsOpen(true)}
       >
-      <div className="flex w-full">
-        {/* 左端カラーバー */}
-        <div className={`w-1 shrink-0 ${cfg.bar}`} />
+        <div className="flex w-full items-start gap-2 pl-1">
+          {/* 昼夜の印 */}
+          <span
+            className={`mt-1.5 flex size-[22px] shrink-0 items-center justify-center rounded-md text-[11px] font-bold ${cfg.mark} ${cfg.text}`}
+          >
+            {cfg.label}
+          </span>
 
-        <div className="flex-1 px-2 py-1.5 min-w-0">
-          {/* 枠名ラベル（料理名の上に薄グレーで表示） */}
-          {meal.mealFrameName && (
-            <div
-              className="text-[10px] text-muted-foreground truncate mb-0.5"
-              data-testid={`mealCard-frameName-${meal.id}`}
-            >
-              {meal.mealFrameName}
-            </div>
-          )}
-
-          {/* 1行目: カテゴリ + 料理名 + 昼夜ラベル + クイックアイコン */}
-          <div className="flex items-center gap-1">
-            <CategoryIcon
-              mealPosition={dish.mealPosition}
-              dishSourceType={dishSourceRelation?.type}
-              className={`shrink-0 ${cfg.text}`}
-            />
-            <span className="font-medium text-sm leading-snug flex-1 truncate">
-              {dish.name}
-            </span>
-            {cfg.label && (
-              <span
-                className={`text-[10px] font-bold shrink-0 px-1 rounded ${cfg.bg} ${cfg.text}`}
+          <div className="flex-1 py-1.5 min-w-0">
+            {/* 枠名ラベル（料理名の上に薄グレーで表示） */}
+            {meal.mealFrameName && (
+              <div
+                className="text-[10px] text-muted-foreground truncate mb-0.5"
+                data-testid={`mealCard-frameName-${meal.id}`}
               >
-                {cfg.label}
-              </span>
+                {meal.mealFrameName}
+              </div>
             )}
-            {/* クイックアイコン（常時表示） */}
-            <div className="flex items-center shrink-0 -mr-1">
-              <QuickBtn
-                icon={<UtensilsCrossed />}
-                label="食事編集"
-                onClick={() => EditMealModal.openModal()}
-              />
-              <QuickBtn
-                icon={
-                  <Star
-                    className={
-                      hasEvaluation ? 'fill-amber-400 text-amber-400' : ''
-                    }
-                  />
-                }
-                label="評価"
-                onClick={() => EvaluateDishModal.openModal()}
-              />
-              {canAnythingExceptDisplayDishName && (
-                <QuickBtn
-                  icon={<MoreHorizontal />}
-                  label="その他のアクション"
-                  onClick={() => setActionsOpen((v) => !v)}
-                  active={actionsOpen}
-                  data-testid={`mealCard-moreBtn-${meal.id}`}
-                />
-              )}
-            </div>
-          </div>
 
-          {/* 2行目: 評価 + レシピ元 */}
-          {hasSecondRow && (
-            <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
-              {hasEvaluation && (
+            {/* 1行目: 区分アイコン + 料理名 + 点数 */}
+            <div className="flex items-start gap-1.5">
+              <CategoryIcon
+                mealPosition={dish.mealPosition}
+                dishSourceType={dishSourceRelation?.type}
+                className={`shrink-0 ${isToday ? 'mt-[7px]' : 'mt-[3px]'} ${cfg.text}`}
+              />
+              <span
+                className={
+                  isToday
+                    ? 'min-w-0 flex-1 break-words text-xl font-bold leading-snug text-foreground'
+                    : 'min-w-0 flex-1 break-words text-sm font-medium leading-snug text-foreground'
+                }
+              >
+                {dish.name}
+              </span>
+              {!isToday && hasEvaluation && (
                 <span
-                  className="inline-flex items-center gap-0.5 text-amber-500 shrink-0"
+                  className="inline-flex items-center gap-0.5 text-xs text-amber-700 shrink-0"
                   data-testid={`mealCard-evaluation-${meal.id}`}
                 >
                   <Star className="size-3 fill-current" />
                   {dish.evaluationScore}
                 </span>
               )}
-              {hasSource && (
-                <span
-                  className="truncate"
-                  data-testid={`mealCard-source-${meal.id}`}
-                >
-                  {sourceText}
-                </span>
-              )}
+            </div>
+
+            {/* レシピ元 */}
+            {hasSource && (
+              <div
+                className="mt-0.5 text-xs text-zinc-700 break-words"
+                data-testid={`mealCard-source-${meal.id}`}
+              >
+                {sourceText}
+              </div>
+            )}
+
+            {/* 料理コメント */}
+            {dish.comment && (
+              <p className="mt-0.5 text-xs text-muted-foreground leading-snug">
+                {dish.comment}
+              </p>
+            )}
+
+            {/* 食事コメント */}
+            {meal.comment && (
+              <p className="mt-0.5 text-xs text-muted-foreground leading-snug">
+                {meal.comment}
+              </p>
+            )}
+
+            {/* 今日: 評価ボタン */}
+            {showEvaluateButton && (
+              <button
+                type="button"
+                aria-label="評価"
+                className="mt-1.5 inline-flex h-11 items-center gap-1 rounded-lg border border-border bg-background px-3 text-sm font-medium text-foreground"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  EvaluateDishModal.openModal();
+                }}
+              >
+                {hasEvaluation ? (
+                  `★${dish.evaluationScore} 評価を変更`
+                ) : (
+                  <>
+                    <Star className="size-4" />
+                    評価する
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+
+          {canAnythingExceptDisplayDishName && (
+            <div className="shrink-0">
+              <QuickBtn
+                icon={<MoreHorizontal />}
+                label="その他のアクション"
+                onClick={() => setActionsOpen((v) => !v)}
+                active={actionsOpen}
+              />
             </div>
           )}
-
-          {/* 料理コメント */}
-          {dish.comment && (
-            <p className="mt-0.5 text-xs text-muted-foreground leading-snug line-clamp-2">
-              {dish.comment}
-            </p>
-          )}
-
-          {/* 食事コメント */}
-          {meal.comment && (
-            <p className="mt-0.5 text-xs text-muted-foreground/70 italic leading-snug">
-              {meal.comment}
-            </p>
-          )}
         </div>
-      </div>
 
       {/* アクション展開エリア */}
       {actionsOpen && (
-        <div className="border-t border-border/30 bg-background/60 px-2 py-1.5">
+        <div className="mb-2 rounded-lg bg-muted p-1">
           <div className="grid grid-cols-4 gap-0.5">
             <ActionBtn
               icon={<UtensilsCrossed />}
