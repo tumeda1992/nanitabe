@@ -23,7 +23,7 @@ Design System の `tokens.json` とキャンバスの `.dc.html` は Claude Desi
 
 - MUST: 決まったことはリポジトリへ戻す。キャンバス上の変更は、戻すまで確定ではない。
 - キャンバスの確定案をコードへ移す時は、確定案のボードから値（色、余白、面、配置）を書き出し、実装の入力にする。「ボードのとおり」と参照するだけで渡さない。移した後は、ボードと同じ幅で画面を撮り、ボードと並べて差を確かめる。
-- 作業場はリポジトリから作る。古くなっていたら、Design System の README に書いた commit から `git log` を見て最新化する。常に同期する努力はしない。
+- 作業場はリポジトリから作る。古くなっていたら、Design System の README に書いた写した日時から `git log` を見て最新化する。常に同期する努力はしない。
 - 色の値を書く時（作業場のトークン、画面を確かめる時の期待値）は、Tailwind の色名から値を思い出して書かない。Tailwind v4 の定義（`node_modules/tailwindcss/theme.css`）か、ブラウザで計算された値から取る。同じ色名でも v3 と v4 では値が違う。例えば `amber-700` は v3 では `#b45309`、v4 では `oklch(55.5% 0.163 48.998)`（計算値 `rgb(187, 77, 0)`）である。
 - Claude Design でこのリポジトリの画面を作る時と考える時は、Design System として「なにたべ Design System」（https://claude.ai/artifact/THxSKecmzSyaDHnycbDAAy）を使う。何を置くかは、その README に従う。
 - 他のデザイン管理の仕組みへ移る時は、リポジトリを入力にする。変換の仕方は、移ることが決まった時に検討する。
