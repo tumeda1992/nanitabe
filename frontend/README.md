@@ -19,6 +19,7 @@ Next.js(React) + Apollo + Tailwind CSS(v4) 構成
 - `src/app/tailwind-output.css` は生成物（gitignore済み）。`layout.tsx` で `import './tailwind-output.css'` としてインポート
 - カラーユーティリティ（`bg-background`, `text-foreground` 等）を使うには `src/app/globals.css` の `@theme inline { --color-xxx: hsl(var(--xxx)) }` が必須
 - `@import "tailwindcss/preflight"` はDocker container内でメモリ超過によりkill（exit 137）されるため使用禁止。`button` 等のブラウザデフォルトスタイルリセットは `globals.css` の `@layer base { button { border: none; background: transparent; } }` で個別対処する
+  - preflight がないことで class の書き方に生じる注意（`box-border`、リンクの色と下線、`svg` の揃え）と、`src/components/base/base.css` の文字色の扱いは `docs/ai_guideline/development_standard/global_css.md` を参照
 - Tailwind のビルドと watch の特性（`--watch=always` が必要な理由、tree-shake、反映の遅延、再コンパイル時のメモリ膨張）は `docs/troubleshooting/tailwind/build_and_watch.md` を参照
 - ローカルの Docker コンテナが壊れたときの症状と復旧手順は `docs/ai_guideline/development_standard/docker.local.md` を参照
 
