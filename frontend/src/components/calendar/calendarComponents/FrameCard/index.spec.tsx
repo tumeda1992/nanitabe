@@ -74,6 +74,51 @@ describe('<FrameCard>', () => {
     });
   });
 
+  describe('操作中の表示', () => {
+    it('canDelete=false のとき削除ボタンが出ないこと', () => {
+      renderWithApollo(
+        <FrameCard
+          frameEntry={buildFrameEntry()}
+          onDeleted={jest.fn()}
+          canDelete={false}
+        />,
+      );
+      expect(screen.queryByTestId('frameCard-deleteBtn-1')).not.toBeInTheDocument();
+    });
+
+    it('枠線と背景色がなく、昼夜の印と「枠」が出ること', () => {
+      renderWithApollo(
+        <FrameCard frameEntry={buildFrameEntry()} onDeleted={jest.fn()} />,
+      );
+      const root = screen.getByTestId('frameCard-1');
+      expect(root).not.toHaveClass('border');
+      expect(root).not.toHaveClass('bg-muted/30');
+      expect(screen.getByText('夜')).toBeInTheDocument();
+      expect(screen.getByText('枠')).toBeInTheDocument();
+    });
+
+    it('昼夜の印が食事の行と同じ色であること', () => {
+      renderWithApollo(
+        <FrameCard
+          frameEntry={buildFrameEntry({ mealType: MEAL_TYPE.LUNCH })}
+          onDeleted={jest.fn()}
+        />,
+      );
+      const mark = screen.getByText('昼');
+      expect(mark).toHaveClass('bg-lunch/15');
+      expect(mark).toHaveClass('text-lunch-foreground');
+    });
+
+    it('夜の印が bg-dinner/15 text-dinner-foreground であること', () => {
+      renderWithApollo(
+        <FrameCard frameEntry={buildFrameEntry()} onDeleted={jest.fn()} />,
+      );
+      const mark = screen.getByText('夜');
+      expect(mark).toHaveClass('bg-dinner/15');
+      expect(mark).toHaveClass('text-dinner-foreground');
+    });
+  });
+
   describe('機能テスト', () => {
     it('削除ボタンタップで removeMealFrameEntry mutation が呼ばれること', async () => {
       const frameEntry = buildFrameEntry({ id: 3 });

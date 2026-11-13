@@ -1,6 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
-import style from './AddMealIcon.module.scss';
+import { Plus } from 'lucide-react';
 import useFullScreenModal from '../../../common/modal/useFullScreenModal';
 import AddMealTabs from './AddMealTabs';
 import { buildISODateString } from '../../../../features/utils/dateUtils';
@@ -24,10 +23,12 @@ export default (props: Props) => {
     <>
       <FullScreenModalOpener>
         <div
-          className={classnames(style['icon'], style['add-meal-icon'])}
+          className="flex h-[52px] w-11 items-center justify-center cursor-pointer"
           data-testid="addMealIconOpener"
         >
-          +
+          <span className="flex size-8 items-center justify-center rounded-lg bg-muted text-foreground">
+            <Plus className="size-4" />
+          </span>
         </div>
       </FullScreenModalOpener>
       <FullScreenModal title="食事登録">

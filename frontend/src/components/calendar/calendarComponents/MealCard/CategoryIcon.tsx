@@ -82,7 +82,7 @@ const CategoryIcon = ({
     <span
       className={`inline-flex items-center ${colorClass}${className ? ` ${className}` : ''}`}
     >
-      <span className="size-3.5 shrink-0">{icon}</span>
+      <span className="size-3.5 shrink-0 [&>svg]:block [&>svg]:size-full">{icon}</span>
     </span>
   );
 };

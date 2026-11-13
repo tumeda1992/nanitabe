@@ -39,20 +39,186 @@ const baseProps = {
 
 describe('<MealCard>', () => {
   describe('表示テスト', () => {
-    it('昼食の場合 bg-lunch-bg クラスが適用されること', () => {
+    it('昼食の場合、昼の印と text-lunch-foreground が適用され、root に背景色がないこと', () => {
       const meal = buildMeal({ mealType: MEAL_TYPE.LUNCH });
       renderWithApollo(<MealCard {...baseProps} meal={meal} />);
-      expect(screen.getByTestId(`mealCard-${meal.id}`)).toHaveClass(
-        'bg-lunch-bg',
+      const mark = screen.getByText('昼');
+      expect(mark).toHaveClass('text-lunch-foreground');
+      const root = screen.getByTestId(`mealCard-${meal.id}`);
+      expect(root).not.toHaveClass('bg-lunch-bg');
+      expect(root).not.toHaveClass('border');
+    });
+
+    it('夕食の場合、夜の印と text-dinner-foreground が適用され、root に背景色がないこと', () => {
+      const meal = buildMeal({ mealType: MEAL_TYPE.DINNER });
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      expect(screen.getByText('夜')).toHaveClass('text-dinner-foreground');
+      expect(screen.getByTestId(`mealCard-${meal.id}`)).not.toHaveClass(
+        'bg-dinner-bg',
       );
     });
 
-    it('夕食の場合 bg-dinner-bg クラスが適用されること', () => {
-      const meal = buildMeal({ mealType: MEAL_TYPE.DINNER });
+    it('11文字以上のレシピ元が切り詰められず、ページが続くこと', () => {
+      const meal = buildMeal({
+        dish: {
+          ...buildMeal().dish,
+          dishSourceRelation: {
+            type: 1,
+            sourceName: 'オレンジページ2024年5月号',
+            dishSourceId: 1,
+            recipeBookPage: 42,
+            recipeWebsiteUrl: null,
+            recipeSourceMemo: null,
+          },
+        },
+      });
       renderWithApollo(<MealCard {...baseProps} meal={meal} />);
-      expect(screen.getByTestId(`mealCard-${meal.id}`)).toHaveClass(
-        'bg-dinner-bg',
+      expect(
+        screen.getByTestId(`mealCard-source-${meal.id}`),
+      ).toHaveTextContent('オレンジページ2024年5月号 P42');
+    });
+
+    it('レシピ元が text-zinc-700 であること', () => {
+      const meal = buildMeal({
+        dish: {
+          ...buildMeal().dish,
+          dishSourceRelation: {
+            type: 1,
+            sourceName: 'きょうの料理',
+            dishSourceId: 1,
+            recipeBookPage: 42,
+            recipeWebsiteUrl: null,
+            recipeSourceMemo: null,
+          },
+        },
+      });
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      expect(screen.getByTestId(`mealCard-source-${meal.id}`)).toHaveClass(
+        'text-zinc-700',
       );
+    });
+
+    it('食事コメントが薄くない text-muted-foreground であること', () => {
+      const meal = buildMeal({ comment: '食事コメント' });
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      const el = screen.getByText('食事コメント');
+      expect(el).toHaveClass('text-muted-foreground');
+      expect(el).not.toHaveClass('text-muted-foreground/70');
+    });
+
+    it('コメントに line-clamp-2 と italic がないこと', () => {
+      const meal = buildMeal({
+        comment: '食事コメント',
+        dish: { ...buildMeal().dish, comment: '料理コメント' },
+      });
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      expect(screen.getByText('料理コメント')).not.toHaveClass('line-clamp-2');
+      expect(screen.getByText('食事コメント')).not.toHaveClass('italic');
+    });
+
+    it('今日以外の日に「評価」のボタンがないこと', () => {
+      renderWithApollo(<MealCard {...baseProps} meal={buildMeal()} />);
+      expect(screen.queryByLabelText('評価')).not.toBeInTheDocument();
+    });
+
+    it('点数が text-amber-700 であること', () => {
+      const meal = buildMeal({ dish: { ...buildMeal().dish, evaluationScore: 4 } });
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      expect(screen.getByTestId(`mealCard-evaluation-${meal.id}`)).toHaveClass(
+        'text-amber-700',
+      );
+    });
+
+    it('操作欄が rounded-lg bg-muted の面で、border-t がないこと', async () => {
+      const meal = buildMeal();
+      renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+      await userEvent.click(screen.getByTestId(`mealCard-${meal.id}`));
+      const panel = screen.getByText('削除').closest('.bg-muted') as HTMLElement;
+      expect(panel).toHaveClass('rounded-lg');
+      expect(panel).not.toHaveClass('border-t');
+    });
+
+    it('区分アイコンの上の余白が、今日以外は mt-[3px]、今日は mt-[7px] であること', () => {
+      renderWithApollo(<MealCard {...baseProps} meal={buildMeal()} />);
+      const outer = screen
+        .getByTestId('mealCard-10')
+        .querySelector('svg')!
+        .closest('span.inline-flex') as HTMLElement;
+      expect(outer).toHaveClass('mt-[3px]');
+      expect(outer).not.toHaveClass('mt-[7px]');
+    });
+
+    it('今日の区分アイコンの上の余白が mt-[7px] であること', () => {
+      renderWithApollo(<MealCard {...baseProps} meal={buildMeal()} isToday />);
+      const outer = screen
+        .getByTestId('mealCard-10')
+        .querySelector('svg')!
+        .closest('span.inline-flex') as HTMLElement;
+      expect(outer).toHaveClass('mt-[7px]');
+    });
+
+    it('常時表示の「食事編集」のボタンがないこと', () => {
+      renderWithApollo(<MealCard {...baseProps} meal={buildMeal()} />);
+      expect(screen.queryByLabelText('食事編集')).not.toBeInTheDocument();
+    });
+
+    describe('今日の食事', () => {
+      it('未評価なら「評価する」と出ること', () => {
+        renderWithApollo(<MealCard {...baseProps} meal={buildMeal()} isToday />);
+        expect(screen.getByLabelText('評価')).toHaveTextContent('評価する');
+      });
+
+      it('評価ボタンが線の面で、未評価なら星アイコンが付くこと', () => {
+        renderWithApollo(<MealCard {...baseProps} meal={buildMeal()} isToday />);
+        const btn = screen.getByLabelText('評価');
+        expect(btn).toHaveClass('border');
+        expect(btn).toHaveClass('bg-background');
+        expect(btn.querySelector('svg')).not.toBeNull();
+      });
+
+      it('評価済みの評価ボタンに星アイコンがないこと', () => {
+        const meal = buildMeal({
+          dish: { ...buildMeal().dish, evaluationScore: 4 },
+        });
+        renderWithApollo(<MealCard {...baseProps} meal={meal} isToday />);
+        expect(screen.getByLabelText('評価').querySelector('svg')).toBeNull();
+      });
+
+      it('評価済みなら「★{score} 評価を変更」と出ること', () => {
+        const meal = buildMeal({
+          dish: { ...buildMeal().dish, evaluationScore: 4 },
+        });
+        renderWithApollo(<MealCard {...baseProps} meal={meal} isToday />);
+        expect(screen.getByLabelText('評価')).toHaveTextContent('★4 評価を変更');
+      });
+
+      it('料理名が text-xl font-bold であること', () => {
+        renderWithApollo(<MealCard {...baseProps} meal={buildMeal()} isToday />);
+        const name = screen.getByText('生姜焼き');
+        expect(name).toHaveClass('text-xl');
+        expect(name).toHaveClass('font-bold');
+      });
+
+      it('押すと評価モーダルが開き、操作欄は開かないこと', async () => {
+        renderWithApollo(<MealCard {...baseProps} meal={buildMeal()} isToday />);
+        await userEvent.click(screen.getByLabelText('評価'));
+        expect(
+          document.querySelectorAll('.star-floating-half-click-target').length,
+        ).toBeGreaterThan(0);
+        expect(screen.queryByText('削除')).not.toBeInTheDocument();
+      });
+
+      it('canAnythingExceptDisplayDishName=false のとき出ないこと', () => {
+        renderWithApollo(
+          <MealCard
+            {...baseProps}
+            meal={buildMeal()}
+            isToday
+            canAnythingExceptDisplayDishName={false}
+          />,
+        );
+        expect(screen.queryByLabelText('評価')).not.toBeInTheDocument();
+      });
     });
 
     it('料理名が表示されること', () => {
@@ -309,7 +475,7 @@ describe('<MealCard>', () => {
     describe('評価モーダルの★タップ', () => {
       it('★4右半分を1回タップすると塗られた星が4になること', async () => {
         const meal = buildMeal();
-        renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+        renderWithApollo(<MealCard {...baseProps} meal={meal} isToday />);
         await userEvent.click(screen.getByLabelText('評価'));
         const targets = document.querySelectorAll(
           '.star-floating-half-click-target',
@@ -320,7 +486,7 @@ describe('<MealCard>', () => {
 
       it('同じタップでアクション展開エリアが開かないこと', async () => {
         const meal = buildMeal();
-        renderWithApollo(<MealCard {...baseProps} meal={meal} />);
+        renderWithApollo(<MealCard {...baseProps} meal={meal} isToday />);
         await userEvent.click(screen.getByLabelText('評価'));
         const targets = document.querySelectorAll(
           '.star-floating-half-click-target',
@@ -344,7 +510,7 @@ describe('<MealCard>', () => {
               >
                 {`rerender-${tick}`}
               </button>
-              <MealCard {...baseProps} meal={meal} />
+              <MealCard {...baseProps} meal={meal} isToday />
             </div>
           );
         };

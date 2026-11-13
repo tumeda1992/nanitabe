@@ -59,14 +59,14 @@ const CalendarHeader = ({
 
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto max-w-7xl px-3 py-2">
-        <div className="flex items-center justify-between gap-2">
+      <div className="mx-auto max-w-7xl px-1.5 py-1">
+        <div className="flex items-center justify-between">
           {/* 左: 前後ナビ + 今週/今月ボタン */}
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center">
             <Button
               variant="ghost"
               size="icon"
-              className="size-8"
+              className="size-11"
               onClick={refreshToPrev}
               aria-label={isWeek ? '前の週' : '前の月'}
             >
@@ -75,15 +75,15 @@ const CalendarHeader = ({
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 px-2 text-xs font-medium"
+              className="box-border h-11 min-w-11 px-1 text-xs font-medium"
               asChild
             >
-              <Link href={todayHref}>{isWeek ? '今週' : '今月'}</Link>
+              <Link href={todayHref} className="text-foreground no-underline">{isWeek ? '今週' : '今月'}</Link>
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="size-8"
+              className="size-11"
               onClick={refreshToNext}
               aria-label={isWeek ? '次の週' : '次の月'}
             >
@@ -97,26 +97,26 @@ const CalendarHeader = ({
           </span>
 
           {/* 右: ビュー切替 + メニュー */}
-          <div className="flex items-center gap-0.5">
+          <div className="flex items-center">
             <Button
               variant={isWeek ? 'secondary' : 'ghost'}
               size="icon"
-              className="size-8"
+              className="size-11"
               asChild
               aria-label="週間ビュー"
             >
-              <Link href={weekViewHref}>
+              <Link href={weekViewHref} className="text-foreground no-underline">
                 <CalendarRange className="size-4" />
               </Link>
             </Button>
             <Button
               variant={!isWeek ? 'secondary' : 'ghost'}
               size="icon"
-              className="size-8"
+              className="size-11"
               asChild
               aria-label="月間ビュー"
             >
-              <Link href={monthViewHref}>
+              <Link href={monthViewHref} className="text-foreground no-underline">
                 <CalendarDays className="size-4" />
               </Link>
             </Button>
@@ -126,7 +126,7 @@ const CalendarHeader = ({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="size-8"
+                  className="size-11"
                   aria-label="メニュー"
                   data-testid="calendarMenu"
                 >

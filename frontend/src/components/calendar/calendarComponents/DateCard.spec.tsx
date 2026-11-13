@@ -4,14 +4,6 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import DateCard from './DateCard';
 import renderWithApollo from '../../specHelper/renderWithApollo';
-import { registerQueryHandler } from '../../../lib/graphql/specHelper/mockServer';
-import {
-  DishEffortLevelsDocument,
-  ExistingDishesForRegisteringWithMealDocument,
-  DishSourcesDocument,
-  MealFramesDocument,
-  MealFramePatternsDocument,
-} from '../../../lib/graphql/generated/graphql';
 
 const buildMeal = (overrides = {}) => ({
   id: 1,
@@ -74,14 +66,14 @@ describe('<DateCard>', () => {
       renderWithApollo(<DateCard {...baseProps} date={saturday} dayLabel="土" />);
       // 日付番号に青色クラスが付くこと
       const dateText = screen.getByText('7');
-      expect(dateText).toHaveClass('text-blue-500');
+      expect(dateText).toHaveClass('text-blue-600');
     });
 
     it('日曜日に赤色クラスが付くこと', () => {
       const sunday = new Date(2026, 2, 8); // 2026-03-08 is Sunday
       renderWithApollo(<DateCard {...baseProps} date={sunday} dayLabel="日" />);
       const dateText = screen.getByText('8');
-      expect(dateText).toHaveClass('text-red-500');
+      expect(dateText).toHaveClass('text-red-600');
     });
 
     it('料理名が表示されること', () => {
@@ -102,21 +94,55 @@ describe('<DateCard>', () => {
       expect(screen.queryByTestId('dateCard-addMeal')).not.toBeInTheDocument();
     });
 
-    it('meals が空 かつ isDisplayCalendarMode=true のとき点線の追加エリアが表示されること', () => {
-      renderWithApollo(
-        <DateCard {...baseProps} meals={[]} isDisplayCalendarMode={true} />,
-      );
-      expect(screen.getByTestId('dateCard-emptyMealArea')).toBeInTheDocument();
+    it('食事も枠もない日に「未定」が出て、点線の追加エリアがないこと', () => {
+      renderWithApollo(<DateCard {...baseProps} meals={[]} frameEntries={[]} />);
+      expect(screen.getByTestId('dateCard-undecided')).toBeInTheDocument();
+      expect(screen.queryByTestId('dateCard-emptyMealArea')).not.toBeInTheDocument();
     });
 
-    it('meals が存在するとき点線の追加エリアが表示されないこと', () => {
-      const meals = [buildMeal()];
+    it('食事がある日に「未定」が出ないこと', () => {
+      renderWithApollo(<DateCard {...baseProps} meals={[buildMeal()]} />);
+      expect(screen.queryByTestId('dateCard-undecided')).not.toBeInTheDocument();
+    });
+
+    it('枠がある日に「未定」が出ないこと', () => {
       renderWithApollo(
-        <DateCard {...baseProps} meals={meals} isDisplayCalendarMode={true} />,
+        <DateCard {...baseProps} frameEntries={[buildFrameEntry()]} />,
       );
-      expect(
-        screen.queryByTestId('dateCard-emptyMealArea'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId('dateCard-undecided')).not.toBeInTheDocument();
+    });
+
+    it('今日に「今日」の見出しが出ること', () => {
+      renderWithApollo(<DateCard {...baseProps} date={new Date()} />);
+      expect(screen.getByTestId('dateCard-todayLabel')).toBeInTheDocument();
+    });
+
+    it('今日でない日に「今日」の見出しが出ないこと', () => {
+      renderWithApollo(<DateCard {...baseProps} date={new Date(2000, 0, 1)} />);
+      expect(screen.queryByTestId('dateCard-todayLabel')).not.toBeInTheDocument();
+    });
+
+    it('今日の食事に「評価する」が出ること', () => {
+      renderWithApollo(
+        <DateCard {...baseProps} date={new Date()} meals={[buildMeal()]} />,
+      );
+      expect(screen.getByLabelText('評価')).toBeInTheDocument();
+    });
+
+    it('今日でない日の食事に「評価する」が出ないこと', () => {
+      renderWithApollo(<DateCard {...baseProps} meals={[buildMeal()]} />);
+      expect(screen.queryByLabelText('評価')).not.toBeInTheDocument();
+    });
+
+    it('操作中は枠の削除ボタンが出ないこと', () => {
+      renderWithApollo(
+        <DateCard
+          {...baseProps}
+          isDisplayCalendarMode={false}
+          frameEntries={[buildFrameEntry()]}
+        />,
+      );
+      expect(screen.queryByTestId('frameCard-deleteBtn-1')).not.toBeInTheDocument();
     });
 
     it('frameEntries が存在するとき枠名が表示されること', () => {
@@ -136,44 +162,6 @@ describe('<DateCard>', () => {
   });
 
   describe('機能テスト', () => {
-    it('空エリアをクリックすると食事登録モーダルが開くこと', async () => {
-      registerQueryHandler(DishEffortLevelsDocument, { dishEffortLevels: [] });
-      registerQueryHandler(ExistingDishesForRegisteringWithMealDocument, {
-        existingDishesForRegisteringWithMeal: [],
-      });
-      registerQueryHandler(DishSourcesDocument, { dishSources: [] });
-      registerQueryHandler(MealFramesDocument, { mealFrames: [] });
-      registerQueryHandler(MealFramePatternsDocument, { mealFramePatterns: [] });
-
-      renderWithApollo(
-        <DateCard {...baseProps} meals={[]} isDisplayCalendarMode={true} />,
-      );
-
-      await userEvent.click(screen.getByTestId('dateCard-emptyMealArea'));
-
-      expect(screen.getByTestId('dateCard-emptyMealAreaModal')).toBeInTheDocument();
-    });
-
-    it('空エリアをクリックすると3タブ（食事/枠/枠パターン適用）モーダルが開くこと', async () => {
-      registerQueryHandler(DishEffortLevelsDocument, { dishEffortLevels: [] });
-      registerQueryHandler(ExistingDishesForRegisteringWithMealDocument, {
-        existingDishesForRegisteringWithMeal: [],
-      });
-      registerQueryHandler(DishSourcesDocument, { dishSources: [] });
-      registerQueryHandler(MealFramesDocument, { mealFrames: [] });
-      registerQueryHandler(MealFramePatternsDocument, { mealFramePatterns: [] });
-
-      renderWithApollo(
-        <DateCard {...baseProps} meals={[]} isDisplayCalendarMode={true} />,
-      );
-
-      await userEvent.click(screen.getByTestId('dateCard-emptyMealArea'));
-
-      expect(screen.getByTestId('addTypeMeal')).toBeInTheDocument();
-      expect(screen.getByTestId('addTypeFrame')).toBeInTheDocument();
-      expect(screen.getByTestId('addTypePattern')).toBeInTheDocument();
-    });
-
     it('日付ヘッダーをクリックすると startSwappingMealsMode が該当 date を引数に呼ばれること', async () => {
       const startSwappingMealsMode = jest.fn();
       const date = new Date(2026, 2, 9);
