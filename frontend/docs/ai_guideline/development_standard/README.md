@@ -3,6 +3,7 @@
 - コード設計原則 @application_architecture.md
 - 自動テスト・テストファースト方針 @testing.md
 - フォーマット方針 @formatting.md
+- UIデザインの管理方針 @ui_design_management.md
 - dockerコマンド実行方針 @docker.md
 - ローカル開発マシン固有のdocker事象 @docker.local.md
 - PC 以外の端末で画面を確かめる動作確認環境 @../../../../backend/docs/ai_guideline/development_standard/review_environment.md
