@@ -294,6 +294,7 @@ spec は `canDelete={false}` の時にボタンが出ないことを足す。
     > 差11: 週ビューの期間ラベルが切れる。「11/7 - 11/13」は 99px 必要で幅は 90px（月の「2026年11月」は 88px で切れない）。最長は「11/14 - 11/20」でさらに 1 字長い。ヘッダーの外側の `gap-2` と左右のボタン群の `gap-0.5` を外し、幅を 378 - 264 = 114px にした。`truncate` は 390px より狭い端末の逃げ道として残す。class のみの変更で spec は既存 green（修正済み。再確認で解消: 390px で「11/7 - 11/13」99/99、「11/14 - 11/20」109/109、月「2026年11月」88/88。ただし 390px より狭い端末は制約として下に記録）
     > 差12: 区分アイコンが料理名の 1 行目に揃わない。原因は svg が `display: inline` で baseline に載ることと、448 幅の svg が 14px の枠から 2px はみ出すこと。`CategoryIcon.tsx` の内側 span に `[&>svg]:block [&>svg]:size-full` を足し（`dish/DishSearchCard` でも使うため影響あり）、`MealCard` の `mt-0.5` を `isToday ? 'mt-[7px]' : 'mt-[3px]'` にした（行の高さ 19.25px / 27.5px で、14px のアイコンの中心が 0.4px 以内）。MealCard の spec と新設の CategoryIcon.spec.tsx で検証（修正済み。再確認で解消: 線ボックス基準でアイコン枠と1行目の中心差は通常 0.38px、今日 0.25px で 0.4px 以内。Range 基準（字の content area）では全行 +1.00px。日本語フォントの content area が線ボックス中心と約 0.6〜0.75px ずれることによる値で、依頼の基準ではないが記録に残す。目視ではずれは判別できない）
     > 差13（修正しない）: 点数の色は計算値が rgb(187,77,0)。`text-amber-700` は Tailwind v4 でこの値であり、#b45309 = rgb(180,83,9) は v3 の値。不具合ではない。白地のコントラストは約 5.0:1 で足りる。Design System の `rating-text` は #b45309 でコードと違うため、Phase 7 で v4 の値へ直す
+    > 差14（修正しない）: Phase 7 で Design System をコードと照合して見つけた。文字の大きさが確定案のボードと4か所違う（料理名 ボード15px/コード14px、今日のレシピ元とコメント 13px/12px、曜日 11px/12px、操作欄の文字 11px/10px）。実装で Tailwind の近い段へ寄せた結果であり、検査の項目に含めていなかった。差は 1px で、本人が実際の画面を確かめて ok としていること、ボードに合わせると段にない値が増えることから、本人の承認（2026-11-13「ok」）を受けてコードのままとする
     > 観測できなかったもの（追加）: 枠の行の「昼」の印（実データになく比較できず。`bg-lunch/15` と `text-lunch-foreground` は FrameCard の spec が担保）
     > 再確認(fix3、frontend/inspect/visual/tmp/20261107-week-calendar-after-fix3/result.md、390x844 主、375x667・360x800 補助): 
     > 制約: 390px より狭い端末で期間ラベルが切れる。375px は「11/14 - 11/20」のみ切れ（109 > 99）、360px は 3 つとも切れる（99・109・88 > 84。「11/14 - …」と表示）。ボタンは 44px 以上を保ち、右端は画面内、横スクロールなし。設計の受け入れ基準は 390×844。この扱いは本人へ報告する
@@ -342,7 +343,8 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
 
 > ⚠️ 動作確認phaseが完了するまでcommit、push、PRを促したり実行したりしない。急かすことも禁止する。
 
-- [ ] commit（phase単位かつ意味単位で分割）
+- [x] commit（phase単位かつ意味単位で分割）
+  > 2026-11-13 本人が計画を承認（「ok」）。`plan-commits` で決めた10本を commit した（a3acfbe〜414dfcd）。README の古い記述、区分アイコン、ヘッダー、週カレンダーの表示、画面の意図、UIデザインの管理方針（本体、確定案を移す手順、色の値の取り方）、グローバル CSS の前提、`.steering/` の記録に分けた。
   - 境界は、実差分へ`plan-commits`を当てて決める
   - MUST: まとめて一commitにしない
   - README の古い記述の修正、画面の意図と管理方針の文書、画面の変更、`.steering/` の記録は別の commit にする
@@ -365,17 +367,30 @@ Tasks に挙げた確認をユーザーが行い、期待どおりであるこ�
 
 ### Tasks
 
-- [ ] `tokens.json` を適用後のコードと照合して更新する
-- [ ] README を更新する
-  - [ ] 適用前の注意を消す
-  - [ ] 写した commit と日付を更新する
-  - [ ] リポジトリ名を `setsumaru1992/nanitabe` へ直す（「これは何か」と「写した元と最新化」で `tumeda1992/nanitabe` と誤記している）
-  - [ ] 最新化の command を、squash merge の後も使える形へ変える
-  - [ ] 「画面の意図」を `frontend/src/components/calendar/README.md` と照合する
-- [ ] 表示の説明と部品の呼び名を、実装の結果と照合する
-- [ ] キャンバスの Design System の写しを更新する
-- [ ] README の手順の command を実行し、差分を確かめられることを確認する
-- [ ] ここで作業を停止し、Design System の結果をユーザーに確認する。次へは進まない
+- [x] `tokens.json` を適用後のコードと照合して更新する
+  > 色: `rating-text` を v4 の amber-700（`oklch(55.5% 0.163 48.998)`）、`foreground-soft` を v4 の zinc-700 へ。`globals.css` の CSS 変数の値は一致していた。用途の説明を実装に合わせた（「枠」の破線はない、`rating-star` は操作欄の評価済みの星）。
+  > 文字: 確定案のボードの値からコードの class の値へ直した。料理名 15px → 14px（`text-sm`）、曜日 11px → 12px（`text-xs`）、操作欄の文字 11px → 10px。今日のレシピ元とコメントの 13px はコードにないため外した（12px のまま）。枠名、点数、「今日」、「未定」、「評価する」、「今週」の文字を足した。
+  > 間隔: 食事の行の上下の余白 8px → 6px（`py-1.5`）。「+」の列、日番号の丸、印の大きさ、区分アイコンとの間を足した。
+- [x] README を更新する
+  - [x] 適用前の注意を消す
+  - [x] 写した commit と日付を更新する（2026-11-13 22:32 JST、`feature-297@414dfcd`）
+  - [x] リポジトリ名を `setsumaru1992/nanitabe` へ直す（「これは何か」と「写した元と最新化」で `tumeda1992/nanitabe` と誤記している）
+  - [x] 最新化の command を、squash merge の後も使える形へ変える
+    > `git log --since="2026-11-13 22:32 +0900" -- …` とした。日付だけ（`--since=2026-11-13`）では git が今の時刻を補い、当日の commit が出ないことを実行して確かめたため、時刻まで書いた。
+    > これに合わせ、`ui_design_management.md` の「README に書いた commit から」を「README に書いた写した日時から」へ直した（一意に導ける変更として報告）。
+  - [x] 「画面の意図」を `frontend/src/components/calendar/README.md` と照合する
+    > リポジトリの節を写し直した（`START_FROM_SAT` の記述が足りなかった）。
+- [x] 表示の説明と部品の呼び名を、実装の結果と照合する
+  > 枠の行の削除を操作中に出さないこと、昼夜の印を枠の行でも使うこと、操作欄の色、点数と星の色を足した。「置かないもの」に、論点17の正本の写しを足した。
+- [x] キャンバスの Design System の写しを更新する
+  > `copy_file` で `project/ds/nanitabe/tokens.json` を写し、sha256 が Design System の `tokens.json` と一致することを確かめた。`canvas.json` の `designSystems` の `version` を `1794576981-f062`、`copiedAt` を 2026-11-13T13:36:37Z にした。
+- [x] README の手順の command を実行し、差分を確かめられることを確認する
+  > 写した日時より後の変更は 0 件。当日の 0 時からにすると、今回の5件の commit が出ることも確かめた。
+- [x] ここで作業を停止し、Design System の結果をユーザーに確認する。次へは進まない
+  > 本人の指摘で、overview とトークンが一画面の仕様の写しになっていたと分かった（`task-design-discussion.md` 論点19）。
+  > overview を画面をまたぐ内容だけにし、トークンを色の役割と段に絞った。画面ごとの内容は Design System の範囲から外し、部品の呼び名を `frontend/src/components/calendar/README.md` へ移し、`ui_design_management.md` に画面の意図を読む先を足した。
+  > キャンバスの写しは 1794577546-ce00 の `tokens.json` を写した。その後の版で変わったのは README と index だけである。
+  > 確定案のボードと今のコードの文字の大きさが4か所違う件は、本人の承認を受けてコードのままとした（差14）。
 
 ### 各task詳細
 
@@ -403,19 +418,21 @@ Design System の `rating-text` は `#b45309`（Tailwind v3 の amber-700）で�
 
 ### Tasks
 
-- [ ] findings の確認状況を実測へ更新する
-  - [ ] キャンバスの案とコードの差、差が出た理由を書く
-  - [ ] 資料の記述のみの項目のうち、使ったものを更新する
-  - [ ] 実データの料理名と artifact の URL を書かない
+- [x] findings の確認状況を実測へ更新する
+  - [x] キャンバスの案とコードの差、差が出た理由を書く
+    > 「キャンバスの案からコードへ移した結果」を足し、「まだ言えないこと」から外した。
+  - [x] 資料の記述のみの項目のうち、使ったものを更新する
+    > デザインシステム化、コードからのデザインシステム作成を実施済みへ更新し、Design System の範囲と版の扱いの行を足した。
+  - [x] 実データの料理名と artifact の URL を書かない
 
 ---
 
 ## 完了後のaction（公開）
 
 - [ ] current branchをpushしてPRを作成する
-  - [ ] commit taskの結果としてlocal commitが実際に一件以上あることを確認する。一件もなければpush・PRを実行しない
-  - [ ] Phase 7 と Phase 8 で増えた `.steering/` の記録を commit する
-  - [ ] current branch が `feature-297` であることを確認する
+  - [x] commit taskの結果としてlocal commitが実際に一件以上あることを確認する。一件もなければpush・PRを実行しない
+  - [x] Phase 7 と Phase 8 で増えた `.steering/` の記録を commit する
+  - [x] current branch が `feature-297` であることを確認する
   - [ ] `git push -u origin feature-297`を実行する
   - [ ] pluginのskills directory配下にある `scripts/github/create_or_get_pr.sh` を実行する
     - issue #297 の作業が終わる merge であるため、PR は `Closes #297` を持つ
