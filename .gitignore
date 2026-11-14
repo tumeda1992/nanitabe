@@ -84,3 +84,5 @@ yarn-debug.log*
 
 *.local.md
 
+# ローカル専用設定（例: 開発用 compose）
+*.local.yml

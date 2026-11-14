@@ -10,7 +10,10 @@ const generateApiOrigin: () => string = () => {
     case ExecSituation.ExecInServerSide:
       return 'http://nanitabe_back:18101';
     case ExecSituation.ExecInClientSide:
-      return 'http://localhost:18101';
+      return (
+        process.env.NEXT_PUBLIC_CLIENT_SIDE_LOCAL_ORIGIN ??
+        'http://localhost:18101'
+      );
     default:
       return '';
   }
